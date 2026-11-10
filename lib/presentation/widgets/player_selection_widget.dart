@@ -682,14 +682,24 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     final loc = AppLocalizations.of(context);
     final playerName = searchBarController.text.trim();
 
-    int nameCount = calculateNameCount(playerName);
-    final createdPlayer = Player(name: playerName, nameCount: nameCount);
+    final createdPlayer = Player(name: playerName);
     final success = await db.playerDao.addPlayer(player: createdPlayer);
+
+    // Collect updated player name counts
+    Map<String, int> nameCounts = {};
+    await db.playerDao.getPlayersByName(name: playerName).then((players) {
+      for (final p in players) {
+        nameCounts[p.id] = p.nameCount;
+      }
+    });
 
     if (!context.mounted) return;
 
     if (success) {
-      handleSuccessfulPlayerCreation(createdPlayer);
+      applyNameCounts(nameCounts);
+      handleSuccessfulPlayerCreation(
+        createdPlayer.copyWith(nameCount: nameCounts[createdPlayer.id]),
+      );
       context.showSnackBar(message: loc.successfully_added_player(playerName));
       Haptics.successNotification();
     } else {
@@ -698,17 +708,33 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     }
   }
 
-  int calculateNameCount(String playerName) {
-    final playersWithSameName =
-        allPlayers.where((player) => player.name == playerName).toList()
-          ..sort((a, b) => a.nameCount.compareTo(b.nameCount));
+  /// Replace all players affected by name count changes with updated player objects.
+  void applyNameCounts(Map<String, int> nameCounts) {
+    if (nameCounts.isEmpty) return;
 
-    if (playersWithSameName.isEmpty) {
-      return 0;
-    } else if (playersWithSameName.length == 1) {
-      playersWithSameName[0].nameCount = 1;
+    // Helper function
+    Player updateNameCount(Player player) {
+      final nameCount = nameCounts[player.id];
+      return nameCount == null || nameCount == player.nameCount
+          ? player
+          : player.copyWith(nameCount: nameCount);
     }
-    return playersWithSameName.length + 1;
+
+    // Update all player collections
+    allPlayers = allPlayers.map(updateNameCount).toList();
+    suggestedPlayers = suggestedPlayers.map(updateNameCount).toList();
+    if (selectedPlayer != null) {
+      selectedPlayer = updateNameCount(selectedPlayer!);
+    }
+    selectedUnits = selectedUnits
+        .map(
+          (unit) => unit.members.any((m) => nameCounts.containsKey(m.id))
+              ? unit.copyWith(
+                  members: unit.members.map(updateNameCount).toList(),
+                )
+              : unit,
+        )
+        .toList();
   }
 
   void handleSuccessfulPlayerCreation(Player player) {

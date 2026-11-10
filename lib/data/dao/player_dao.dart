@@ -187,6 +187,24 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         .toList();
   }
 
+  /// Retrieves all [Player]s with the given [name], including deleted ones.
+  Future<List<Player>> getPlayersByName({required String name}) async {
+    final query = select(playerTable)..where((p) => p.name.equals(name));
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Player(
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            createdAt: row.createdAt,
+            nameCount: row.nameCount,
+            deleted: row.deleted,
+          ),
+        )
+        .toList();
+  }
+
   /// Checks, if a player can be safely deleted.
   /// Returns `false`, if a player is in at least one match, else `true`.
   Future<bool> canTrueDelete({required String playerId}) async {

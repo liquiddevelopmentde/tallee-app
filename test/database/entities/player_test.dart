@@ -678,6 +678,24 @@ void main() {
         expect(player.nameCount, 1);
       });
 
+      test(
+        'getPlayersByName returns all players with updated name counts',
+        () async {
+          await database.playerDao.addPlayer(player: testPlayer1);
+          final duplicate = Player(name: testPlayer1.name, description: '');
+          await database.playerDao.addPlayer(player: duplicate);
+          await database.playerDao.addPlayer(player: testPlayer2);
+
+          final players = await database.playerDao.getPlayersByName(
+            name: testPlayer1.name,
+          );
+          expect(
+            {for (final p in players) p.id: p.nameCount},
+            {testPlayer1.id: 1, duplicate.id: 2},
+          );
+        },
+      );
+
       test('Deleting a player resets the name count to 0 correctly', () async {
         final player1 = Player(name: testPlayer1.name, description: '');
         final player2 = Player(name: testPlayer1.name, description: '');
