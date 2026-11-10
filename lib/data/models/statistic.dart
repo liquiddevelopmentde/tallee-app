@@ -40,14 +40,7 @@ class Statistic {
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
        color = color ?? AppColor.randomColor(),
-       sortDirection = sortDirection ?? defaultsortDirectionFor(type);
-
-  /// The sort order a new statistic of [type] starts with.
-  /// "Worst score" shows ascending, everything else descending.
-  static SortDirection defaultsortDirectionFor(StatisticType type) =>
-      type == StatisticType.worstScore
-      ? SortDirection.ascending
-      : SortDirection.descending;
+       sortDirection = sortDirection ?? type.defaultSortDirection;
 
   @override
   String toString() =>
@@ -137,7 +130,7 @@ class Statistic {
         (e) =>
             e.name == json['sortDirection'] ||
             e.toString() == json['sortDirection'],
-        orElse: () => Statistic.defaultsortDirectionFor(type),
+        orElse: () => type.defaultSortDirection,
       ),
     );
   }

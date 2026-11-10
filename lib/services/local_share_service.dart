@@ -518,7 +518,7 @@ class LocalShareService {
         position: map['position'],
         sortDirection: SortDirection.values.firstWhere(
           (e) => e.name == map['sortDirection'],
-          orElse: () => Statistic.defaultsortDirectionFor(type),
+          orElse: () => type.defaultSortDirection,
         ),
       );
     }).toList();
