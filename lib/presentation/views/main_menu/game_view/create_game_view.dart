@@ -77,6 +77,7 @@ class _CreateGameViewState extends State<CreateGameView> {
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     if (widget.requiredRuleset != null) {
       selectedRuleset = widget.requiredRuleset;
@@ -91,8 +92,6 @@ class _CreateGameViewState extends State<CreateGameView> {
       selectedRuleset = widget.gameToEdit!.ruleset;
       selectedColor = widget.gameToEdit!.color;
     } else {
-      showcaseProvider = context.read<ShowcaseProvider>();
-
       handleShowcase(
         widgetKeys: [
           createGameViewGameNameKey,
@@ -139,7 +138,6 @@ class _CreateGameViewState extends State<CreateGameView> {
   @override
   Widget build(BuildContext context) {
     var loc = AppLocalizations.of(context);
-    final isEditing = widget.gameToEdit != null;
 
     return PopScope(
       onPopInvokedWithResult: (bool didPop, dynamic result) {
@@ -154,7 +152,7 @@ class _CreateGameViewState extends State<CreateGameView> {
           builder: (scaffoldContext) => Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
-              title: Text(isEditing ? loc.edit_game : loc.create_game),
+              title: Text(isEditMode ? loc.edit_game : loc.create_game),
               actions: [
                 if (isEditMode)
                   HapticIconButton(
@@ -245,15 +243,16 @@ class _CreateGameViewState extends State<CreateGameView> {
                     showcaseKey: createGameViewCreateGameKey,
                     description: loc.showcase_create_game_button,
                     child: BottomAnimatedButton(
-                      text: isEditing ? loc.edit_game : loc.create_game,
+                      text: isEditMode ? loc.edit_game : loc.create_game,
                       onPressed:
                           gameNameController.text.trim().isNotEmpty &&
                               selectedRuleset != null &&
                               selectedColor != null
                           ? () async {
-                              if (showcaseProvider.shouldShowShowcase(
-                                createGameViewGameNameIdentifier,
-                              )) {
+                              if (!isEditMode &&
+                                  showcaseProvider.shouldShowShowcase(
+                                    createGameViewGameNameIdentifier,
+                                  )) {
                                 showcaseProvider.markAsSeen(
                                   createGameViewGameNameIdentifier,
                                 );
@@ -272,7 +271,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                                 ruleset: selectedRuleset!,
                                 color: selectedColor!,
                               );
-                              if (isEditing) {
+                              if (isEditMode) {
                                 await handleGameUpdate(newGame);
                               } else {
                                 await handleGameCreation(newGame);
