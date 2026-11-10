@@ -2129,7 +2129,7 @@ abstract class AppLocalizations {
   /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
-  /// **'Unknown Exception (see console)'**
+  /// **'Unknown Exception'**
   String get unknown_exception;
 
   /// No description provided for @unsatisfied.

@@ -424,7 +424,7 @@
   "type": "Type",
   "type_filter_description": "All statistics matching any of the selected types are displayed.",
   "unexpected_error": "An unexpected error occurred.",
-  "unknown_exception": "Unknown Exception (see console)",
+  "unknown_exception": "Unknown Exception",
   "unsatisfied": "Unsatisfied?",
   "update_app_export_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.",
   "update_app_import_desc": "You don't have the newest App-Version, this can lead to problems when trying to import your data.",

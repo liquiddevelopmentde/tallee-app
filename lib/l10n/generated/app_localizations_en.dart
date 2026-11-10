@@ -1153,7 +1153,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpected_error => 'An unexpected error occurred.';
 
   @override
-  String get unknown_exception => 'Unknown Exception (see console)';
+  String get unknown_exception => 'Unknown Exception';
 
   @override
   String get unsatisfied => 'Unsatisfied?';
