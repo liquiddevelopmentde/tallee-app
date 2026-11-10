@@ -96,8 +96,6 @@ class _PullDownMenuTileState extends State<PullDownMenuTile> {
             ),
             if (widget.icon case final icon?)
               Icon(icon, size: 20, color: contentColor),
-            if (hasSubmenu)
-              Icon(Icons.chevron_right, size: 18, color: contentColor),
           ],
         ),
       ),
