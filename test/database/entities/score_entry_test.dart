@@ -749,6 +749,30 @@ void main() {
     });
 
     group('LOSER', () {
+      test('setWinners() and setLoser() keep endedAt', () async {
+        final endedAt = DateTime(2026, 1, 1, 12);
+        await database.matchDao.updateMatchEndedAt(
+          matchId: testMatch1.id,
+          endedAt: endedAt,
+        );
+
+        await database.scoreEntryDao.setWinners(
+          winners: [testPlayer1],
+          matchId: testMatch1.id,
+        );
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, endedAt);
+
+        await database.scoreEntryDao.setLoser(
+          playerId: testPlayer1.id,
+          matchId: testMatch1.id,
+        );
+        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+        expect(match.endedAt, endedAt);
+      });
+
       test('hasLoser() works correctly', () async {
         var hasLoser = await database.scoreEntryDao.hasLoser(
           matchId: testMatch1.id,

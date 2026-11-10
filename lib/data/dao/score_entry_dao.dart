@@ -263,13 +263,18 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Deletes all score entries for a match.
-  Future<bool> deleteAllScoresForMatch({required String matchId}) async {
+  /// If [removeEndedAt] is `true`, the match is marked as ongoing again.
+  Future<bool> deleteAllScoresForMatch({
+    required String matchId,
+    bool removeEndedAt = true,
+  }) async {
     final query = delete(scoreEntryTable)
       ..where((tbl) => tbl.matchId.equals(matchId));
-    var rowsAffected = await query.go();
+    final rowsAffected = await query.go();
+
+    if (!removeEndedAt) return rowsAffected > 0;
 
     final success = await db.matchDao.removeMatchEndedAt(matchId: matchId);
-
     return rowsAffected > 0 && success;
   }
 
@@ -340,7 +345,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
   }) async {
     // Clear previous winners if exists
-    await deleteAllScoresForMatch(matchId: matchId);
+    await deleteAllScoresForMatch(matchId: matchId, removeEndedAt: false);
     if (winners.isEmpty) return false;
 
     await batch((batch) {
@@ -375,7 +380,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     // Clear previous losers if exists
-    await deleteAllScoresForMatch(matchId: matchId);
+    await deleteAllScoresForMatch(matchId: matchId, removeEndedAt: false);
 
     // Set the losers score to 0
     final rowsAffected = await into(scoreEntryTable).insert(

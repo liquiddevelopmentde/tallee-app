@@ -318,7 +318,11 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }
 
   /// Removes the scores for all teams in the match with the given [matchId] by setting their scores to null.
-  Future<bool> removeAllTeamScores({required String matchId}) async {
+  /// If [removeEndedAt] is `true`, the match is marked as ongoing again.
+  Future<bool> removeAllTeamScores({
+    required String matchId,
+    bool removeEndedAt = true,
+  }) async {
     // collect all teamIds for the given matchId from playerMatchTable
     final teamIds =
         await (selectOnly(playerMatchTable)
@@ -336,7 +340,10 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           await (update(teamTable)..where((t) => t.id.isIn(filteredTeamIds)))
               .write(const TeamTableCompanion(score: Value(null)));
     }
-    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+    await db.scoreEntryDao.deleteAllScoresForMatch(
+      matchId: matchId,
+      removeEndedAt: removeEndedAt,
+    );
     return rowsAffected > 0;
   }
 
@@ -373,8 +380,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required List<Team> winners,
     required String matchId,
   }) async {
-    // Reset all team scores .
-    await removeAllTeamScores(matchId: matchId);
+    // Reset all team scores without reopening the match
+    await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
     // Reset all score entries
     for (final team in winners) {
       await _deleteAllScoresForMembersOfTeam(teamId: team.id, matchId: matchId);

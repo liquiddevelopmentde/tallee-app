@@ -354,6 +354,25 @@ void main() {
     });
 
     group('SCORE', () {
+      test('setWinnerTeams() keeps endedAt', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        final endedAt = DateTime(2026, 1, 1, 12);
+        await database.matchDao.updateMatchEndedAt(
+          matchId: testMatch1.id,
+          endedAt: endedAt,
+        );
+
+        await database.teamDao.setWinnerTeams(
+          winners: [testTeam1],
+          matchId: testMatch1.id,
+        );
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, endedAt);
+      });
+
       test('updateTeamScore() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 

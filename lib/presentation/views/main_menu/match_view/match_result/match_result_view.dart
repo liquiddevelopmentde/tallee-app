@@ -389,11 +389,10 @@ class _MatchResultViewState extends State<MatchResultView> {
       await handleLives();
     }
 
-    if (endMatch) {
-      final ending = DateTime.now();
+    if (endMatch && widget.match.endedAt == null) {
       await db.matchDao.updateMatchEndedAt(
         matchId: widget.match.id,
-        endedAt: ending,
+        endedAt: DateTime.now(),
       );
 
       if (!mounted) return;
