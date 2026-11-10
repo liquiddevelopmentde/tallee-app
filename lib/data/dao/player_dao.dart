@@ -272,25 +272,45 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Checks the count of players with the [deletedPlayer]s name and
+  /// if there is only one player left with name it resets it to 0
+  /// Returns `true` if the count has been resetted, otherwise `false`.
+  Future<bool> cleanUpNameCount({required Player deletedPlayer}) async {
+    final query = (select(playerTable)
+      ..where((tbl) => tbl.name.equals(deletedPlayer.name)));
+    final result = await query.get();
+    final playerAmount = result.length;
+
+    if (playerAmount == 1) {
+      final id = result.first.id;
+      await updateNameCount(playerId: id, nameCount: 0);
+      return true;
+    }
+    return false;
+  }
+
   /* Delete */
 
-  /// Deletes the player with the given [playerId] from the database.
+  /// Deletes the [player] from the database.
   /// - [canTrueDelete] == `false`: Set deleted flag
   /// - [canTrueDelete] == `true`: Delete from database
   ///
   /// Returns `true` if the player was deleted/marked, `false` if the player did
   /// not exist.
-  Future<bool> deletePlayer({required String playerId}) async {
-    if (!await canTrueDelete(playerId: playerId)) {
+  Future<bool> deletePlayer({required Player player}) async {
+    if (!await canTrueDelete(playerId: player.id)) {
       final rowsAffected =
-          await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
+          await (update(playerTable)..where((tbl) => tbl.id.equals(player.id)))
               .write(const PlayerTableCompanion(deleted: Value(true)));
-      await db.playerGroupDao.removePlayerFromAllGroups(playerId: playerId);
+      await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
       return rowsAffected > 0;
     } else {
       final rowsAffected = await (delete(
         playerTable,
-      )..where((tbl) => tbl.id.equals(playerId))).go();
+      )..where((tbl) => tbl.id.equals(player.id))).go();
+
+      await cleanUpNameCount(deletedPlayer: player);
+
       return rowsAffected > 0;
     }
   }
@@ -348,6 +368,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final rowsAffected = await query.write(
       PlayerTableCompanion(nameCount: Value(nameCount)),
     );
+    print('rowsAffected: $rowsAffected');
     return rowsAffected > 0;
   }
 
