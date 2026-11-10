@@ -34,77 +34,17 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return false;
   }
 
-  /// Adds multiple [players] to the database in a batch operation.
-  /// Uses insertOrIgnore to avoid triggering cascade deletes on
-  /// player_group associations when players already exist.
+  /// Adds multiple [players] to the database in one transaction.
   Future<bool> addPlayersAsList({required List<Player> players}) async {
     if (players.isEmpty) return false;
 
-    // Filter out players that already exist
-    final newPlayers = <Player>[];
-    for (final player in players) {
-      if (!await playerExists(playerId: player.id)) {
-        newPlayers.add(player);
+    return transaction(() async {
+      var anyAdded = false;
+      for (final player in players) {
+        if (await addPlayer(player: player)) anyAdded = true;
       }
-    }
-
-    if (newPlayers.isEmpty) return false;
-
-    // Group players by name
-    final nameGroups = <String, List<Player>>{};
-    for (final player in newPlayers) {
-      nameGroups.putIfAbsent(player.name, () => []).add(player);
-    }
-
-    final playersToInsert = <PlayerTableCompanion>[];
-
-    // Process each group of players with the same name
-    for (final entry in nameGroups.entries) {
-      final name = entry.key;
-      final playersWithName = entry.value;
-
-      // Get the current nameCount
-      var nameCount = await _processNameCount(name: name);
-
-      // One player with the same name
-      if (playersWithName.length == 1) {
-        final player = playersWithName[0];
-        playersToInsert.add(
-          PlayerTableCompanion.insert(
-            id: player.id,
-            name: player.name,
-            description: player.description,
-            createdAt: player.createdAt,
-            nameCount: Value(nameCount),
-          ),
-        );
-      } else {
-        if (nameCount == 0) nameCount++;
-        // Multiple players with the same name
-        for (var i = 0; i < playersWithName.length; i++) {
-          final player = playersWithName[i];
-          playersToInsert.add(
-            PlayerTableCompanion.insert(
-              id: player.id,
-              name: player.name,
-              description: player.description,
-              createdAt: player.createdAt,
-              nameCount: Value(nameCount + i),
-            ),
-          );
-        }
-      }
-    }
-
-    await db.batch(
-      (b) => b.insertAll(
-        playerTable,
-        playersToInsert,
-        mode: InsertMode.insertOrReplace,
-      ),
-    );
-
-    return true;
+      return anyAdded;
+    });
   }
 
   /* Read */
