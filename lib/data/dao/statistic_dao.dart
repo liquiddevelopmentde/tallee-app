@@ -186,7 +186,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
 
   Future<bool> updateSortOrder(
     String statisticId,
-    StatisticSortOrder sortOrder,
+    SortDirection sortOrder,
   ) async {
     final rowsUpdated =
         await (update(statisticTable)

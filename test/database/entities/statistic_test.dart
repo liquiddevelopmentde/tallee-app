@@ -285,14 +285,14 @@ void main() {
 
         final updated = await database.statisticDao.updateSortOrder(
           testStatistic1.id,
-          StatisticSortOrder.ascending,
+          SortDirection.ascending,
         );
         expect(updated, isTrue);
 
         final fetched = await database.statisticDao.getStatisticById(
           statisticId: testStatistic1.id,
         );
-        expect(fetched!.sortOrder, StatisticSortOrder.ascending);
+        expect(fetched!.sortOrder, SortDirection.ascending);
       });
 
       test(
@@ -300,7 +300,7 @@ void main() {
         () async {
           final updated = await database.statisticDao.updateSortOrder(
             'non-existent-id',
-            StatisticSortOrder.ascending,
+            SortDirection.ascending,
           );
           expect(updated, isFalse);
 

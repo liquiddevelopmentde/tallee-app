@@ -3023,15 +3023,15 @@ class $StatisticTableTable extends StatisticTable
     defaultValue: const Constant(0),
   );
   @override
-  late final GeneratedColumnWithTypeConverter<StatisticSortOrder, String>
-  sortOrder = GeneratedColumn<String>(
-    'sort_order',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: Constant(StatisticSortOrder.descending.name),
-  ).withConverter<StatisticSortOrder>($StatisticTableTable.$convertersortOrder);
+  late final GeneratedColumnWithTypeConverter<SortDirection, String> sortOrder =
+      GeneratedColumn<String>(
+        'sort_order',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: Constant(SortDirection.descending.name),
+      ).withConverter<SortDirection>($StatisticTableTable.$convertersortOrder);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3182,10 +3182,8 @@ class $StatisticTableTable extends StatisticTable
       const EnumNameConverter<Timeframe>(Timeframe.values);
   static JsonTypeConverter2<AppColor, String, String> $convertercolor =
       const EnumNameConverter<AppColor>(AppColor.values);
-  static JsonTypeConverter2<StatisticSortOrder, String, String>
-  $convertersortOrder = const EnumNameConverter<StatisticSortOrder>(
-    StatisticSortOrder.values,
-  );
+  static JsonTypeConverter2<SortDirection, String, String> $convertersortOrder =
+      const EnumNameConverter<SortDirection>(SortDirection.values);
 }
 
 class StatisticTableData extends DataClass
@@ -3200,7 +3198,7 @@ class StatisticTableData extends DataClass
   final int displayCount;
   final bool isFavourite;
   final int position;
-  final StatisticSortOrder sortOrder;
+  final SortDirection sortOrder;
   const StatisticTableData({
     required this.id,
     required this.createdAt,
@@ -3335,7 +3333,7 @@ class StatisticTableData extends DataClass
     int? displayCount,
     bool? isFavourite,
     int? position,
-    StatisticSortOrder? sortOrder,
+    SortDirection? sortOrder,
   }) => StatisticTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -3429,7 +3427,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<int> displayCount;
   final Value<bool> isFavourite;
   final Value<int> position;
-  final Value<StatisticSortOrder> sortOrder;
+  final Value<SortDirection> sortOrder;
   final Value<int> rowid;
   const StatisticTableCompanion({
     this.id = const Value.absent(),
@@ -3504,7 +3502,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<int>? displayCount,
     Value<bool>? isFavourite,
     Value<int>? position,
-    Value<StatisticSortOrder>? sortOrder,
+    Value<SortDirection>? sortOrder,
     Value<int>? rowid,
   }) {
     return StatisticTableCompanion(
@@ -8105,7 +8103,7 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
-      Value<StatisticSortOrder> sortOrder,
+      Value<SortDirection> sortOrder,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
@@ -8120,7 +8118,7 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
-      Value<StatisticSortOrder> sortOrder,
+      Value<SortDirection> sortOrder,
       Value<int> rowid,
     });
 
@@ -8272,7 +8270,7 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<StatisticSortOrder, StatisticSortOrder, String>
+  ColumnWithTypeConverterFilters<SortDirection, SortDirection, String>
   get sortOrder => $composableBuilder(
     column: $table.sortOrder,
     builder: (column) => ColumnWithTypeConverterFilters(column),
@@ -8462,7 +8460,7 @@ class $$StatisticTableTableAnnotationComposer
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<StatisticSortOrder, String> get sortOrder =>
+  GeneratedColumnWithTypeConverter<SortDirection, String> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
 
   Expression<T> statisticScopeTableRefs<T extends Object>(
@@ -8588,7 +8586,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
-                Value<StatisticSortOrder> sortOrder = const Value.absent(),
+                Value<SortDirection> sortOrder = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
                 id: id,
@@ -8616,7 +8614,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
-                Value<StatisticSortOrder> sortOrder = const Value.absent(),
+                Value<SortDirection> sortOrder = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
                 id: id,

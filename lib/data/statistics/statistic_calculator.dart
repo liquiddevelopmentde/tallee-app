@@ -29,12 +29,9 @@ class StatisticCalculator {
   ///
   /// Ties are broken by player name and id so the order stays stable between
   /// rebuilds.
-  static void sortValues(
-    List<(Player, num)> entries,
-    StatisticSortOrder sortOrder,
-  ) {
+  static void sortValues(List<(Player, num)> entries, SortDirection sortOrder) {
     entries.sort((a, b) {
-      final byValue = sortOrder == StatisticSortOrder.ascending
+      final byValue = sortOrder == SortDirection.ascending
           ? a.$2.compareTo(b.$2)
           : b.$2.compareTo(a.$2);
       if (byValue != 0) return byValue;

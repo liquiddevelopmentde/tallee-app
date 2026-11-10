@@ -20,7 +20,7 @@ class Statistic {
   final int displayCount;
   final bool isFavourite;
   final int position;
-  final StatisticSortOrder sortOrder;
+  final SortDirection sortOrder;
 
   Statistic({
     required this.type,
@@ -33,7 +33,7 @@ class Statistic {
     this.displayCount = 5,
     this.isFavourite = false,
     this.position = 0,
-    StatisticSortOrder? sortOrder,
+    SortDirection? sortOrder,
     String? id,
     DateTime? createdAt,
     AppColor? color,
@@ -44,10 +44,10 @@ class Statistic {
 
   /// The sort order a new statistic of [type] starts with.
   /// "Worst score" shows ascending, everything else descending.
-  static StatisticSortOrder defaultSortOrderFor(StatisticType type) =>
+  static SortDirection defaultSortOrderFor(StatisticType type) =>
       type == StatisticType.worstScore
-      ? StatisticSortOrder.ascending
-      : StatisticSortOrder.descending;
+      ? SortDirection.ascending
+      : SortDirection.descending;
 
   @override
   String toString() =>
@@ -66,7 +66,7 @@ class Statistic {
     int? displayCount,
     bool? isFavourite,
     int? position,
-    StatisticSortOrder? sortOrder,
+    SortDirection? sortOrder,
   }) => Statistic(
     id: id ?? this.id,
     type: type ?? this.type,
@@ -133,7 +133,10 @@ class Statistic {
       displayCount: json['displayCount'],
       isFavourite: json['isFavourite'],
       position: json['position'],
-      sortOrder: StatisticSortOrder.values.byName(json['sortOrder']),
+      sortOrder: SortDirection.values.firstWhere(
+        (e) => e.name == json['sortOrder'] || e.toString() == json['sortOrder'],
+        orElse: () => Statistic.defaultSortOrderFor(type),
+      ),
     );
   }
 }

@@ -12,8 +12,8 @@ class StatisticTable extends Table {
   IntColumn get displayCount => integer().withDefault(const Constant(5))();
   BoolColumn get isFavourite => boolean().withDefault(const Constant(false))();
   IntColumn get position => integer().withDefault(const Constant(0))();
-  TextColumn get sortOrder => textEnum<StatisticSortOrder>().withDefault(
-    Constant(StatisticSortOrder.descending.name),
+  TextColumn get sortOrder => textEnum<SortDirection>().withDefault(
+    Constant(SortDirection.descending.name),
   )();
 
   @override

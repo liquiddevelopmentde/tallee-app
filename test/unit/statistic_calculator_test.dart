@@ -193,7 +193,7 @@ void main() {
   });
 
   group('StatisticCalculator sort order', () {
-    List<num> valuesFor(StatisticSortOrder sortOrder) {
+    List<num> valuesFor(SortDirection sortOrder) {
       final statistic = Statistic(
         type: StatisticType.totalScore,
         scopes: [StatisticScope.allPlayers],
@@ -208,11 +208,11 @@ void main() {
     }
 
     test('sorts descending by default', () {
-      expect(valuesFor(StatisticSortOrder.descending), [23, 20, 17]);
+      expect(valuesFor(SortDirection.descending), [23, 20, 17]);
     });
 
     test('sorts ascending when configured', () {
-      expect(valuesFor(StatisticSortOrder.ascending), [17, 20, 23]);
+      expect(valuesFor(SortDirection.ascending), [17, 20, 23]);
     });
 
     test('worstScore defaults to ascending', () {
@@ -221,14 +221,14 @@ void main() {
         scopes: [StatisticScope.allPlayers],
       );
 
-      expect(statistic.sortOrder, StatisticSortOrder.ascending);
+      expect(statistic.sortOrder, SortDirection.ascending);
     });
 
     test('worstScore can be sorted descending', () {
       final statistic = Statistic(
         type: StatisticType.worstScore,
         scopes: [StatisticScope.allPlayers],
-        sortOrder: StatisticSortOrder.descending,
+        sortOrder: SortDirection.descending,
       );
 
       final values = StatisticCalculator.computeStatisticValues(

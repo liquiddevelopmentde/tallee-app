@@ -448,6 +448,11 @@ class LocalShareService {
           .cast<Group>()
           .toList();
 
+      final type = StatisticType.values.firstWhere(
+        (e) => e.name == map['type'] || e.toString() == map['type'],
+        orElse: () => StatisticType.totalWins,
+      );
+
       return Statistic(
         id: map['id'] as String,
         createdAt: DateTime.parse(map['createdAt'] as String),
@@ -457,10 +462,7 @@ class LocalShareService {
         endDate: map['endDate'] != null
             ? DateTime.parse(map['endDate'] as String)
             : null,
-        type: StatisticType.values.firstWhere(
-          (e) => e.name == map['type'] || e.toString() == map['type'],
-          orElse: () => StatisticType.totalWins,
-        ),
+        type: type,
         scopes: (map['scopes'] as List<dynamic>? ?? [])
             .map(
               (scope) => StatisticScope.values.firstWhere(
@@ -482,7 +484,10 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
-        sortOrder: StatisticSortOrder.values.byName(map['sortOrder'] as String),
+        sortOrder: SortDirection.values.firstWhere(
+          (e) => e.name == map['sortOrder'] || e.toString() == map['sortOrder'],
+          orElse: () => Statistic.defaultSortOrderFor(type),
+        ),
       );
     }).toList();
   }
