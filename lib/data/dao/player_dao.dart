@@ -386,7 +386,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final rowsAffected = await query.write(
       PlayerTableCompanion(nameCount: Value(nameCount)),
     );
-    print('rowsAffected: $rowsAffected');
     return rowsAffected > 0;
   }
 
@@ -441,7 +440,19 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     } else {
       // If more than one player exists with the same name, just increment
       // the nameCount for the new player
-      nameCount = count + 1;
+      final players = await getPlayersByName(name: name);
+      players.sort((a, b) => a.nameCount.compareTo(b.nameCount));
+
+      // Generate a List<int> from 1 to [count]
+      nameCount = List.generate(count, (i) => i + 1).firstWhere(
+        // Check for every number in the list if no player in players has that
+        // number and return the first number which then is the new nameCount
+        (n) => !players.any((p) => p.nameCount == n),
+
+        // If no nameCount is missing (nameCounts are in consecutive order),
+        // the new name count is the highest nameCount + 1
+        orElse: () => count + 1,
+      );
     }
     return nameCount;
   }
