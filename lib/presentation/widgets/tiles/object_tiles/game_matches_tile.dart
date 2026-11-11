@@ -72,7 +72,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final collapsedCount = _visibleChipCount(
+        final collapsedCount = visibleChipCount(
           constraints.maxWidth - _tilePadding * 2,
         );
         final canExpand = collapsedCount < widget.matches.length;
@@ -99,21 +99,21 @@ class _GameMatchesTileState extends State<GameMatchesTile>
                       color: context.talleeColors.textColor,
                     ),
                   )
-                : _buildMatchChips(collapsedCount, canExpand),
+                : buildMatchChips(collapsedCount, canExpand),
           ),
         );
       },
     );
   }
 
-  Widget _buildMatchChips(int collapsedCount, bool canExpand) {
+  Widget buildMatchChips(int collapsedCount, bool canExpand) {
     final visibleMatches = widget.matches.take(collapsedCount).toList();
     final hiddenMatches = widget.matches.skip(collapsedCount).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildChipWrap(visibleMatches),
+        buildChipWrap(visibleMatches),
         if (hiddenMatches.isNotEmpty)
           SizeTransition(
             sizeFactor: expandAnimation,
@@ -122,16 +122,16 @@ class _GameMatchesTileState extends State<GameMatchesTile>
               opacity: expandAnimation,
               child: Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: _buildChipWrap(hiddenMatches),
+                child: buildChipWrap(hiddenMatches),
               ),
             ),
           ),
-        if (canExpand) _buildExpandToggle(),
+        if (canExpand) buildExpandToggle(),
       ],
     );
   }
 
-  Widget _buildChipWrap(List<Match> matches) => Wrap(
+  Widget buildChipWrap(List<Match> matches) => Wrap(
     spacing: _chipSpacing,
     runSpacing: 8,
     children: [
@@ -144,12 +144,12 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     ],
   );
 
-  Widget _buildExpandToggle() => SizedBox(
+  Widget buildExpandToggle() => SizedBox(
     width: double.infinity,
     height: 32,
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: _toggleExpanded,
+      onTap: toggleExpanded,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),
         switchInCurve: Curves.easeOutCubic,
@@ -171,7 +171,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     ),
   );
 
-  void _toggleExpanded() {
+  void toggleExpanded() {
     setState(() => isExpanded = !isExpanded);
 
     if (isExpanded) {
@@ -182,7 +182,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
   }
 
   /// Number of chips that fit into [GameMatchesTile.maxRows] rows at [maxWidth].
-  int _visibleChipCount(double maxWidth) {
+  int visibleChipCount(double maxWidth) {
     if (widget.matches.isEmpty) return 0;
 
     final style = DefaultTextStyle.of(context).style;
@@ -194,7 +194,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     var visibleCount = 0;
 
     for (final match in widget.matches) {
-      final chipWidth = _chipWidth(
+      final width = chipWidth(
         title: match.name,
         count: match.players.length,
         style: style,
@@ -202,14 +202,12 @@ class _GameMatchesTileState extends State<GameMatchesTile>
         textDirection: textDirection,
       );
       final isRowEmpty = rowWidth == 0;
-      final neededWidth = isRowEmpty
-          ? chipWidth
-          : rowWidth + _chipSpacing + chipWidth;
+      final neededWidth = isRowEmpty ? width : rowWidth + _chipSpacing + width;
 
       if (neededWidth > maxWidth && !isRowEmpty) {
         rows++;
         if (rows > widget.maxRows) break;
-        rowWidth = chipWidth;
+        rowWidth = width;
       } else {
         rowWidth = neededWidth;
       }
@@ -221,7 +219,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
   }
 
   /// Approximates the width of a [PlayerProfileListTile] chip.
-  double _chipWidth({
+  double chipWidth({
     required String title,
     required int count,
     required TextStyle style,
@@ -229,8 +227,8 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     required TextDirection textDirection,
   }) {
     final textStyle = style.copyWith(fontSize: 14);
-    final titleWidth = _textWidth(title, textStyle, textScaler, textDirection);
-    final countWidth = _textWidth(
+    final titleWidth = textWidth(title, textStyle, textScaler, textDirection);
+    final countWidth = textWidth(
       count.toString(),
       textStyle,
       textScaler,
@@ -242,7 +240,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     return titleWidth + 12 + countWidth + 8 + 5 + 20;
   }
 
-  double _textWidth(
+  double textWidth(
     String text,
     TextStyle style,
     TextScaler textScaler,

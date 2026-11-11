@@ -20,24 +20,25 @@ class DetailTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: context.talleeColors.textColor,
-                        ),
-                      ),
-                    ],
-                  ),
                   Text(
-                    value,
-                    style: const TextStyle(
+                    label,
+                    style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      color: context.talleeColors.textColor,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

@@ -128,19 +128,12 @@ class _GameDetailViewState extends State<GameDetailView> {
                 GameMatchesTile(
                   matches: matches,
                   isLoading: isLoading,
-                  onMatchTap: _openMatch,
+                  onMatchTap: openMatch,
                 ),
                 const SizedBox(height: 15),
 
                 // Statistics
-                DetailTile(
-                  rows: [
-                    ('Matches used in', '0'),
-                    ('Players', '0'),
-                    (loc.best_player, '0'),
-                    ('Last played', '0'),
-                  ],
-                ),
+                DetailTile(rows: statisticRows(context)),
               ],
             ),
 
@@ -176,8 +169,50 @@ class _GameDetailViewState extends State<GameDetailView> {
     );
   }
 
+  /// The rows shown in the statistics tile, derived from [matches].
+  List<(String, String)> statisticRows(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
+    return [
+      (loc.played_matches, matches.length.toString()),
+      (loc.best_player, bestPlayer()),
+      (
+        loc.last_played,
+        matches.isEmpty ? '-' : matches.first.createdAt.toMediumDate(context),
+      ),
+    ];
+  }
+
+  /// The players with the most MVP titles across [matches], or `-` if none.
+  String bestPlayer() {
+    final mvpCounts = <String, int>{};
+    final playerNames = <String, String>{};
+
+    for (final match in matches) {
+      for (final player in match.mvp) {
+        mvpCounts.update(player.id, (count) => count + 1, ifAbsent: () => 1);
+        playerNames[player.id] = player.name;
+      }
+    }
+
+    if (mvpCounts.isEmpty) return '-';
+
+    final sortedCounts = mvpCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final highestCount = sortedCounts.first.value;
+
+    final names =
+        sortedCounts
+            .where((entry) => entry.value == highestCount)
+            .map((entry) => playerNames[entry.key]!)
+            .toList()
+          ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+    return names.join(', ');
+  }
+
   /// Opens the given [match], either in the result or the detail view.
-  void _openMatch(Match match) {
+  void openMatch(Match match) {
     final isFinished = match.endedAt != null;
 
     Navigator.of(context).push(
