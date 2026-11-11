@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 
 class CustomRadioListTile<T> extends StatelessWidget {
   /// A custom radio list tile widget that encapsulates a [Radio] button with additional styling and functionality.
@@ -20,27 +20,25 @@ class CustomRadioListTile<T> extends StatelessWidget {
   final ValueChanged<T> onContainerTap;
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.selectionClick();
-        onContainerTap(value);
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        padding: const EdgeInsets.only(left: 2, right: 5),
-        decoration: BoxDecoration(
-          color: context.talleeColors.boxColor,
-          border: Border.all(color: context.talleeColors.boxBorderColor),
-          borderRadius: AppColors.standardBorderRadiusAll,
-        ),
-        child: Row(
-          children: [
-            Radio<T>(value: value, toggleable: true),
-            Expanded(child: content),
-          ],
-        ),
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: () {
+      Haptics.selectionClick();
+      onContainerTap(value);
+    },
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.only(left: 2, right: 5),
+      decoration: BoxDecoration(
+        color: context.talleeColors.boxColor,
+        border: Border.all(color: context.talleeColors.boxBorderColor),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
-    );
-  }
+      child: Row(
+        children: [
+          Radio<T>(value: value, toggleable: true),
+          Expanded(child: content),
+        ],
+      ),
+    ),
+  );
 }

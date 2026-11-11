@@ -1,7 +1,7 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ScoreListTile extends StatelessWidget {
@@ -37,7 +37,6 @@ class ScoreListTile extends StatelessWidget {
       decoration: BoxDecoration(color: context.talleeColors.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           content,
           SizedBox(
@@ -52,9 +51,10 @@ class ScoreListTile extends StatelessWidget {
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               maxLength: 5,
               inputFormatters: [
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  return isValidScoreInput(newValue.text) ? newValue : oldValue;
-                }),
+                TextInputFormatter.withFunction(
+                  (oldValue, newValue) =>
+                      isValidScoreInput(newValue.text) ? newValue : oldValue,
+                ),
               ],
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -68,10 +68,7 @@ class ScoreListTile extends StatelessWidget {
                 counterText: '',
                 filled: true,
                 fillColor: context.talleeColors.onBoxColor,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 0,
-                ),
+                contentPadding: EdgeInsets.zero,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(

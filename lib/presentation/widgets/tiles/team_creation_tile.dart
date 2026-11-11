@@ -1,10 +1,9 @@
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
@@ -37,17 +36,14 @@ class TeamCreationTile extends StatefulWidget {
 }
 
 class _TeamCreationTileState extends State<TeamCreationTile> {
-  final teamColors = List.generate(
-    AppColor.values.length,
-    (i) => getTeamColor(index: i),
-  );
+  final teamColors = List.generate(AppColor.values.length, AppColor.teamColor);
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
     return Container(
-      margin: AppColors.standardMargin,
+      margin: AppSpacing.standardMargin,
       decoration: context.standardBoxDecoration,
       clipBehavior: Clip.antiAlias,
       child: IntrinsicHeight(
@@ -65,7 +61,6 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                   children: [
                     // Name input + delete icon
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
@@ -106,7 +101,7 @@ class _TeamCreationTileState extends State<TeamCreationTile> {
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: teamColors.map((color) {
+                        children: teamColors.map((AppColor color) {
                           final isSelected = widget.color == color;
 
                           return GestureDetector(

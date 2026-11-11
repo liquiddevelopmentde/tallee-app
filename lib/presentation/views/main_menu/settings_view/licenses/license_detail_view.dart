@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
@@ -25,7 +25,6 @@ class LicenseDetailView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Center(
                 child: Column(
@@ -82,10 +81,7 @@ class LicenseDetailView extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           final uri = Uri.parse(package.homepage!);
-                          await launchUrl(
-                            uri,
-                            mode: LaunchMode.platformDefault,
-                          );
+                          await launchUrl(uri);
                         },
                         child: SizedBox(
                           width: 300,

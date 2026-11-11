@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
 
@@ -39,7 +39,7 @@ class PairTile extends StatelessWidget {
             context,
             pair,
             pairIconLeft: pairIconLeft,
-            highlighted: List.generate(
+            muted: List.generate(
               pair.members.length,
               (index) => pair.members[index].deleted,
             ),

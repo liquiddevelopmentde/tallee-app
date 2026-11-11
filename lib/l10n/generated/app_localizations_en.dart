@@ -299,8 +299,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Error while creating group, please try again';
 
   @override
+  String get error_deleting_data =>
+      'Error while deleting data, please try again';
+
+  @override
   String get error_deleting_game =>
       'Error while deleting game, please try again';
+
+  @override
+  String get error_deleting_group =>
+      'Error while deleting group, please try again';
+
+  @override
+  String get error_deleting_match =>
+      'Error while deleting match, please try again';
 
   @override
   String get error_editing_group =>
@@ -401,6 +413,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_associated => 'Group successfully associated';
+
+  @override
+  String get group_deleted => 'Group deleted';
 
   @override
   String get group_filter_description =>
@@ -528,6 +543,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manage_members => 'Manage Members';
+
+  @override
+  String get match_deleted => 'Match deleted';
 
   @override
   String get match_in_progress => 'Match in progress...';
@@ -864,6 +882,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get select_a_color_description =>
       'Select the display color for your statistic.';
+
+  @override
+  String get select_a_group_color_description =>
+      'Select the display color for your group.';
 
   @override
   String get select_a_scope => 'Select a scope';

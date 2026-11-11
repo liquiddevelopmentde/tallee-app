@@ -1,13 +1,13 @@
 import 'dart:core' hide Match;
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -17,10 +17,10 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
-/// Displays the given [teams] as a flat reorderable list where every team is
-/// preceded by a header row and followed by its members. Members can be
-/// dragged across team boundaries to be reassigned to another team.
 class ManageMembersView extends StatefulWidget {
+  /// Displays the given [Team]s as a flat reorderable list where every team is
+  /// preceded by a header row and followed by its members. Members can be
+  /// dragged across team boundaries to be reassigned to another team.
   const ManageMembersView({
     super.key,
     required this.match,
@@ -64,43 +64,41 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
               onReorderItem: onReorderItem,
-              onReorderStart: (_) => HapticFeedback.heavyImpact(),
-              onReorderEnd: (_) => HapticFeedback.selectionClick(),
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
-                  animation: animation,
-                  builder: (context, _) {
-                    final t = Curves.easeInOut.transform(animation.value);
-                    return Material(
-                      type: MaterialType.transparency,
-                      child: Stack(
-                        children: [
-                          child,
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 4,
-                                ),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.10 * t,
-                                    ),
-                                    borderRadius:
-                                        AppColors.standardBorderRadiusAll,
+              onReorderStart: (_) => Haptics.heavyImpact(),
+              onReorderEnd: (_) => Haptics.selectionClick(),
+              proxyDecorator: (child, index, animation) => AnimatedBuilder(
+                animation: animation,
+                builder: (context, _) {
+                  final t = Curves.easeInOut.transform(animation.value);
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: Stack(
+                      children: [
+                        child,
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(
+                                    alpha: 0.10 * t,
                                   ),
+                                  borderRadius:
+                                      AppColors.standardBorderRadiusAll,
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               itemBuilder: (context, index) {
                 final teamIndex = teamIndexForFlat(index);
                 final memberIndex = memberIndexForFlat(index, teamIndex);
@@ -134,9 +132,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingAnimatedButton(
-                  onPressed: () => setState(() {
-                    redistributePlayers();
-                  }),
+                  onPressed: () => setState(redistributePlayers),
                   icon: Icons.cached,
                 ),
                 const SizedBox(width: 16),
@@ -325,7 +321,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   bool get allTeamsHaveMembers =>
       teams.every((team) => team.members.isNotEmpty);
 
-  void submitMatch() async {
+  Future<void> submitMatch() async {
     final match = widget.match;
     await db.matchDao.addMatch(match: match);
     if (mounted) {

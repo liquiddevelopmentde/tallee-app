@@ -14,6 +14,7 @@ jobs:
   bump_build_number:
     name: "Bump build number"
     runs-on: ubuntu-latest
+    if: gitea.actor != 'actions'
     env:
       BRANCH_NAME: ${{ gitea.ref_name }}
     steps:
@@ -32,13 +33,13 @@ jobs:
           bump-build: true
           path: './pubspec.yaml'
 
-      - name: Commit build number
+      - name: Commit build number update
         run: |
           echo "Bumping ${{ steps.bump.outputs.old-version }} -> ${{ steps.bump.outputs.new-version }}"
           git config --global user.name "Gitea Actions [bot]"
           git config --global user.email "actions@yannick-weigert.de"
           git add pubspec.yaml
-          git commit -m "Updated build number [skip ci]"
+          git commit -m "Updated build number"
           git pull --rebase --autostash origin "$BRANCH_NAME"
           git push origin HEAD:$BRANCH_NAME
 
@@ -46,7 +47,7 @@ jobs:
     name: "Generate OSS licenses"
     needs: bump_build_number
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && gitea.actor != 'actions'
     env:
       GITEA_TOKEN: ${{ secrets.BOT_TOKEN }}
       BRANCH_NAME: ${{ gitea.ref_name }}
@@ -68,7 +69,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
+          cache: "true"
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -92,7 +93,7 @@ jobs:
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
             git add lib test
-            git commit -m "Updated licenses [skip ci]"
+            git commit -m "Updated licenses"
             git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
@@ -103,7 +104,7 @@ jobs:
     name: "Generate localizations"
     needs: bump_build_number
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && gitea.actor != 'actions'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -122,7 +123,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
+          cache: "true"
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -173,7 +174,7 @@ jobs:
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
             git add lib/l10n
-            git commit -m "Generated localizations [skip ci]"
+            git commit -m "Generated localizations"
             git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin "HEAD:$BRANCH_NAME"
           else
@@ -184,7 +185,7 @@ jobs:
     name: "Format code"
     runs-on: ubuntu-latest
     needs: [ generate_localizations, generate_licenses ]
-    if: always()
+    if: always() && gitea.actor != 'actions'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -203,7 +204,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
+          cache: "true"
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -217,6 +218,29 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
           flutter pub get
+
+      - name: Remove unused dependencies
+        run: |
+          dart pub global activate dependency_validator '^5.1.0'
+
+          # exit code 1 means issues found
+          OUTPUT=$(dart pub global run dependency_validator 2>&1 || true)
+          echo "$OUTPUT"
+
+          # Collect the unused dependencies
+          UNUSED=$(echo "$OUTPUT" \
+            | sed 's/\x1b\[[0-9;]*m//g' \
+            | awk '/^These packages may be unused/ {collect=1; next}
+                   collect && /^  \* / {print $2; next}
+                   collect {collect=0}')
+
+          if [ -n "$UNUSED" ]; then
+            echo "Removing unused dependencies:"
+            echo "$UNUSED"
+            flutter pub remove $UNUSED
+          else
+            echo "No unused dependencies found"
+          fi
 
       - name: Sort pubspec.yaml
         run: dart run sort_pubspec_dependencies
@@ -243,11 +267,11 @@ jobs:
           git fetch origin "$BRANCH_NAME"
           git checkout "$BRANCH_NAME"
 
-          if [ -n "$(git status --porcelain lib test pubspec.yaml)" ]; then
+          if [ -n "$(git status --porcelain lib test pubspec.yaml pubspec.lock)" ]; then
             git config --global user.name "Gitea Actions [bot]"
             git config --global user.email "actions@yannick-weigert.de"
-            git add lib test pubspec.yaml
-            git commit -m "Auto-format code [skip ci]"
+            git add lib test pubspec.yaml pubspec.lock
+            git commit -m "Auto-format code"
             git pull --rebase --autostash origin "$BRANCH_NAME"
             git push origin HEAD:$BRANCH_NAME
           else
@@ -260,7 +284,7 @@ jobs:
   test:
     name: "Test code"
     needs: format
-    if: always()
+    if: always() && gitea.actor != 'actions'
     runs-on: ubuntu-latest
     container: node:20-bookworm
     steps:
@@ -277,7 +301,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
+          cache: "true"
 
       - name: Cache pub dependencies
         uses: actions/cache@v4
@@ -301,6 +325,7 @@ jobs:
   build:
     name: "Build for Android"
     needs: [ test, format ]
+    if: gitea.actor != 'actions'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -340,7 +365,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
+          cache: "true"
 
       - name: Cache pub dependencies
         uses: actions/cache@v4

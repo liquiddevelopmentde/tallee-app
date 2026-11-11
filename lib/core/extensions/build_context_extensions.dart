@@ -2,9 +2,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/tallee_theme_colors.dart';
 
-export 'tallee_theme_colors.dart';
+export '../theme/tallee_theme_colors.dart';
 
-extension TalleeThemeContext on BuildContext {
+extension BuildContextExtension on BuildContext {
   TalleeThemeColors get talleeColors =>
       Theme.of(this).extension<TalleeThemeColors>()!;
 
@@ -23,4 +23,6 @@ extension TalleeThemeContext on BuildContext {
     ),
     borderRadius: AppColors.standardBorderRadiusAll,
   );
+
+  bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 }

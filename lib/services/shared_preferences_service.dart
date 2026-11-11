@@ -45,11 +45,11 @@ class SharedPreferencesService {
   }
 
   static void resetStatisticFilter({required bool includeFavourites}) {
-    setFilteredGroups([]);
-    setFilteredGames([]);
-    setFilteredTimeframes([]);
-    setFilteredStatisticTypes([]);
-    if (includeFavourites) setShowFavourites(false);
+    filteredGroupIds = [];
+    filteredGameIds = [];
+    filteredTimeframes = [];
+    filteredStatisticTypes = [];
+    if (includeFavourites) showFavourites = false;
   }
 
   static void deleteAllFilters({required bool includeFavourites}) {
@@ -63,23 +63,28 @@ class SharedPreferencesService {
     }
   }
 
-  static void setMatchFilter(MatchFilter filter) {
-    _instance.setString(matchFilterKey, filter.toString());
-  }
+  // ==================== Match filter ====================
 
-  static MatchFilter? getMatchFilter() {
+  /// The last selected match filter, `null` if none was stored yet.
+  static MatchFilter? get matchFilter {
     final filterString = _instance.getString(matchFilterKey);
-
     return MatchFilter.values.firstWhereOrNull(
       (filter) => filter.toString() == filterString,
     );
   }
 
-  static void setThemeMode(ThemeMode mode) {
-    _instance.setString(themeModeKey, mode.name);
+  /// Setting `null` removes the stored filter.
+  static set matchFilter(MatchFilter? filter) {
+    if (filter == null) {
+      _instance.remove(matchFilterKey);
+    } else {
+      _instance.setString(matchFilterKey, filter.toString());
+    }
   }
 
-  static ThemeMode getThemeMode() {
+  // ==================== Theme ====================
+
+  static ThemeMode get themeMode {
     final storedMode = _instance.getString(themeModeKey);
     return ThemeMode.values.firstWhere(
       (mode) => mode.name == storedMode,
@@ -87,49 +92,44 @@ class SharedPreferencesService {
     );
   }
 
-  /// Returns null when the key is not set, so user wasn't asked yet
-  static bool? getSharingConsent() {
-    return _instance.getBool(sharingConsentKey);
+  static set themeMode(ThemeMode mode) =>
+      _instance.setString(themeModeKey, mode.name);
+
+  // ==================== Sharing consent ====================
+
+  /// `null` when the user wasn't asked yet.
+  static bool? get sharingConsent => _instance.getBool(sharingConsentKey);
+
+  /// Setting `null` removes the stored decision, so the user is asked again.
+  static set sharingConsent(bool? hasSharingConsent) {
+    if (hasSharingConsent == null) {
+      _instance.remove(sharingConsentKey);
+    } else {
+      _instance.setBool(sharingConsentKey, hasSharingConsent);
+    }
   }
 
-  static Future<void> setSharingConsent(bool hasSharingConsent) async {
-    await _instance.setBool(sharingConsentKey, hasSharingConsent);
-  }
+  // ==================== Statistic filters ====================
 
-  static void setShowFavourites(bool showFavourites) {
-    _instance.setBool(showFavouritesKey, showFavourites);
-  }
+  static bool get showFavourites =>
+      _instance.getBool(showFavouritesKey) ?? false;
 
-  static bool getShowFavourites() {
-    return _instance.getBool(showFavouritesKey) ?? false;
-  }
+  static set showFavourites(bool showFavourites) =>
+      _instance.setBool(showFavouritesKey, showFavourites);
 
-  static void setFilteredGroups(List<Group> groups) {
-    final List<String> groupJsonList = groups.map((group) => group.id).toList();
-    _instance.setStringList(filteredGroupsKey, groupJsonList);
-  }
+  static List<String> get filteredGroupIds =>
+      _instance.getStringList(filteredGroupsKey) ?? [];
 
-  static List<String> getFilteredGroups() {
-    return _instance.getStringList(filteredGroupsKey) ?? [];
-  }
+  static set filteredGroupIds(List<String> groupIds) =>
+      _instance.setStringList(filteredGroupsKey, groupIds);
 
-  static void setFilteredGames(List<Game> games) {
-    final List<String> gameJsonList = games.map((game) => game.id).toList();
-    _instance.setStringList(filteredGamesKey, gameJsonList);
-  }
+  static List<String> get filteredGameIds =>
+      _instance.getStringList(filteredGamesKey) ?? [];
 
-  static List<String> getFilteredGames() {
-    return _instance.getStringList(filteredGamesKey) ?? [];
-  }
+  static set filteredGameIds(List<String> gameIds) =>
+      _instance.setStringList(filteredGamesKey, gameIds);
 
-  static void setFilteredTimeframes(List<Timeframe> timeframes) {
-    final List<String> timeframeJsonList = timeframes
-        .map((timeframe) => timeframe.toString())
-        .toList();
-    _instance.setStringList(filteredTimeframesKey, timeframeJsonList);
-  }
-
-  static List<Timeframe> getFilteredTimeframes() {
+  static List<Timeframe> get filteredTimeframes {
     final List<String> timeframeStringList =
         _instance.getStringList(filteredTimeframesKey) ?? [];
     return timeframeStringList
@@ -142,14 +142,13 @@ class SharedPreferencesService {
         .toList();
   }
 
-  static void setFilteredStatisticTypes(List<StatisticType> types) {
-    final List<String> typeJsonList = types
-        .map((type) => type.toString())
-        .toList();
-    _instance.setStringList(filteredStatisticTypesKey, typeJsonList);
-  }
+  static set filteredTimeframes(List<Timeframe> timeframes) =>
+      _instance.setStringList(
+        filteredTimeframesKey,
+        timeframes.map((timeframe) => timeframe.toString()).toList(),
+      );
 
-  static List<StatisticType> getFilteredStatisticTypes() {
+  static List<StatisticType> get filteredStatisticTypes {
     final List<String> typeStringList =
         _instance.getStringList(filteredStatisticTypesKey) ?? [];
     return typeStringList
@@ -162,46 +161,44 @@ class SharedPreferencesService {
         .toList();
   }
 
-  static bool isOnboardingCompleted() {
-    return _instance.getBool(onboardingCompletedKey) ?? false;
-  }
+  static set filteredStatisticTypes(List<StatisticType> types) =>
+      _instance.setStringList(
+        filteredStatisticTypesKey,
+        types.map((type) => type.toString()).toList(),
+      );
 
-  static void setOnboardingCompleted(bool completed) {
-    _instance.setBool(onboardingCompletedKey, completed);
-  }
+  // ==================== Onboarding & showcase ====================
 
-  static void setTourSkipped(bool skipped) {
-    _instance.setBool(showcaseTourSkippedKey, skipped);
-  }
+  static bool get onboardingCompleted =>
+      _instance.getBool(onboardingCompletedKey) ?? false;
 
-  static bool isTourSkipped() {
-    return _instance.getBool(showcaseTourSkippedKey) ?? false;
-  }
+  static set onboardingCompleted(bool completed) =>
+      _instance.setBool(onboardingCompletedKey, completed);
 
-  static void setTourCompleted(bool completed) {
-    _instance.setBool(showcaseTourCompletedKey, completed);
-  }
+  static bool get tourSkipped =>
+      _instance.getBool(showcaseTourSkippedKey) ?? false;
 
-  static bool isTourCompleted() {
-    return _instance.getBool(showcaseTourCompletedKey) ?? false;
-  }
+  static set tourSkipped(bool skipped) =>
+      _instance.setBool(showcaseTourSkippedKey, skipped);
 
-  static void setShowcaseSeen(List<String> screenKeys) {
-    final currentKeys = getShowcaseSeen();
-    final updatedKeys = {...currentKeys, ...screenKeys}.toList();
+  static bool get tourCompleted =>
+      _instance.getBool(showcaseTourCompletedKey) ?? false;
+
+  static set tourCompleted(bool completed) =>
+      _instance.setBool(showcaseTourCompletedKey, completed);
+
+  static List<String> get showcaseSeen =>
+      _instance.getStringList(showcaseSeenKey) ?? [];
+
+  /// Adds [screenKeys] to the already seen showcases (does not replace them).
+  static void markShowcaseSeen(List<String> screenKeys) {
+    final updatedKeys = {...showcaseSeen, ...screenKeys}.toList();
     _instance.setStringList(showcaseSeenKey, updatedKeys);
   }
 
-  static List<String> getShowcaseSeen() {
-    return _instance.getStringList(showcaseSeenKey) ?? [];
-  }
+  static bool hasSeenShowcase(String screenKey) =>
+      showcaseSeen.contains(screenKey);
 
-  static bool hasSeenShowcase(String screenKey) {
-    return _instance.getStringList(showcaseSeenKey)?.contains(screenKey) ??
-        false;
-  }
-
-  static void resetSeenShowcase() {
-    _instance.setStringList(showcaseSeenKey, []);
-  }
+  static void resetSeenShowcase() =>
+      _instance.setStringList(showcaseSeenKey, []);
 }

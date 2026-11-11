@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/game_table.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'game_dao.g.dart';
 

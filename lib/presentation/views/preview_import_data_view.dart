@@ -1,19 +1,15 @@
 import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
@@ -151,10 +147,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                                   .map(
                                     (game) => TextIconListTile(
                                       text: game.name,
-                                      description: translateRulesetToString(
-                                        game.ruleset,
-                                        context,
-                                      ),
+                                      description: game.ruleset
+                                          .toLocalizedString(context),
                                     ),
                                   )
                                   .toList(),
@@ -205,14 +199,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                               children: getStatisticsFromData
                                   .map(
                                     (statistic) => TextIconListTile(
-                                      text: translateStatisticTypeToString(
-                                        statistic.type,
+                                      text: statistic.type.toLocalizedString(
                                         context,
                                       ),
                                       description: statistic.scopes
                                           .map(
-                                            (scope) => translateScopeToString(
-                                              scope,
+                                            (scope) => scope.toLocalizedString(
                                               context,
                                             ),
                                           )
@@ -233,14 +225,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 BottomAnimatedButton(
-                  buttonText: loc.confirm,
-                  sizeRelativeToWidth: 0.95,
+                  text: loc.confirm,
                   onPressed: jsonString == null ? null : confirmImport,
                 ),
                 BottomAnimatedButton(
-                  buttonText: loc.cancel,
-                  sizeRelativeToWidth: 0.95,
-                  buttonType: ButtonType.secondary,
+                  text: loc.cancel,
+                  type: ButtonType.secondary,
                   onPressed: cancelImport,
                 ),
               ],
@@ -310,7 +300,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     if (!mounted) return;
 
-    if (result.$1 != ImportResult.success) {
+    if (!result.$1.isSuccess) {
       finishImport(importResult: result.$1);
       return;
     }
@@ -333,17 +323,15 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     finishImport(importResult: result);
   }
 
-  Future<void> cancelImport() async {
-    finishImport(importResult: ImportResult.canceled);
-  }
+  void cancelImport() => finishImport(importResult: ImportResult.canceled);
 
   /// Pops the page and reports the [importResult] to the caller.
   /// When a messengerKey was provided, the result snackbar is shown.
   /// Else the result is returned via pop()
-  Future<void> finishImport({required ImportResult importResult}) async {
+  void finishImport({required ImportResult importResult}) {
     if (!mounted) return;
 
-    if (importResult == ImportResult.success) {
+    if (importResult.isSuccess) {
       // Refresh on success
       context.read<DataRefreshProvider>().refresh();
     }
@@ -351,17 +339,15 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     Navigator.of(context).maybePop(importResult);
 
     final messengerKey = widget.messengerKey;
-    final message = translateImportResultToString(importResult, context);
+    final message = importResult.toLocalizedString(context);
 
     // Show snackbar with haptic feedback
     if (messengerKey != null) {
-      if (importResult == ImportResult.success) {
-        HapticFeedback.successNotification();
+      if (importResult.isSuccess) {
+        Haptics.successNotification();
       }
 
-      messengerKey.currentState
-        ?..hideCurrentSnackBar()
-        ..showSnackBar(CustomSnackBar(message: message));
+      messengerKey.showSnackBar(message: message);
     }
   }
 }

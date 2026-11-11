@@ -27,30 +27,28 @@ void main() {
         ruleset: Ruleset.highestScore,
       );
 
-      SharedPreferencesService.setFilteredGames([game1, game2]);
-      SharedPreferencesService.setFilteredStatisticTypes([
+      SharedPreferencesService.filteredGameIds = [game1.id, game2.id];
+      SharedPreferencesService.filteredStatisticTypes = [
         StatisticType.totalMatches,
         StatisticType.totalWins,
         StatisticType.bestScore,
-      ]);
-      SharedPreferencesService.setFilteredTimeframes([
+      ];
+      SharedPreferencesService.filteredTimeframes = [
         Timeframe.last7Days,
         Timeframe.last30Days,
         Timeframe.allTime,
-      ]);
-      SharedPreferencesService.setMatchFilter(MatchFilter.team);
-      SharedPreferencesService.setSharingConsent(true);
+      ];
+      SharedPreferencesService.matchFilter = MatchFilter.team;
+      SharedPreferencesService.sharingConsent = true;
 
       SharedPreferencesService.deleteAllPreferences();
 
-      final filteredGroups = SharedPreferencesService.getFilteredGroups();
-      final filteredGames = SharedPreferencesService.getFilteredGames();
-      final filteredTypes =
-          SharedPreferencesService.getFilteredStatisticTypes();
-      final filteredTimeframes =
-          SharedPreferencesService.getFilteredTimeframes();
-      final matchFilter = SharedPreferencesService.getMatchFilter();
-      final sharingConsent = SharedPreferencesService.getSharingConsent();
+      final filteredGroups = SharedPreferencesService.filteredGroupIds;
+      final filteredGames = SharedPreferencesService.filteredGameIds;
+      final filteredTypes = SharedPreferencesService.filteredStatisticTypes;
+      final filteredTimeframes = SharedPreferencesService.filteredTimeframes;
+      final matchFilter = SharedPreferencesService.matchFilter;
+      final sharingConsent = SharedPreferencesService.sharingConsent;
 
       expect(filteredGroups, isEmpty);
       expect(filteredGames, isEmpty);
@@ -72,28 +70,26 @@ void main() {
         ruleset: Ruleset.highestScore,
       );
 
-      SharedPreferencesService.setFilteredGames([game1, game2]);
+      SharedPreferencesService.filteredGameIds = [game1.id, game2.id];
 
-      SharedPreferencesService.setFilteredStatisticTypes([
+      SharedPreferencesService.filteredStatisticTypes = [
         StatisticType.totalMatches,
         StatisticType.totalWins,
         StatisticType.bestScore,
-      ]);
+      ];
 
-      SharedPreferencesService.setFilteredTimeframes([
+      SharedPreferencesService.filteredTimeframes = [
         Timeframe.last7Days,
         Timeframe.last30Days,
         Timeframe.allTime,
-      ]);
+      ];
 
       SharedPreferencesService.resetStatisticFilter(includeFavourites: false);
 
-      final filteredGroups = SharedPreferencesService.getFilteredGroups();
-      final filteredGames = SharedPreferencesService.getFilteredGames();
-      final filteredTypes =
-          SharedPreferencesService.getFilteredStatisticTypes();
-      final filteredTimeframes =
-          SharedPreferencesService.getFilteredTimeframes();
+      final filteredGroups = SharedPreferencesService.filteredGroupIds;
+      final filteredGames = SharedPreferencesService.filteredGameIds;
+      final filteredTypes = SharedPreferencesService.filteredStatisticTypes;
+      final filteredTimeframes = SharedPreferencesService.filteredTimeframes;
 
       expect(filteredGroups, isEmpty);
       expect(filteredGames, isEmpty);
@@ -112,13 +108,13 @@ void main() {
         name: 'Game 2',
         ruleset: Ruleset.highestScore,
       );
-      SharedPreferencesService.setFilteredGames([game1, game2]);
+      SharedPreferencesService.filteredGameIds = [game1.id, game2.id];
 
       final group1 = Group(id: 'group1', name: 'Group 1', members: []);
       final group2 = Group(id: 'group2', name: 'Group 2', members: []);
-      SharedPreferencesService.setFilteredGroups([group1, group2]);
+      SharedPreferencesService.filteredGroupIds = [group1.id, group2.id];
 
-      final filteredGames = SharedPreferencesService.getFilteredGames();
+      final filteredGames = SharedPreferencesService.filteredGameIds;
       expect(filteredGames, [game1.id, game2.id]);
     });
 
@@ -126,20 +122,19 @@ void main() {
       final group1 = Group(id: 'group1', name: 'Group 1', members: []);
       final group2 = Group(id: 'group2', name: 'Group 2', members: []);
 
-      SharedPreferencesService.setFilteredGroups([group1, group2]);
-      final filteredGroups = SharedPreferencesService.getFilteredGroups();
+      SharedPreferencesService.filteredGroupIds = [group1.id, group2.id];
+      final filteredGroups = SharedPreferencesService.filteredGroupIds;
       expect(filteredGroups, [group1.id, group2.id]);
     });
 
     test('Get and set filtered statistic types works correctly', () async {
-      SharedPreferencesService.setFilteredStatisticTypes([
+      SharedPreferencesService.filteredStatisticTypes = [
         StatisticType.totalMatches,
         StatisticType.totalWins,
         StatisticType.bestScore,
-      ]);
+      ];
 
-      final filteredTypes =
-          SharedPreferencesService.getFilteredStatisticTypes();
+      final filteredTypes = SharedPreferencesService.filteredStatisticTypes;
 
       expect(filteredTypes, [
         StatisticType.totalMatches,
@@ -149,14 +144,13 @@ void main() {
     });
 
     test('Get and set filtered timeframes works correctly', () async {
-      SharedPreferencesService.setFilteredTimeframes([
+      SharedPreferencesService.filteredTimeframes = [
         Timeframe.last7Days,
         Timeframe.last30Days,
         Timeframe.allTime,
-      ]);
+      ];
 
-      final filteredTimeframes =
-          SharedPreferencesService.getFilteredTimeframes();
+      final filteredTimeframes = SharedPreferencesService.filteredTimeframes;
 
       expect(filteredTimeframes, [
         Timeframe.last7Days,
@@ -166,36 +160,36 @@ void main() {
     });
 
     test('Get and set sharing consent works correctly', () async {
-      expect(SharedPreferencesService.getSharingConsent(), isNull);
+      expect(SharedPreferencesService.sharingConsent, isNull);
 
-      await SharedPreferencesService.setSharingConsent(true);
-      expect(SharedPreferencesService.getSharingConsent(), isTrue);
+      SharedPreferencesService.sharingConsent = true;
+      expect(SharedPreferencesService.sharingConsent, isTrue);
 
-      await SharedPreferencesService.setSharingConsent(false);
-      expect(SharedPreferencesService.getSharingConsent(), isFalse);
+      SharedPreferencesService.sharingConsent = false;
+      expect(SharedPreferencesService.sharingConsent, isFalse);
     });
 
     test('Get and set match filters works correctly', () async {
-      var matchFilter = SharedPreferencesService.getMatchFilter();
+      var matchFilter = SharedPreferencesService.matchFilter;
       expect(matchFilter, isNull);
 
-      SharedPreferencesService.setMatchFilter(MatchFilter.finished);
-      matchFilter = SharedPreferencesService.getMatchFilter();
+      SharedPreferencesService.matchFilter = MatchFilter.finished;
+      matchFilter = SharedPreferencesService.matchFilter;
       expect(matchFilter, MatchFilter.finished);
 
-      SharedPreferencesService.setMatchFilter(MatchFilter.active);
-      matchFilter = SharedPreferencesService.getMatchFilter();
+      SharedPreferencesService.matchFilter = MatchFilter.active;
+      matchFilter = SharedPreferencesService.matchFilter;
       expect(matchFilter, MatchFilter.active);
     });
 
     test('Theme mode defaults to system and can be persisted', () {
-      expect(SharedPreferencesService.getThemeMode(), ThemeMode.system);
+      expect(SharedPreferencesService.themeMode, ThemeMode.system);
 
-      SharedPreferencesService.setThemeMode(ThemeMode.light);
-      expect(SharedPreferencesService.getThemeMode(), ThemeMode.light);
+      SharedPreferencesService.themeMode = ThemeMode.light;
+      expect(SharedPreferencesService.themeMode, ThemeMode.light);
 
-      SharedPreferencesService.setThemeMode(ThemeMode.dark);
-      expect(SharedPreferencesService.getThemeMode(), ThemeMode.dark);
+      SharedPreferencesService.themeMode = ThemeMode.dark;
+      expect(SharedPreferencesService.themeMode, ThemeMode.dark);
     });
 
     test('Light and dark ThemeData remain separate', () {

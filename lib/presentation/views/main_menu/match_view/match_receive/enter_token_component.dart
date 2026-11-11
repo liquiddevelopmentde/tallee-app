@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart' show Material;
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart' hide Material;
+import 'package:material_ui/material_ui.dart' show Material;
 import 'package:pinput/pinput.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/share_exceptions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
-import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class EnterTokenComponent extends StatefulWidget {
@@ -99,12 +98,11 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         const SizedBox(height: 50),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.cloud_download, size: 50),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.input_token_instruction,
@@ -135,16 +133,13 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               focusedPinTheme: focusedPinTheme,
               errorPinTheme: errorPinTheme,
               disabledPinTheme: disabledPinTheme,
-              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
               animationCurve: Curves.easeInOutCubic,
               animationDuration: const Duration(milliseconds: 100),
               onClipboardFound: (value) {
-                HapticFeedback.lightImpact();
+                Haptics.lightImpact();
                 tokenInputFieldController.text = value;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(message: loc.code_pasted_from_clipboard),
-                );
+                context.showSnackBar(message: loc.code_pasted_from_clipboard);
               },
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
@@ -158,25 +153,23 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               forceErrorState: isTokenValid == false || isMatchValid == false,
               errorText: getErrorText(loc),
               errorTextStyle: errorTextStyle,
-              errorBuilder: (errorText, pin) {
-                return SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      errorText ?? '',
-                      style: errorTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
+              errorBuilder: (errorText, pin) => SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    errorText ?? '',
+                    style: errorTextStyle,
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
         ),
         Container(
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 30),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Text(
             loc.share_token_format_info,
@@ -219,11 +212,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       isTokenValid = true;
 
       // If an import error occured
-      if (response.result != ImportResult.success && mounted) {
-        errorMessage = translateMatchImportResultToString(
-          response.result,
-          context,
-        );
+      if (!response.result.isSuccess && mounted) {
+        errorMessage = response.result.toLocalizedMatchImportString(context);
       } else {
         setState(() {
           isMatchValid = true;
@@ -265,9 +255,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     }
   }
 
-  bool validateToken(String? token) {
-    return token != null &&
-        token.length == 6 &&
-        RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
-  }
+  bool validateToken(String? token) =>
+      token != null &&
+      token.length == 6 &&
+      RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
 }

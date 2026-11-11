@@ -638,11 +638,29 @@ abstract class AppLocalizations {
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
 
+  /// No description provided for @error_deleting_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting data, please try again'**
+  String get error_deleting_data;
+
   /// No description provided for @error_deleting_game.
   ///
   /// In en, this message translates to:
   /// **'Error while deleting game, please try again'**
   String get error_deleting_game;
+
+  /// No description provided for @error_deleting_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting group, please try again'**
+  String get error_deleting_group;
+
+  /// No description provided for @error_deleting_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting match, please try again'**
+  String get error_deleting_match;
 
   /// No description provided for @error_editing_group.
   ///
@@ -817,6 +835,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group successfully associated'**
   String get group_associated;
+
+  /// No description provided for @group_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Group deleted'**
+  String get group_deleted;
 
   /// No description provided for @group_filter_description.
   ///
@@ -1039,6 +1063,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Members'**
   String get manage_members;
+
+  /// No description provided for @match_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Match deleted'**
+  String get match_deleted;
 
   /// No description provided for @match_in_progress.
   ///
@@ -1621,6 +1651,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select the display color for your statistic.'**
   String get select_a_color_description;
+
+  /// No description provided for @select_a_group_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the display color for your group.'**
+  String get select_a_group_color_description;
 
   /// No description provided for @select_a_scope.
   ///

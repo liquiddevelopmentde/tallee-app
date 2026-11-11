@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class TextInputField extends StatelessWidget {
   /// A custom text input field widget that encapsulates a [TextField] with specific styling.
@@ -49,33 +49,31 @@ class TextInputField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      textInputAction: textInputAction,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
-      maxLines: maxLines,
-      minLines: minLines,
-      focusNode: focusNode,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: context.talleeColors.boxColor,
-        hintText: hintText,
-        counterText: showCounterText ? null : '',
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+  Widget build(BuildContext context) => TextField(
+    controller: controller,
+    onChanged: onChanged,
+    onSubmitted: onSubmitted,
+    textInputAction: textInputAction,
+    keyboardType: keyboardType,
+    maxLength: maxLength,
+    maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+    maxLines: maxLines,
+    minLines: minLines,
+    focusNode: focusNode,
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: context.talleeColors.boxColor,
+      hintText: hintText,
+      counterText: showCounterText ? null : '',
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
-    );
-  }
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+    ),
+  );
 }

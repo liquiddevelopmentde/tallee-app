@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 
 class GameLabel extends StatelessWidget {
@@ -16,10 +15,7 @@ class GameLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = getColorFromAppColor(
-      color: color,
-      context: context,
-    );
+    final backgroundColor = color.colorValue(context);
     final textColor = backgroundColor.contrastTextColor;
 
     return Row(

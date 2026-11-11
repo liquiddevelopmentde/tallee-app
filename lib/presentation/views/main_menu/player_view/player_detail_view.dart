@@ -1,8 +1,7 @@
-import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -97,7 +96,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
-                showDialog<bool>(
+                final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
@@ -108,7 +107,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
-                        isDestructive: true,
+                        accent: ButtonAccent.destructive,
                         text: loc.delete,
                       ),
                       CustomDialogAction(
@@ -118,14 +117,13 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                       ),
                     ],
                   ),
-                ).then((confirmed) async {
-                  if (confirmed == true && context.mounted) {
-                    await db.playerDao.deletePlayer(playerId: widget.player.id);
-                    if (!context.mounted) return;
-                    Navigator.pop(context);
-                    widget.onPlayerUpdated?.call();
-                  }
-                });
+                );
+                if (confirmed != true || !context.mounted) return;
+
+                await db.playerDao.deletePlayer(playerId: widget.player.id);
+                if (!context.mounted) return;
+                Navigator.pop(context);
+                widget.onPlayerUpdated?.call();
               },
             ),
         ],
@@ -224,7 +222,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
                 // Created at date
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
+                  '${loc.created_on} ${player.createdAt.toMediumDate(context)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: context.talleeColors.textColor,
@@ -245,30 +243,31 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                       alignment: Alignment.topLeft,
                       child: playerGroups.isNotEmpty
                           ? Wrap(
-                              alignment: WrapAlignment.start,
-                              crossAxisAlignment: WrapCrossAlignment.start,
                               spacing: 12,
                               runSpacing: 8,
-                              children: playerGroups.map((group) {
-                                return PlayerProfileListTile(
-                                  title: group.name,
-                                  count: group.members.length,
-                                  onTap: () {
-                                    Navigator.of(context).pushReplacement(
-                                      adaptivePageRoute(
-                                        settings: const RouteSettings(
-                                          name: RouteNames.groupDetailView,
-                                        ),
-                                        builder: (context) => GroupDetailView(
-                                          group: group,
-                                          onGroupUpdated:
-                                              widget.onPlayerUpdated,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              }).toList(),
+                              children: playerGroups
+                                  .map(
+                                    (group) => PlayerProfileListTile(
+                                      title: group.name,
+                                      count: group.members.length,
+                                      onTap: () {
+                                        Navigator.of(context).pushReplacement(
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.groupDetailView,
+                                            ),
+                                            builder: (context) =>
+                                                GroupDetailView(
+                                                  group: group,
+                                                  onGroupUpdated:
+                                                      widget.onPlayerUpdated,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                  .toList(),
                             )
                           : Text(
                               loc.not_part_of_any_group,
@@ -293,30 +292,30 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     alignment: Alignment.topLeft,
                     child: playerMatches.isNotEmpty
                         ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
                             spacing: 12,
                             runSpacing: 8,
-                            children: playerMatches.map((match) {
-                              return PlayerProfileListTile(
-                                title: match.name,
-                                count: match.players.length,
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                    adaptivePageRoute(
-                                      settings: const RouteSettings(
-                                        name: RouteNames.matchDetailView,
-                                      ),
-                                      builder: (context) => MatchDetailView(
-                                        match: match,
-                                        onMatchUpdate: () =>
-                                            widget.onPlayerUpdated?.call(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
+                            children: playerMatches
+                                .map(
+                                  (match) => PlayerProfileListTile(
+                                    title: match.name,
+                                    count: match.players.length,
+                                    onTap: () {
+                                      Navigator.of(context).pushReplacement(
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.matchDetailView,
+                                          ),
+                                          builder: (context) => MatchDetailView(
+                                            match: match,
+                                            onMatchUpdate: () =>
+                                                widget.onPlayerUpdated?.call(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                                .toList(),
                           )
                         : Text(
                             loc.no_matches_played_yet,

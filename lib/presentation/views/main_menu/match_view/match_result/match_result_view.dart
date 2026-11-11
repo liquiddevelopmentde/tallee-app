@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -55,19 +55,11 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
-  bool rulesetSupportsPlayerSelection() =>
-      ruleset == Ruleset.winner || ruleset == Ruleset.loser;
-
-  bool rulesetSupportsScoreEntry() =>
-      ruleset == Ruleset.lowestScore ||
-      ruleset == Ruleset.highestScore ||
-      ruleset == Ruleset.lives;
-
   @override
   void initState() {
     db = context.read<AppDatabase>();
     ruleset = widget.match.game.ruleset;
-    canSave = ruleset == Ruleset.placement || ruleset == Ruleset.lives;
+    canSave = ruleset.isPlacement || ruleset.isLives;
 
     initData();
     super.initState();
@@ -78,7 +70,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     final loc = AppLocalizations.of(context);
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) {
           try {
@@ -89,12 +80,11 @@ class _MatchResultViewState extends State<MatchResultView> {
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(
-          automaticallyImplyLeading: true,
           leading: HapticIconButton(
             icon: const Icon(Icons.close),
-            onPressed: () => {
-              widget.onWinnerChanged?.call(),
-              Navigator.pop(context),
+            onPressed: () {
+              widget.onWinnerChanged?.call();
+              Navigator.pop(context);
             },
           ),
           title: Text(widget.match.name),
@@ -102,8 +92,8 @@ class _MatchResultViewState extends State<MatchResultView> {
         body: Column(
           children: [
             Expanded(
-              child: rulesetSupportsScoreEntry()
-                  ? ruleset == Ruleset.lives
+              child: ruleset.usesNumericScore
+                  ? ruleset.isLives
                         ? LiveEditView.lives(
                             match: widget.match,
                             initialScores: scores,
@@ -131,7 +121,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -144,8 +133,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                           const SizedBox(height: 10),
 
                           // Show player selection
-                          if (rulesetSupportsPlayerSelection())
-                            if (ruleset == Ruleset.winner)
+                          if (ruleset.usesPlayerSelection)
+                            if (ruleset.isWinner)
                               SelectWinnerWidget(
                                 match: widget.match,
                                 onPlayersSelected: (List<Player> players) {
@@ -179,7 +168,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               ),
 
                           // Show draggable placement list
-                          if (ruleset == Ruleset.placement)
+                          if (ruleset.isPlacement)
                             PlacementDragList(match: widget.match),
                         ],
                       ),
@@ -194,8 +183,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                 children: [
                   // Save Changes Button
                   BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
-                    buttonText: loc.save_changes,
+                    text: loc.save_changes,
                     onPressed: canSave
                         ? () async => await handleSaving()
                         : null,
@@ -247,7 +235,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       );
     }
 
-    if (ruleset == Ruleset.lives) {
+    if (ruleset.isLives) {
       final int defaultLives = widget.defaultLives;
       scores = scores.map(
         (unit, value) => MapEntry(unit, value ?? defaultLives),
@@ -264,16 +252,15 @@ class _MatchResultViewState extends State<MatchResultView> {
       endedAt: ending,
     );
 
-    if (ruleset == Ruleset.winner) {
+    if (ruleset.isWinner) {
       await handleWinners();
-    } else if (ruleset == Ruleset.loser) {
+    } else if (ruleset.isLoser) {
       await handleLoser();
-    } else if (ruleset == Ruleset.lowestScore ||
-        ruleset == Ruleset.highestScore) {
+    } else if (ruleset.usesPoints) {
       await handleScores();
-    } else if (ruleset == Ruleset.placement) {
+    } else if (ruleset.isPlacement) {
       await handlePlacement();
-    } else if (ruleset == Ruleset.lives) {
+    } else if (ruleset.isLives) {
       await handleLives();
     }
 
@@ -283,29 +270,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     final rateProvider = context.read<RateDialogProvider>();
     rateProvider.request();
     Navigator.pop(context);
-  }
-
-  /// Handles saving or removing the (single) winner in the database.
-  Future<bool> handleWinner() async {
-    if (useTeamLogic) {
-      if (selectedTeam == null) {
-        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
-      } else {
-        return await db.teamDao.setWinnerTeam(
-          matchId: widget.match.id,
-          teamId: selectedTeam!.id,
-        );
-      }
-    } else {
-      if (selectedPlayer == null) {
-        return await db.scoreEntryDao.removeWinner(matchId: widget.match.id);
-      } else {
-        return await db.scoreEntryDao.setWinner(
-          matchId: widget.match.id,
-          playerId: selectedPlayer!.id,
-        );
-      }
-    }
   }
 
   /// Handles saving the (multiple) winners to the database.
@@ -374,7 +338,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: allPlayers[i].id,
-          entry: ScoreEntry(roundNumber: 0, score: score, change: 0),
+          entry: ScoreEntry(change: score),
         );
       }
     }
@@ -412,7 +376,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: player.id,
-          entry: ScoreEntry(roundNumber: 0, change: lives),
+          entry: ScoreEntry(change: lives),
         );
       }
     }
