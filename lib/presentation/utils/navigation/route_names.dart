@@ -30,7 +30,6 @@ abstract final class RouteNames {
   static const String manageMembersView = '/home/matches/create/teams/members';
   static const String matchDetailView = '/home/matches/{id}';
   static const String editMatchView = '/home/matches/{id}/edit';
-  static const String duplicateMatchView = '/home/matches/{id}/duplicate';
   static const String matchResultView = '/home/matches/{id}/result';
   static const String matchShareView = '/home/matches/{id}/share';
   static const String matchReceiveView = '/home/matches/receive';
