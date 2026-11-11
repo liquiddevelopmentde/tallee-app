@@ -500,6 +500,12 @@ abstract class AppLocalizations {
   /// **'Delete Game'**
   String get delete_game;
 
+  /// No description provided for @delete_game_warning_details.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. All matches using this game template will also be deleted.'**
+  String get delete_game_warning_details;
+
   /// No description provided for @delete_game_with_matches_warning.
   ///
   /// In en, this message translates to:
@@ -782,6 +788,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game deleted'**
+  String get game_deleted;
+
   /// No description provided for @game_filter_description.
   ///
   /// In en, this message translates to:
@@ -793,6 +805,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Game Name'**
   String get game_name;
+
+  /// No description provided for @game_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Profile'**
+  String get game_profile;
 
   /// No description provided for @games.
   ///

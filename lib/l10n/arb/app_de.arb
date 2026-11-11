@@ -74,6 +74,7 @@
   "delete_all_data": "Alle Daten löschen",
   "delete_app_data_description": "Lösche all deine lokalen Daten unwiderruflich. Dieser Vorgang kann nicht rückgängig gemacht werden.",
   "delete_game": "Spielvorlage löschen",
+  "delete_game_warning_details": "Dies kann nicht rückgängig gemacht werden. Alle Spiele mit dieser Spielvorlage werden ebenfalls gelöscht.",
   "delete_game_with_matches_warning": "Wenn du diese Spielvorlage löschst, {count, plural, =1{wird 1 Spiel} other{werden {count} Spiele}} mit dieser Spielvorlage ebenfalls gelöscht.",
   "@delete_game_with_matches_warning": {
     "placeholders": {
@@ -142,8 +143,10 @@
   "format_exception": "Formatfehler (siehe Konsole)",
   "game": "Spielvorlage",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
+  "game_deleted": "Spielvorlage gelöscht",
   "game_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.",
   "game_name": "Spielvorlagenname",
+  "game_profile": "Spielvorlagenprofil",
   "games": "Spielvorlagen",
   "general": "Allgemein",
   "get_started": "Los geht's!",

@@ -217,7 +217,11 @@ class _GameViewState extends State<GameView> with RouteAware {
                                                       RouteNames.gameDetailView,
                                                 ),
                                                 builder: (context) =>
-                                                    const GameDetailView(),
+                                                    GameDetailView(
+                                                      game:
+                                                          displayedGames[index],
+                                                      onGameUpdated: loadGames,
+                                                    ),
                                               ),
                                             ),
                                             game: displayedGames[index],

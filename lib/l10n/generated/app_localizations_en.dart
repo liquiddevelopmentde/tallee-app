@@ -219,6 +219,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_game => 'Delete Game';
 
   @override
+  String get delete_game_warning_details =>
+      'This action cannot be undone. All matches using this game template will also be deleted.';
+
+  @override
   String delete_game_with_matches_warning(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -387,11 +391,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_associated => 'Game successfully associated';
 
   @override
+  String get game_deleted => 'Game deleted';
+
+  @override
   String get game_filter_description =>
       'All statistics will be displayed that relate to one of the selected game templates.';
 
   @override
   String get game_name => 'Game Name';
+
+  @override
+  String get game_profile => 'Game Profile';
 
   @override
   String get games => 'Games';

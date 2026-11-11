@@ -223,6 +223,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_game => 'Spielvorlage löschen';
 
   @override
+  String get delete_game_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Alle Spiele mit dieser Spielvorlage werden ebenfalls gelöscht.';
+
+  @override
   String delete_game_with_matches_warning(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -393,11 +397,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_deleted => 'Spielvorlage gelöscht';
+
+  @override
   String get game_filter_description =>
       'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
 
   @override
   String get game_name => 'Spielvorlagenname';
+
+  @override
+  String get game_profile => 'Spielvorlagenprofil';
 
   @override
   String get games => 'Spielvorlagen';
