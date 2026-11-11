@@ -40,7 +40,7 @@ void main() async {
   // Only init in prod or dev
   if (!IS_TEST_ENV) await RATE_MY_APP.init();
 
-  await dotenv.load(fileName: 'assets/env');
+  await dotenv.load();
   if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
   await PackageInfoService.init();
