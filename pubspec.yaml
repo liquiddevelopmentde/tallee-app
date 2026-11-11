@@ -72,10 +72,10 @@ flutter:
     - assets/App-Icon-Rounded.png
     - assets/schemas/app_schema.json
     - assets/schemas/match_schema.json
+    - .env
     - assets/logo-animation.json
     - assets/privacy_policy/privacy_policy_en.md
     - assets/privacy_policy/privacy_policy_de.md
-    - .env
 
   fonts:
     - family: Inter

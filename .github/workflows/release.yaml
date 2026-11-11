@@ -118,7 +118,6 @@ jobs:
             printf 'API_URL_PROD=%s\n' "$API_URL_PROD"
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
           } > .env
-          cp .env assets/env
 
       - name: Set up release signing
         run: |
@@ -189,7 +188,6 @@ jobs:
             printf 'API_URL_PROD=%s\n' "$API_URL_PROD"
             printf 'SENTRY_DSN=%s\n' "$SENTRY_DSN"
           } > .env
-          cp .env assets/env
 
       - name: Import signing certificate
         uses: apple-actions/import-codesign-certs@v7

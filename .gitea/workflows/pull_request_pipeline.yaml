@@ -79,7 +79,7 @@ jobs:
 
       - name: Run tests
         run: |
-          touch .env assets/env
+          touch .env
           flutter test
   
 

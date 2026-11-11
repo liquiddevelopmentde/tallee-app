@@ -319,7 +319,7 @@ jobs:
 
       - name: Run tests
         run: |
-          touch .env assets/env
+          touch .env
           flutter test
 
   build:
@@ -386,7 +386,6 @@ jobs:
           API_URL_PROD=${{ secrets.API_URL }}
           SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           EOF
-          cp .env assets/env
 
       - name: Extract version from pubspec.yaml
         id: get_version
