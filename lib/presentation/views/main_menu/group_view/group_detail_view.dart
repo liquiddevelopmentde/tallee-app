@@ -215,7 +215,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   final updatedGroup = result?.updatedGroup;
                   if (updatedGroup != null && mounted) {
                     setState(() => group = updatedGroup);
-                    unawaited(loadStatistics());
                     widget.onGroupUpdated?.call();
                   }
                 },

@@ -263,7 +263,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         newPlayers: selectedPlayers,
       );
       await deleteObsoleteMatchGroupRelations();
-      widget.onMembersChanged?.call();
     }
 
     return (success, updatedGroup);
