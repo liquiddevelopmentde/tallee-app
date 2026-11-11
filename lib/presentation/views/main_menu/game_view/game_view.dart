@@ -15,6 +15,7 @@ import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
 import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/game_detail_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
@@ -208,27 +209,17 @@ class _GameViewState extends State<GameView> with RouteAware {
                                             gameCount: getGameCount(
                                               displayedGames[index],
                                             ),
-                                            onTap: () async {
-                                              await Navigator.push(
-                                                context,
-                                                adaptivePageRoute(
-                                                  settings: const RouteSettings(
-                                                    name: RouteNames
-                                                        .createGameView,
-                                                  ),
-                                                  builder: (context) =>
-                                                      CreateGameView(
-                                                        gameToEdit:
-                                                            displayedGames[index],
-                                                        onGameChanged:
-                                                            loadGames,
-                                                        gameCount: getGameCount(
-                                                          displayedGames[index],
-                                                        ),
-                                                      ),
+                                            onTap: () => Navigator.push(
+                                              context,
+                                              adaptivePageRoute(
+                                                settings: const RouteSettings(
+                                                  name:
+                                                      RouteNames.gameDetailView,
                                                 ),
-                                              );
-                                            },
+                                                builder: (context) =>
+                                                    const GameDetailView(),
+                                              ),
+                                            ),
                                             game: displayedGames[index],
                                           ),
                                     ),
