@@ -591,6 +591,105 @@ void main() {
         },
       );
 
+      test('nameCount gets increased and resetted correctly', () async {
+        final players = [
+          testPlayer1,
+          Player(name: testPlayer1.name),
+          Player(name: testPlayer1.name),
+        ];
+
+        Future<void> checkNameCounts(List<int> counts) async {
+          final allPlayers = await database.playerDao.getAllPlayers();
+          expect(allPlayers.map((p) => p.nameCount), unorderedEquals(counts));
+        }
+
+        // Expected nameCounts after adding players
+        var nameCounts = [
+          [0],
+          [1, 2],
+          [1, 2, 3],
+        ];
+        for (var i = 0; i < players.length; i++) {
+          expect(
+            await database.playerDao.addPlayer(player: players[i]),
+            isTrue,
+          );
+          await checkNameCounts(nameCounts[i]);
+        }
+
+        // Expected nameCounts after deleting players
+        nameCounts = [
+          [2, 3],
+          [0],
+        ];
+        for (var i = 0; i < nameCounts.length; i++) {
+          expect(
+            await database.playerDao.deletePlayer(player: players[i]),
+            isTrue,
+          );
+          await checkNameCounts(nameCounts[i]);
+        }
+      });
+
+      test('nameCount for soft deleted players is reset correctly', () async {
+        final sameNamePlayer = Player(name: testPlayer1.name);
+        final otherPlayer = Player(name: 'other name');
+        var added = await database.playerDao.addPlayersAsList(
+          players: [testPlayer1, sameNamePlayer, otherPlayer],
+        );
+        expect(added, isTrue);
+
+        final game = Game(name: 'test-game', ruleset: Ruleset.winner);
+        await database.gameDao.addGame(game: game);
+
+        final match = Match(
+          name: 'test-match',
+          game: game,
+          players: [testPlayer1, otherPlayer],
+        );
+        added = await database.matchDao.addMatch(match: match);
+        expect(added, isTrue);
+
+        /// Check if the name counts are initially correct
+        final players = await database.playerDao.getPlayersByName(
+          name: testPlayer1.name,
+        );
+        expect(players.length, 2);
+        expect(
+          players.map((p) => p.nameCount).toList(),
+          unorderedEquals([1, 2]),
+        );
+
+        // Delete player who is in the match
+        var deleted = await database.playerDao.deletePlayer(
+          player: testPlayer1,
+        );
+        expect(deleted, isTrue);
+
+        // Player should be soft deleted
+        var player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player, isNotNull);
+        expect(player.deleted, isTrue);
+
+        // Delete match
+        deleted = await database.matchDao.deleteMatch(matchId: match.id);
+        expect(deleted, isTrue);
+
+        // Player should be hard deleted
+        var exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isFalse);
+
+        // Namecount of remaining player should be reset to 0
+        player = await database.playerDao.getPlayerById(
+          playerId: sameNamePlayer.id,
+        );
+        expect(player.nameCount, 0);
+      });
+
       test('getNameCount works correctly', () async {
         final player1 = Player(name: testPlayer1.name);
         final player2 = Player(name: testPlayer1.name);

@@ -680,32 +680,29 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   Future<void> addNewPlayerFromSearch({required BuildContext context}) async {
     final loc = AppLocalizations.of(context);
-    final playerName = searchBarController.text.trim();
 
+    final playerName = searchBarController.text.trim();
     final createdPlayer = Player(name: playerName);
     final success = await db.playerDao.addPlayer(player: createdPlayer);
 
-    // Collect updated player name counts
-    Map<String, int> nameCounts = {};
-    await db.playerDao.getPlayersByName(name: playerName).then((players) {
-      for (final p in players) {
-        nameCounts[p.id] = p.nameCount;
-      }
-    });
-
-    if (!context.mounted) return;
-
-    if (success) {
-      applyNameCounts(nameCounts);
-      handleSuccessfulPlayerCreation(
-        createdPlayer.copyWith(nameCount: nameCounts[createdPlayer.id]),
-      );
-      context.showSnackBar(message: loc.successfully_added_player(playerName));
-      Haptics.successNotification();
-    } else {
+    if (!success && context.mounted) {
       context.showSnackBar(message: loc.could_not_add_player(playerName));
       Haptics.errorNotification();
+      return;
     }
+
+    final players = await db.playerDao.getPlayersByName(name: playerName);
+    // Collect updated player name counts
+    final nameCounts = {for (final p in players) p.id: p.nameCount};
+
+    applyNameCounts(nameCounts);
+    handleSuccessfulPlayerCreation(
+      createdPlayer.copyWith(nameCount: nameCounts[createdPlayer.id]),
+    );
+
+    if (!context.mounted) return;
+    context.showSnackBar(message: loc.successfully_added_player(playerName));
+    Haptics.successNotification();
   }
 
   /// Replace all players affected by name count changes with updated player objects.
