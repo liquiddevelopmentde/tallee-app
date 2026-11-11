@@ -118,7 +118,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   void duplicateMatch() {
     Navigator.of(context).push(
       adaptivePageRoute(
-        settings: const RouteSettings(name: RouteNames.createMatchView),
+        settings: const RouteSettings(name: RouteNames.duplicateMatchView),
         builder: (context) => CreateMatchView(
           matchToPrefill: templateMatch,
           onWinnerChanged: widget.onMatchUpdate,
@@ -217,7 +217,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     Navigator.push(
       context,
       adaptivePageRoute(
-        settings: const RouteSettings(name: RouteNames.createMatchView),
+        settings: const RouteSettings(name: RouteNames.editMatchView),
         fullscreenDialog: true,
         builder: (context) => CreateMatchView(
           matchToPrefill: match,

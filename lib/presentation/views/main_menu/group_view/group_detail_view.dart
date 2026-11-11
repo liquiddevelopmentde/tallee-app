@@ -204,7 +204,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute<({Group? updatedGroup})>(
                       settings: const RouteSettings(
-                        name: RouteNames.createGroupView,
+                        name: RouteNames.editGroupView,
                       ),
                       builder: (context) => CreateGroupView(
                         groupToEdit: group,
