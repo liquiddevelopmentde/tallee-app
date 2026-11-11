@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -116,9 +117,17 @@ class _MatchDetailViewState extends State<MatchDetailView> {
   }
 
   void duplicateMatch() {
+    Sentry.addBreadcrumb(
+      Breadcrumb(
+        category: 'match',
+        message: 'Duplicate match',
+        level: SentryLevel.info,
+      ),
+    );
+
     Navigator.of(context).push(
       adaptivePageRoute(
-        settings: const RouteSettings(name: RouteNames.duplicateMatchView),
+        settings: const RouteSettings(name: RouteNames.createMatchView),
         builder: (context) => CreateMatchView(
           matchToPrefill: templateMatch,
           onWinnerChanged: widget.onMatchUpdate,
