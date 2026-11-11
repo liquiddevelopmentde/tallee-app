@@ -360,13 +360,13 @@ void main() {
           name: 'Older Match',
           game: testGame,
           players: [testPlayer1],
-          createdAt: DateTime(2025, 1, 1),
+          createdAt: DateTime(2025),
         );
         final newerMatch = Match(
           name: 'Newer Match',
           game: testGame,
           players: [testPlayer1],
-          createdAt: DateTime(2025, 6, 1),
+          createdAt: DateTime(2026),
         );
 
         await database.matchDao.addMatch(match: newerMatch);

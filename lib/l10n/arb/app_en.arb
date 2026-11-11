@@ -75,14 +75,6 @@
   "delete_app_data_description": "Permanently delete all app data. This action is irreversible.",
   "delete_game": "Delete Game",
   "delete_game_warning_details": "This action cannot be undone. All matches using this game template will also be deleted.",
-  "delete_game_with_matches_warning": "If you delete this game, {count, plural, =1{1 match} other{{count} matches}} using this game will also be deleted.",
-  "@delete_game_with_matches_warning": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "delete_group": "Delete Group",
   "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
   "delete_match": "Delete Match",
