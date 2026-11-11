@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -11,7 +10,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -153,14 +151,6 @@ class _CreateGameViewState extends State<CreateGameView> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(isEditMode ? loc.edit_game : loc.create_game),
-              actions: [
-                if (isEditMode)
-                  HapticIconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async =>
-                        await showDeletePopup(scaffoldContext),
-                  ),
-              ],
             ),
             // Game name input field
             body: SafeArea(
@@ -368,61 +358,5 @@ class _CreateGameViewState extends State<CreateGameView> {
         },
       ),
     );
-  }
-
-  /// Shows a delete popup with information about how many matches containing
-  /// this game will also be deleted.
-  Future<void> showDeletePopup(BuildContext context) async {
-    if (!context.mounted) return;
-    final loc = AppLocalizations.of(context);
-
-    // Build the dialog content based on match count
-    final String dialogContent = widget.gameCount > 0
-        ? loc.delete_game_with_matches_warning(widget.gameCount)
-        : loc.this_cannot_be_undone;
-
-    await showDialog<bool>(
-      context: context,
-      builder: (BuildContext ctx) => CustomAlertDialog(
-        title: loc.delete_game,
-        content: Text(
-          dialogContent,
-          overflow: TextOverflow.visible,
-          style: const TextStyle(fontSize: 15),
-        ),
-        actions: [
-          CustomDialogAction(
-            accent: ButtonAccent.destructive,
-            onPressed: () => Navigator.of(ctx).pop(true),
-            text: loc.delete,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            buttonType: ButtonType.secondary,
-            text: loc.cancel,
-          ),
-        ],
-      ),
-    ).then((confirmed) async {
-      if (confirmed == true && context.mounted) {
-        // Delete associated matches
-        if (widget.gameCount > 0) {
-          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
-        }
-
-        // Delete the targetted game
-        bool success = await db.gameDao.deleteGame(
-          gameId: widget.gameToEdit!.id,
-        );
-
-        if (!context.mounted) return;
-        if (success) {
-          widget.onGameChanged.call();
-          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
-        } else {
-          context.showSnackBar(message: loc.error_deleting_game);
-        }
-      }
-    });
   }
 }
