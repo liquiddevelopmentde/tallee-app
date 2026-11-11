@@ -400,7 +400,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final rowsAffected = await query.write(
       PlayerTableCompanion(nameCount: Value(nameCount)),
     );
-    print('rowsAffected: $rowsAffected');
     return rowsAffected > 0;
   }
 
