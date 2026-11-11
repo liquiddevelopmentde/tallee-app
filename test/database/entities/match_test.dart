@@ -308,6 +308,93 @@ void main() {
         expect(match.group!.id, testGroup1.id);
       });
 
+      test('getMatchesByGame() works correctly', () async {
+        var matches = await database.matchDao.getMatchesByGame(
+          gameId: 'non-existing-id',
+        );
+        expect(matches, isEmpty);
+
+        await database.matchDao.addMatch(match: testMatch1);
+        await database.matchDao.addMatch(match: testMatch2);
+
+        matches = await database.matchDao.getMatchesByGame(gameId: testGame.id);
+
+        expect(matches, hasLength(2));
+        expect(matches.map((match) => match.id).toSet(), {
+          testMatch1.id,
+          testMatch2.id,
+        });
+
+        for (final match in matches) {
+          expect(match.game.id, testGame.id);
+        }
+      });
+
+      test(
+        'getMatchesByGame() only returns matches of the given game',
+        () async {
+          final otherGame = Game(name: 'Other Game', ruleset: Ruleset.winner);
+          await database.gameDao.addGame(game: otherGame);
+
+          final otherGameMatch = Match(
+            name: 'Other Game Match',
+            game: otherGame,
+            players: [testPlayer1],
+          );
+
+          await database.matchDao.addMatch(match: testMatch1);
+          await database.matchDao.addMatch(match: otherGameMatch);
+
+          final matches = await database.matchDao.getMatchesByGame(
+            gameId: testGame.id,
+          );
+
+          expect(matches, hasLength(1));
+          expect(matches.single.id, testMatch1.id);
+          expect(matches.single.game.id, testGame.id);
+        },
+      );
+
+      test('getMatchesByGame() orders matches newest first', () async {
+        final olderMatch = Match(
+          name: 'Older Match',
+          game: testGame,
+          players: [testPlayer1],
+          createdAt: DateTime(2025, 1, 1),
+        );
+        final newerMatch = Match(
+          name: 'Newer Match',
+          game: testGame,
+          players: [testPlayer1],
+          createdAt: DateTime(2025, 6, 1),
+        );
+
+        await database.matchDao.addMatch(match: newerMatch);
+        await database.matchDao.addMatch(match: olderMatch);
+
+        final matches = await database.matchDao.getMatchesByGame(
+          gameId: testGame.id,
+        );
+
+        expect(matches.map((match) => match.id).toList(), [
+          newerMatch.id,
+          olderMatch.id,
+        ]);
+      });
+
+      test(
+        'getMatchesByGame() returns empty list for game without matches',
+        () async {
+          await database.gameDao.addGame(game: testGame);
+
+          final matches = await database.matchDao.getMatchesByGame(
+            gameId: testGame.id,
+          );
+
+          expect(matches, isEmpty);
+        },
+      );
+
       test('getMatchesByPlayer() works correctly', () async {
         await database.matchDao.addMatchesAsList(
           matches: [testMatch1, testMatch2],
