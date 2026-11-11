@@ -227,17 +227,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dies kann nicht rückgängig gemacht werden. Alle Spiele mit dieser Spielvorlage werden ebenfalls gelöscht.';
 
   @override
-  String delete_game_with_matches_warning(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'werden $count Spiele',
-      one: 'wird 1 Spiel',
-    );
-    return 'Wenn du diese Spielvorlage löschst, $_temp0 mit dieser Spielvorlage ebenfalls gelöscht.';
-  }
-
-  @override
   String get delete_group => 'Gruppe löschen';
 
   @override

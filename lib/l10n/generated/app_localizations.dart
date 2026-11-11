@@ -506,12 +506,6 @@ abstract class AppLocalizations {
   /// **'This action cannot be undone. All matches using this game template will also be deleted.'**
   String get delete_game_warning_details;
 
-  /// No description provided for @delete_game_with_matches_warning.
-  ///
-  /// In en, this message translates to:
-  /// **'If you delete this game, {count, plural, =1{1 match} other{{count} matches}} using this game will also be deleted.'**
-  String delete_game_with_matches_warning(int count);
-
   /// No description provided for @delete_group.
   ///
   /// In en, this message translates to:
