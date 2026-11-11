@@ -1004,6 +1004,12 @@ abstract class AppLocalizations {
   /// **'Last 90 days'**
   String get last_90_days;
 
+  /// No description provided for @last_played.
+  ///
+  /// In en, this message translates to:
+  /// **'Last played'**
+  String get last_played;
+
   /// No description provided for @last_year.
   ///
   /// In en, this message translates to:

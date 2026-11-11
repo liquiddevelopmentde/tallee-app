@@ -514,6 +514,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get last_90_days => 'Letzte 90 Tage';
 
   @override
+  String get last_played => 'Zuletzt gespielt';
+
+  @override
   String get last_year => 'Letztes Jahr';
 
   @override

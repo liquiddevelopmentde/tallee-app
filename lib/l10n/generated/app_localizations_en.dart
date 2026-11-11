@@ -508,6 +508,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get last_90_days => 'Last 90 days';
 
   @override
+  String get last_played => 'Last played';
+
+  @override
   String get last_year => 'Last year';
 
   @override
