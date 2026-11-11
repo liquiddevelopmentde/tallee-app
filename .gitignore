@@ -175,6 +175,7 @@ app.*.map.json
 
 untranslated_messages.json
 .env
+assets/env
 
 sentry.properties
 
