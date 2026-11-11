@@ -1,15 +1,23 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/core/extensions/date_time_extensions.dart';
 import 'package:tallee/core/extensions/snack_bar_extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
+import 'package:tallee/data/models/match.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
+import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
 import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/tiles/info_tile/detail_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/game_matches_tile.dart';
 
 class GameDetailView extends StatefulWidget {
   /// A view that displays the profile of a game
@@ -29,12 +37,14 @@ class _GameDetailViewState extends State<GameDetailView> {
   bool isLoading = true;
 
   late Game game;
+  List<Match> matches = [];
 
   @override
   void initState() {
+    super.initState();
     game = widget.game;
     db = context.read<AppDatabase>();
-    super.initState();
+    loadStatistics();
   }
 
   @override
@@ -81,6 +91,15 @@ class _GameDetailViewState extends State<GameDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                Text(
+                  game.ruleset.toLocalizedString(context),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: context.talleeColors.hintColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 if (game.description.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
@@ -104,12 +123,86 @@ class _GameDetailViewState extends State<GameDetailView> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
+
+                // Matches
+                GameMatchesTile(
+                  matches: matches,
+                  isLoading: isLoading,
+                  onMatchTap: _openMatch,
+                ),
+                const SizedBox(height: 15),
+
+                // Statistics
+                DetailTile(
+                  rows: [
+                    ('Matches used in', '0'),
+                    ('Players', '0'),
+                    (loc.best_player, '0'),
+                    ('Last played', '0'),
+                  ],
+                ),
               ],
+            ),
+
+            Positioned(
+              bottom: MediaQuery.viewPaddingOf(context).bottom,
+              child: FloatingAnimatedButton(
+                text: loc.edit_game,
+                icon: Icons.edit,
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    adaptivePageRoute<({Game? updatedGame})>(
+                      settings: const RouteSettings(
+                        name: RouteNames.editGameView,
+                      ),
+                      builder: (context) => CreateGameView(
+                        gameToEdit: game,
+                        onGameChanged: loadStatistics,
+                      ),
+                    ),
+                  );
+                  final updatedGame = result?.updatedGame;
+                  if (updatedGame != null && mounted) {
+                    setState(() => game = updatedGame);
+                    widget.onGameUpdated?.call();
+                  }
+                },
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Opens the given [match], either in the result or the detail view.
+  void _openMatch(Match match) {
+    final isFinished = match.endedAt != null;
+
+    Navigator.of(context).push(
+      adaptivePageRoute(
+        settings: RouteSettings(
+          name: isFinished
+              ? RouteNames.matchDetailView
+              : RouteNames.matchResultView,
+        ),
+        builder: (context) => isFinished
+            ? MatchDetailView(match: match, onMatchUpdate: loadStatistics)
+            : MatchResultView(match: match, onWinnerChanged: loadStatistics),
+      ),
+    );
+  }
+
+  /// Loads statistics for this game
+  Future<void> loadStatistics() async {
+    final gameMatches = await db.matchDao.getMatchesByGame(gameId: game.id);
+    if (!mounted) return;
+
+    setState(() {
+      matches = gameMatches;
+      isLoading = false;
+    });
   }
 
   Future<void> handleGameDeletion(BuildContext context) async {

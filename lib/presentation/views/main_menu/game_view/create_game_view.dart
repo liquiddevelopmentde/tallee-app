@@ -268,8 +268,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                               }
                               widget.onGameChanged.call();
                               if (context.mounted) {
-                                Navigator.of(context)
-                                    .pop((game: newGame, delete: false));
+                                Navigator.of(context).pop((game: newGame));
                               }
                             }
                           : null,

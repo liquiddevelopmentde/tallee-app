@@ -313,6 +313,17 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     return count ?? 0;
   }
 
+  /// Retrieves all matches associated with the given [gameId],
+  /// ordered by creation date with the newest first.
+  Future<List<Match>> getMatchesByGame({required String gameId}) async {
+    final query = select(matchTable)
+      ..where((m) => m.gameId.equals(gameId))
+      ..orderBy([(m) => OrderingTerm.desc(m.createdAt)]);
+    final result = await query.get();
+
+    return _fetchRelationsForMatches(result);
+  }
+
   Future<List<Match>> getMatchesByPlayer({required String playerId}) async {
     final playerMatches = await (select(
       playerMatchTable,
