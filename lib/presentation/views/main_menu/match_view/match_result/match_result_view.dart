@@ -264,16 +264,14 @@ class _MatchResultViewState extends State<MatchResultView> {
     if (useTeamLogic) {
       return allTeams.any(
         (team) =>
-            selectedTeams.contains(team) && team.score != loserScore ||
-            !selectedTeams.contains(team) && team.score == loserScore,
+            selectedTeam == team && team.score != loserScore ||
+            selectedTeam != team && team.score == loserScore,
       );
     } else {
       return allPlayers.any(
         (player) =>
-            selectedPlayers.contains(player) &&
-                getPlayerScore(player) != loserScore ||
-            !selectedPlayers.contains(player) &&
-                getPlayerScore(player) == loserScore,
+            selectedPlayer == player && getPlayerScore(player) != loserScore ||
+            selectedPlayer != player && getPlayerScore(player) == loserScore,
       );
     }
   }
