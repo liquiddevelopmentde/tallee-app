@@ -387,7 +387,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   Future<bool> handleWinners() async {
     if (useTeamLogic) {
       if (selectedTeams.isEmpty) {
-        return await db.teamDao.removeWinnerTeam(matchId: widget.match.id);
+        return await db.teamDao.removeWinnerTeams(matchId: widget.match.id);
       } else {
         return await db.teamDao.setWinnerTeams(
           matchId: widget.match.id,

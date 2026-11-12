@@ -433,7 +433,7 @@ void main() {
         expect(match.endedAt, endedAt);
       });
 
-      test('setWinnerTeam() and setLoserTeam() keep endedAt', () async {
+      test('setLoserTeam() keep endedAt', () async {
         await database.matchDao.addMatch(match: testMatch1);
         final endedAt = DateTime(2026, 1, 1, 12);
         await database.matchDao.updateMatchEndedAt(
@@ -441,20 +441,13 @@ void main() {
           endedAt: endedAt,
         );
 
-        await database.teamDao.setWinnerTeam(
+        await database.teamDao.setLoserTeam(
           teamId: testTeam1.id,
           matchId: testMatch1.id,
         );
         var match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
-        expect(match.endedAt, endedAt);
-
-        await database.teamDao.setLoserTeam(
-          teamId: testTeam1.id,
-          matchId: testMatch1.id,
-        );
-        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
         expect(match.endedAt, endedAt);
       });
 
@@ -497,52 +490,6 @@ void main() {
           expect(entry, isNotNull);
           expect(entry!.score, 5);
         }
-      });
-
-      test('set-/removeWinnerTeam() works correctly', () async {
-        await database.matchDao.addMatch(match: testMatch1);
-
-        final set = await database.teamDao.setWinnerTeam(
-          teamId: testTeam1.id,
-          matchId: testMatch1.id,
-        );
-        expect(set, isTrue);
-
-        var team = await database.teamDao.getTeamById(teamId: testTeam1.id);
-        expect(team.score, 1);
-
-        for (final member in testTeam1.members) {
-          final entry = await database.scoreEntryDao.getScore(
-            playerId: member.id,
-            matchId: testMatch1.id,
-          );
-          expect(entry, isNotNull);
-          expect(entry!.score, 1);
-        }
-
-        var match = await database.matchDao.getMatchById(
-          matchId: testMatch1.id,
-        );
-        expect(match.endedAt, isNull);
-
-        final removed = await database.teamDao.removeWinnerTeam(
-          matchId: testMatch1.id,
-        );
-        expect(removed, isTrue);
-
-        team = await database.teamDao.getTeamById(teamId: testTeam1.id);
-        expect(team.score, isNull);
-
-        for (final member in testTeam1.members) {
-          final entry = await database.scoreEntryDao.getScore(
-            playerId: member.id,
-            matchId: testMatch1.id,
-          );
-          expect(entry, isNull);
-        }
-
-        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
-        expect(match.endedAt, isNull);
       });
 
       test('set-/removeLoserTeam() works correctly', () async {
@@ -630,7 +577,7 @@ void main() {
           expect(entry!.score, 1);
         }
 
-        final removed = await database.teamDao.removeWinnerTeam(
+        final removed = await database.teamDao.removeWinnerTeams(
           matchId: testMatch1.id,
         );
         expect(removed, isTrue);
