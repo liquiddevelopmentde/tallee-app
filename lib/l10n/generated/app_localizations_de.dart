@@ -896,6 +896,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle die Anzeigefarbe für deine Statistik aus.';
 
   @override
+  String get select_a_group_color_description =>
+      'Wähle die Anzeigefarbe für deine Gruppe aus.';
+
+  @override
   String get select_a_scope => 'Bereich wählen';
 
   @override
