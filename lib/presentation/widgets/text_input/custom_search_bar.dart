@@ -15,6 +15,7 @@ class CustomSearchBar extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
+    this.focusNode,
     this.trailingButtonShown = false,
     this.trailingButtonicon = Icons.clear,
     this.trailingButtonEnabled = true,
@@ -32,6 +33,9 @@ class CustomSearchBar extends StatelessWidget {
 
   /// The hint text displayed in the search bar when it is empty.
   final String hintText;
+
+  /// The focusnode for the search bar.
+  final FocusNode? focusNode;
 
   /// Whether to show the trailing button.
   final bool trailingButtonShown;
@@ -68,6 +72,7 @@ class CustomSearchBar extends StatelessWidget {
 
     return SearchBar(
       controller: controller,
+      focusNode: focusNode,
       constraints:
           constraints ?? const BoxConstraints(maxHeight: 45, minHeight: 45),
       hintText: hintText,
