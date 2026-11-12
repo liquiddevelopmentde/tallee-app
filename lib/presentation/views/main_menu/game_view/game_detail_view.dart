@@ -242,14 +242,15 @@ class _GameDetailViewState extends State<GameDetailView> {
 
   Future<void> handleGameDeletion(BuildContext context) async {
     final loc = AppLocalizations.of(context);
+    final dialogContent = matches.isEmpty
+        ? loc.this_cannot_be_undone
+        : loc.delete_game_with_matches_warning(matches.length);
+
     final confirmed = await showDialog<bool?>(
       context: context,
       builder: (context) => CustomAlertDialog(
         title: '${loc.delete_game}?',
-        content: Text(
-          loc.delete_game_warning_details,
-          overflow: TextOverflow.visible,
-        ),
+        content: Text(dialogContent, overflow: TextOverflow.visible),
         actions: [
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),

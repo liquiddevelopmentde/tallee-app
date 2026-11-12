@@ -221,8 +221,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_game => 'Delete Game';
 
   @override
-  String get delete_game_warning_details =>
-      'This action cannot be undone. All matches using this game template will also be deleted.';
+  String delete_game_with_matches_warning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return 'If you delete this game, $_temp0 using this game will also be deleted.';
+  }
 
   @override
   String get delete_group => 'Delete Group';
