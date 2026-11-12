@@ -122,6 +122,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   name: match.group!.name,
                   description: match.group!.description,
                   createdAt: match.group!.createdAt,
+                  color: match.group!.color,
                 ),
               )
               .toList(),
