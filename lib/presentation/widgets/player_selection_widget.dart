@@ -363,6 +363,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   Widget buildSingleSelectionList() => RadioGroup<Player?>(
     groupValue: selectedPlayer,
     onChanged: (value) {
+      Haptics.selectionClick();
+      setState(() => selectedPlayer = value);
       widget.onSingleChanged?.call(value);
     },
     child: ListView.builder(

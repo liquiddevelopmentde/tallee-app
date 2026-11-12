@@ -58,6 +58,7 @@ class _SelectLooserWidgetState extends State<SelectLooserWidget> {
         ? RadioGroup<Team>(
             groupValue: selectedTeam,
             onChanged: (Team? team) async {
+              Haptics.selectionClick();
               setState(() {
                 selectedTeam = team;
                 widget.onTeamSelected?.call(selectedTeam);
