@@ -88,6 +88,9 @@
           "description": {
             "type": "string"
           },
+          "color": {
+            "type": "string"
+          },
           "memberIds": {
             "type": "array",
             "minItems": 2,
@@ -102,6 +105,7 @@
           "name",
           "createdAt",
           "description",
+          "color",
           "memberIds"
         ]
       }

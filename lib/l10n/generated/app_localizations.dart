@@ -1634,6 +1634,12 @@ abstract class AppLocalizations {
   /// **'Select the display color for your statistic.'**
   String get select_a_color_description;
 
+  /// No description provided for @select_a_group_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the display color for your group.'**
+  String get select_a_group_color_description;
+
   /// No description provided for @select_a_scope.
   ///
   /// In en, this message translates to:
