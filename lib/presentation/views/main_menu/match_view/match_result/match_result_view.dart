@@ -97,7 +97,8 @@ class _MatchResultViewState extends State<MatchResultView> {
             ShowcaseView.get().dismiss();
           } catch (_) {}
         }
-        saveResults(isAutoSave: true);
+        // Auto-Save if match is still ongoing
+        if (match.endedAt == null) saveResults();
       },
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
@@ -223,6 +224,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                       onPressed: canSave && hasChangedResult
                           ? () async {
                               await saveResults();
+                              widget.onWinnerChanged?.call();
                               if (context.mounted) Navigator.pop(context);
                             }
                           : null,
@@ -360,12 +362,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the current input of values based on the ruleset.
-  /// [isAutoSave] determines if the method is called via auto save or
-  /// explicitly via a button tap
-  Future<void> saveResults({bool isAutoSave = false}) async {
-    // Prevents auto-save if match has already been finished
-    if (isAutoSave && widget.match.endedAt != null) return;
-
+  Future<void> saveResults() async {
     if (ruleset.isWinner) {
       await handleWinners();
     } else if (ruleset.isLoser) {
@@ -377,8 +374,6 @@ class _MatchResultViewState extends State<MatchResultView> {
     } else if (ruleset.isLives) {
       await handleLives();
     }
-
-    widget.onWinnerChanged?.call();
   }
 
   /// Sets Match.endedAt to the current time and requests a rating dialog to be shown.
@@ -387,6 +382,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       matchId: widget.match.id,
       endedAt: DateTime.now(),
     );
+    widget.onWinnerChanged?.call();
 
     if (!mounted) return;
     final rateProvider = context.read<RateDialogProvider>();
