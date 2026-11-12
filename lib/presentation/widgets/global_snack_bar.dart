@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math' as math;
+import 'dart:math' show max;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/presentation/widgets/snack_bar_content.dart';
@@ -34,7 +34,7 @@ class GlobalSnackBar extends StatefulWidget {
   }) {
     dismiss();
 
-    final entry = OverlayEntry(
+    _entry = OverlayEntry(
       builder: (context) => GlobalSnackBar._(
         message: message,
         actionIcon: actionIcon,
@@ -44,8 +44,7 @@ class GlobalSnackBar extends StatefulWidget {
       ),
     );
 
-    _entry = entry;
-    overlay.insert(entry);
+    overlay.insert(_entry!);
   }
 
   /// Removes the currently visible global snackbar, if any.
@@ -114,7 +113,7 @@ class _GlobalSnackBarState extends State<GlobalSnackBar>
     right: 16,
     // Keep snackbar above the keyboard
     bottom:
-        math.max(
+        max(
           MediaQuery.viewPaddingOf(context).bottom,
           MediaQuery.viewInsetsOf(context).bottom,
         ) +
