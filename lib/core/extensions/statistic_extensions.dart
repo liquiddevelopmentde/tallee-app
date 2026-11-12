@@ -71,8 +71,7 @@ extension StatisticTypeExtension on StatisticType {
 
   /// The sort direction a new statistic of this type starts with.
   /// "Worst score" shows ascending, everything else descending.
-  SortDirection get defaultSortDirection =>
-      this == StatisticType.worstScore
+  SortDirection get defaultSortDirection => this == StatisticType.worstScore
       ? SortDirection.ascending
       : SortDirection.descending;
 }
