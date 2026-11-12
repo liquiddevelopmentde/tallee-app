@@ -1,6 +1,6 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 // Bc flutter_markdown_plus still uses deprecated flutter/material.dart
-// ignore: migrate_design_widgets
+// ignore: deprecated_member_use, migrate_design_widgets
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
