@@ -39,8 +39,6 @@ class _MatchResultViewState extends State<MatchResultView> {
   late final List<Team> allTeams;
 
   /// Currently selected player(s)/team(s) (winner / loser)
-  Player? selectedPlayer;
-  Team? selectedTeam;
   List<Player> selectedPlayers = [];
   List<Team> selectedTeams = [];
 
@@ -57,7 +55,6 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get canSave {
     if (ruleset.isPlacement || ruleset.isLives) return true;
-    if (selectedPlayer != null || selectedTeam != null) return true;
     if (selectedPlayers.isNotEmpty || selectedTeams.isNotEmpty) return true;
     return areScoresValid;
   }
@@ -75,9 +72,8 @@ class _MatchResultViewState extends State<MatchResultView> {
   bool get hasChangedResult {
     switch (ruleset) {
       case Ruleset.winner:
-        return hasChangedWinners();
       case Ruleset.loser:
-        return hasChangedLoser();
+        return hasChangedSelection();
       default:
         return hasChangedScores();
     }
@@ -178,10 +174,10 @@ class _MatchResultViewState extends State<MatchResultView> {
                               SelectLooserWidget(
                                 match: widget.match,
                                 onPlayerSelected: (Player? player) {
-                                  setState(() => selectedPlayer = player);
+                                  setState(() => selectedPlayers = [?player]);
                                 },
                                 onTeamSelected: (Team? team) {
-                                  setState(() => selectedTeam = team);
+                                  setState(() => selectedTeams = [?team]);
                                 },
                               ),
 
@@ -257,42 +253,26 @@ class _MatchResultViewState extends State<MatchResultView> {
     return false;
   }
 
-  /// Checks if the selected loser differ from the loser in [match]
-  bool hasChangedLoser() {
+  /// Checks if the selected player(s) differ from the mvp(s) in [match]
+  bool hasChangedSelection() {
+    const winnerScore = 1;
     const loserScore = 0;
 
-    if (useTeamLogic) {
-      return allTeams.any(
-        (team) =>
-            selectedTeam == team && team.score != loserScore ||
-            selectedTeam != team && team.score == loserScore,
-      );
-    } else {
-      return allPlayers.any(
-        (player) =>
-            selectedPlayer == player && getPlayerScore(player) != loserScore ||
-            selectedPlayer != player && getPlayerScore(player) == loserScore,
-      );
-    }
-  }
-
-  /// Checks if the selected winners differ from the winners in [match]
-  bool hasChangedWinners() {
-    const winnerScore = 1;
+    final rulesetScore = ruleset.isWinner ? winnerScore : loserScore;
 
     if (useTeamLogic) {
       return allTeams.any(
         (team) =>
-            selectedTeams.contains(team) && team.score != winnerScore ||
-            !selectedTeams.contains(team) && team.score == winnerScore,
+            selectedTeams.contains(team) && team.score != rulesetScore ||
+            !selectedTeams.contains(team) && team.score == rulesetScore,
       );
     } else {
       return allPlayers.any(
         (player) =>
             selectedPlayers.contains(player) &&
-                getPlayerScore(player) != winnerScore ||
+                getPlayerScore(player) != rulesetScore ||
             !selectedPlayers.contains(player) &&
-                getPlayerScore(player) == winnerScore,
+                getPlayerScore(player) == rulesetScore,
       );
     }
   }
@@ -317,14 +297,15 @@ class _MatchResultViewState extends State<MatchResultView> {
 
       switch (ruleset) {
         case Ruleset.winner:
-          selectedTeams = match.mvt;
         case Ruleset.loser:
-          selectedTeam = match.mvt.firstOrNull;
+          selectedTeams = match.mvt;
+
         case Ruleset.placement:
           mergeSort(
             allTeams,
             compare: (a, b) => (b.score ?? 0).compareTo(a.score ?? 0),
           );
+
         case Ruleset.lives:
         case Ruleset.lowestScore:
         case Ruleset.highestScore:
@@ -343,10 +324,8 @@ class _MatchResultViewState extends State<MatchResultView> {
 
       switch (ruleset) {
         case Ruleset.winner:
-          selectedPlayers = widget.match.mvp;
-
         case Ruleset.loser:
-          selectedPlayer = widget.match.mvp.firstOrNull;
+          selectedPlayers = widget.match.mvp;
 
         case Ruleset.placement:
           mergeSort(
@@ -431,21 +410,21 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Handles saving or removing the loser in the database.
   Future<bool> handleLoser() async {
     if (useTeamLogic) {
-      if (selectedTeam == null) {
+      if (selectedTeams.isEmpty) {
         return await db.teamDao.removeLoserTeam(matchId: widget.match.id);
       } else {
         return await db.teamDao.setLoserTeam(
           matchId: widget.match.id,
-          teamId: selectedTeam!.id,
+          teamId: selectedTeams.first.id,
         );
       }
     } else {
-      if (selectedPlayer == null) {
+      if (selectedPlayers.isEmpty) {
         return await db.scoreEntryDao.removeLoser(matchId: widget.match.id);
       } else {
         return await db.scoreEntryDao.setLoser(
           matchId: widget.match.id,
-          playerId: selectedPlayer!.id,
+          playerId: selectedPlayers.first.id,
         );
       }
     }
