@@ -19,6 +19,7 @@ class TextIconListTile extends StatelessWidget {
     this.pair,
     this.pairIconLeft = false,
     this.icon,
+    this.iconColor,
     this.onTileTap,
   });
 
@@ -28,6 +29,7 @@ class TextIconListTile extends StatelessWidget {
   final Team? pair;
   final bool pairIconLeft;
   final IconData? icon;
+  final Color? iconColor;
   final VoidCallback? onTileTap;
 
   @override
@@ -80,7 +82,7 @@ class TextIconListTile extends StatelessWidget {
               ),
             ),
           ),
-          if (icon != null) Icon(icon, size: 20),
+          if (icon != null) Icon(icon, size: 20, color: iconColor),
         ],
       ),
     ),

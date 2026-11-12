@@ -98,6 +98,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   bool isPairingMode = false;
   final Set<String> pairingSelection = {};
   String? pressingId;
+  String? recentlyAddedPlayerId;
 
   final TextEditingController searchBarController = TextEditingController();
   final FocusNode searchBarFocusNode = FocusNode();
@@ -447,9 +448,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         const SizedBox(height: 10),
     itemBuilder: (BuildContext context, int index) {
       final player = suggestedPlayers[index];
+      final isRecentlyAdded = recentlyAddedPlayerId == player.id;
       return TextIconListTile(
         player: player,
-        icon: Icons.add,
+        icon: isRecentlyAdded ? Icons.check : Icons.add,
+        iconColor: isRecentlyAdded ? context.talleeColors.successColor : null,
         onTileTap: () async => await togglePairingSelection(player),
       );
     },
@@ -462,9 +465,19 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         final unit = Team(name: '', members: [player]);
         selectedUnits.insert(0, unit);
         addedUnitIds.add(unit.id);
-        suggestedPlayers.remove(player);
+        recentlyAddedPlayerId = player.id;
         widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
         scrollSelectedUnitsToStart();
+
+        Future.delayed(const Duration(milliseconds: 400), () {
+          if (!mounted || recentlyAddedPlayerId != player.id) {
+            return;
+          }
+          setState(() {
+            suggestedPlayers.remove(player);
+            recentlyAddedPlayerId = null;
+          });
+        });
       }
     });
   }
