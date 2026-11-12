@@ -373,6 +373,110 @@ void main() {
         expect(match.endedAt, endedAt);
       });
 
+      test(
+        'removeAllTeamScores() with removeEndedAt false keeps endedAt',
+        () async {
+          await database.matchDao.addMatch(match: testMatch1);
+          final endedAt = DateTime(2026, 1, 1, 12);
+          await database.matchDao.updateMatchEndedAt(
+            matchId: testMatch1.id,
+            endedAt: endedAt,
+          );
+
+          await database.teamDao.updateTeamScore(
+            teamId: testTeam1.id,
+            matchId: testMatch1.id,
+            score: 5,
+          );
+
+          final removed = await database.teamDao.removeAllTeamScores(
+            matchId: testMatch1.id,
+            removeEndedAt: false,
+          );
+          expect(removed, isTrue);
+
+          final team = await database.teamDao.getTeamById(teamId: testTeam1.id);
+          expect(team.score, isNull);
+
+          for (final member in testTeam1.members) {
+            final entry = await database.scoreEntryDao.getScore(
+              playerId: member.id,
+              matchId: testMatch1.id,
+            );
+            expect(entry, isNull);
+          }
+
+          final match = await database.matchDao.getMatchById(
+            matchId: testMatch1.id,
+          );
+          expect(match.endedAt, endedAt);
+        },
+      );
+
+      test('updateTeamScore() keeps endedAt', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        final endedAt = DateTime(2026, 1, 1, 12);
+        await database.matchDao.updateMatchEndedAt(
+          matchId: testMatch1.id,
+          endedAt: endedAt,
+        );
+
+        await database.teamDao.updateTeamScore(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+          score: 5,
+        );
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, endedAt);
+      });
+
+      test('setWinnerTeam() and setLoserTeam() keep endedAt', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        final endedAt = DateTime(2026, 1, 1, 12);
+        await database.matchDao.updateMatchEndedAt(
+          matchId: testMatch1.id,
+          endedAt: endedAt,
+        );
+
+        await database.teamDao.setWinnerTeam(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+        );
+        var match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, endedAt);
+
+        await database.teamDao.setLoserTeam(
+          teamId: testTeam1.id,
+          matchId: testMatch1.id,
+        );
+        match = await database.matchDao.getMatchById(matchId: testMatch1.id);
+        expect(match.endedAt, endedAt);
+      });
+
+      test('setTeamPlacements() keeps endedAt', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        final endedAt = DateTime(2026, 1, 1, 12);
+        await database.matchDao.updateMatchEndedAt(
+          matchId: testMatch1.id,
+          endedAt: endedAt,
+        );
+
+        await database.teamDao.setTeamPlacements(
+          teams: [testTeam1, testTeam2],
+          matchId: testMatch1.id,
+        );
+
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, endedAt);
+      });
+
       test('updateTeamScore() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 

@@ -629,6 +629,36 @@ void main() {
         expect(match2.scores.length, 1);
       });
 
+      test(
+        'deleteAllScoresForMatch() with removeEndedAt false keeps endedAt',
+        () async {
+          final endedAt = DateTime(2026, 1, 1, 12);
+          await database.matchDao.updateMatchEndedAt(
+            matchId: testMatch1.id,
+            endedAt: endedAt,
+          );
+
+          final score = ScoreEntry(roundNumber: 1, score: 10, change: 10);
+          await database.scoreEntryDao.addScore(
+            playerId: testPlayer1.id,
+            matchId: testMatch1.id,
+            entry: score,
+          );
+
+          final deleted = await database.scoreEntryDao.deleteAllScoresForMatch(
+            matchId: testMatch1.id,
+            removeEndedAt: false,
+          );
+          expect(deleted, isTrue);
+
+          final match = await database.matchDao.getMatchById(
+            matchId: testMatch1.id,
+          );
+          expect(match.scores.length, 0);
+          expect(match.endedAt, endedAt);
+        },
+      );
+
       test('deleteAllScoresForPlayerInMatch() works correctly', () async {
         await database.scoreEntryDao.addScoresAsList(
           playerId: testPlayer1.id,
