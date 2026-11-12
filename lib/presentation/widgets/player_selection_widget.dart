@@ -98,7 +98,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   bool isPairingMode = false;
   final Set<String> pairingSelection = {};
   String? pressingId;
-  String? recentlyAddedPlayerId;
+  final Set<String> recentlyAddedPlayerIds = {};
 
   final TextEditingController searchBarController = TextEditingController();
   final FocusNode searchBarFocusNode = FocusNode();
@@ -172,7 +172,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     if (!mounted) {
       return;
     }
-
     setState(() => isSearchBarFocused = searchBarFocusNode.hasFocus);
   }
 
@@ -448,7 +447,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         const SizedBox(height: 10),
     itemBuilder: (BuildContext context, int index) {
       final player = suggestedPlayers[index];
-      final isRecentlyAdded = recentlyAddedPlayerId == player.id;
+      final isRecentlyAdded = recentlyAddedPlayerIds.contains(player.id);
       return TextIconListTile(
         player: player,
         icon: isRecentlyAdded ? Icons.check : Icons.add,
@@ -465,17 +464,17 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         final unit = Team(name: '', members: [player]);
         selectedUnits.insert(0, unit);
         addedUnitIds.add(unit.id);
-        recentlyAddedPlayerId = player.id;
+        recentlyAddedPlayerIds.add(player.id);
         widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
         scrollSelectedUnitsToStart();
 
         Future.delayed(const Duration(milliseconds: 400), () {
-          if (!mounted || recentlyAddedPlayerId != player.id) {
+          if (!mounted || !recentlyAddedPlayerIds.contains(player.id)) {
             return;
           }
           setState(() {
             suggestedPlayers.remove(player);
-            recentlyAddedPlayerId = null;
+            recentlyAddedPlayerIds.remove(player.id);
           });
         });
       }
