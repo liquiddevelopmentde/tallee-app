@@ -1,8 +1,6 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:cupertino_ui/cupertino_ui.dart';
 // flutter_markdown_plus still requires the legacy ThemeData type.
-// ignore: migrate_design_widgets
+// ignore: deprecated_member_use, migrate_design_widgets
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
