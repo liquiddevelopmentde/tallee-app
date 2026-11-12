@@ -16,6 +16,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add_team => 'Team hinzufügen';
 
   @override
+  String get add_to_favourites => 'Zu Favoriten hinzufügen';
+
+  @override
   String get all => 'Alle';
 
   @override
@@ -33,6 +36,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get app_name => 'Tallee';
+
+  @override
+  String get ascending => 'Aufsteigend';
 
   @override
   String get associate_game => 'Spielvorlage verknüpfen';
@@ -255,6 +261,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get deleted => 'Gelöscht';
+
+  @override
+  String get descending => 'Absteigend';
 
   @override
   String get description => 'Beschreibung';
@@ -830,6 +839,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remaining => 'verbleibend';
 
   @override
+  String get remove_from_favourites => 'Aus Favoriten entfernen';
+
+  @override
   String get report_error => 'Fehler melden';
 
   @override
@@ -1017,6 +1029,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get skip => 'Überspringen';
+
+  @override
+  String get sort => 'Sortieren';
 
   @override
   String get start_onboarding => 'Onboarding starten';
