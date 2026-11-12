@@ -290,13 +290,14 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  /* Winner handling */
+  /* Winners handling */
 
+  /// Checks if a match has a winner by looking for a score entry where score is 1.
   Future<bool> hasWinner({required String matchId}) async =>
       (await getWinners(matchId: matchId)).isNotEmpty;
 
-  /// Retrieves the winner of a match by looking for a score entry where score
-  /// is 1. Returns `null` if no player found, else the first with the score.
+  /// Retrieves the winners of a match by looking for a score entry where score
+  /// is 1. Returns empty list if no players were found.
   Future<List<Player>> getWinners({required String matchId}) async {
     final query =
         select(scoreEntryTable).join([
@@ -330,12 +331,9 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /// Removes the winners of a match.
   ///
-  /// Returns `true` if the winner was removed, `false` if there are multiple
-  /// scores or if the winner cannot be removed.
+  /// Returns `true` if more than 0 rows were affected.
   Future<bool> removeWinners({required String matchId}) async =>
       await deleteAllScoresForMatch(matchId: matchId);
-
-  /* multiple winners handling */
 
   /// Sets the winners for a match.
   ///
