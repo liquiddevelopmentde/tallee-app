@@ -111,6 +111,12 @@ abstract class AppLocalizations {
   /// **'Add Team'**
   String get add_team;
 
+  /// No description provided for @add_to_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get add_to_favourites;
+
   /// No description provided for @all.
   ///
   /// In en, this message translates to:
@@ -146,6 +152,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tallee'**
   String get app_name;
+
+  /// No description provided for @ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get ascending;
 
   /// No description provided for @associate_game.
   ///
@@ -554,6 +566,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted'**
   String get deleted;
+
+  /// No description provided for @descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get descending;
 
   /// No description provided for @description.
   ///
@@ -1539,6 +1557,12 @@ abstract class AppLocalizations {
   /// **'remaining'**
   String get remaining;
 
+  /// No description provided for @remove_from_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get remove_from_favourites;
+
   /// No description provided for @report_error.
   ///
   /// In en, this message translates to:
@@ -1869,6 +1893,12 @@ abstract class AppLocalizations {
   /// **'Skip'**
   String get skip;
 
+  /// No description provided for @sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort;
+
   /// No description provided for @start_onboarding.
   ///
   /// In en, this message translates to:
@@ -2118,7 +2148,7 @@ abstract class AppLocalizations {
   /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
-  /// **'Unknown Exception (see console)'**
+  /// **'Unknown Exception'**
   String get unknown_exception;
 
   /// No description provided for @unsatisfied.

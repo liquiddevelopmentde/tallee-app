@@ -86,7 +86,12 @@ class PullDownMenu extends PopupRoute<void> {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
-        child: Column(mainAxisSize: MainAxisSize.min, children: items),
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topRight,
+          child: _PullDownMenuContent(initialItems: items),
+        ),
       ),
     ),
   );
@@ -98,4 +103,58 @@ class PullDownMenu extends PopupRoute<void> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) => child;
+}
+
+class _PullDownMenuContent extends StatefulWidget {
+  const _PullDownMenuContent({required this.initialItems});
+
+  final List<PullDownMenuTile> initialItems;
+
+  @override
+  State<_PullDownMenuContent> createState() => _PullDownMenuContentState();
+}
+
+class _PullDownMenuContentState extends State<_PullDownMenuContent> {
+  late List<PullDownMenuTile> _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = widget.initialItems;
+  }
+
+  void _openSubmenu(List<PullDownMenuTile> items) {
+    setState(() => _items = items);
+  }
+
+  @override
+  Widget build(BuildContext context) => PullDownMenuScope(
+    openSubmenu: _openSubmenu,
+    child: Column(
+      key: ObjectKey(_items),
+      mainAxisSize: MainAxisSize.min,
+      children: _items,
+    ),
+  );
+}
+
+/// Lets tiles replace the content of the enclosing [PullDownMenu] with a
+/// nested menu without opening a new route. This keeps the barrier in place,
+/// so the background does not darken again on switching menus.
+class PullDownMenuScope extends InheritedWidget {
+  const PullDownMenuScope({
+    super.key,
+    required this.openSubmenu,
+    required super.child,
+  });
+
+  /// Replaces the current menu items with the given list of tiles.
+  final ValueChanged<List<PullDownMenuTile>> openSubmenu;
+
+  static PullDownMenuScope? maybeOf(BuildContext context) =>
+      context.getInheritedWidgetOfExactType<PullDownMenuScope>();
+
+  @override
+  bool updateShouldNotify(PullDownMenuScope oldWidget) =>
+      openSubmenu != oldWidget.openSubmenu;
 }
