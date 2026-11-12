@@ -284,9 +284,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String matchId,
     required int score,
   }) async {
-    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-      const TeamTableCompanion(score: Value(null)),
-    );
+    // Resetting the members score to have a clean state
     await _deleteAllScoresForMembersOfTeam(teamId: teamId, matchId: matchId);
 
     final rowsAffected =
@@ -317,7 +315,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return true;
   }
 
-  /// Removes the scores for all teams in the match with the given [matchId] by setting their scores to null.
+  /// Removes the scores for all teams in the match with the given [matchId] by
+  /// setting their scores to null and deleting all player scores.
   /// If [removeEndedAt] is `true`, the match is marked as ongoing again.
   Future<bool> removeAllTeamScores({
     required String matchId,
@@ -375,10 +374,6 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }) async {
     // Reset all team scores without reopening the match
     await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
-    // Reset all score entries
-    for (final team in winners) {
-      await _deleteAllScoresForMembersOfTeam(teamId: team.id, matchId: matchId);
-    }
 
     for (final team in winners) {
       await updateTeamScore(teamId: team.id, matchId: matchId, score: 1);
@@ -396,7 +391,19 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> setLoserTeam({
     required String teamId,
     required String matchId,
-  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
+  }) async {
+    // Reset all team scores without reopening the match
+    await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
+
+    /// Set score of loser team to 0
+    final success = await updateTeamScore(
+      teamId: teamId,
+      matchId: matchId,
+      score: 0,
+    );
+
+    return success;
+  }
 
   /// Removes the loser from the match with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
