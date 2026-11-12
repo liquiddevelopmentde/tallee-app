@@ -35,8 +35,8 @@ class MatchResultView extends StatefulWidget {
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
 
-  late final List<Player> allPlayers;
-  late final List<Team> allTeams;
+  List<Player> allPlayers = [];
+  List<Team> allTeams = [];
 
   /// Currently selected player(s)/team(s) (winner / loser)
   List<Player> selectedPlayers = [];
@@ -185,7 +185,14 @@ class _MatchResultViewState extends State<MatchResultView> {
                           if (ruleset.isPlacement)
                             PlacementDragList(
                               match: widget.match,
-                              onOrderChanged: () => setState(() {}),
+                              teams: allTeams,
+                              players: allPlayers,
+                              onTeamOrderChanged: (teams) {
+                                setState(() => allTeams = teams);
+                              },
+                              onPlayerOrderChanged: (players) {
+                                setState(() => allPlayers = players);
+                              },
                             ),
                         ],
                       ),
@@ -294,7 +301,7 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// Initializes the variables based on the ruleset
   void initData() {
     if (match.useTeamLogic) {
-      allTeams = widget.match.teams ?? [];
+      allTeams = List.of(widget.match.teams ?? []);
 
       switch (ruleset) {
         case Ruleset.winner:
@@ -321,7 +328,7 @@ class _MatchResultViewState extends State<MatchResultView> {
           );
       }
     } else {
-      allPlayers = widget.match.players;
+      allPlayers = List.of(widget.match.players);
 
       switch (ruleset) {
         case Ruleset.winner:

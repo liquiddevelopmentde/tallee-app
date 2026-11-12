@@ -13,15 +13,24 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 class PlacementDragList extends StatefulWidget {
   /// A list widget for the [MatchResultView] that lets the user drag teams / players to different placements.
   /// - [match]: The match whose players / teams are being reordered.
-  /// - [onOrderChanged]: Called after the user moved a player / team.
+  /// - [teams]: The initial order of the teams.
+  /// - [players]: The initial order of the players.
+  /// - [onTeamOrderChanged]: Called with the new team order after the user moved a team.
+  /// - [onPlayerOrderChanged]: Called with the new player order after the user moved a player.
   const PlacementDragList({
     super.key,
     required this.match,
-    this.onOrderChanged,
+    this.teams = const [],
+    this.players = const [],
+    this.onTeamOrderChanged,
+    this.onPlayerOrderChanged,
   });
 
   final Match match;
-  final VoidCallback? onOrderChanged;
+  final List<Team> teams;
+  final List<Player> players;
+  final ValueChanged<List<Team>>? onTeamOrderChanged;
+  final ValueChanged<List<Player>>? onPlayerOrderChanged;
 
   @override
   State<PlacementDragList> createState() => _PlacementDragListState();
@@ -39,9 +48,9 @@ class _PlacementDragListState extends State<PlacementDragList> {
   @override
   initState() {
     if (useTeamLogic) {
-      allTeams = widget.match.teams ?? [];
+      allTeams = List.of(widget.teams);
     } else {
-      allPlayers = widget.match.players;
+      allPlayers = List.of(widget.players);
     }
 
     placementController = ScrollController();
@@ -95,7 +104,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         final Team team = allTeams.removeAt(oldIndex);
                         allTeams.insert(newIndex, team);
                       });
-                      widget.onOrderChanged?.call();
+                      widget.onTeamOrderChanged?.call(List.of(allTeams));
                     },
                     onReorderStart: (_) => Haptics.heavyImpact(),
                     onReorderEnd: (_) => Haptics.selectionClick(),
@@ -142,7 +151,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         final Player item = allPlayers.removeAt(oldIndex);
                         allPlayers.insert(newIndex, item);
                       });
-                      widget.onOrderChanged?.call();
+                      widget.onPlayerOrderChanged?.call(List.of(allPlayers));
                     },
                     onReorderStart: (_) => Haptics.heavyImpact(),
                     onReorderEnd: (_) => Haptics.selectionClick(),
