@@ -97,7 +97,7 @@ class _MatchResultViewState extends State<MatchResultView> {
             ShowcaseView.get().dismiss();
           } catch (_) {}
         }
-        handleSaving(endMatch: false);
+        saveResults(isAutoSave: true);
       },
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
@@ -203,7 +203,8 @@ class _MatchResultViewState extends State<MatchResultView> {
                       text: loc.end_match,
                       onPressed: canSave
                           ? () async {
-                              await handleSaving(endMatch: true);
+                              await saveResults();
+                              await endMatch();
                               if (context.mounted) Navigator.pop(context);
                             }
                           : null,
@@ -214,7 +215,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                       text: loc.save_changes,
                       onPressed: canSave && hasChangedResult
                           ? () async {
-                              await handleSaving(endMatch: true);
+                              await saveResults();
                               if (context.mounted) Navigator.pop(context);
                             }
                           : null,
@@ -352,10 +353,11 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the current input of values based on the ruleset.
-  /// [endMatch] determines if the match will be ended or if just saving the values
-  Future<void> handleSaving({required bool endMatch}) async {
+  /// [isAutoSave] determines if the method is called via auto save or
+  /// explicitly via a button tap
+  Future<void> saveResults({bool isAutoSave = false}) async {
     // Prevents auto-save if match has already been finished
-    if (widget.match.endedAt != null && endMatch == false) return;
+    if (isAutoSave && widget.match.endedAt != null) return;
 
     if (ruleset.isWinner) {
       await handleWinners();
@@ -369,18 +371,19 @@ class _MatchResultViewState extends State<MatchResultView> {
       await handleLives();
     }
 
-    if (endMatch && widget.match.endedAt == null) {
-      await db.matchDao.updateMatchEndedAt(
-        matchId: widget.match.id,
-        endedAt: DateTime.now(),
-      );
-
-      if (!mounted) return;
-      final rateProvider = context.read<RateDialogProvider>();
-      rateProvider.request();
-    }
-
     widget.onWinnerChanged?.call();
+  }
+
+  /// Sets Match.endedAt to the current time and requests a rating dialog to be shown.
+  Future<void> endMatch() async {
+    await db.matchDao.updateMatchEndedAt(
+      matchId: widget.match.id,
+      endedAt: DateTime.now(),
+    );
+
+    if (!mounted) return;
+    final rateProvider = context.read<RateDialogProvider>();
+    rateProvider.request();
   }
 
   /// Handles saving the (multiple) winners to the database.
