@@ -284,9 +284,6 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String matchId,
     required int score,
   }) async {
-    // Resetting the members score to have a clean state
-    await _deleteAllScoresForMembersOfTeam(teamId: teamId, matchId: matchId);
-
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
           TeamTableCompanion(score: Value(score)),
