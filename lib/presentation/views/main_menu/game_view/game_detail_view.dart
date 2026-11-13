@@ -270,8 +270,6 @@ class _GameDetailViewState extends State<GameDetailView> {
       ),
     );
     if (confirmed == null || !confirmed) return;
-    if (!context.mounted) return;
-
     final success = await db.gameDao.deleteGame(gameId: game.id);
     if (!context.mounted) return;
     if (!success) {
