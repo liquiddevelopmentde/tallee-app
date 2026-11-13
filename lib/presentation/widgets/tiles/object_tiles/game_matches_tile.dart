@@ -39,30 +39,30 @@ class _GameMatchesTileState extends State<GameMatchesTile>
   /// Horizontal and top padding of the surrounding [InfoTile].
   static const double _tilePadding = 12;
 
-  late AnimationController expandController;
-  late CurvedAnimation expandAnimation;
+  late AnimationController _expandController;
+  late CurvedAnimation _expandAnimation;
 
-  bool isExpanded = false;
+  bool _isExpanded = false;
 
   @override
   void initState() {
     super.initState();
 
-    expandController = AnimationController(
+    _expandController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
       reverseDuration: const Duration(milliseconds: 250),
     );
-    expandAnimation = CurvedAnimation(
-      parent: expandController,
+    _expandAnimation = CurvedAnimation(
+      parent: _expandController,
       curve: Curves.easeInOutCubicEmphasized,
     );
   }
 
   @override
   void dispose() {
-    expandAnimation.dispose();
-    expandController.dispose();
+    _expandAnimation.dispose();
+    _expandController.dispose();
     super.dispose();
   }
 
@@ -116,10 +116,10 @@ class _GameMatchesTileState extends State<GameMatchesTile>
         buildChipWrap(visibleMatches),
         if (hiddenMatches.isNotEmpty)
           SizeTransition(
-            sizeFactor: expandAnimation,
+            sizeFactor: _expandAnimation,
             alignment: AlignmentDirectional.topStart,
             child: FadeTransition(
-              opacity: expandAnimation,
+              opacity: _expandAnimation,
               child: Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: buildChipWrap(hiddenMatches),
@@ -162,8 +162,8 @@ class _GameMatchesTileState extends State<GameMatchesTile>
           ),
         ),
         child: Icon(
-          isExpanded ? Icons.expand_less_rounded : Icons.more_horiz,
-          key: ValueKey(isExpanded),
+          _isExpanded ? Icons.expand_less_rounded : Icons.more_horiz,
+          key: ValueKey(_isExpanded),
           size: 20,
           color: context.talleeColors.hintColor,
         ),
@@ -172,12 +172,12 @@ class _GameMatchesTileState extends State<GameMatchesTile>
   );
 
   void toggleExpanded() {
-    setState(() => isExpanded = !isExpanded);
+    setState(() => _isExpanded = !_isExpanded);
 
-    if (isExpanded) {
-      expandController.forward();
+    if (_isExpanded) {
+      _expandController.forward();
     } else {
-      expandController.reverse();
+      _expandController.reverse();
     }
   }
 
