@@ -180,12 +180,16 @@ class _GameDetailViewState extends State<GameDetailView> {
   }
 
   /// The rows shown in the statistics tile, derived from [matches].
-  List<(String, InlineSpan)> statisticRows(BuildContext context) {
+  List<(String, InlineSpan, bool)> statisticRows(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
     return [
-      (loc.played_matches, TextSpan(text: matches.length.toString())),
-      (loc.best_player, bestPlayerSpan(context)),
+      (
+        loc.played_matches,
+        TextSpan(text: matches.length.toString()),
+        isLoading,
+      ),
+      (loc.best_player, bestPlayerSpan(context), isLoading),
       (
         loc.last_played,
         TextSpan(
@@ -193,6 +197,7 @@ class _GameDetailViewState extends State<GameDetailView> {
               ? '-'
               : matches.first.createdAt.toMediumDate(context),
         ),
+        isLoading,
       ),
     ];
   }
@@ -200,7 +205,9 @@ class _GameDetailViewState extends State<GameDetailView> {
   /// The players with the most MVP titles across [matches], or `-` if none.
   InlineSpan bestPlayerSpan(BuildContext context) {
     final names = bestPlayerNames();
-    if (names.isEmpty) return const TextSpan(text: '-');
+    if (names.isEmpty) {
+      return TextSpan(text: isLoading ? 'Skeleton Player' : '-');
+    }
 
     final parts = _splitNames(names);
     return TextSpan(

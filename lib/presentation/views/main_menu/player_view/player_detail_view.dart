@@ -331,11 +331,12 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Statistics
                 DetailTile(
                   rows: [
-                    (loc.matches_played, totalMatches.toString()),
-                    (loc.matches_won, matchesWon.toString()),
+                    (loc.matches_played, totalMatches.toString(), isLoading),
+                    (loc.matches_won, matchesWon.toString(), isLoading),
                     (
                       loc.winrate,
                       '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
+                      isLoading,
                     ),
                   ],
                 ),
