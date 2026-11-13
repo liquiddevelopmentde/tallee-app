@@ -1,7 +1,7 @@
 import 'dart:math' show max, min;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/physics.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// `ScrollPhysics` with iOS-like fling feel, but blocks overscroll on both ends.
 class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
@@ -23,14 +23,13 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
   final double minFlingVelocity;
 
   @override
-  EdgeBlockedBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return EdgeBlockedBouncingScrollPhysics(
-      parent: buildParent(ancestor),
-      momentumMultiplier: momentumMultiplier,
-      friction: friction,
-      minFlingVelocity: minFlingVelocity,
-    );
-  }
+  EdgeBlockedBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) =>
+      EdgeBlockedBouncingScrollPhysics(
+        parent: buildParent(ancestor),
+        momentumMultiplier: momentumMultiplier,
+        friction: friction,
+        minFlingVelocity: minFlingVelocity,
+      );
 
   @override
   double applyBoundaryConditions(ScrollMetrics position, double value) {
@@ -50,25 +49,19 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
     return 0;
   }
 
-  bool _isUnderscrolling(ScrollMetrics position, double value) {
-    return value < position.pixels &&
-        position.pixels <= position.minScrollExtent;
-  }
+  bool _isUnderscrolling(ScrollMetrics position, double value) =>
+      value < position.pixels && position.pixels <= position.minScrollExtent;
 
-  bool _isOverscrolling(ScrollMetrics position, double value) {
-    return position.maxScrollExtent <= position.pixels &&
-        position.pixels < value;
-  }
+  bool _isOverscrolling(ScrollMetrics position, double value) =>
+      position.maxScrollExtent <= position.pixels && position.pixels < value;
 
-  bool _didHitTopEdge(ScrollMetrics position, double value) {
-    return value < position.minScrollExtent &&
-        position.minScrollExtent < position.pixels;
-  }
+  bool _didHitTopEdge(ScrollMetrics position, double value) =>
+      value < position.minScrollExtent &&
+      position.minScrollExtent < position.pixels;
 
-  bool _didHitBottomEdge(ScrollMetrics position, double value) {
-    return position.pixels < position.maxScrollExtent &&
-        position.maxScrollExtent < value;
-  }
+  bool _didHitBottomEdge(ScrollMetrics position, double value) =>
+      position.pixels < position.maxScrollExtent &&
+      position.maxScrollExtent < value;
 
   @override
   Simulation? createBallisticSimulation(
@@ -115,8 +108,7 @@ class EdgeBlockedBouncingScrollPhysics extends BouncingScrollPhysics {
   }
 
   @override
-  double carriedMomentum(double existingVelocity) {
-    return super.carriedMomentum(existingVelocity) +
-        (existingVelocity * (momentumMultiplier - 1));
-  }
+  double carriedMomentum(double existingVelocity) =>
+      super.carriedMomentum(existingVelocity) +
+      (existingVelocity * (momentumMultiplier - 1));
 }

@@ -1,6 +1,7 @@
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class SettingsListTile extends StatefulWidget {
@@ -40,100 +41,89 @@ class _SettingsListTileState extends State<SettingsListTile> {
   bool get hasDescription => widget.description != null;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.95,
-        child: GestureDetector(
-          onTap: () {
-            handleTap();
-          },
-          child: Container(
-            margin: EdgeInsets.zero,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: CustomTheme.standardBoxDecoration,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ColoredIconContainer(
-                          icon: widget.icon,
-                          containerSize: 44,
-                        ),
-                        const SizedBox(width: 16),
-                        Text(
-                          widget.title,
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.suffixWidget != null) widget.suffixWidget!,
-                        // Arrow icon for expanded content
-                        if (canExpand) ...[
-                          const SizedBox(width: 8),
-                          AnimatedRotation(
-                            duration: const Duration(milliseconds: 200),
-                            turns: isExpanded ? 0.5 : 0,
-                            child: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: CustomTheme.hintColor,
-                            ),
+  Widget build(BuildContext context) => Center(
+    child: SizedBox(
+      width: MediaQuery.sizeOf(context).width * AppSpacing.contentWidthFactor,
+      child: GestureDetector(
+        onTap: handleTap,
+        child: Container(
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          decoration: context.standardBoxDecoration,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ColoredIconContainer(icon: widget.icon),
+                      const SizedBox(width: 16),
+                      Text(widget.title, style: const TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.suffixWidget != null) widget.suffixWidget!,
+                      // Arrow icon for expanded content
+                      if (canExpand) ...[
+                        const SizedBox(width: 8),
+                        AnimatedRotation(
+                          duration: const Duration(milliseconds: 200),
+                          turns: isExpanded ? 0.5 : 0,
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: context.talleeColors.hintColor,
                           ),
-                        ],
+                        ),
                       ],
-                    ),
-                  ],
-                ),
-
-                if (hasDescription) ...[
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.description!,
-                    overflow: TextOverflow.visible,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: CustomTheme.hintColor,
-                    ),
+                    ],
                   ),
                 ],
+              ),
 
-                // expanded content
-                if (canExpand)
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeInOut,
-                    alignment: Alignment.topCenter,
-                    child: isExpanded
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: widget.expandedContent,
-                            ),
-                          )
-                        : const SizedBox(width: double.infinity, height: 0),
+              if (hasDescription) ...[
+                const SizedBox(height: 10),
+                Text(
+                  widget.description!,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.talleeColors.hintColor,
                   ),
+                ),
               ],
-            ),
+
+              // expanded content
+              if (canExpand)
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: isExpanded
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: widget.expandedContent,
+                          ),
+                        )
+                      : const SizedBox(width: double.infinity, height: 0),
+                ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 
   void handleTap() {
     if (widget.onPressed != null) {
-      HapticFeedback.selectionClick();
+      Haptics.selectionClick();
     }
     if (canExpand) {
       setState(() => isExpanded = !isExpanded);

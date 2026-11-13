@@ -1,8 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/custom_text_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
 class CustomShowcaseWidget extends StatelessWidget {
@@ -10,7 +11,6 @@ class CustomShowcaseWidget extends StatelessWidget {
     super.key,
     required this.showcaseKey,
     required this.description,
-    required this.identifier,
     required this.child,
     this.tooltipPosition = TooltipPosition.bottom,
     this.onTargetClick,
@@ -22,7 +22,6 @@ class CustomShowcaseWidget extends StatelessWidget {
 
   final GlobalKey showcaseKey;
   final String description;
-  final String identifier;
   final Widget child;
   final TooltipPosition tooltipPosition;
   final VoidCallback? onTargetClick;
@@ -48,7 +47,6 @@ class CustomShowcaseWidget extends StatelessWidget {
         color: Colors.black,
       ),
       descriptionTextAlign: TextAlign.center,
-      scaleAnimationDuration: const Duration(milliseconds: 300),
       scaleAnimationCurve: Curves.easeInOut,
       onTargetClick: onTargetClick,
       disableBarrierInteraction: disableBarrierInteraction,
@@ -61,6 +59,10 @@ class CustomShowcaseWidget extends StatelessWidget {
         end: 0,
         child: CustomTextButton(
           text: AppLocalizations.of(context).skip,
+          style: TextStyle(
+            color: context.talleeColors.navBarItemSelectedColor,
+            fontWeight: FontWeight.bold,
+          ),
           onPressed: () {
             showcaseProvider.skipTour();
             ShowcaseView.get().dismiss();

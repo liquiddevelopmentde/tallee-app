@@ -1,106 +1,16 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
 import 'package:material_ui/material_ui.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/state/showcase_provider.dart';
 
-export 'app_color_utils.dart';
-export 'duration_utils.dart';
-export 'icon_utils.dart';
-export 'translations.dart';
-
-/// Counts how many players in the [match] are not part of the group
-///
-/// Returns the text you append after the group name, e.g. " + 5" or an empty
-/// string if there are no extra players
-String getExtraPlayerCount(Match match) {
-  int count = 0;
-
-  if (match.group == null) {
-    return '';
-  }
-
-  final groupMembers = match.group!.members;
-  final players = match.players;
-
-  for (var player in players) {
-    if (!groupMembers.any((member) => member.id == player.id)) {
-      count++;
-    }
-  }
-
-  if (count == 0) {
-    return '';
-  }
-  return ' + ${count.toString()}';
+/// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
+String getPointLabel(AppLocalizations loc, int amount) {
+  if (amount == 1) return '$amount ${loc.point}';
+  return '$amount ${loc.points}';
 }
 
-extension Comparison on String {
-  /// Compares this string with [other] ignoring upper-/lowercase.
-  int compareIgnoringCaseTo(String other) =>
-      toLowerCase().compareTo(other.toLowerCase());
-}
-
-extension FilenameSanitization on String {
-  /// Sanitizes a string to be used as a filename.
-  ///
-  /// Replaces spaces with underscores, normalizes German umlauts,
-  /// and removes any characters that are not alphanumeric, dots, underscores, or hyphens.
-  /// If the resulting string is empty, returns the [fallback].
-  String toSafeFilename({String fallback = 'match'}) {
-    final sanitized = replaceAll(' ', '_')
-        .replaceAll('ä', 'ae')
-        .replaceAll('ö', 'oe')
-        .replaceAll('ü', 'ue')
-        .replaceAll('Ä', 'Ae')
-        .replaceAll('Ö', 'Oe')
-        .replaceAll('Ü', 'Ue')
-        .replaceAll('ß', 'ss')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '');
-
-    return sanitized.isEmpty ? fallback : sanitized;
-  }
-}
-
-/// Returns the rulesets which make sense for a given [StatisticType]
-List<Ruleset> getRulesetForTypes(StatisticType type) {
-  final scoreBaseRulesets = [Ruleset.lowestScore, Ruleset.highestScore];
-  final timeBaseRulesets = [Ruleset.longestTime, Ruleset.shortestTime];
-  const allRulesets = Ruleset.values;
-
-  switch (type) {
-    case StatisticType.averageScore:
-    case StatisticType.bestScore:
-    case StatisticType.worstScore:
-    case StatisticType.totalScore:
-      return scoreBaseRulesets;
-
-    case StatisticType.totalTime:
-    case StatisticType.averageTime:
-    case StatisticType.longestTime:
-    case StatisticType.shortestTime:
-      return timeBaseRulesets;
-
-    case StatisticType.totalMatches:
-    case StatisticType.totalLosses:
-    case StatisticType.winrate:
-    case StatisticType.totalWins:
-      return allRulesets;
-  }
-}
-
-/// Helper function to classify connection/network exceptions
-bool isNetworkError(Object error) {
-  return error is SocketException ||
-      error is TimeoutException ||
-      error is HandshakeException ||
-      error is http.ClientException ||
-      error.toString().contains('SocketException') ||
-      error.toString().contains('Failed host lookup');
-}
+String getLifeLabel(AppLocalizations loc, int amount) =>
+    '$amount ${loc.lives(amount)}';
 
 void handleShowcase({
   required List<GlobalKey> widgetKeys,

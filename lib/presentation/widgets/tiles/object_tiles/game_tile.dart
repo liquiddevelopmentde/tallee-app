@@ -1,9 +1,9 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/game.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 
 class GameTile extends StatelessWidget {
@@ -13,7 +13,7 @@ class GameTile extends StatelessWidget {
   /// - [onTap]: The callback invoked when the tile is tapped.
   /// - [onLongPress]: The callback invoked when the tile is long pressed.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
-  /// - [borderColor]: Optional color for the highlight border. If null, [badgeColor] or orange is used.
+  /// - [borderColor]: Optional color for the highlight border. If null gamecolor is used.
   const GameTile({
     super.key,
     required this.game,
@@ -35,26 +35,26 @@ class GameTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = game.name;
     final description = game.description;
-    final ruleset = translateRulesetToString(game.ruleset, context);
-    final gameColor = getColorFromAppColor(game.color);
+    final ruleset = game.ruleset.toLocalizedString(context);
+    final gameColor = game.color.colorValue(context);
     final highlightBorderColor = borderColor ?? gameColor;
     final showChevron = onLongPress != null;
 
     return GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         if (onTap != null) {
           onTap!.call();
         }
       },
       onLongPress: () {
-        HapticFeedback.heavyImpact();
+        Haptics.heavyImpact();
         if (onLongPress != null) {
           onLongPress!.call();
         }
       },
       child: AnimatedContainer(
-        margin: CustomTheme.tileMargin,
+        margin: AppSpacing.tileMargin,
         padding: EdgeInsets.only(
           top: 12,
           bottom: 12,
@@ -63,8 +63,8 @@ class GameTile extends StatelessWidget {
           right: showChevron ? 8 : 12,
         ),
         decoration: !isHighlighted
-            ? CustomTheme.standardBoxDecoration
-            : CustomTheme.highlightedBoxDecoration.copyWith(
+            ? context.standardBoxDecoration
+            : context.highlightedBoxDecoration.copyWith(
                 border: Border.all(
                   color: highlightBorderColor.withValues(alpha: 0.9),
                   width: 2,
@@ -89,10 +89,8 @@ class GameTile extends StatelessWidget {
                     children: [
                       // Colored Icon
                       ColoredIconContainer(
-                        icon: getRulesetIcon(game.ruleset),
+                        icon: game.ruleset.icon,
                         color: gameColor,
-                        containerSize: 44,
-                        iconSize: 24,
                         margin: EdgeInsets.zero,
                       ),
 
@@ -119,9 +117,9 @@ class GameTile extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               softWrap: false,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: CustomTheme.hintColor,
+                                color: context.talleeColors.hintColor,
                               ),
                             ),
                           ],
@@ -134,7 +132,12 @@ class GameTile extends StatelessWidget {
                           spacing: 8,
                           children: [
                             const Icon(MATCH_ICON),
-                            Text(gameCount.toString()),
+                            Text(
+                              gameCount.toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                     ],
@@ -160,7 +163,7 @@ class GameTile extends StatelessWidget {
 
             // Chevron
             if (showChevron)
-              const Icon(Icons.chevron_right, color: CustomTheme.hintColor),
+              Icon(Icons.chevron_right, color: context.talleeColors.hintColor),
           ],
         ),
       ),

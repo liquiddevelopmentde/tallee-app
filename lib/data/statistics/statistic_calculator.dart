@@ -16,11 +16,32 @@ class StatisticCalculator {
       filteredMatches,
     );
 
-    return _computeValuesForType(
+    final values = _computeValuesForType(
       type: statistic.type,
       matches: filteredMatches,
       players: filteredPlayers,
     );
+    sortValues(values, statistic.sortDirection);
+    return values;
+  }
+
+  /// Sorts [entries] in place by their value according to [sortDirection].
+  ///
+  /// Ties are broken by player name and id so the order stays stable between
+  /// rebuilds.
+  static void sortValues(
+    List<(Player, num)> entries,
+    SortDirection sortDirection,
+  ) {
+    entries.sort((a, b) {
+      final byValue = sortDirection == SortDirection.ascending
+          ? a.$2.compareTo(b.$2)
+          : b.$2.compareTo(a.$2);
+      if (byValue != 0) return byValue;
+
+      final byName = a.$1.name.compareTo(b.$1.name);
+      return byName != 0 ? byName : a.$1.id.compareTo(b.$1.id);
+    });
   }
 
   /// Returns the list of [Match] objects that should be considered for the
@@ -51,7 +72,7 @@ class StatisticCalculator {
           59,
         );
         filteredMatches = matches.where((m) {
-          if (m.endedAt == null) return false;
+          if (!m.hasEnded) return false;
           final isAfterOrAtStart =
               m.createdAt.isAtSameMomentAs(startOfDay) ||
               m.createdAt.isAfter(startOfDay);
@@ -65,7 +86,7 @@ class StatisticCalculator {
       final minDate = _getMinimumDate(timeframe: statistic.timeframe);
       if (minDate != null) {
         filteredMatches = matches
-            .where((m) => m.endedAt != null && !m.createdAt.isBefore(minDate))
+            .where((m) => m.hasEnded && !m.createdAt.isBefore(minDate))
             .toList();
       }
     }
@@ -195,8 +216,9 @@ class StatisticCalculator {
     }
   }
 
-  /// Computes the statistic values for each player based on the statistic type
-  /// and returns a list of (Player, value) tuples sorted descending by value.
+  /// Computes the statistic values for each player based on the statistic type.
+  /// The returned list is unsorted; [computeStatisticValues] applies the
+  /// statistic's sort order afterwards.
   static List<(Player, num)> _computeValuesForType({
     required StatisticType type,
     required List<Match> matches,
@@ -204,109 +226,83 @@ class StatisticCalculator {
   }) {
     switch (type) {
       case StatisticType.totalMatches:
-        return _sortDesc(
-          players.map((p) => (p, _matchesPlayed(p, matches) as num)).toList(),
-        );
+        return players
+            .map((p) => (p, _matchesPlayed(p, matches) as num))
+            .toList();
 
       case StatisticType.totalWins:
-        return _sortDesc(
-          players.map((p) => (p, _wins(p, matches) as num)).toList(),
-        );
+        return players.map((p) => (p, _wins(p, matches) as num)).toList();
 
       case StatisticType.totalLosses:
-        return _sortDesc(
-          players.map((p) => (p, _losses(p, matches) as num)).toList(),
-        );
+        return players.map((p) => (p, _losses(p, matches) as num)).toList();
 
       case StatisticType.totalScore:
-        return _sortDesc(
-          players.map((p) => (p, _totalScore(p, matches) as num)).toList(),
-        );
+        return players.map((p) => (p, _totalScore(p, matches) as num)).toList();
 
       case StatisticType.averageScore:
-        return _sortDesc(
-          players.map((p) {
-            final scores = _scoresOf(p, matches);
-            final avg = scores.isEmpty
-                ? 0
-                : double.parse(
-                    (scores.reduce((a, b) => a + b) / scores.length)
-                        .toStringAsFixed(2),
-                  );
-            return (p, avg);
-          }).toList(),
-        );
+        return players.map((p) {
+          final scores = _scoresOf(p, matches);
+          final avg = scores.isEmpty
+              ? 0
+              : double.parse(
+                  (scores.reduce((a, b) => a + b) / scores.length)
+                      .toStringAsFixed(2),
+                );
+          return (p, avg);
+        }).toList();
 
       case StatisticType.bestScore:
-        return _sortDesc(
-          players.map((p) {
-            final scores = _scoresOf(p, matches);
-            final best = scores.isEmpty ? 0 : scores.reduce(max);
-            return (p, best as num);
-          }).toList(),
-        );
+        return players.map((p) {
+          final scores = _scoresOf(p, matches);
+          final best = scores.isEmpty ? 0 : scores.reduce(max);
+          return (p, best as num);
+        }).toList();
 
       case StatisticType.worstScore:
-        // Ascending here is more meaningful for "worst", but keep the
-        // existing tile semantics (largest bar = top entry) by sorting
-        // descending on the inverse — i.e. show smallest score on top.
-        final entries = players.map((p) {
+        return players.map((p) {
           final scores = _scoresOf(p, matches);
           final worst = scores.isEmpty ? 0 : scores.reduce(min);
           return (p, worst as num);
         }).toList();
-        entries.sort((a, b) => a.$2.compareTo(b.$2));
-        return entries;
 
       case StatisticType.winrate:
-        return _sortDesc(
-          players.map((p) {
-            final played = _matchesPlayed(p, matches);
-            final wins = _wins(p, matches);
-            final rate = played == 0
-                ? 0.0
-                : double.parse((wins / played).toStringAsFixed(2));
-            return (p, rate as num);
-          }).toList(),
-        );
+        return players.map((p) {
+          final played = _matchesPlayed(p, matches);
+          final wins = _wins(p, matches);
+          final rate = played == 0
+              ? 0.0
+              : double.parse((wins / played).toStringAsFixed(2));
+          return (p, rate as num);
+        }).toList();
 
       case StatisticType.totalTime:
-        return _sortDesc(
-          players.map((p) => (p, _totalScore(p, matches) as num)).toList(),
-        );
+        return players.map((p) => (p, _totalScore(p, matches) as num)).toList();
 
       case StatisticType.averageTime:
-        return _sortDesc(
-          players.map((p) {
-            final scores = _scoresOf(p, matches);
-            final avg = scores.isEmpty
-                ? 0
-                : double.parse(
-                    (scores.reduce((a, b) => a + b) / scores.length)
-                        .toStringAsFixed(2),
-                  );
-            return (p, avg);
-          }).toList(),
-        );
+        return players.map((p) {
+          final scores = _scoresOf(p, matches);
+          final avg = scores.isEmpty
+              ? 0
+              : double.parse(
+                  (scores.reduce((a, b) => a + b) / scores.length)
+                      .toStringAsFixed(2),
+                );
+          return (p, avg);
+        }).toList();
 
       case StatisticType.longestTime:
-        return _sortDesc(
-          players.map((p) {
-            final scores = _scoresOf(p, matches);
-            final longest = scores.isEmpty ? 0 : scores.reduce(max);
-            return (p, longest as num);
-          }).toList(),
-        );
+        return players.map((p) {
+          final scores = _scoresOf(p, matches);
+          final longest = scores.isEmpty ? 0 : scores.reduce(max);
+          return (p, longest as num);
+        }).toList();
 
       case StatisticType.shortestTime:
-        // Shortest first, so the fastest player appears on top.
-        final entries = players.map((p) {
+        return players.map((p) {
           final scores = _scoresOf(p, matches);
           final shortest = scores.isEmpty ? 0 : scores.reduce(min);
           return (p, shortest as num);
         }).toList();
-        entries.sort((a, b) => a.$2.compareTo(b.$2));
-        return entries;
     }
   }
 
@@ -319,21 +315,25 @@ class StatisticCalculator {
   /// Determines how many wins the player has in the given matches.
   ///
   /// - singleLooser: Every player except the mvp gets a win
+  /// - Lives: all players that have lives left or no one when all are at 0 lives
   /// - Other rulesets: The mvp gets a win
   static int _wins(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? !isMvp : isMvp;
+        return m.game.ruleset.isLoser ? !isMvp : isMvp;
       }).length;
 
   /// Determines how many losses the player has in the given matches.
   ///
   /// - singleLooser: The mvp is the loser
+  /// - Lives: all players that don't have lives left or no one when everyone has 0 lives left
   /// - Other rulesets: Everyone except mvp is the loser
   static int _losses(Player p, List<Match> matches) =>
       matches.where((m) => m.players.any((mp) => mp.id == p.id)).where((m) {
+        if (m.isTie) return false;
         final isMvp = m.mvp.any((mp) => mp.id == p.id);
-        return m.game.ruleset == Ruleset.loser ? isMvp : !isMvp;
+        return m.game.ruleset.isLoser ? isMvp : !isMvp;
       }).length;
 
   /// Determines the total score of the player in the given list of matches.
@@ -355,10 +355,4 @@ class StatisticCalculator {
   /// Returns true if player has at least one score in the given matches.
   static bool _hasAnyScore(Player p, List<Match> matches) =>
       matches.any((m) => m.scores[p.id] != null);
-
-  /// Returns the list of entries sorted descending by the statistic value.
-  static List<(Player, num)> _sortDesc(List<(Player, num)> entries) {
-    entries.sort((a, b) => b.$2.compareTo(a.$2));
-    return entries;
-  }
 }

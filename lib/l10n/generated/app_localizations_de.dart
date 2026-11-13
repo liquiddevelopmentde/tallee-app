@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
 
@@ -14,6 +16,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get add_team => 'Team hinzufügen';
+
+  @override
+  String get add_to_favourites => 'Zu Favoriten hinzufügen';
 
   @override
   String get all => 'Alle';
@@ -33,6 +38,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get app_name => 'Tallee';
+
+  @override
+  String get ascending => 'Aufsteigend';
 
   @override
   String get associate_game => 'Spielvorlage verknüpfen';
@@ -59,6 +67,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get choose_color_description =>
+      'Wähle eine Farbe für die Spielvorlage.';
+
+  @override
   String get choose_date_range => 'Datumsbereich auswählen';
 
   @override
@@ -72,6 +84,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
+
+  @override
+  String get choose_ruleset_description =>
+      'Wähle das Regelwerk mit dem du spielen möchtest.';
 
   @override
   String get choose_scopes => 'Bereiche wählen';
@@ -272,6 +288,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleted => 'Gelöscht';
 
   @override
+  String get descending => 'Absteigend';
+
+  @override
   String get description => 'Beschreibung';
 
   @override
@@ -318,8 +337,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
   @override
+  String get error_deleting_data =>
+      'Fehler beim Löschen der Daten, bitte erneut versuchen';
+
+  @override
   String get error_deleting_game =>
       'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
+
+  @override
+  String get error_deleting_group =>
+      'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
+
+  @override
+  String get error_deleting_match =>
+      'Fehler beim Löschen des Spiels, bitte erneut versuchen';
 
   @override
   String get error_editing_group =>
@@ -402,6 +433,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
+
+  @override
   String get game_name => 'Spielvorlagenname';
 
   @override
@@ -418,6 +453,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_associated => 'Gruppe erfolgreich verknüpft';
+
+  @override
+  String get group_deleted => 'Gruppe gelöscht';
+
+  @override
+  String get group_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.';
 
   @override
   String get group_members => 'Gruppenmitglieder';
@@ -549,6 +591,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
+  String get match_deleted => 'Spiel gelöscht';
+
+  @override
   String get match_in_progress => 'Spiel läuft...';
 
   @override
@@ -623,13 +668,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_data_to_export => 'Keine Daten zum exportieren';
 
   @override
+  String get no_games => 'Keine Spielvorlagen';
+
+  @override
   String get no_games_created_yet => 'Noch keine Spielvorlagen erstellt';
+
+  @override
+  String get no_groups => 'Keine Gruppen';
 
   @override
   String get no_groups_created_yet => 'Noch keine Gruppen erstellt';
 
   @override
   String get no_license_text_available => 'Kein Lizenztext verfügbar';
+
+  @override
+  String get no_matches => 'Keine Spiele';
 
   @override
   String get no_matches_created_yet => 'Noch keine Spiele erstellt';
@@ -646,6 +700,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
 
   @override
+  String get no_players => 'Keine Spieler:innen';
+
+  @override
   String get no_players_available => 'Keine Spieler:innen verfügbar';
 
   @override
@@ -659,7 +716,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_players_selected => 'Keine Spieler:innen ausgewählt';
 
   @override
+  String get no_results => 'Keine Treffer';
+
+  @override
   String get no_results_entered_yet => 'Noch keine Ergebnisse eingetragen';
+
+  @override
+  String get no_statistics => 'Keine Statistiken';
 
   @override
   String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
@@ -667,6 +730,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get no_statistics_with_filter =>
       'Keine Statistiken mit den ausgewählten Filteroptionen';
+
+  @override
+  String get no_suitable_matches_yet => 'Noch keine passenden Spiele';
 
   @override
   String get no_teams_available => 'Keine Teams verfügbar';
@@ -786,6 +852,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get points => 'Punkte';
 
   @override
+  String get preview => 'Vorschau';
+
+  @override
   String get preview_match => 'Spielvorschau';
 
   @override
@@ -803,6 +872,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remaining => 'verbleibend';
+
+  @override
+  String get remove_from_favourites => 'Aus Favoriten entfernen';
 
   @override
   String get report_error => 'Fehler melden';
@@ -862,13 +934,45 @@ class AppLocalizationsDe extends AppLocalizations {
   String get select_a_classifier => 'Klassifikator auswählen';
 
   @override
+  String get select_a_color_description =>
+      'Wähle die Anzeigefarbe für deine Statistik aus.';
+
+  @override
   String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
+
+  @override
+  String get select_a_group_color_description =>
+      'Wähle die Anzeigefarbe für deine Gruppe aus.';
 
   @override
   String get select_a_scope => 'Bereich auswählen';
 
   @override
+  String get select_a_scope_description =>
+      'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
+
+  @override
+  String get select_a_theme_description => 'Wähle die Darstellung der App.';
+
+  @override
   String get select_a_timeframe => 'Zeitraum auswählen';
+
+  @override
+  String get select_a_timeframe_description =>
+      'Wähle den Zeitraum für deine Statistik aus.';
+
+  @override
+  String get select_a_type => 'Typ wählen';
+
+  @override
+  String get select_a_type_description =>
+      'Wähle einen Typ für deine Statistik aus.';
+
+  @override
+  String get select_games => 'Spielvorlagen wählen';
+
+  @override
+  String get select_groups => 'Gruppen wählen';
 
   @override
   String get select_loser => 'Verlierer:in wählen';
@@ -988,6 +1092,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get skip => 'Überspringen';
 
   @override
+  String get sort => 'Sortieren';
+
+  @override
   String get start_all => 'Alle starten';
 
   @override
@@ -1015,6 +1122,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get successfully_processed_file => 'Datei erfolgreich verarbeitet';
+
+  @override
+  String get tap_another_player_to_create_a_pair =>
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
 
   @override
   String get tap_import_to_continue =>
@@ -1053,6 +1164,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get thank_you_for_report => 'Vielen Dank für deine Fehlermeldung!';
 
   @override
+  String get theme => 'Darstellung';
+
+  @override
+  String get theme_dark => 'Dunkel';
+
+  @override
+  String get theme_light => 'Hell';
+
+  @override
+  String get theme_system => 'System';
+
+  @override
   String get there_are_no_games_matching_your_search =>
       'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
 
@@ -1083,6 +1206,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeframe => 'Zeitraum';
 
   @override
+  String get timeframe_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.';
+
+  @override
   String get today => 'Heute';
 
   @override
@@ -1090,6 +1217,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get token_expired => 'Token abgelaufen';
+
+  @override
+  String top_n(int count) {
+    return 'Top $count';
+  }
 
   @override
   String get total_losses => 'Niederlagen insgesamt';
@@ -1108,6 +1240,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get type => 'Typ';
+
+  @override
+  String get type_filter_description =>
+      'Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.';
 
   @override
   String get unexpected_error => 'Ein unerwarteter Fehler ist aufgetreten.';
@@ -1147,6 +1283,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get version => 'Version';
 
   @override
+  String get version_copied_to_clipboard => 'Version in Zwischenablage kopiert';
+
+  @override
   String get whats_new => 'Neuigkeiten';
 
   @override
@@ -1166,4 +1305,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
+
+  @override
+  String get your_statistic_will_be_shown_here =>
+      'Hier wird deine Statistik angezeigt';
 }

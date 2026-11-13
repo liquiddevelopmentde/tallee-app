@@ -18,7 +18,6 @@ bool get IS_TEST_ENV => ENVIRONMENT == AppEnvironment.testing;
 // Config for rate my app package.
 // ignore: non_constant_identifier_names
 final RateMyApp RATE_MY_APP = RateMyApp(
-  preferencesPrefix: 'rateMyApp_',
   minDays: 7,
   minLaunches: 10,
   remindDays: 7,

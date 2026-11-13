@@ -1,13 +1,99 @@
 {
   "@@locale": "de",
+  "@could_not_add_player": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@create_statistic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@top_n": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "active_matches": "Aktive Spiele",
   "add_team": "Team hinzufügen",
+  "add_to_favourites": "Zu Favoriten hinzufügen",
   "all": "Alle",
   "all_players": "Alle Spieler:innen",
   "all_players_associated": "Alle Spieler:innen erfolgreich verknüpft",
   "all_players_selected": "Alle Spieler:innen ausgewählt",
   "all_time": "Gesamter Zeitraum",
   "app_name": "Tallee",
+  "ascending": "Aufsteigend",
   "associate_game": "Spielvorlage verknüpfen",
   "associate_group": "Gruppe verknüpfen",
   "associate_players": "Spieler:innen verknüpfen",
@@ -16,11 +102,13 @@
   "best_player": "Beste:r Spieler:in",
   "best_score": "Beste Punktzahl",
   "cancel": "Abbrechen",
+  "choose_color_description": "Wähle eine Farbe für die Spielvorlage.",
   "choose_date_range": "Datumsbereich auswählen",
   "choose_game": "Spielvorlage wählen",
   "choose_group": "Gruppe wählen",
   "choose_match_file": "Spiel-Datei auswählen",
   "choose_other_file": "Bitte wähle eine andere Datei aus.",
+  "choose_ruleset_description": "Wähle das Regelwerk mit dem du spielen möchtest.",
   "choose_scopes": "Bereiche wählen",
   "choose_timeframes": "Zeiträume wählen",
   "choose_types": "Typen wählen",
@@ -45,13 +133,6 @@
   "continue_": "Weiter",
   "copy_code": "Code kopieren",
   "could_not_add_player": "Spieler:in {playerName} konnte nicht hinzugefügt werden",
-  "@could_not_add_player": {
-    "placeholders": {
-      "playerName": {
-        "type": "String"
-      }
-    }
-  },
   "create_as_new": "Neu erstellen",
   "create_game": "Spielvorlage erstellen",
   "create_group": "Gruppe erstellen",
@@ -59,13 +140,6 @@
   "create_new_group": "Neue Gruppe erstellen",
   "create_new_match": "Neues Spiel erstellen",
   "create_statistic": "{count, plural, =0{Statistiken erstellen} =1{Statistik erstellen} other{Statistiken erstellen ({count})}}",
-  "@create_statistic": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "create_teams": "Teams erstellen",
   "created_on": "Erstellt am",
   "creation_date": "Erstellungsdatum",
@@ -84,13 +158,6 @@
   "delete_app_data_description": "Lösche all deine lokalen Daten unwiderruflich. Dieser Vorgang kann nicht rückgängig gemacht werden.",
   "delete_game": "Spielvorlage löschen",
   "delete_game_with_matches_warning": "Wenn du diese Spielvorlage löschst, {count, plural, =1{wird 1 Spiel} other{werden {count} Spiele}} mit dieser Spielvorlage ebenfalls gelöscht.",
-  "@delete_game_with_matches_warning": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "delete_group": "Gruppe löschen",
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
@@ -98,6 +165,7 @@
   "delete_player_warning_details": "Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.",
   "delete_statistic": "Statistik löschen",
   "deleted": "Gelöscht",
+  "descending": "Absteigend",
   "description": "Beschreibung",
   "displayed_entries": "Angezeigte Einträge",
   "do_you_like_the_app": "Gefällt dir die App?",
@@ -113,17 +181,13 @@
   "enable": "Aktivieren",
   "enter_results": "Ergebnisse eintragen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
+  "error_deleting_data": "Fehler beim Löschen der Daten, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
+  "error_deleting_group": "Fehler beim Löschen der Gruppe, bitte erneut versuchen",
+  "error_deleting_match": "Fehler beim Löschen des Spiels, bitte erneut versuchen",
   "error_editing_group": "Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen",
   "error_editing_player": "Fehler beim Bearbeiten des Spielers, bitte erneut versuchen",
   "error_loading_match": "Fehler beim Laden: {error}",
-  "@error_loading_match": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
   "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist",
@@ -131,13 +195,6 @@
   "error_sending_feedback": "Feedback konnte nicht gesendet werden. Bitte versuche es erneut.",
   "error_while_processing_file_try_again": "Fehler beim Verarbeiten der Datei. Bitte versuche es erneut",
   "expires_in": "Läuft ab in {time}",
-  "@expires_in": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "export_canceled": "Export abgebrochen",
   "export_data": "Daten exportieren",
   "favourites": "Favoriten",
@@ -150,24 +207,20 @@
   "format_exception": "Formatfehler (siehe Konsole)",
   "game": "Spielvorlage",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
+  "game_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
   "general": "Allgemein",
   "get_started": "Los geht's!",
   "group": "Gruppe",
   "group_associated": "Gruppe erfolgreich verknüpft",
+  "group_deleted": "Gruppe gelöscht",
+  "group_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.",
   "group_members": "Gruppenmitglieder",
   "group_name": "Gruppenname",
   "group_profile": "Gruppenprofil",
   "groups": "Gruppen",
   "here_is_shared_match": "Hier ist das geteilte Match \"{matchName}\"",
-  "@here_is_shared_match": {
-    "placeholders": {
-      "matchName": {
-        "type": "String"
-      }
-    }
-  },
   "highest_score": "Höchste Punkte",
   "import_canceled": "Import abgebrochen",
   "import_data": "Daten importieren",
@@ -194,13 +247,6 @@
   "legal_notice": "Impressum",
   "licenses": "Lizenzen",
   "lives": "{count, plural, =1{Leben} other{Leben}}",
-  "@lives": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "loading": "Lädt...",
   "loading_match": "Lade Spiel...",
   "longest_time": "Längste Zeit",
@@ -208,6 +254,7 @@
   "loser": "Verlierer:in",
   "lowest_score": "Niedrigste Punkte",
   "manage_members": "Mitglieder bearbeiten",
+  "match_deleted": "Spiel gelöscht",
   "match_in_progress": "Spiel läuft...",
   "match_name": "Spieltitel",
   "match_not_ended_share_warning": "Spiele können erst geteilt werden, wenn sie beendet wurden.",
@@ -225,31 +272,31 @@
   "new_game_will_be_created": "Neue Spielvorlage wird erstellt",
   "new_group_will_be_created": "Neue Gruppe wird erstellt",
   "new_players_will_be_created": "{count, plural, =1{1 neue Spieler:in wird erstellt} other{{count} neue Spieler:innen werden erstellt}}",
-  "@new_players_will_be_created": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "next": "Weiter",
   "no": "Nein",
   "no_data_available": "Keine Daten verfügbar",
   "no_data_to_export": "Keine Daten zum exportieren",
+  "no_games": "Keine Spielvorlagen",
   "no_games_created_yet": "Noch keine Spielvorlagen erstellt",
+  "no_groups": "Keine Gruppen",
   "no_groups_created_yet": "Noch keine Gruppen erstellt",
   "no_license_text_available": "Kein Lizenztext verfügbar",
+  "no_matches": "Keine Spiele",
   "no_matches_created_yet": "Noch keine Spiele erstellt",
   "no_matches_played_yet": "Noch kein Spiel gespielt",
   "no_matching_local_game_found": "Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.",
   "no_matching_local_group_found": "Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.",
+  "no_players": "Keine Spieler:innen",
   "no_players_available": "Keine Spieler:innen verfügbar",
   "no_players_created_yet": "Noch keine Spieler:in erstellt",
   "no_players_found_with_that_name": "Keine Spieler:in mit diesem Namen gefunden",
   "no_players_selected": "Keine Spieler:innen ausgewählt",
+  "no_results": "Keine Treffer",
   "no_results_entered_yet": "Noch keine Ergebnisse eingetragen",
+  "no_statistics": "Keine Statistiken",
   "no_statistics_created_yet": "Noch keine Statistiken erstellt",
   "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
+  "no_suitable_matches_yet": "Noch keine passenden Spiele",
   "no_teams_available": "Keine Teams verfügbar",
   "none": "Kein",
   "none_group": "Keine",
@@ -271,36 +318,24 @@
   "open_settings": "Einstellungen öffnen",
   "optional": "optional",
   "pair": "{count, plural, =1{Paar} other{Paare}}",
-  "@pair": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
   "place": "Platz",
   "placement": "Platzierung",
   "played_matches": "Gespielte Spiele",
   "player_count": "{count, plural, =1{1 Spieler:in} other{{count} Spieler:innen}}",
-  "@player_count": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "player_name": "Name des/der Spieler:in",
   "player_profile": "Spieler:in-Profil",
   "players": "Spieler:innen",
   "point": "Punkt",
   "points": "Punkte",
+  "preview": "Vorschau",
   "preview_match": "Spielvorschau",
   "privacy_policy": "Datenschutzerklärung",
   "qr_code_expired": "QR-Code abgelaufen",
   "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Spiel-Daten.",
   "random_color": "Zufällige Farbe",
   "remaining": "verbleibend",
+  "remove_from_favourites": "Aus Favoriten entfernen",
   "report_error": "Fehler melden",
   "required": "erforderlich",
   "results": "Ergebnisse",
@@ -319,9 +354,18 @@
   "search_for_timeframes": "Nach Zeiträumen suchen",
   "search_for_types": "Nach Typen suchen",
   "select_a_classifier": "Klassifikator auswählen",
+  "select_a_color_description": "Wähle die Anzeigefarbe für deine Statistik aus.",
   "select_a_display_color": "Wähle eine Anzeigefarbe aus.",
+  "select_a_group_color_description": "Wähle die Anzeigefarbe für deine Gruppe aus.",
   "select_a_scope": "Bereich auswählen",
+  "select_a_scope_description": "Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.",
+  "select_a_theme_description": "Wähle die Darstellung der App.",
   "select_a_timeframe": "Zeitraum auswählen",
+  "select_a_timeframe_description": "Wähle den Zeitraum für deine Statistik aus.",
+  "select_a_type": "Typ wählen",
+  "select_a_type_description": "Wähle einen Typ für deine Statistik aus.",
+  "select_games": "Spielvorlagen wählen",
+  "select_groups": "Gruppen wählen",
   "select_loser": "Verlierer:in wählen",
   "select_the_filtered_timeframe": "Wähle einen Zeitraum, nach dem gefiltert werden soll.",
   "select_winners": "Gewinner:innen wählen",
@@ -338,13 +382,6 @@
   "share_as_qr_code_info": "Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
   "share_as_token_info": "Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein",
   "share_match_text": "Hier sind die Spiel-Daten für unser Spiel! Gib den Code {code} in Tallee ein.",
-  "@share_match_text": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
   "share_match_title": "Spiel teilen",
   "share_token_format_info": "Token bestehen aus 6 alphanumerischen Zeichen.",
   "shortest_time": "Kürzeste Zeit",
@@ -362,6 +399,7 @@
   "showcase_nav_match": "Da wir nun eine Spielvorlage erstellt haben, können wir zum Spiele-Reiter wechseln.",
   "showcase_select_winner": "Um die Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.",
   "skip": "Überspringen",
+  "sort": "Sortieren",
   "start_all": "Alle starten",
   "start_onboarding": "Onboarding starten",
   "start_timer": "Timer starten",
@@ -371,6 +409,7 @@
   "stop_timer": "Timer stoppen",
   "successfully_added_player": "Spieler:in {playerName} erfolgreich hinzugefügt",
   "successfully_processed_file": "Datei erfolgreich verarbeitet",
+  "tap_another_player_to_create_a_pair": "Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden",
   "tap_import_to_continue": "Tippe auf Spiel importieren, um fortzufahren",
   "tap_to_browse": "Tippen zum Durchsuchen",
   "tap_to_choose_different_game": "Tippe die Spielvorlage an, um eine andere auszuwählen",
@@ -382,6 +421,10 @@
   "teams": "Teams",
   "thank_you_for_feedback": "Vielen Dank für dein Feedback!",
   "thank_you_for_report": "Vielen Dank für deine Fehlermeldung!",
+  "theme": "Darstellung",
+  "theme_dark": "Dunkel",
+  "theme_light": "Hell",
+  "theme_system": "System",
   "there_are_no_games_matching_your_search": "Es gibt keine Spielvorlagen, die deiner Suche entspricht",
   "there_is_no_game_matching_your_search": "Es gibt keine Spielvorlage, die deiner Suche entspricht",
   "there_is_no_group_matching_your_search": "Es gibt keine Gruppe, die deiner Suche entspricht",
@@ -390,15 +433,18 @@
   "this_cannot_be_undone": "Dies kann nicht rückgängig gemacht werden.",
   "tie": "Unentschieden",
   "timeframe": "Zeitraum",
+  "timeframe_filter_description": "Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.",
   "today": "Heute",
   "today_at": "Heute um",
   "token_expired": "Token abgelaufen",
+  "top_n": "Top {count}",
   "total_losses": "Niederlagen insgesamt",
   "total_matches": "Spiele insgesamt",
   "total_score": "Punktzahl insgesamt",
   "total_time": "Zeit insgesamt",
   "total_wins": "Siege insgesamt",
   "type": "Typ",
+  "type_filter_description": "Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.",
   "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten.",
   "unknown_exception": "Unbekannter Fehler (siehe Konsole)",
   "unsatisfied": "Unzufrieden?",
@@ -410,11 +456,13 @@
   "update_features_fixes_desc": "Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.",
   "update_now": "Jetzt aktualisieren",
   "version": "Version",
+  "version_copied_to_clipboard": "Version in Zwischenablage kopiert",
   "whats_new": "Neuigkeiten",
   "winner": "Gewinner:in",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
   "write_email": "Eine E-Mail schreiben",
   "yes": "Ja",
-  "yesterday_at": "Gestern um"
+  "yesterday_at": "Gestern um",
+  "your_statistic_will_be_shown_here": "Hier wird deine Statistik angezeigt"
 }

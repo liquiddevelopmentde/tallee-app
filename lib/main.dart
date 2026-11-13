@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:open_with_app/open_with_app.dart';
@@ -11,11 +10,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/app_scroll_behavior.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
@@ -23,22 +22,17 @@ import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_
 import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/global_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
 import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
-import 'package:tallee/state/game_search_provider.dart';
-import 'package:tallee/state/group_search_provider.dart';
-import 'package:tallee/state/match_search_provider.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
-  ENVIRONMENT = kDebugMode
-      ? AppEnvironment.development
-      : AppEnvironment.testing;
-
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   /* Initializing Services */
@@ -57,7 +51,6 @@ void main() async {
       options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
       // Disable sending personal identfiable information
       options.sendDefaultPii = false;
-      options.enableLogs = true;
       // Decrease sampleRate in stable to avoid sending too many events
       options.tracesSampleRate = 1.0;
       options.environment = IS_PROD_ENV
@@ -77,34 +70,37 @@ void main() async {
                 event.level == SentryLevel.fatal)) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final context = Tallee.navigatorKey.currentContext;
-            if (context != null) {
-              final loc = AppLocalizations.of(context);
-              Tallee.scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
-              Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                CustomSnackBar(
-                  message: loc.unexpected_error,
-                  actionLabel: loc.report_error,
-                  onActionTap: () async {
-                    Tallee.scaffoldMessengerKey.currentState
-                        ?.hideCurrentSnackBar();
-                    final result = await Tallee.navigatorKey.currentState
-                        ?.push<bool>(
-                          MaterialPageRoute(
-                            builder: (context) => FeedbackFormView(
-                              associatedEventId: event.eventId,
-                            ),
-                          ),
-                        );
-                    if (result == true) {
-                      Tallee.scaffoldMessengerKey.currentState?.showSnackBar(
-                        CustomSnackBar(message: loc.thank_you_for_report),
-                      );
-                    }
-                  },
-                ),
-              );
-            }
+            final overlay = Tallee.navigatorKey.currentState?.overlay;
+            if (context == null || overlay == null) return;
+
+            final loc = AppLocalizations.of(context);
+            GlobalSnackBar.show(
+              overlay,
+              message: loc.unexpected_error,
+              actionLabel: loc.report_error,
+              onActionTap: () async {
+                final result = await Tallee.navigatorKey.currentState
+                    ?.push<bool>(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            FeedbackFormView(associatedEventId: event.eventId),
+                      ),
+                    );
+                if (result == true) {
+                  final currentOverlay =
+                      Tallee.navigatorKey.currentState?.overlay;
+                  if (currentOverlay != null) {
+                    GlobalSnackBar.show(
+                      currentOverlay,
+                      message: loc.thank_you_for_report,
+                    );
+                  }
+                }
+              },
+            );
           });
+          // Post-frame callbacks only run with a frame; an idle app schedules none.
+          WidgetsBinding.instance.ensureVisualUpdate();
         }
         return event;
       };
@@ -117,12 +113,11 @@ void main() async {
               create: (context) => AppDatabase(),
               dispose: (context, db) => db.close(),
             ),
-            ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
-            ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
-            ChangeNotifierProvider(create: (context) => GameSearchProvider()),
+            ChangeNotifierProvider(create: (context) => SearchProvider()),
             ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
             ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
             ChangeNotifierProvider(create: (context) => RateDialogProvider()),
+            ChangeNotifierProvider(create: (context) => ThemeProvider()),
           ],
           child: DefaultAssetBundle(
             bundle: SentryAssetBundle(),
@@ -168,34 +163,34 @@ class _TalleeState extends State<Tallee> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: Tallee.navigatorKey,
-      scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
-      localizationsDelegates: const [
-        ...AppLocalizations.localizationsDelegates,
-        ...GlobalMaterialLocalizations.delegates,
-        ...GlobalCupertinoLocalizations.delegates,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (final supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
-          }
+  Widget build(BuildContext context) => MaterialApp(
+    navigatorKey: Tallee.navigatorKey,
+    scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      ...GlobalMaterialLocalizations.delegates,
+      ...GlobalCupertinoLocalizations.delegates,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    localeResolutionCallback: (locale, supportedLocales) {
+      for (final supportedLocale in supportedLocales) {
+        if (supportedLocale.languageCode == locale?.languageCode) {
+          return supportedLocale;
         }
-        return supportedLocales.firstWhere(
-          (locale) => locale.languageCode == 'en',
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: ThemeMode.dark,
-      navigatorObservers: [SentryNavigatorObserver()],
-      theme: CustomTheme.themeData,
-      home: SplashScreen(onFinished: handleSplashFinished),
-    );
-  }
+      }
+      return supportedLocales.firstWhere(
+        (locale) => locale.languageCode == 'en',
+      );
+    },
+    debugShowCheckedModeBanner: false,
+    scrollBehavior: const AppScrollBehavior(),
+    onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
+    themeMode: context.watch<ThemeProvider>().themeMode,
+    navigatorObservers: [SentryNavigatorObserver()],
+    theme: lightTheme,
+    darkTheme: darkTheme,
+    home: SplashScreen(onFinished: handleSplashFinished),
+  );
 
   void handleSplashFinished() {
     final navigator = Tallee.navigatorKey.currentState;
@@ -204,8 +199,7 @@ class _TalleeState extends State<Tallee> {
     final path = pendingImportPath;
     pendingImportPath = null;
 
-    bool isOnboardingCompleted =
-        SharedPreferencesService.isOnboardingCompleted();
+    bool isOnboardingCompleted = SharedPreferencesService.onboardingCompleted;
 
     final targetWidget = !isOnboardingCompleted
         ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))
@@ -219,10 +213,8 @@ class _TalleeState extends State<Tallee> {
               : RouteNames.groupView,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 300),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
       ),
     );
 
@@ -236,7 +228,10 @@ class _TalleeState extends State<Tallee> {
     if (navigator == null) return;
 
     navigator.pushReplacement(
-      adaptivePageRoute(builder: (_) => const CustomNavigationBar()),
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.mainNavigation),
+        builder: (_) => const CustomNavigationBar(),
+      ),
     );
 
     if (path != null) {
@@ -253,7 +248,7 @@ class _TalleeState extends State<Tallee> {
   }
 
   /// Pushes the import view for the .tallee file at [path].
-  void openImport(String path) async {
+  Future<void> openImport(String path) async {
     final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 

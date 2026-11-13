@@ -1,12 +1,11 @@
 import 'package:clock/clock.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -20,6 +19,7 @@ import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
+import 'package:tallee/presentation/widgets/date_picker/custom_date_picker.dart';
 import 'package:tallee/presentation/widgets/player_selection_widget.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -99,9 +99,15 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   @override
   void initState() {
     super.initState();
+    db = context.read<AppDatabase>();
+
     matchNameController.addListener(() {
       setState(() {});
     });
+
+    if (widget.matchToPrefill != null) {
+      prefillMatchDetails();
+    }
     loadData();
 
     showcaseProvider = context.read<ShowcaseProvider>();
@@ -147,7 +153,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final viewTitle = widget.editMode ? loc.edit_match : loc.create_new_match;
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) {
           try {
@@ -159,19 +164,17 @@ class _CreateMatchViewState extends State<CreateMatchView> {
         key: _scaffoldMessengerKey,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: CustomTheme.backgroundColor,
+          backgroundColor: context.talleeColors.backgroundColor,
           appBar: AppBar(title: Text(viewTitle)),
           body: SafeArea(
             maintainBottomViewPadding: true,
-            minimum: const EdgeInsets.symmetric(horizontal: 12),
+            minimum: AppSpacing.pagePadding,
             child: Column(
               spacing: 10,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Match name input field.
                 CustomShowcaseWidget(
                   showcaseKey: createMatchViewMatchNameKey,
-                  identifier: createMatchViewMatchNameIdentifier,
                   description: loc.showcase_create_match_name,
                   child: TextInputField(
                     controller: matchNameController,
@@ -183,7 +186,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 if (!widget.editMode)
                   CustomShowcaseWidget(
                     showcaseKey: createMatchViewMatchGameKey,
-                    identifier: createMatchViewMatchGameIdentifier,
                     description: loc.showcase_create_match_game,
                     child: ChooseTile(
                       title: loc.game,
@@ -195,7 +197,9 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   ),
 
                 // Choose the default lives
-                if (selectedGame?.ruleset == Ruleset.lives && !widget.editMode)
+                if (selectedGame != null &&
+                    selectedGame!.ruleset.isLives &&
+                    !widget.editMode)
                   ChooseTile(
                     title: getLifeLabel(loc, selectedLives),
                     trailing: CustomStepper(
@@ -208,13 +212,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                   ),
 
                 // Group selection tile.
-                ChooseTile(
-                  title: loc.group,
-                  trailing: selectedGroup == null
-                      ? Text(loc.none_group)
-                      : Text(selectedGroup!.name),
-                  onPressed: () async => onChoosingGroup(),
-                ),
+                if (!widget.editMode)
+                  ChooseTile(
+                    title: loc.group,
+                    trailing: selectedGroup == null
+                        ? Text(loc.none_group)
+                        : Text(selectedGroup!.name),
+                    onPressed: () async => onChoosingGroup(),
+                  ),
 
                 // Creation date selection tile.
                 if (widget.editMode)
@@ -222,11 +227,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     title: loc.creation_date,
                     trailing: selectedCreationDate == null
                         ? Text(loc.today)
-                        : Text(
-                            DateFormat.yMMMd(
-                              Localizations.localeOf(context).toString(),
-                            ).format(selectedCreationDate!),
-                          ),
+                        : Text(selectedCreationDate!.toMediumDate(context)),
                     onPressed: () async => onCreationDateSelection(),
                   ),
 
@@ -248,43 +249,42 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                     ),
                   ),
 
-                // Player selection widget.
-                CustomShowcaseWidget(
-                  showcaseKey: createMatchViewSelectPlayersKey,
-                  identifier: createMatchViewSelectPlayersIdentifier,
-                  description: loc.showcase_create_match_players,
-                  targetPadding: const .only(top: 10),
-                  child: Expanded(
-                    child: PlayerSelectionWidget.multiple(
-                      key: ValueKey(selectedGroup?.id ?? 'no_group'),
-                      initialSelectedUnits: selectedUnits,
-                      pairingEnabled: !isTeamMatch,
-                      onPlayerCreated: () => widget.onMatchesUpdated?.call(),
-                      onMultipleChanged: (players, units) {
-                        setState(() {
-                          selectedPlayers = players;
-                          selectedUnits = units;
-                          // Do not auto-enable team match.
-                          // Pairs are handled internally via selectedUnits.
-                          removeGroupWhenNoMemberLeft();
-                        });
-                      },
+                // Player selection widget or spacer in edit mode.
+                if (!widget.editMode)
+                  CustomShowcaseWidget(
+                    showcaseKey: createMatchViewSelectPlayersKey,
+                    description: loc.showcase_create_match_players,
+                    targetPadding: const EdgeInsets.only(top: 10),
+                    child: Expanded(
+                      child: PlayerSelectionWidget.multiple(
+                        key: ValueKey(selectedGroup?.id ?? 'no_group'),
+                        initialSelectedUnits: selectedUnits,
+                        pairingEnabled: !isTeamMatch,
+                        onPlayerCreated: () => widget.onMatchesUpdated?.call(),
+                        onMultipleChanged: (players, units) {
+                          setState(() {
+                            selectedPlayers = players;
+                            selectedUnits = units;
+                            // Do not auto-enable team match.
+                            // Pairs are handled internally via selectedUnits.
+                            removeGroupWhenNoMemberLeft();
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                ),
+                  )
+                else
+                  const Spacer(),
 
                 // Create or save button.
                 CustomShowcaseWidget(
                   showcaseKey: createMatchViewCreateMatchKey,
-                  identifier: createMatchViewCreateMatchIdentifier,
                   description: loc.showcase_create_match_button,
                   child: BottomAnimatedButton(
-                    sizeRelativeToWidth: 0.95,
-                    buttonType: ButtonType.primary,
-                    onPressed: isSubmitButtonEnabled()
+                    onPressed: isSubmitButtonEnabled
                         ? () => submitButtonNavigation(context)
                         : null,
-                    buttonText: buttonText,
+                    text: buttonText,
                   ),
                 ),
               ],
@@ -296,24 +296,14 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   }
 
   void loadData() {
-    db = context.read<AppDatabase>();
-
     Future.wait([
       db.groupDao.getAllGroups(),
       db.playerDao.getAllPlayers(),
       db.gameDao.getAllGames(),
     ]).then((result) async {
-      groups = result[0] as List<Group>
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      players = result[1] as List<Player>
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-      games = (result[2] as List<Game>)
-        ..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
-
-      // If a match is provided, prefill the fields
-      if (widget.matchToPrefill != null) {
-        prefillMatchDetails();
-      }
+      groups = result[0] as List<Group>..sortByLowercaseName((g) => g.name);
+      players = result[1] as List<Player>..sortByLowercaseName((p) => p.name);
+      games = (result[2] as List<Game>)..sortByLowercaseName((g) => g.name);
     });
   }
 
@@ -329,9 +319,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       selectedCreationDate = nullIfToday(match.createdAt);
 
-      if (match.teams != null &&
-          match.teams!.isNotEmpty &&
-          !match.isTeamMatch) {
+      if (match.isPairMatch) {
         selectedUnits = match.teams!;
       } else {
         selectedUnits = selectedPlayers
@@ -349,11 +337,8 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     selectedGame = await Navigator.of(context).push(
       adaptivePageRoute(
         settings: const RouteSettings(name: RouteNames.chooseGameView),
-        builder: (context) => ChooseGameView(
-          games: games,
-          initialSelectedGames: [?selectedGame],
-          onGamesUpdated: widget.onMatchesUpdated,
-        ),
+        builder: (context) =>
+            ChooseGameView(games: games, initialSelectedGames: [?selectedGame]),
       ),
     );
     setState(() {
@@ -389,7 +374,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       // 2. Process current units to remove those players and dissolve broken pairs.
       final List<Team> updatedUnits = [];
-      for (var unit in selectedUnits) {
+      for (final unit in selectedUnits) {
         final remainingMembers = unit.members
             .where((m) => !playersToRemove.any((p) => p.id == m.id))
             .toList();
@@ -399,7 +384,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
           continue;
         } else if (remainingMembers.length < unit.members.length) {
           // Unit was a pair, but some members were removed -> dissolve it.
-          for (var p in remainingMembers) {
+          for (final p in remainingMembers) {
             updatedUnits.add(Team(name: '', members: [p]));
           }
         } else {
@@ -410,7 +395,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
 
       // 3. Add players from the new group who aren't already selected.
       final currentPlayers = updatedUnits.expand((u) => u.members).toList();
-      for (var member in newMembers) {
+      for (final member in newMembers) {
         if (!currentPlayers.any((p) => p.id == member.id)) {
           updatedUnits.add(Team(name: '', members: [member]));
         }
@@ -419,111 +404,21 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       selectedGroup = newGroup;
       selectedUnits = updatedUnits;
       selectedPlayers = selectedUnits.expand((u) => u.members).toList();
-      isTeamMatch |= selectedUnits.any((u) => u.members.length > 1);
     });
   }
 
   Future<void> onCreationDateSelection() async {
-    await showDialog<DateTime>(
+    final selected = await CustomDatePicker.show<DateTime>(
       context: context,
-      builder: (context) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            splashFactory: NoSplash.splashFactory,
-            colorScheme: const ColorScheme.dark(
-              primary: CustomTheme.primaryColor,
-              onPrimary: CustomTheme.textColor,
-              surface: CustomTheme.boxColor,
-              onSurface: CustomTheme.textColor,
-            ),
-          ),
-          child: Dialog(
-            backgroundColor: CustomTheme.boxColor,
-            surfaceTintColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: CustomTheme.boxBorderColor),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              height: 450,
-              child: SfDateRangePicker(
-                backgroundColor: CustomTheme.boxColor,
-                showNavigationArrow: true,
-                initialSelectedDate: selectedCreationDate ?? clock.now(),
-                maxDate: clock.now(),
-                headerStyle: const DateRangePickerHeaderStyle(
-                  textAlign: TextAlign.center,
-                  backgroundColor: Colors.transparent,
-                  textStyle: TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
-                  textStyle: TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 16,
-                  ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  leadingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
-                    fontSize: 16,
-                  ),
-                  trailingDatesTextStyle: TextStyle(
-                    color: CustomTheme.hintColor,
-                    fontSize: 16,
-                  ),
-                ),
-                yearCellStyle: const DateRangePickerYearCellStyle(
-                  textStyle: TextStyle(
-                    color: CustomTheme.textColor,
-                    fontSize: 16,
-                  ),
-                  todayTextStyle: TextStyle(
-                    color: CustomTheme.primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                monthViewSettings: const DateRangePickerMonthViewSettings(
-                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                    textStyle: TextStyle(
-                      color: CustomTheme.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  firstDayOfWeek: 1,
-                ),
-                selectionMode: DateRangePickerSelectionMode.single,
-                selectionColor: CustomTheme.primaryColor,
-                selectionTextStyle: const TextStyle(
-                  color: CustomTheme.textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                showActionButtons: true,
-                onSubmit: (value) {
-                  if (value is DateTime) {
-                    setState(() {
-                      selectedCreationDate = nullIfToday(value);
-                    });
-                    Navigator.pop(context);
-                  }
-                },
-                onCancel: () => Navigator.pop(context),
-              ),
-            ),
-          ),
-        );
-      },
+      initialDate: selectedCreationDate ?? clock.now(),
+      maxDate: clock.now(),
     );
+
+    if (selected != null) {
+      setState(() {
+        selectedCreationDate = nullIfToday(selected);
+      });
+    }
   }
 
   // If none of the selected players are from the currently selected group,
@@ -544,9 +439,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Determines whether the "Create Match" button should be enabled.
   ///
   /// Returns `true` if:
+  /// - Currently in edit mode OR
   /// - A game is selected AND
   /// - There are at least two participating units (teams or single players).
-  bool isSubmitButtonEnabled() {
+  bool get isSubmitButtonEnabled {
+    if (widget.editMode) return true;
+
     if (selectedGame == null) return false;
 
     final int unitsCount = selectedUnits.isNotEmpty
@@ -560,7 +458,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   ///
   /// If a match is being edited, updates the match in the database.
   /// Otherwise, creates a new match and navigates to the MatchResultView.
-  void submitButtonNavigation(BuildContext context) async {
+  Future<void> submitButtonNavigation(BuildContext context) async {
     // mark showcase as seen
     if (showcaseProvider.shouldShowShowcase(
       createMatchViewMatchNameIdentifier,
@@ -580,7 +478,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       final match = await createMatch();
       widget.onMatchesUpdated?.call();
 
-      final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+      final hasPairs = selectedUnits.any((u) => u.isPair);
 
       if (isTeamMatch && !hasPairs) {
         if (context.mounted) {
@@ -620,7 +518,21 @@ class _CreateMatchViewState extends State<CreateMatchView> {
   /// Updates the existing match in the database.
   Future<void> updateMatch() async {
     final originalMatch = widget.matchToPrefill!;
-    final newCreatedAt = selectedCreationDate ?? originalMatch.createdAt;
+
+    // Determine the new creation date:
+    // - If user selected a specific date via date picker -> use that date
+    // - If user didn't change the date AND the original match was created today -> keep original exact timestamp
+    // - If user explicitly changed the date to "today" (from a non-today original) -> use current time (now)
+    // Note: selectedCreationDate == null means "today" (see nullIfToday)
+    final DateTime newCreatedAt;
+    if (selectedCreationDate != null) {
+      newCreatedAt = selectedCreationDate!;
+    } else if (isToday(originalMatch.createdAt)) {
+      newCreatedAt = originalMatch.createdAt;
+    } else {
+      newCreatedAt = clock.now();
+    }
+
     DateTime? newEndedAt = originalMatch.endedAt;
 
     if (newEndedAt != null && newEndedAt.isBefore(newCreatedAt)) {
@@ -632,25 +544,20 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       name: matchNameController.text.isEmpty
           ? (hintText ?? '')
           : matchNameController.text.trim(),
-      group: selectedGroup,
-      players: selectedPlayers,
-      game: selectedGame!,
+      group: originalMatch.group,
+      players: originalMatch.players,
+      game: originalMatch.game,
       createdAt: newCreatedAt,
       endedAt: newEndedAt,
       notes: originalMatch.notes,
+      isTeamMatch: originalMatch.isTeamMatch,
+      teams: originalMatch.teams,
     );
 
     if (originalMatch.name != updatedMatch.name) {
       await db.matchDao.updateMatchName(
         matchId: originalMatch.id,
         name: updatedMatch.name,
-      );
-    }
-
-    if (originalMatch.group?.id != updatedMatch.group?.id) {
-      await db.matchDao.updateMatchGroup(
-        matchId: originalMatch.id,
-        groupId: updatedMatch.group?.id,
       );
     }
 
@@ -668,33 +575,13 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       );
     }
 
-    // Add players who are in updatedMatch but not in the original match
-    for (var player in updatedMatch.players) {
-      if (!widget.matchToPrefill!.players.any((p) => p.id == player.id)) {
-        await db.playerMatchDao.addPlayerToMatch(
-          matchId: widget.matchToPrefill!.id,
-          playerId: player.id,
-        );
-      }
-    }
-
-    // Remove players who are in the original match but not in updatedMatch
-    for (var player in widget.matchToPrefill!.players) {
-      if (!updatedMatch.players.any((p) => p.id == player.id)) {
-        await db.playerMatchDao.removePlayerFromMatch(
-          matchId: widget.matchToPrefill!.id,
-          playerId: player.id,
-        );
-      }
-    }
-
     widget.onMatchUpdated?.call(updatedMatch);
   }
 
   // Creates a new match and adds it to the database.
   // Returns the created match.
   Future<Match> createMatch() async {
-    final hasPairs = selectedUnits.any((u) => u.members.length > 1);
+    final hasPairs = selectedUnits.any((u) => u.isPair);
     final effectivePairs = hasPairs ? selectedUnits : null;
     final effectiveTitle = matchNameController.text.isEmpty
         ? (hintText ?? '')

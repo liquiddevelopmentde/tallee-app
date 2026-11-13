@@ -1,11 +1,10 @@
 import 'dart:core' hide Match;
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/floating_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
@@ -31,7 +30,6 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(height: 50),
         Column(
@@ -39,12 +37,12 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             const Icon(Icons.file_download, size: 50),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.file_share_instruction,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),
@@ -67,8 +65,8 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             FloatingAnimatedButton(
               text: loc.save_file,
               icon: Icons.folder,
-              onPressed: () {
-                RemoteShareService().saveMatchToCustomLocation(
+              onPressed: () async {
+                await RemoteShareService().saveMatchToCustomLocation(
                   widget.match,
                   dialogTitle: loc.choose_where_to_save,
                 );
@@ -78,8 +76,8 @@ class _SaveFileComponentState extends State<SaveFileComponent> {
             // Share button
             FloatingAnimatedButton(
               icon: Icons.share,
-              onPressed: () {
-                RemoteShareService().shareMatchAsFile(
+              onPressed: () async {
+                await RemoteShareService().shareMatchAsFile(
                   widget.match,
                   text: loc.here_is_shared_match(widget.match.name),
                   title: loc.share_match_title,

@@ -33,13 +33,31 @@
           "type": "string"
         },
         "ruleset": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "winner",
+            "loser",
+            "highestScore",
+            "lowestScore",
+            "lives",
+            "placement"
+          ]
         },
         "description": {
           "type": "string"
         },
         "color": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "red",
+            "orange",
+            "yellow",
+            "green",
+            "teal",
+            "blue",
+            "purple",
+            "pink"
+          ]
         }
       },
       "required": [
@@ -66,6 +84,9 @@
           "type": "string"
         },
         "description": {
+          "type": "string"
+        },
+        "color": {
           "type": "string"
         },
         "members": {
@@ -109,6 +130,7 @@
         "name",
         "createdAt",
         "description",
+        "color",
         "members"
       ]
     },
@@ -175,7 +197,6 @@
             },
             "required": [
               "roundNumber",
-              "score",
               "change"
             ],
             "additionalProperties": false
@@ -208,7 +229,17 @@
             "type": "string"
           },
           "color": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "red",
+              "orange",
+              "yellow",
+              "green",
+              "teal",
+              "blue",
+              "purple",
+              "pink"
+            ]
           },
           "score": {
             "type": [

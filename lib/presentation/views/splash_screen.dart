@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:lottie/lottie.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.onFinished});
@@ -28,25 +28,23 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomTheme.primaryColor,
-      body: Center(
-        child: Lottie.asset(
-          'assets/logo-animation.json',
-          controller: _controller,
-          fit: BoxFit.contain,
-          frameRate: FrameRate.max,
-          onLoaded: (composition) {
-            _controller
-              ..duration = composition.duration
-              ..forward().then((value) {
-                if (!mounted) return;
-                widget.onFinished?.call();
-              });
-          },
-        ),
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: AppColors.primaryColor,
+    body: Center(
+      child: Lottie.asset(
+        'assets/logo-animation.json',
+        controller: _controller,
+        fit: BoxFit.contain,
+        frameRate: FrameRate.max,
+        onLoaded: (composition) {
+          _controller
+            ..duration = composition.duration
+            ..forward().then((value) {
+              if (!mounted) return;
+              widget.onFinished?.call();
+            });
+        },
       ),
-    );
-  }
+    ),
+  );
 }

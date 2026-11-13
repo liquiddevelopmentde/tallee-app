@@ -1,8 +1,10 @@
 import 'dart:core' hide Match;
 
+import 'package:collection/collection.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/edge_blocked_bouncing_scroll_physics.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
@@ -12,18 +14,9 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 class PlacementDragList extends StatefulWidget {
   /// A list widget for the [MatchResultView] that lets the user drag teams / players to different placements.
   /// - [match]: The match whose players / teams are being reordered.
-  /// - [onPlayerOrderChanged]: The callback invoked with the updated player order whenever a player is moved.
-  /// - [onTeamOrderChanged]: The callback invoked with the updated team order whenever a team is moved.
-  const PlacementDragList({
-    super.key,
-    required this.match,
-    this.onPlayerOrderChanged,
-    this.onTeamOrderChanged,
-  });
+  const PlacementDragList({super.key, required this.match});
 
   final Match match;
-  final void Function(List<Player>)? onPlayerOrderChanged;
-  final void Function(List<Team>)? onTeamOrderChanged;
 
   @override
   State<PlacementDragList> createState() => _PlacementDragListState();
@@ -40,8 +33,21 @@ class _PlacementDragListState extends State<PlacementDragList> {
 
   @override
   initState() {
-    allTeams = widget.match.teams ?? [];
-    allPlayers = widget.match.players;
+    if (useTeamLogic) {
+      allTeams = widget.match.teams ?? [];
+      mergeSort(
+        allTeams,
+        compare: (a, b) => a.score ?? 0.compareTo(b.score ?? 0),
+      );
+    } else {
+      allPlayers = widget.match.players;
+      mergeSort(
+        allPlayers,
+        compare: (a, b) =>
+            widget.match.scores[a.id]?.change ??
+            0.compareTo(widget.match.scores[b.id]?.change ?? 0),
+      );
+    }
 
     placementController = ScrollController();
     valueController = ScrollController();
@@ -69,14 +75,12 @@ class _PlacementDragListState extends State<PlacementDragList> {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               itemCount: itemCount,
-              itemBuilder: (context, index) {
-                return SizedBox(
-                  height: rowHeight,
-                  child: Center(
-                    child: placementBadge(index: index, badgeSize: badgeSize),
-                  ),
-                );
-              },
+              itemBuilder: (context, index) => SizedBox(
+                height: rowHeight,
+                child: Center(
+                  child: placementBadge(index: index, badgeSize: badgeSize),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 4),
@@ -95,40 +99,36 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allTeams.insert(newIndex, team);
                       });
                     },
-                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
-                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
+                    onReorderStart: (_) => Haptics.heavyImpact(),
+                    onReorderEnd: (_) => Haptics.selectionClick(),
                     itemCount: itemCount,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        key: ValueKey(allTeams[index].id),
-                        height: rowHeight,
-                        child: isTeamMatch
-                            ? TeamCard(
-                                margin: const EdgeInsets.only(
-                                  left: 4,
-                                  right: 4,
-                                  top: 4,
-                                  bottom: 4,
-                                ),
-                                showTeamMembers: false,
-                                showDragHandle: true,
-                                team: allTeams[index],
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                ),
-                                child: TextIconListTile(
-                                  player: allTeams[index].members.first,
-                                  pair: allTeams[index].members.length > 1
-                                      ? allTeams[index]
-                                      : null,
-                                  icon: Icons.drag_handle,
-                                  pairIconLeft: true,
-                                ),
+                    itemBuilder: (context, index) => SizedBox(
+                      key: ValueKey(allTeams[index].id),
+                      height: rowHeight,
+                      child: isTeamMatch
+                          ? TeamCard(
+                              margin: const EdgeInsets.only(
+                                left: 4,
+                                right: 4,
+                                top: 4,
+                                bottom: 4,
                               ),
-                      );
-                    },
+                              showTeamMembers: false,
+                              showDragHandle: true,
+                              team: allTeams[index],
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: TextIconListTile(
+                                player: allTeams[index].members.first,
+                                pair: allTeams[index].isPair
+                                    ? allTeams[index]
+                                    : null,
+                                icon: Icons.drag_handle,
+                                pairIconLeft: true,
+                              ),
+                            ),
+                    ),
                   ),
                 )
               : Expanded(
@@ -145,22 +145,20 @@ class _PlacementDragListState extends State<PlacementDragList> {
                         allPlayers.insert(newIndex, item);
                       });
                     },
-                    onReorderStart: (_) => HapticFeedback.heavyImpact(),
-                    onReorderEnd: (_) => HapticFeedback.selectionClick(),
+                    onReorderStart: (_) => Haptics.heavyImpact(),
+                    onReorderEnd: (_) => Haptics.selectionClick(),
                     itemCount: itemCount,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        key: ValueKey(allPlayers[index].id),
-                        height: rowHeight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: TextIconListTile(
-                            player: allPlayers[index],
-                            icon: Icons.drag_handle,
-                          ),
+                    itemBuilder: (context, index) => SizedBox(
+                      key: ValueKey(allPlayers[index].id),
+                      height: rowHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: TextIconListTile(
+                          player: allPlayers[index],
+                          icon: Icons.drag_handle,
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 ),
         ],
@@ -174,13 +172,13 @@ class _PlacementDragListState extends State<PlacementDragList> {
         height: badgeSize,
         width: badgeSize,
         decoration: BoxDecoration(
-          color: CustomTheme.boxBorderColor,
-          borderRadius: CustomTheme.standardBorderRadiusAll,
+          color: context.talleeColors.boxBorderColor,
+          borderRadius: AppColors.standardBorderRadiusAll,
         ),
         child: Text(
           ' #${index + 1} ',
-          style: const TextStyle(
-            color: CustomTheme.textColor,
+          style: TextStyle(
+            color: context.talleeColors.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -207,7 +205,7 @@ class _PlacementDragListState extends State<PlacementDragList> {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.15 * t),
-                        borderRadius: CustomTheme.standardBorderRadiusAll,
+                        borderRadius: AppColors.standardBorderRadiusAll,
                       ),
                     ),
                   ),

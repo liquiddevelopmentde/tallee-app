@@ -1,6 +1,6 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/match.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
 
@@ -44,7 +44,7 @@ class DisplaySelectedFileWidget extends StatelessWidget {
         Text(
           loc.tap_import_to_continue,
           style: TextStyle(
-            color: CustomTheme.textColor.withAlpha(180),
+            color: context.talleeColors.textColor.withAlpha(180),
             fontSize: 14,
             overflow: TextOverflow.visible,
           ),

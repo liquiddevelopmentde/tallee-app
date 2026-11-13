@@ -1,6 +1,7 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
 class ScoreListTile extends StatelessWidget {
@@ -33,10 +34,9 @@ class ScoreListTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      decoration: const BoxDecoration(color: CustomTheme.boxColor),
+      decoration: BoxDecoration(color: context.talleeColors.boxColor),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           content,
           SizedBox(
@@ -51,37 +51,35 @@ class ScoreListTile extends StatelessWidget {
               keyboardType: const TextInputType.numberWithOptions(signed: true),
               maxLength: 5,
               inputFormatters: [
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  return isValidScoreInput(newValue.text) ? newValue : oldValue;
-                }),
+                TextInputFormatter.withFunction(
+                  (oldValue, newValue) =>
+                      isValidScoreInput(newValue.text) ? newValue : oldValue,
+                ),
               ],
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: CustomTheme.textColor,
+                color: context.talleeColors.textColor,
               ),
-              cursorColor: CustomTheme.textColor,
+              cursorColor: context.talleeColors.textColor,
               decoration: InputDecoration(
                 hintText: loc.points,
                 counterText: '',
                 filled: true,
-                fillColor: CustomTheme.onBoxColor,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 0,
-                ),
+                fillColor: context.talleeColors.onBoxColor,
+                contentPadding: EdgeInsets.zero,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(
-                    color: CustomTheme.textColor.withAlpha(250),
+                    color: context.talleeColors.textColor.withAlpha(250),
                     width: 2,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                     width: 2,
                   ),
                 ),

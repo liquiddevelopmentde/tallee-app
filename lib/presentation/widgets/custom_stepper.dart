@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class CustomStepper extends StatefulWidget {
   const CustomStepper({
@@ -9,7 +10,18 @@ class CustomStepper extends StatefulWidget {
     this.onChanged,
     this.maxValue,
     this.minValue,
-  });
+  }) : assert(
+         minValue == null || maxValue == null || minValue <= maxValue,
+         'minValue must be less than or equal to maxValue',
+       ),
+       assert(
+         minValue == null || value >= minValue,
+         'value must be greater than or equal to minValue',
+       ),
+       assert(
+         maxValue == null || value <= maxValue,
+         'value must be less than or equal to maxValue',
+       );
 
   final int value;
   final void Function(int)? onChanged;
@@ -32,37 +44,41 @@ class _CustomStepperState extends State<CustomStepper> {
         ? value < widget.maxValue!
         : true;
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
+        color: context.talleeColors.onBoxColor,
         borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: CustomTheme.boxBorderColor),
+        border: Border.all(color: context.talleeColors.boxBorderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           HapticIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: AppSpacing.standardMargin,
             icon: Icon(
               Icons.remove,
               size: 20,
               color: canDecrement
-                  ? CustomTheme.textColor
-                  : CustomTheme.textColor.withAlpha(60),
+                  ? context.talleeColors.textColor
+                  : context.talleeColors.textColor.withAlpha(60),
             ),
             onPressed: canDecrement
                 ? () => {value--, widget.onChanged?.call(value)}
                 : null,
           ),
-          Container(width: 1, height: 22, color: CustomTheme.boxBorderColor),
+          Container(
+            width: 1,
+            height: 22,
+            color: context.talleeColors.boxBorderColor,
+          ),
           HapticIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: AppSpacing.standardMargin,
             icon: Icon(
               Icons.add,
               size: 20,
               color: canIncrement
-                  ? CustomTheme.textColor
-                  : CustomTheme.textColor.withAlpha(60),
+                  ? context.talleeColors.textColor
+                  : context.talleeColors.textColor.withAlpha(60),
             ),
             onPressed: canIncrement
                 ? () => {value++, widget.onChanged?.call(value)}

@@ -1,21 +1,18 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_profile_body.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_share/match_share_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/widgets/match_profile_body.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/player_detail_view.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_button.dart';
-import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class MatchDetailView extends StatefulWidget {
   /// A view that displays the profile of a match
@@ -42,14 +39,11 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   late Match match;
 
-  late TextEditingController nameController;
-
   @override
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
     match = widget.match;
-    nameController = TextEditingController();
   }
 
   @override
@@ -57,7 +51,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(loc.match_profile),
         actions: [
@@ -86,8 +80,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
       body: SafeArea(
         child: MatchProfileBody(
           match: match,
-          isPreview: false,
-          onEdit: () => editMatchNavigation(loc),
+          onEdit: editMatchNavigation,
           onEnterResults: () async {
             await Navigator.push(
               context,
@@ -137,23 +130,22 @@ class _MatchDetailViewState extends State<MatchDetailView> {
 
   void shareMatch() {
     final loc = AppLocalizations.of(context);
-    if (match.endedAt != null) {
+    if (match.hasEnded) {
       Navigator.of(context).push(
         adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.matchShareView),
           builder: (context) => MatchShareView(match: match),
           fullscreenDialog: true,
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar(message: loc.match_not_ended_share_warning),
-      );
+      context.showSnackBar(message: loc.match_not_ended_share_warning);
     }
   }
 
-  void confirmDeleteMatch() {
+  Future<void> confirmDeleteMatch() async {
     final loc = AppLocalizations.of(context);
-    showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder: (context) => CustomAlertDialog(
         title: '${loc.delete_match}?',
@@ -165,6 +157,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(true),
             text: loc.delete,
+            accent: ButtonAccent.destructive,
           ),
           CustomDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
@@ -174,9 +167,15 @@ class _MatchDetailViewState extends State<MatchDetailView> {
         ],
       ),
     ).then((confirmed) async {
-      if (confirmed != null && confirmed && mounted) {
-        await db.matchDao.deleteMatch(matchId: match.id);
+      if (confirmed == true && mounted) {
+        final success = await db.matchDao.deleteMatch(matchId: match.id);
         if (!mounted) return;
+        if (!success) {
+          context.showSnackBar(message: loc.error_deleting_match);
+          return;
+        }
+
+        context.showSnackBar(message: loc.match_deleted);
         Navigator.pop(context);
         widget.onMatchUpdate.call();
       }
@@ -213,66 +212,19 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     });
   }
 
-  bool isConfirmButtonEnabled() => nameController.text.trim().isNotEmpty;
-
-  /// Navigates to the edit match view if the match hasnt ended yet, otherwise
-  /// shows a dialog to only edit the name
-  void editMatchNavigation(AppLocalizations loc) {
-    // Match hasnt ended yet, allow editing
-    if (match.endedAt == null) {
-      Navigator.push(
-        context,
-        adaptivePageRoute(
-          settings: const RouteSettings(name: RouteNames.createMatchView),
-          fullscreenDialog: true,
-          builder: (context) => CreateMatchView(
-            matchToPrefill: match,
-            editMode: true,
-            onMatchUpdated: onMatchUpdated,
-          ),
+  /// Navigates to the edit match view
+  void editMatchNavigation() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createMatchView),
+        fullscreenDialog: true,
+        builder: (context) => CreateMatchView(
+          matchToPrefill: match,
+          editMode: true,
+          onMatchUpdated: onMatchUpdated,
         ),
-      );
-    } else {
-      // Match has ended, only allow name change
-      nameController.text = match.name;
-      showDialog<bool>(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setDialogState) {
-            return CustomAlertDialog(
-              title: loc.edit_name,
-              content: TextInputField(
-                maxLength: MAX_MATCH_NAME_LENGTH,
-                controller: nameController,
-                hintText: loc.set_name,
-                onChanged: (_) => setDialogState(() {}),
-              ),
-              actions: [
-                CustomDialogAction(
-                  onPressed: isConfirmButtonEnabled()
-                      ? () => Navigator.of(context).pop(true)
-                      : null,
-                  text: loc.confirm,
-                ),
-                CustomDialogAction(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  buttonType: ButtonType.secondary,
-                  text: loc.cancel,
-                ),
-              ],
-            );
-          },
-        ),
-      ).then((confirmed) async {
-        if (confirmed != null && confirmed && context.mounted) {
-          final newName = nameController.text.trim();
-
-          if (newName != match.name) {
-            await db.matchDao.updateMatchName(matchId: match.id, name: newName);
-            onMatchUpdated(match.copyWith(name: newName));
-          }
-        }
-      });
-    }
+      ),
+    );
   }
 }

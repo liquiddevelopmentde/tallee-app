@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
@@ -36,92 +37,93 @@ class AssociatePlayerTile extends StatefulWidget {
 
 class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
   @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      decoration: CustomTheme.standardBoxDecoration.copyWith(
-        border: Border.all(
-          color: widget.borderColor ?? CustomTheme.boxBorderColor,
-        ),
+  Widget build(BuildContext context) => AnimatedContainer(
+    decoration: context.standardBoxDecoration.copyWith(
+      border: Border.all(
+        color: widget.borderColor ?? context.talleeColors.boxBorderColor,
       ),
-      margin: CustomTheme.standardMargin,
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: buildUnitNameWidget(
-              widget.player,
-              mainStyle: const TextStyle(
-                fontSize: 18,
-                color: CustomTheme.textColor,
-                fontWeight: FontWeight.w500,
-              ),
-              countStyle: TextStyle(
-                fontSize: 16,
-                color: CustomTheme.textColor.withAlpha(100),
-                fontWeight: FontWeight.w500,
-              ),
+    ),
+    margin: AppSpacing.standardMargin,
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.easeInOut,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: buildUnitNameWidget(
+            context,
+            widget.player,
+            mainStyle: TextStyle(
+              fontSize: 18,
+              color: context.talleeColors.textColor,
+              fontWeight: FontWeight.w500,
+            ),
+            countStyle: TextStyle(
+              fontSize: 16,
+              color: context.talleeColors.textColor.withAlpha(100),
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const Icon(Icons.keyboard_arrow_right),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: GestureDetector(
-                    onTap: () async {
-                      widget.onTap.call();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 6,
-                        horizontal: 6,
-                      ),
-                      decoration: CustomTheme.standardBoxDecoration.copyWith(
-                        color: CustomTheme.onBoxColor,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (widget.associatedPlayer != null)
-                            Flexible(
-                              child: widget.isNew
-                                  ? Text(
-                                      AppLocalizations.of(context)
-                                          .create_as_new,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.orange,
-                                      ),
-                                    )
-                                  : buildUnitNameWidget(
-                                      widget.associatedPlayer!,
-                                      mainStyle: const TextStyle(fontSize: 17),
-                                      countStyle: TextStyle(
-                                        fontSize: 15,
-                                        color: CustomTheme.textColor.withAlpha(
-                                          100,
-                                        ),
-                                      ),
+        ),
+        const Icon(Icons.keyboard_arrow_right),
+        const SizedBox(width: 4),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Flexible(
+                child: GestureDetector(
+                  onTap: () async {
+                    widget.onTap.call();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 6,
+                    ),
+                    decoration: context.standardBoxDecoration.copyWith(
+                      color: context.talleeColors.onBoxColor,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.associatedPlayer != null)
+                          Flexible(
+                            child: widget.isNew
+                                ? Text(
+                                    AppLocalizations.of(context).create_as_new,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: context.talleeColors.warningColor,
                                     ),
-                            )
-                          else
-                            const Icon(Icons.search, color: Colors.red),
-                        ],
-                      ),
+                                  )
+                                : buildUnitNameWidget(
+                                    context,
+                                    widget.associatedPlayer,
+                                    mainStyle: const TextStyle(fontSize: 17),
+                                    countStyle: TextStyle(
+                                      fontSize: 15,
+                                      color: context.talleeColors.textColor
+                                          .withAlpha(100),
+                                    ),
+                                  ),
+                          )
+                        else
+                          Icon(
+                            Icons.search,
+                            color: context.talleeColors.errorColor,
+                          ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

@@ -1,25 +1,26 @@
 import 'dart:core' hide Match;
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 
-/// Displays the given [teams] as a flat reorderable list where every team is
-/// preceded by a header row and followed by its members. Members can be
-/// dragged across team boundaries to be reassigned to another team.
 class ManageMembersView extends StatefulWidget {
+  /// Displays the given [Team]s as a flat reorderable list where every team is
+  /// preceded by a header row and followed by its members. Members can be
+  /// dragged across team boundaries to be reassigned to another team.
   const ManageMembersView({
     super.key,
     required this.match,
@@ -52,7 +53,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(title: Text(loc.manage_members)),
       body: Stack(
         alignment: AlignmentDirectional.center,
@@ -63,43 +64,41 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               buildDefaultDragHandles: false,
               itemCount: allItemsCount,
               onReorderItem: onReorderItem,
-              onReorderStart: (_) => HapticFeedback.heavyImpact(),
-              onReorderEnd: (_) => HapticFeedback.selectionClick(),
-              proxyDecorator: (child, index, animation) {
-                return AnimatedBuilder(
-                  animation: animation,
-                  builder: (context, _) {
-                    final t = Curves.easeInOut.transform(animation.value);
-                    return Material(
-                      type: MaterialType.transparency,
-                      child: Stack(
-                        children: [
-                          child,
-                          Positioned.fill(
-                            child: IgnorePointer(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 4,
-                                ),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.10 * t,
-                                    ),
-                                    borderRadius:
-                                        CustomTheme.standardBorderRadiusAll,
+              onReorderStart: (_) => Haptics.heavyImpact(),
+              onReorderEnd: (_) => Haptics.selectionClick(),
+              proxyDecorator: (child, index, animation) => AnimatedBuilder(
+                animation: animation,
+                builder: (context, _) {
+                  final t = Curves.easeInOut.transform(animation.value);
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: Stack(
+                      children: [
+                        child,
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(
+                                    alpha: 0.10 * t,
                                   ),
+                                  borderRadius:
+                                      AppColors.standardBorderRadiusAll,
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               itemBuilder: (context, index) {
                 final teamIndex = teamIndexForFlat(index);
                 final memberIndex = memberIndexForFlat(index, teamIndex);
@@ -133,9 +132,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingAnimatedButton(
-                  onPressed: () => setState(() {
-                    redistributePlayers();
-                  }),
+                  onPressed: () => setState(redistributePlayers),
                   icon: Icons.cached,
                 ),
                 const SizedBox(width: 16),
@@ -145,7 +142,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
                       : null,
                   text: loc.create_match,
                   icon: MATCH_ICON,
-                  showAddBadge: true,
                 ),
               ],
             ),
@@ -156,7 +152,6 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   }
 
   Widget buildTeamTile({required Team team}) {
-    final color = getColorFromAppColor(team.color);
     final loc = AppLocalizations.of(context);
     final length = team.members.length;
     final memberText = length == 1 ? loc.member : loc.members;
@@ -167,11 +162,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
       child: Row(
         children: [
           // Color circle
-          Container(
-            width: 14,
-            height: 14,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
+          ColoredCircle(color: team.color, size: 14),
 
           const SizedBox(width: 10),
 
@@ -179,8 +170,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
           Expanded(
             child: Text(
               team.name,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
+              style: TextStyle(
+                color: context.talleeColors.textColor,
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -197,8 +188,8 @@ class _ManageMembersViewState extends State<ManageMembersView> {
               maxLines: 1,
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: CustomTheme.hintColor,
+              style: TextStyle(
+                color: context.talleeColors.hintColor,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -330,7 +321,7 @@ class _ManageMembersViewState extends State<ManageMembersView> {
   bool get allTeamsHaveMembers =>
       teams.every((team) => team.members.isNotEmpty);
 
-  void submitMatch() async {
+  Future<void> submitMatch() async {
     final match = widget.match;
     await db.matchDao.addMatch(match: match);
     if (mounted) {

@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -13,15 +15,19 @@ import 'package:tallee/services/shared.dart';
 
 class LocalShareService {
   /// Deletes all data from the database.
+  ///
+  /// Runs in a single transaction: if any step fails, nothing is deleted.
   static Future<void> deleteAllData(BuildContext context) async {
     final db = context.read<AppDatabase>();
 
-    await db.statisticDao.deleteAllStatistics();
-    await db.matchDao.deleteAllMatches();
-    await db.teamDao.deleteAllTeams();
-    await db.groupDao.deleteAllGroups();
-    await db.gameDao.deleteAllGames();
-    await db.playerDao.deleteAllPlayers();
+    await db.transaction(() async {
+      await db.statisticDao.deleteAllStatistics();
+      await db.matchDao.deleteAllMatches();
+      await db.teamDao.deleteAllTeams();
+      await db.groupDao.deleteAllGroups();
+      await db.gameDao.deleteAllGames();
+      await db.playerDao.deleteAllPlayers();
+    });
   }
 
   /// Retrieves all application data and converts it to a JSON string.
@@ -81,6 +87,16 @@ class LocalShareService {
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ExportResult.unknownException;
     }
   }
@@ -123,7 +139,7 @@ class LocalShareService {
     }
 
     final (status, _) = await validateJson(jsonString);
-    if (status != ImportResult.success) {
+    if (!status.isSuccess) {
       return (status, null);
     }
 
@@ -180,10 +196,20 @@ class LocalShareService {
       print('[validateJson] $e');
       print(stack);
       return (ImportResult.formatException, null);
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[validateJson] Exception');
       print('[validateJson] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return (ImportResult.unknownException, null);
     }
   }
@@ -194,17 +220,27 @@ class LocalShareService {
     String jsonString,
   ) async {
     final (status, decoded) = await validateJson(jsonString);
-    if (status != ImportResult.success || decoded == null) {
+    if (!status.isSuccess || decoded == null) {
       return status;
     }
 
     try {
       await importDataToDatabase(db, decoded);
       return ImportResult.success;
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[commitImport] Failed to write data');
       print('[commitImport] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ImportResult.unknownException;
     }
   }
@@ -213,7 +249,8 @@ class LocalShareService {
   @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate players
-    final players = decoded['players'] as List<dynamic>? ?? [];
+    final players = (decoded['players'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final p in players) {
       final name = p['name'] as String?;
       if (name != null && name.length > MAX_PLAYER_NAME_LENGTH) {
@@ -222,7 +259,8 @@ class LocalShareService {
     }
 
     // Validate games
-    final games = decoded['games'] as List<dynamic>? ?? [];
+    final games = (decoded['games'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in games) {
       final name = g['name'] as String?;
       if (name != null && name.length > MAX_GAME_NAME_LENGTH) {
@@ -235,7 +273,8 @@ class LocalShareService {
     }
 
     // Validate groups
-    final groups = decoded['groups'] as List<dynamic>? ?? [];
+    final groups = (decoded['groups'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in groups) {
       final name = g['name'] as String?;
       if (name != null && name.length > MAX_GROUP_NAME_LENGTH) {
@@ -244,14 +283,16 @@ class LocalShareService {
     }
 
     // Validate matches and teams
-    final matches = decoded['matches'] as List<dynamic>? ?? [];
+    final matches = (decoded['matches'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final m in matches) {
       final name = m['name'] as String?;
       if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
         return false;
       }
 
-      final teams = m['teams'] as List<dynamic>? ?? [];
+      final teams = (m['teams'] as List<dynamic>? ?? [])
+          .cast<Map<String, dynamic>>();
       for (final t in teams) {
         final teamName = t['name'] as String?;
         if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {
@@ -349,22 +390,19 @@ class LocalShareService {
   static List<Team> parseTeamsFromJson(
     List<dynamic> teamsJson,
     Map<String, Player> playerById,
-  ) {
-    return teamsJson.map((t) {
-      final map = t as Map<String, dynamic>;
-      final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
-          .cast<String>();
+  ) => teamsJson.map((t) {
+    final map = t as Map<String, dynamic>;
+    final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
 
-      // Ignore invalid member IDs (missing players) instead of throwing
-      final members = memberIds
-          .map((id) => playerById[id])
-          .where((p) => p != null)
-          .cast<Player>()
-          .toList();
+    // Ignore invalid member IDs (missing players) instead of throwing
+    final members = memberIds
+        .map((id) => playerById[id])
+        .where((p) => p != null)
+        .cast<Player>()
+        .toList();
 
-      return Team.fromNormalizedJson(map, members);
-    }).toList();
-  }
+    return Team.fromNormalizedJson(map, members);
+  }).toList();
 
   /// Parses matches from JSON data.
   @visibleForTesting
@@ -442,6 +480,11 @@ class LocalShareService {
           .cast<Group>()
           .toList();
 
+      final type = StatisticType.values.firstWhere(
+        (e) => e.name == map['type'],
+        orElse: () => StatisticType.totalWins,
+      );
+
       return Statistic(
         id: map['id'] as String,
         createdAt: DateTime.parse(map['createdAt'] as String),
@@ -451,24 +494,21 @@ class LocalShareService {
         endDate: map['endDate'] != null
             ? DateTime.parse(map['endDate'] as String)
             : null,
-        type: StatisticType.values.firstWhere(
-          (e) => e.name == map['type'] || e.toString() == map['type'],
-          orElse: () => StatisticType.totalWins,
-        ),
+        type: type,
         scopes: (map['scopes'] as List<dynamic>? ?? [])
             .map(
               (scope) => StatisticScope.values.firstWhere(
-                (e) => e.name == scope || e.toString() == scope,
+                (e) => e.name == scope,
                 orElse: () => StatisticScope.allPlayers,
               ),
             )
             .toList(),
         timeframe: Timeframe.values.firstWhere(
-          (e) => e.name == map['timeframe'] || e.toString() == map['timeframe'],
+          (e) => e.name == map['timeframe'],
           orElse: () => Timeframe.allTime,
         ),
         color: AppColor.values.firstWhere(
-          (e) => e.name == map['color'] || e.toString() == map['color'],
+          (e) => e.name == map['color'],
           orElse: () => AppColor.orange,
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
@@ -476,6 +516,10 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
+        sortDirection: SortDirection.values.firstWhere(
+          (e) => e.name == map['sortDirection'],
+          orElse: () => type.defaultSortDirection,
+        ),
       );
     }).toList();
   }

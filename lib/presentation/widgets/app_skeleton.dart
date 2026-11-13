@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class AppSkeleton extends StatefulWidget {
   /// A widget that provides a skeleton loading effect to its child widget tree.
@@ -33,31 +34,26 @@ class AppSkeleton extends StatefulWidget {
 
 class _AppSkeletonState extends State<AppSkeleton> {
   @override
-  Widget build(BuildContext context) {
-    return Skeletonizer(
-      effect: PulseEffect(
-        from: Colors.grey[800]!,
-        to: Colors.grey[600]!,
-        duration: const Duration(milliseconds: 800),
-      ),
-      enabled: widget.enabled,
-      enableSwitchAnimation: true,
-      switchAnimationConfig: SwitchAnimationConfig(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.linear,
-        switchOutCurve: Curves.linear,
-        transitionBuilder: AnimatedSwitcher.defaultTransitionBuilder,
-        layoutBuilder: !widget.fixLayoutBuilder
-            ? AnimatedSwitcher.defaultLayoutBuilder
-            : (Widget? currentChild, List<Widget> previousChildren) {
-                final children = <Widget>[...previousChildren];
-                if (currentChild != null) children.add(currentChild);
-                return Stack(alignment: widget.alignment, children: children);
-              },
-      ),
-      child: widget.fixLayoutBuilder
-          ? Align(alignment: widget.alignment, child: widget.child)
-          : widget.child,
-    );
-  }
+  Widget build(BuildContext context) => Skeletonizer(
+    effect: PulseEffect(
+      from: context.talleeColors.skeletonFromColor,
+      to: context.talleeColors.skeletonToColor,
+      duration: const Duration(milliseconds: 800),
+    ),
+    enabled: widget.enabled,
+    enableSwitchAnimation: true,
+    switchAnimationConfig: SwitchAnimationConfig(
+      duration: const Duration(milliseconds: 200),
+      layoutBuilder: !widget.fixLayoutBuilder
+          ? AnimatedSwitcher.defaultLayoutBuilder
+          : (Widget? currentChild, List<Widget> previousChildren) {
+              final children = <Widget>[...previousChildren];
+              if (currentChild != null) children.add(currentChild);
+              return Stack(alignment: widget.alignment, children: children);
+            },
+    ),
+    child: widget.fixLayoutBuilder
+        ? Align(alignment: widget.alignment, child: widget.child)
+        : widget.child,
+  );
 }

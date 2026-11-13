@@ -101,6 +101,7 @@ Podfile.lock
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
 **/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/CodeSigning.xcconfig
 **/ios/Flutter/ephemeral
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
@@ -163,7 +164,6 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 /build/
 
-
 # Obfuscation related
 app.*.map.json
 
@@ -177,3 +177,6 @@ untranslated_messages.json
 .env
 
 sentry.properties
+
+# Python
+.venv/

@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart' show Material;
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart' hide Material;
+import 'package:material_ui/material_ui.dart' show Material;
 import 'package:pinput/pinput.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/share_exceptions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
-import 'package:tallee/presentation/widgets/buttons/api_action_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class EnterTokenComponent extends StatefulWidget {
@@ -56,35 +57,37 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     final defaultPinTheme = PinTheme(
       height: 60,
       width: 45,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
-        color: CustomTheme.textColor,
+        color: context.talleeColors.textColor,
         fontWeight: FontWeight.w500,
       ),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: CustomTheme.primaryColor),
+      border: Border.all(color: AppColors.primaryColor),
     );
 
     final errorPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
-        border: Border.all(color: Colors.red),
+        border: Border.all(color: context.talleeColors.errorColor),
       ),
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 35,
-        color: Colors.red,
+        color: context.talleeColors.errorColor,
         fontWeight: FontWeight.w500,
       ),
     );
 
     final disabledPinTheme = defaultPinTheme.copyWith(
-      decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
+      decoration: BoxDecoration(
+        border: Border.all(color: context.talleeColors.errorColor),
+      ),
     );
 
-    const errorTextStyle = TextStyle(
-      color: Colors.red,
+    final errorTextStyle = TextStyle(
+      color: context.talleeColors.errorColor,
       fontSize: 14,
       fontWeight: FontWeight.bold,
       overflow: TextOverflow.visible,
@@ -95,17 +98,16 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         const SizedBox(height: 50),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.cloud_download, size: 50),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Text(
                 loc.input_token_instruction,
-                style: const TextStyle(
-                  color: CustomTheme.textColor,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
                   fontSize: 16,
                   overflow: TextOverflow.visible,
                 ),
@@ -131,16 +133,13 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               focusedPinTheme: focusedPinTheme,
               errorPinTheme: errorPinTheme,
               disabledPinTheme: disabledPinTheme,
-              pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
               showCursor: false,
               animationCurve: Curves.easeInOutCubic,
               animationDuration: const Duration(milliseconds: 100),
               onClipboardFound: (value) {
-                HapticFeedback.lightImpact();
+                Haptics.lightImpact();
                 tokenInputFieldController.text = value;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  CustomSnackBar(message: loc.code_pasted_from_clipboard),
-                );
+                context.showSnackBar(message: loc.code_pasted_from_clipboard);
               },
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
@@ -154,30 +153,28 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
               forceErrorState: isTokenValid == false || isMatchValid == false,
               errorText: getErrorText(loc),
               errorTextStyle: errorTextStyle,
-              errorBuilder: (errorText, pin) {
-                return SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      errorText ?? '',
-                      style: errorTextStyle,
-                      textAlign: TextAlign.center,
-                    ),
+              errorBuilder: (errorText, pin) => SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    errorText ?? '',
+                    style: errorTextStyle,
+                    textAlign: TextAlign.center,
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
         ),
         Container(
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 30),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Text(
             loc.share_token_format_info,
-            style: const TextStyle(
-              color: CustomTheme.textColor,
+            style: TextStyle(
+              color: context.talleeColors.textColor,
               fontSize: 14,
               overflow: TextOverflow.visible,
             ),
@@ -215,11 +212,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       isTokenValid = true;
 
       // If an import error occured
-      if (response.result != ImportResult.success && mounted) {
-        errorMessage = translateMatchImportResultToString(
-          response.result,
-          context,
-        );
+      if (!response.result.isSuccess && mounted) {
+        errorMessage = response.result.toLocalizedMatchImportString(context);
       } else {
         setState(() {
           isMatchValid = true;
@@ -228,6 +222,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         if (mounted) {
           Navigator.of(context).push(
             adaptivePageRoute(
+              settings: const RouteSettings(name: RouteNames.previewMatchView),
               builder: (_) => PreviewMatchView(match: match),
               fullscreenDialog: true,
             ),
@@ -260,9 +255,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
     }
   }
 
-  bool validateToken(String? token) {
-    return token != null &&
-        token.length == 6 &&
-        RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
-  }
+  bool validateToken(String? token) =>
+      token != null &&
+      token.length == 6 &&
+      RegExp(r'^[A-Za-z0-9]+$').hasMatch(token);
 }

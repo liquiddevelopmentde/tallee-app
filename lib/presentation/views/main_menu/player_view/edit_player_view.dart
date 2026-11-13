@@ -1,14 +1,13 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/player.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 
 class EditPlayerView extends StatefulWidget {
@@ -57,15 +56,14 @@ class _EditPlayerViewState extends State<EditPlayerView> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         appBar: AppBar(title: Text(loc.edit_player)),
         body: SafeArea(
           maintainBottomViewPadding: true,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppSpacing.standardMargin,
                 child: TextInputField(
                   controller: playerNameController,
                   hintText: loc.player_name,
@@ -73,7 +71,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
                 ),
               ),
               Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppSpacing.standardMargin,
                 child: TextInputField(
                   controller: playerDescriptionController,
                   hintText: loc.description,
@@ -85,11 +83,9 @@ class _EditPlayerViewState extends State<EditPlayerView> {
               ),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: AppSpacing.pagePadding,
                 child: BottomAnimatedButton(
-                  sizeRelativeToWidth: 0.95,
-                  buttonText: loc.save_changes,
-                  buttonType: ButtonType.primary,
+                  text: loc.save_changes,
                   onPressed: enableSaveButton ? savePlayer : null,
                 ),
               ),
@@ -124,16 +120,16 @@ class _EditPlayerViewState extends State<EditPlayerView> {
     if (!mounted) return;
 
     if (success) {
-      HapticFeedback.successNotification();
+      Haptics.successNotification();
       widget.onPlayerChanged?.call();
       if (mounted) {
         Navigator.pop(context, updatedPlayer);
       }
     } else {
       if (mounted) {
-        HapticFeedback.errorNotification();
+        Haptics.errorNotification();
       }
-      showSnackbar(message: loc.error_editing_player);
+      scaffoldMessengerKey.showSnackBar(message: loc.error_editing_player);
     }
   }
 
@@ -164,16 +160,5 @@ class _EditPlayerViewState extends State<EditPlayerView> {
     }
 
     return (success, updatedPlayer);
-  }
-
-  /// Displays a snackbar with the given message and optional action.
-  ///
-  /// [message] The message to display in the snackbar.
-  void showSnackbar({required String message}) {
-    final messenger = scaffoldMessengerKey.currentState;
-    if (messenger != null) {
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(CustomSnackBar(message: message));
-    }
   }
 }

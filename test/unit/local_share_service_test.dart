@@ -28,9 +28,9 @@ void main() {
   final fixedDate = DateTime(2025, 11, 19, 0, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    SharedPreferencesService.init();
+    await SharedPreferencesService.init();
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),
@@ -79,7 +79,7 @@ void main() {
         type: StatisticType.totalScore,
         scopes: [StatisticScope.selectedGames, StatisticScope.selectedGroups],
         timeframe: Timeframe.custom,
-        startDate: DateTime(2025, 1, 1),
+        startDate: DateTime(2025),
         endDate: DateTime(2025, 1, 31),
         color: AppColor.yellow,
         selectedGames: [testGame],
@@ -99,13 +99,7 @@ void main() {
     await tester.pumpWidget(
       Provider<AppDatabase>.value(
         value: database,
-        child: MaterialApp(
-          home: Builder(
-            builder: (context) {
-              return Container();
-            },
-          ),
-        ),
+        child: MaterialApp(home: Builder(builder: (context) => Container())),
       ),
     );
     final BuildContext context = tester.element(find.byType(Container));
@@ -146,6 +140,7 @@ void main() {
         'id': testGroup.id,
         'name': testGroup.name,
         'description': testGroup.description,
+        'color': testGroup.color.name,
         'memberIds': [testPlayer1.id, testPlayer2.id],
         'createdAt': testGroup.createdAt.toIso8601String(),
       },
@@ -376,6 +371,7 @@ void main() {
           expect(statData['timeframe'], testStatistic.timeframe.name);
           expect(statData['color'], testStatistic.color.name);
           expect(statData['displayCount'], testStatistic.displayCount);
+          expect(statData['sortDirection'], testStatistic.sortDirection.name);
           expect(
             statData['selectedGames'],
             containsAll(testStatistic.selectedGames!.map((g) => g.id)),
@@ -440,7 +436,6 @@ void main() {
           final matchWithoutGroup = Match(
             name: 'No Group Match',
             game: testGame,
-            group: null,
             players: [testPlayer1],
             notes: 'No group',
           );
@@ -459,7 +454,7 @@ void main() {
         });
 
         testWidgets('Match with endedAt is handled correctly', (tester) async {
-          final endedDate = DateTime(2025, 12, 1, 10, 0, 0);
+          final endedDate = DateTime(2025, 12, 1, 10);
           final endedMatch = Match(
             name: 'Ended Match',
             game: testGame,
@@ -497,7 +492,6 @@ void main() {
             name: 'Empty Notes Match',
             game: testGame,
             players: [testPlayer1],
-            notes: '',
           );
 
           await database.playerDao.addPlayer(player: testPlayer1);
@@ -567,7 +561,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(
@@ -600,7 +595,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(
@@ -699,6 +695,7 @@ void main() {
               'id': testGroup.id,
               'name': testGroup.name,
               'description': testGroup.description,
+              'color': testGroup.color.name,
               'memberIds': [testPlayer1.id, testPlayer2.id],
               'createdAt': testGroup.createdAt.toIso8601String(),
             },
@@ -939,7 +936,7 @@ void main() {
         final playerById = {testPlayer1.id: testPlayer1};
         final gameById = {testGame.id: testGame};
         final groupById = <String, Group>{};
-        final endedDate = DateTime(2025, 12, 1, 10, 0, 0);
+        final endedDate = DateTime(2025, 12, 1, 10);
 
         final jsonMap = {
           'matches': [
@@ -988,6 +985,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         };
@@ -1004,6 +1002,7 @@ void main() {
         expect(stats[0].timeframe, testStatistic.timeframe);
         expect(stats[0].color, testStatistic.color);
         expect(stats[0].displayCount, testStatistic.displayCount);
+        expect(stats[0].sortDirection, testStatistic.sortDirection);
         expect(stats[0].startDate, testStatistic.startDate);
         expect(stats[0].endDate, testStatistic.endDate);
         expect(stats[0].selectedGames, isNotNull);
@@ -1048,6 +1047,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         };
@@ -1086,6 +1086,7 @@ void main() {
               'id': testGroup.id,
               'name': testGroup.name,
               'description': testGroup.description,
+              'color': testGroup.color.name,
               'memberIds': [testPlayer1.id, testPlayer2.id],
               'createdAt': testGroup.createdAt.toIso8601String(),
             },
@@ -1140,6 +1141,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
             {
               'id': testStatistic.id,
@@ -1155,6 +1157,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
             {
               'id': testStatistic.id,
@@ -1170,6 +1173,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         });
@@ -1216,6 +1220,7 @@ void main() {
                 'id': testGroup.id,
                 'name': testGroup.name,
                 'description': testGroup.description,
+                'color': testGroup.color.name,
                 'memberIds': [testPlayer1.id, testPlayer2.id],
                 'createdAt': testGroup.createdAt.toIso8601String(),
               },
@@ -1251,6 +1256,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
               {
                 'id': testStatistic.id,
@@ -1264,6 +1270,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
               {
                 'id': testStatistic.id,
@@ -1277,6 +1284,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
             ],
           });

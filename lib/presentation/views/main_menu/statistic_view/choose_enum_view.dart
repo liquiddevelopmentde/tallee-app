@@ -1,26 +1,26 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
 import 'package:tallee/core/enums.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseEnumView<T extends Enum> extends StatefulWidget {
   /// A view that allows the user to choose an enum value from a list of enum values.
   /// - [enumValue]: A list of available enum values to choose from
-  /// - [initialEnum]: The initially selected enum value
+  /// - [initialEnums]: The initially selected enum value
   /// - [enableMultiSelection]: Whether multiple enum values can be selected
   const ChooseEnumView({
     super.key,
     required this.enumValue,
     this.initialEnums,
     this.enableMultiSelection = false,
+    this.description,
   });
 
   final List<T> enumValue;
   final List<T>? initialEnums;
   final bool enableMultiSelection;
+  final String? description;
 
   @override
   State<ChooseEnumView<T>> createState() => _ChooseEnumViewState<T>();
@@ -41,7 +41,7 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(getTitle(widget.enumValue.first, loc))),
       body: PopScope(
@@ -52,91 +52,148 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
           }
           Navigator.of(context).pop(popResult);
         },
-        child: Visibility(
-          visible: widget.enumValue.isNotEmpty,
-          replacement: TopCenteredMessage(
-            icon: Icons.info,
-            title: loc.info,
-            message: AppLocalizations.of(context)
-                .there_is_no_group_matching_your_search,
-          ),
-          child: ListView.separated(
-            padding: const EdgeInsets.only(
-              bottom: 85,
-              top: 10,
-              right: 10,
-              left: 10,
-            ),
-            itemCount: widget.enumValue.length,
-            separatorBuilder: (BuildContext context, int index) =>
-                const SizedBox(height: 10),
-            itemBuilder: (BuildContext context, int index) {
-              bool isHighlighted = selectedValues.any(
-                (item) => item == widget.enumValue[index],
-              );
-
-              return GestureDetector(
-                child: AnimatedContainer(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: CustomTheme.boxColor,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: CustomTheme.boxBorderColor,
-                      width: 2,
-                    ),
-                  ),
-                  duration: const Duration(milliseconds: 150),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        getValName(widget.enumValue[index], context),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Icon(
-                        Icons.check,
-                        color: isHighlighted
-                            ? CustomTheme.textColor
-                            : Colors.transparent,
-                      ),
-                    ],
+        child: RadioGroup(
+          onChanged: (T? value) => onChanged(value!),
+          child: Column(
+            children: [
+              if (widget.description != null)
+                Padding(
+                  padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
+                  child: Text(
+                    widget.description!,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
+                    style: TextStyle(color: context.talleeColors.hintColor),
                   ),
                 ),
-                onTap: () async {
-                  setState(() {
-                    if (selectedValues.contains(widget.enumValue[index])) {
-                      selectedValues.removeWhere(
-                        (val) => val == widget.enumValue[index],
-                      );
-                    } else {
-                      // In single select mode only allow one item
-                      if (!isMultiSelect) {
-                        selectedValues.clear();
-                      }
-                      selectedValues.add(widget.enumValue[index]);
-                    }
-                  });
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(
+                    bottom: 85,
+                    top: 10,
+                    right: 10,
+                    left: 10,
+                  ),
+                  itemCount: widget.enumValue.length,
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const SizedBox(height: 10),
+                  itemBuilder: (BuildContext context, int index) =>
+                      GestureDetector(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.talleeColors.boxColor,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: context.talleeColors.boxBorderColor,
+                              width: 2,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                spacing: 12,
+                                children: [
+                                  if (widget.enumValue is List<StatisticType>)
+                                    Icon(
+                                      (widget.enumValue[index] as StatisticType)
+                                          .icon,
+                                    ),
+                                  Text(
+                                    getValName(
+                                      widget.enumValue[index],
+                                      context,
+                                    ),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-                  // Navigate back to create match view instantly
-                  if (!isMultiSelect) {
-                    await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
-                      if (!context.mounted) return;
-                      Navigator.of(context).pop(
-                        selectedValues.isEmpty ? null : selectedValues.first,
-                      );
-                    });
-                  }
-                },
-              );
-            },
+                              if (!isMultiSelect)
+                                // Radio
+                                Radio<T>(
+                                  fillColor:
+                                      WidgetStateProperty.resolveWith<Color>((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                          WidgetState.selected,
+                                        )) {
+                                          return context.talleeColors.textColor;
+                                        }
+                                        return context.talleeColors.hintColor;
+                                      }),
+                                  value: widget.enumValue[index],
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                )
+                              else
+                                // Checkbox
+                                Checkbox(
+                                  value: selectedValues.contains(
+                                    widget.enumValue[index],
+                                  ),
+                                  onChanged: (_) =>
+                                      onChanged(widget.enumValue[index]),
+                                  checkColor:
+                                      context.talleeColors.backgroundColor,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                  fillColor:
+                                      WidgetStateProperty.resolveWith<Color>((
+                                        states,
+                                      ) {
+                                        if (states.contains(
+                                          WidgetState.selected,
+                                        )) {
+                                          return context.talleeColors.textColor;
+                                        }
+                                        return Colors.transparent;
+                                      }),
+                                ),
+                            ],
+                          ),
+                        ),
+                        onTap: () => onChanged(widget.enumValue[index]),
+                      ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> onChanged(T value) async {
+    setState(() {
+      if (selectedValues.contains(value)) {
+        selectedValues.removeWhere((val) => val == value);
+      } else {
+        // In single select mode only allow one item
+        if (!isMultiSelect) {
+          selectedValues.clear();
+        }
+        selectedValues.add(value);
+      }
+    });
+
+    // Navigate back to create match view instantly
+    if (!isMultiSelect) {
+      await Future.delayed(MINIMUM_SKELETON_DURATION).then((_) {
+        if (!mounted) return;
+        Navigator.of(context)
+            .pop(selectedValues.isEmpty ? null : selectedValues.first);
+      });
+    }
   }
 
   bool get isMultiSelect => widget.enableMultiSelection;
@@ -150,11 +207,11 @@ class _ChooseEnumViewState<T extends Enum> extends State<ChooseEnumView<T>> {
   /// Returns the localized string translation of the value
   String getValName(T value, BuildContext context) {
     if (value is StatisticScope) {
-      return translateScopeToString(value, context);
+      return value.toLocalizedString(context);
     } else if (value is StatisticType) {
-      return translateStatisticTypeToString(value, context);
+      return value.toLocalizedString(context);
     } else if (value is Timeframe) {
-      return translateTimeframeToString(value, context);
+      return value.toLocalizedString(context);
     } else {
       return value.toString();
     }

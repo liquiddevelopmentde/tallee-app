@@ -1,13 +1,16 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_players_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
 
 class AssociateGameView extends StatefulWidget {
@@ -37,13 +40,12 @@ class _AssociateGameViewState extends State<AssociateGameView> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
                   color: associatedGame == null ? Colors.orange : Colors.green,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
                   associatedGame != null
@@ -65,27 +67,24 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
               layoutBuilder:
-                  (Widget? currentChild, List<Widget> previousChildren) {
-                    return Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[...previousChildren, ?currentChild],
-                    );
-                  },
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
               child: associatedGame == null
                   ? GestureDetector(
                       onTap: navigateToGameSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: CustomTheme.tileMargin,
+                        margin: AppSpacing.tileMargin,
                         height: 138,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
                             color: Colors.orange.withAlpha(150),
-                            width: 1,
                           ),
                         ),
                         child: Center(
@@ -100,8 +99,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               const SizedBox(height: 5),
                               Text(
                                 loc.no_matching_local_game_found,
-                                style: const TextStyle(
-                                  color: CustomTheme.textColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   overflow: TextOverflow.visible,
@@ -111,8 +110,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
-                                style: const TextStyle(
-                                  color: CustomTheme.hintColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
                                   fontSize: 14,
                                   overflow: TextOverflow.visible,
                                 ),
@@ -135,8 +134,8 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             if (associatedGame != null)
               Text(
                 loc.tap_to_choose_different_game,
-                style: const TextStyle(
-                  color: CustomTheme.hintColor,
+                style: TextStyle(
+                  color: context.talleeColors.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),
@@ -146,11 +145,13 @@ class _AssociateGameViewState extends State<AssociateGameView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
-                buttonText: loc.confirm,
-                sizeRelativeToWidth: 0.95,
+                text: loc.confirm,
                 onPressed: () {
                   Navigator.of(context).push(
                     adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.associatePlayersView,
+                      ),
                       builder: (context) => AssociatePlayersView(
                         match: widget.match,
                         associatedGame: associatedGame,
@@ -180,6 +181,7 @@ class _AssociateGameViewState extends State<AssociateGameView> {
     final selected = await Navigator.push<Game>(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
         builder: (context) => ChooseGameView(
           games: filteredGames,
           initialSelectedGames: [?associatedGame],
@@ -199,10 +201,13 @@ class _AssociateGameViewState extends State<AssociateGameView> {
     if (!mounted) return;
 
     final importedGame = widget.match.game;
-    final match = allGames.where((localGame) {
-      return localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
-          localGame.ruleset == importedGame.ruleset;
-    }).firstOrNull;
+    final match = allGames
+        .where(
+          (localGame) =>
+              localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
+              localGame.ruleset == importedGame.ruleset,
+        )
+        .firstOrNull;
 
     if (match != null) {
       setState(() {

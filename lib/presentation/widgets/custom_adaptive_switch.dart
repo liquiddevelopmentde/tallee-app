@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class CustomAdaptiveSwitch extends StatefulWidget {
   /// A custom switch widget
@@ -24,15 +24,13 @@ class CustomAdaptiveSwitch extends StatefulWidget {
 
 class _CustomAdaptiveSwitchState extends State<CustomAdaptiveSwitch> {
   @override
-  Widget build(BuildContext context) {
-    return Switch.adaptive(
-      value: widget.value,
-      onChanged: (bool value) => {
-        HapticFeedback.selectionClick(),
-        widget.onChanged?.call(value),
-      },
-      activeTrackColor: CustomTheme.primaryColor,
-      padding: widget.padding,
-    );
-  }
+  Widget build(BuildContext context) => Switch.adaptive(
+    value: widget.value,
+    onChanged: (bool value) {
+      Haptics.selectionClick();
+      widget.onChanged?.call(value);
+    },
+    activeTrackColor: AppColors.primaryColor,
+    padding: widget.padding,
+  );
 }

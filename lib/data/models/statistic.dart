@@ -1,5 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:tallee/core/app_color_utils.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -21,6 +20,7 @@ class Statistic {
   final int displayCount;
   final bool isFavourite;
   final int position;
+  final SortDirection sortDirection;
 
   Statistic({
     required this.type,
@@ -33,17 +33,18 @@ class Statistic {
     this.displayCount = 5,
     this.isFavourite = false,
     this.position = 0,
+    SortDirection? sortDirection,
     String? id,
     DateTime? createdAt,
     AppColor? color,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       color = color ?? getRandomAppColor();
+       color = color ?? AppColor.randomColor(),
+       sortDirection = sortDirection ?? type.defaultSortDirection;
 
   @override
-  String toString() {
-    return 'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite)';
-  }
+  String toString() =>
+      'Statistic(id: $id, createdAt: $createdAt, type: $type, scopes: $scopes, timeframe: $timeframe, startDate: $startDate, endDate: $endDate, color: $color, selectedGroups: $selectedGroups, selectedGames: $selectedGames, displayCount: $displayCount, isFavourite: $isFavourite, sortDirection: $sortDirection)';
 
   Statistic copyWith({
     String? id,
@@ -58,22 +59,22 @@ class Statistic {
     int? displayCount,
     bool? isFavourite,
     int? position,
-  }) {
-    return Statistic(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      scopes: scopes ?? this.scopes,
-      timeframe: timeframe ?? this.timeframe,
-      startDate: startDate ?? this.startDate,
-      endDate: endDate ?? this.endDate,
-      color: color ?? this.color,
-      selectedGroups: selectedGroups ?? this.selectedGroups,
-      selectedGames: selectedGames ?? this.selectedGames,
-      displayCount: displayCount ?? this.displayCount,
-      isFavourite: isFavourite ?? this.isFavourite,
-      position: position ?? this.position,
-    );
-  }
+    SortDirection? sortDirection,
+  }) => Statistic(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    scopes: scopes ?? this.scopes,
+    timeframe: timeframe ?? this.timeframe,
+    startDate: startDate ?? this.startDate,
+    endDate: endDate ?? this.endDate,
+    color: color ?? this.color,
+    selectedGroups: selectedGroups ?? this.selectedGroups,
+    selectedGames: selectedGames ?? this.selectedGames,
+    displayCount: displayCount ?? this.displayCount,
+    isFavourite: isFavourite ?? this.isFavourite,
+    position: position ?? this.position,
+    sortDirection: sortDirection ?? this.sortDirection,
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -89,16 +90,20 @@ class Statistic {
     'displayCount': displayCount,
     'isFavourite': isFavourite,
     'position': position,
+    'sortDirection': sortDirection.name,
   };
 
-  Statistic.fromJson(Map<String, dynamic> json)
-    : id = json['id'],
-      createdAt = DateTime.parse(json['createdAt']),
-      type = StatisticType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => StatisticType.totalWins,
-      ),
-      scopes = (json['scopes'] as List)
+  factory Statistic.fromJson(Map<String, dynamic> json) {
+    final type = StatisticType.values.firstWhere(
+      (e) => e.name == json['type'],
+      orElse: () => StatisticType.totalWins,
+    );
+
+    return Statistic(
+      id: json['id'],
+      createdAt: DateTime.parse(json['createdAt']),
+      type: type,
+      scopes: (json['scopes'] as List)
           .map(
             (scope) => StatisticScope.values.firstWhere(
               (e) => e.name == scope,
@@ -106,23 +111,27 @@ class Statistic {
             ),
           )
           .toList(),
-      timeframe = Timeframe.values.firstWhere(
+      timeframe: Timeframe.values.firstWhere(
         (e) => e.name == json['timeframe'],
         orElse: () => Timeframe.allTime,
       ),
-      startDate = json['startDate'] != null
+      startDate: json['startDate'] != null
           ? DateTime.parse(json['startDate'])
           : null,
-      endDate = json['endDate'] != null
-          ? DateTime.parse(json['endDate'])
-          : null,
-      color = AppColor.values.firstWhere(
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+      color: AppColor.values.firstWhere(
         (e) => e.name == json['color'],
         orElse: () => AppColor.orange,
       ),
-      selectedGroups = null,
-      selectedGames = null,
-      displayCount = json['displayCount'],
-      isFavourite = json['isFavourite'],
-      position = json['position'];
+      displayCount: json['displayCount'],
+      isFavourite: json['isFavourite'],
+      position: json['position'],
+      sortDirection: SortDirection.values.firstWhere(
+        (e) =>
+            e.name == json['sortDirection'] ||
+            e.toString() == json['sortDirection'],
+        orElse: () => type.defaultSortDirection,
+      ),
+    );
+  }
 }

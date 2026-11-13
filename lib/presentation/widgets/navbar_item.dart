@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class NavbarItem extends StatefulWidget {
   /// A navigation bar item widget that represents a single tab in a navigation bar.
@@ -31,6 +32,7 @@ class _NavbarItemState extends State<NavbarItem>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> scaleAnimation;
+  late Animation<double> curvedAnimation;
 
   late Animation<Color?> iconColorAnimation;
   late Animation<Color?> bgColorAnimation;
@@ -47,27 +49,37 @@ class _NavbarItemState extends State<NavbarItem>
       value: widget.isSelected ? 1.0 : 0.0,
     );
 
-    final curved = CurvedAnimation(
+    curvedAnimation = CurvedAnimation(
       parent: animationController,
       curve: Curves.easeOut,
     );
 
-    scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(curved);
-
-    iconColorAnimation = ColorTween(
-      begin: CustomTheme.navBarItemUnselectedColor,
-      end: CustomTheme.navBarItemSelectedColor,
-    ).animate(curved);
-
-    bgColorAnimation = ColorTween(
-      begin: Colors.transparent,
-      end: CustomTheme.primaryColor.withAlpha(50),
-    ).animate(curved);
-
-    fontSizeAnimation = Tween<double>(begin: 11.0, end: 12.0).animate(curved);
+    scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(curvedAnimation);
 
     // drives font weight interpolation
-    fontWeight = Tween<double>(begin: 0.0, end: 1.0).animate(curved);
+    fontSizeAnimation = Tween<double>(
+      begin: 11.0,
+      end: 12.0,
+    ).animate(curvedAnimation);
+    fontWeight = Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final colors = context.talleeColors;
+    iconColorAnimation = ColorTween(
+      begin: colors.navBarItemUnselectedColor,
+      end: colors.navBarItemSelectedColor,
+    ).animate(curvedAnimation);
+    bgColorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: AppColors.primaryColor.withAlpha(50),
+    ).animate(curvedAnimation);
   }
 
   // Retrigger animation on selection change
@@ -82,56 +94,54 @@ class _NavbarItemState extends State<NavbarItem>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => widget.onTabTapped(widget.index),
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: AnimatedBuilder(
-            animation: animationController,
-            builder: (context, child) {
-              final iconColor = iconColorAnimation.value!;
-              final bgColor = bgColorAnimation.value!;
-              final fontSize = fontSizeAnimation.value;
-              final fontWeight = FontWeight.lerp(
-                FontWeight.w500,
-                FontWeight.bold,
-                this.fontWeight.value,
-              );
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    ),
-                    child: ScaleTransition(
-                      scale: scaleAnimation,
-                      child: Icon(widget.icon, color: iconColor, size: 32),
-                    ),
+  Widget build(BuildContext context) => Expanded(
+    child: GestureDetector(
+      onTap: () => widget.onTabTapped(widget.index),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: AnimatedBuilder(
+          animation: animationController,
+          builder: (context, child) {
+            final iconColor = iconColorAnimation.value!;
+            final bgColor = bgColorAnimation.value!;
+            final fontSize = fontSizeAnimation.value;
+            final fontWeight = FontWeight.lerp(
+              FontWeight.w500,
+              FontWeight.bold,
+              this.fontWeight.value,
+            );
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                   ),
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: iconColor,
-                      fontSize: fontSize,
-                      fontWeight: fontWeight,
-                    ),
+                  child: ScaleTransition(
+                    scale: scaleAnimation,
+                    child: Icon(widget.icon, color: iconColor, size: 32),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    color: iconColor,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
-    );
-  }
+    ),
+  );
 
   @override
   void dispose() {

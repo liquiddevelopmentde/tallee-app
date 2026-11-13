@@ -1,13 +1,15 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
-import 'package:tallee/presentation/widgets/buttons/bottom_animated_button.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
 import 'package:tallee/services/remote_share_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
@@ -48,13 +50,14 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.center,
               child: Container(
-                margin: CustomTheme.standardMargin,
+                margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                 decoration: BoxDecoration(
-                  color: associatedGroup == null ? Colors.orange : Colors.green,
-                  borderRadius: CustomTheme.standardBorderRadiusAll,
+                  color: associatedGroup == null
+                      ? context.talleeColors.warningColor
+                      : context.talleeColors.successColor,
+                  borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
                   associatedGroup != null
@@ -68,49 +71,48 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
               ),
             ),
             const SizedBox(height: 10),
-            GroupTile(group: widget.match.group!, playersClickable: false),
+            GroupTile(group: widget.match.group!),
             const Icon(Icons.arrow_downward, size: 30),
             const SizedBox(height: 10),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               layoutBuilder:
-                  (Widget? currentChild, List<Widget> previousChildren) {
-                    return Stack(
-                      alignment: Alignment.topCenter,
-                      children: <Widget>[...previousChildren, ?currentChild],
-                    );
-                  },
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
               child: associatedGroup == null
                   ? GestureDetector(
                       onTap: navigateToGroupSelection,
                       child: Container(
                         key: const ValueKey('no_association'),
-                        margin: CustomTheme.tileMargin,
+                        margin: AppSpacing.tileMargin,
                         height: 150,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        decoration: CustomTheme.standardBoxDecoration.copyWith(
+                        decoration: context.standardBoxDecoration.copyWith(
                           border: Border.all(
-                            color: Colors.orange.withAlpha(150),
-                            width: 1,
+                            color: context.talleeColors.warningColor.withAlpha(
+                              150,
+                            ),
                           ),
                         ),
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.group_add,
                                 size: 35,
-                                color: Colors.orange,
+                                color: context.talleeColors.warningColor,
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 loc.no_matching_local_group_found,
-                                style: const TextStyle(
-                                  color: CustomTheme.textColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   overflow: TextOverflow.visible,
@@ -119,8 +121,8 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                               ),
                               Text(
                                 loc.tap_to_choose_existing,
-                                style: const TextStyle(
-                                  color: CustomTheme.hintColor,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
                                   fontSize: 14,
                                 ),
                               ),
@@ -133,16 +135,17 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
                       key: ValueKey(associatedGroup!.id),
                       group: associatedGroup!,
                       onTap: navigateToGroupSelection,
-                      borderColor: Colors.green.withAlpha(150),
-                      playersClickable: false,
+                      borderColor: context.talleeColors.successColor.withAlpha(
+                        150,
+                      ),
                     ),
             ),
             const SizedBox(height: 2),
             if (associatedGroup != null)
               Text(
                 loc.tap_to_choose_different_group,
-                style: const TextStyle(
-                  color: CustomTheme.hintColor,
+                style: TextStyle(
+                  color: context.talleeColors.hintColor,
                   fontSize: 14,
                   overflow: TextOverflow.visible,
                 ),
@@ -152,8 +155,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: BottomAnimatedButton(
-                buttonText: loc.save_match,
-                sizeRelativeToWidth: 0.95,
+                text: loc.save_match,
                 onPressed: saveMatch,
               ),
             ),
@@ -169,7 +171,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
 
     // Filter null values and cast to Map<String, Player>
     final playerAssociations = <String, Player>{};
-    for (var entry in widget.associations.entries) {
+    for (final entry in widget.associations.entries) {
       if (entry.value != null) {
         playerAssociations[entry.key] = entry.value!;
       }
@@ -185,18 +187,13 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(CustomSnackBar(message: loc.unexpected_error));
+      context.showSnackBar(message: loc.unexpected_error);
       return;
     }
 
     if (!mounted) return;
-
     context.read<DataRefreshProvider>().refresh();
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: loc.data_successfully_imported));
-
+    context.showSnackBar(message: loc.data_successfully_imported);
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
@@ -221,6 +218,7 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
     final selected = await Navigator.push<Group>(
       context,
       adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
         builder: (context) => ChooseGroupView(
           groups: validGroups,
           initialGroups: [?associatedGroup],

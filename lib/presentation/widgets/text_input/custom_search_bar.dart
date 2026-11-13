@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class CustomSearchBar extends StatelessWidget {
   /// A custom search bar widget that encapsulates a [SearchBar] with additional customization options.
@@ -22,7 +22,10 @@ class CustomSearchBar extends StatelessWidget {
     this.onChanged,
     this.constraints,
     this.maxLength,
-  });
+  }) : assert(
+         maxLength == null || maxLength > 0,
+         'maxLength must be greater than 0',
+       );
 
   /// The controller for the search bar's text input.
   final TextEditingController controller;
@@ -85,10 +88,10 @@ class CustomSearchBar extends StatelessWidget {
         ),
         const SizedBox(width: 5),
       ],
-      backgroundColor: WidgetStateProperty.all(CustomTheme.boxColor),
+      backgroundColor: WidgetStateProperty.all(context.talleeColors.boxColor),
       overlayColor: WidgetStateProperty.all(Colors.transparent),
       side: WidgetStateProperty.all(
-        const BorderSide(color: CustomTheme.boxBorderColor),
+        BorderSide(color: context.talleeColors.boxBorderColor),
       ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

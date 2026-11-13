@@ -201,6 +201,55 @@ void main() {
     }
   });
 
+  group('StatisticCalculator sort order', () {
+    List<num> valuesFor(SortDirection sortDirection) {
+      final statistic = Statistic(
+        type: StatisticType.totalScore,
+        scopes: [StatisticScope.allPlayers],
+        sortDirection: sortDirection,
+      );
+
+      return StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2, testPlayer3],
+      ).map((entry) => entry.$2).toList();
+    }
+
+    test('sorts descending by default', () {
+      expect(valuesFor(SortDirection.descending), [23, 20, 17]);
+    });
+
+    test('sorts ascending when configured', () {
+      expect(valuesFor(SortDirection.ascending), [17, 20, 23]);
+    });
+
+    test('worstScore defaults to ascending', () {
+      final statistic = Statistic(
+        type: StatisticType.worstScore,
+        scopes: [StatisticScope.allPlayers],
+      );
+
+      expect(statistic.sortDirection, SortDirection.ascending);
+    });
+
+    test('worstScore can be sorted descending', () {
+      final statistic = Statistic(
+        type: StatisticType.worstScore,
+        scopes: [StatisticScope.allPlayers],
+        sortDirection: SortDirection.descending,
+      );
+
+      final values = StatisticCalculator.computeStatisticValues(
+        statistic: statistic,
+        matches: matches,
+        players: [testPlayer1, testPlayer2, testPlayer3],
+      );
+
+      expect(values.map((entry) => entry.$2), [6, 4, 3]);
+    });
+  });
+
   group('StatisticCalculator filtering', () {
     test('Excludes players without score for score-based statistics', () {
       final scoreMatches = [
@@ -423,8 +472,8 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
-          createdAt: DateTime(2023, 1, 10, 0, 0),
-          endedAt: DateTime(2023, 1, 10, 0, 0),
+          createdAt: DateTime(2023, 1, 10),
+          endedAt: DateTime(2023, 1, 10),
         ),
         buildMatch(
           name: 'middle',
@@ -447,8 +496,8 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1],
           scores: {testPlayer1: 10},
-          createdAt: DateTime(2023, 1, 21, 0, 0),
-          endedAt: DateTime(2023, 1, 21, 0, 0),
+          createdAt: DateTime(2023, 1, 21),
+          endedAt: DateTime(2023, 1, 21),
         ),
       ];
 

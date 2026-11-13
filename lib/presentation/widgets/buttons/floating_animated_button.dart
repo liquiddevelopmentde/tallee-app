@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
@@ -9,21 +10,18 @@ class FloatingAnimatedButton extends StatefulWidget {
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
   /// - [onLongPressed]: The callback to be invoked when the button is pressed longer
-  /// - [showAddBadge]: Whether to show a plus badge on the top right corner on the icon
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
     this.text,
     this.onLongPressed,
-    this.showAddBadge = false,
   });
 
   final void Function()? onPressed;
   final IconData icon;
   final String? text;
   final void Function()? onLongPressed;
-  final bool showAddBadge;
 
   @override
   State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
@@ -89,6 +87,15 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = widget.onPressed == null;
+    final textColor = context.talleeColors.textColor;
+
+    final bgColor = isDisabled
+        ? Color.lerp(textColor, textColor.contrastTextColor, 0.6)
+        : textColor;
+
+    final fgColor = textColor.contrastTextColor;
+
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
@@ -99,13 +106,13 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             animationController.forward();
             if (widget.onLongPressed != null) {
               longPressTimer = Timer(const Duration(milliseconds: 400), () {
-                HapticFeedback.heavyImpact();
+                Haptics.heavyImpact();
                 isLongPressing = true;
                 widget.onLongPressed?.call();
                 repeatTimer = Timer.periodic(
                   const Duration(milliseconds: 250),
                   (_) {
-                    HapticFeedback.heavyImpact();
+                    Haptics.heavyImpact();
                     widget.onLongPressed?.call();
                   },
                 );
@@ -119,7 +126,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             disabledAnimationController.reverse();
           } else {
             if (mounted && !isLongPressing) {
-              HapticFeedback.selectionClick();
+              Haptics.selectionClick();
               widget.onPressed?.call();
             }
             isLongPressing = false;
@@ -134,7 +141,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: widget.onPressed == null ? Colors.grey : Colors.white,
+            color: bgColor,
             borderRadius: BorderRadius.circular(30),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
@@ -142,15 +149,15 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildIcon(),
+              Icon(widget.icon, size: 26, color: fgColor),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
                   widget.text!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: fgColor,
                   ),
                 ),
               ],
@@ -158,39 +165,6 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildIcon() {
-    final icon = Icon(widget.icon, size: 26, color: Colors.black);
-
-    if (!widget.showAddBadge) return icon;
-
-    final backgroundColor = widget.onPressed == null
-        ? Colors.grey
-        : Colors.white;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        icon,
-        Positioned(
-          top: -5,
-          right: -6,
-          child: Container(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.add_circle,
-              size: 15,
-              color: Colors.black,
-              weight: 200,
-            ),
-          ),
-        ),
-      ],
     );
   }
 

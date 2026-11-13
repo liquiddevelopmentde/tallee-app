@@ -1,14 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "onboarding": false,
   "requireConfig": "optional",
   "baseBranchPatterns": [
     "development"
   ],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 3,
-  "enabledManagers": ["pub"],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "labels": [
+    "Type/Dependencies"
+  ],
+  "enabledManagers": [
+    "pub"
+  ],
   "pub": {
     "enabled": true,
     "managerFilePatterns": [
@@ -17,7 +24,9 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["pub"],
+      "matchManagers": [
+        "pub"
+      ],
       "rangeStrategy": "bump"
     },
     {
@@ -27,7 +36,31 @@
       "matchDepNames": [
         "dart"
       ],
-      "versioning": "npm"
+      "enabled": false
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "dart dependencies (minor)",
+      "groupSlug": "dart-minor"
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "build_runner",
+        "drift",
+        "drift_dev",
+        "drift_flutter"
+      ],
+      "groupName": "codegen",
+      "groupSlug": "codegen"
     }
   ]
 }

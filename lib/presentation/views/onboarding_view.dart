@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
@@ -72,7 +72,7 @@ class _OnboardingViewState extends State<OnboardingView> {
     final isLastPage = currentPage == pages.length - 1;
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -80,8 +80,12 @@ class _OnboardingViewState extends State<OnboardingView> {
               alignment: Alignment.centerRight,
               child: CustomTextButton(
                 text: loc.skip,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  fontWeight: FontWeight.bold,
+                ),
                 onPressed: () {
-                  SharedPreferencesService.setOnboardingCompleted(true);
+                  SharedPreferencesService.onboardingCompleted = true;
                   widget.onCompleted();
                 },
               ),
@@ -113,7 +117,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           Icon(
                             page.icon,
                             size: 100,
-                            color: CustomTheme.primaryColor,
+                            color: AppColors.primaryColor,
                           ),
                         const SizedBox(height: 20),
                         Text(
@@ -131,7 +135,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(
-                                color: CustomTheme.hintColor,
+                                color: context.talleeColors.hintColor,
                                 overflow: TextOverflow.visible,
                               ),
                         ),
@@ -157,8 +161,8 @@ class _OnboardingViewState extends State<OnboardingView> {
                   width: currentPage == index ? 24 : 8,
                   decoration: BoxDecoration(
                     color: currentPage == index
-                        ? CustomTheme.primaryColor
-                        : CustomTheme.textColor.withValues(alpha: 0.3),
+                        ? AppColors.primaryColor
+                        : context.talleeColors.textColor.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -171,12 +175,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BottomAnimatedButton(
-                    buttonType: ButtonType.primary,
-                    buttonText: isLastPage ? loc.get_started : loc.next,
+                    text: isLastPage ? loc.get_started : loc.next,
                     sizeRelativeToWidth: 0.6,
                     onPressed: () {
                       if (isLastPage) {
-                        SharedPreferencesService.setOnboardingCompleted(true);
+                        SharedPreferencesService.onboardingCompleted = true;
                         widget.onCompleted();
                       } else {
                         pageController.nextPage(

@@ -1,6 +1,6 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class TextInputField extends StatelessWidget {
   /// A custom text input field widget that encapsulates a [TextField] with specific styling.
@@ -27,7 +27,14 @@ class TextInputField extends StatelessWidget {
     this.keyboardType,
     this.focusNode,
     this.onSubmitted,
-  });
+  }) : assert(
+         minLines == null || maxLines == null || minLines <= maxLines,
+         'minLines must be less than or equal to maxLines',
+       ),
+       assert(
+         maxLength == null || maxLength > 0,
+         'maxLength must be greater than 0',
+       );
 
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
@@ -42,33 +49,31 @@ class TextInputField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      textInputAction: textInputAction,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
-      maxLines: maxLines,
-      minLines: minLines,
-      focusNode: focusNode,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: CustomTheme.boxColor,
-        hintText: hintText,
-        counterText: showCounterText ? null : '',
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-          borderSide: BorderSide(color: CustomTheme.boxBorderColor),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+  Widget build(BuildContext context) => TextField(
+    controller: controller,
+    onChanged: onChanged,
+    onSubmitted: onSubmitted,
+    textInputAction: textInputAction,
+    keyboardType: keyboardType,
+    maxLength: maxLength,
+    maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+    maxLines: maxLines,
+    minLines: minLines,
+    focusNode: focusNode,
+    decoration: InputDecoration(
+      filled: true,
+      fillColor: context.talleeColors.boxColor,
+      hintText: hintText,
+      counterText: showCounterText ? null : '',
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
       ),
-    );
-  }
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: context.talleeColors.boxBorderColor),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+    ),
+  );
 }

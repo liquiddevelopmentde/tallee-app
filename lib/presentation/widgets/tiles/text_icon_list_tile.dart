@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
 class TextIconListTile extends StatelessWidget {
@@ -9,7 +9,7 @@ class TextIconListTile extends StatelessWidget {
   /// - [player]: An optional player object to display.
   /// - [pair]: An optional team object representing a pair of players.
   /// - [text]: The text to display if no player or pair is provided.
-  /// - [onPressed]: The callback to be invoked when the icon is pressed.
+  /// - [onTileTap]: The callback to be invoked when the tile is pressed.
   /// - [icon]: The icon to display in the tile.
   const TextIconListTile({
     super.key,
@@ -19,7 +19,7 @@ class TextIconListTile extends StatelessWidget {
     this.pair,
     this.pairIconLeft = false,
     this.icon,
-    this.onPressed,
+    this.onTileTap,
   });
 
   final String text;
@@ -28,24 +28,23 @@ class TextIconListTile extends StatelessWidget {
   final Team? pair;
   final bool pairIconLeft;
   final IconData? icon;
-  final VoidCallback? onPressed;
+  final VoidCallback? onTileTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTileTap,
+    child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: CustomTheme.boxColor,
+        color: context.talleeColors.boxColor,
         border: Border.all(
-          color: CustomTheme.boxBorderColor,
-          width: 1,
+          color: context.talleeColors.boxBorderColor,
           strokeAlign: BorderSide.strokeAlignCenter,
         ),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
         children: [
           Flexible(
             child: Container(
@@ -55,7 +54,8 @@ class TextIconListTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildUnitNameWidget(
-                    pair ?? player ?? Player(name: text, nameCount: 0),
+                    context,
+                    pair ?? player ?? Player(name: text),
                     mainStyle: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -63,7 +63,7 @@ class TextIconListTile extends StatelessWidget {
                     countStyle: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: CustomTheme.textColor.withAlpha(100),
+                      color: context.talleeColors.textColor.withAlpha(100),
                     ),
                     pairIconLeft: pairIconLeft,
                   ),
@@ -73,17 +73,16 @@ class TextIconListTile extends StatelessWidget {
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 12,
-                        color: CustomTheme.textColor.withAlpha(100),
+                        color: context.talleeColors.textColor.withAlpha(100),
                       ),
                     ),
                 ],
               ),
             ),
           ),
-          if (icon != null)
-            GestureDetector(onTap: onPressed, child: Icon(icon, size: 20)),
+          if (icon != null) Icon(icon, size: 20),
         ],
       ),
-    );
-  }
+    ),
+  );
 }

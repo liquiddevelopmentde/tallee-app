@@ -1,8 +1,8 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/app_color_utils.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
 class TeamCard extends StatelessWidget {
@@ -21,6 +21,7 @@ class TeamCard extends StatelessWidget {
     this.margin,
     this.showDragHandle = false,
     this.showTeamMembers = true,
+    this.onPlayerTap,
   });
 
   final Team team;
@@ -29,42 +30,35 @@ class TeamCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final bool showDragHandle;
   final bool showTeamMembers;
+  final void Function(Player)? onPlayerTap;
 
   @override
   Widget build(BuildContext context) {
-    final teamColor = getColorFromAppColor(team.color);
-
     // Show only team name and member count
     if (compact) {
       return Container(
         width: width,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
+          color: context.talleeColors.onBoxColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           spacing: 10,
           children: [
-            // Colored circle
-            Container(
-              width: 14,
-              height: 14,
-              decoration: BoxDecoration(
-                color: teamColor,
-                shape: BoxShape.circle,
-              ),
-            ),
+            // Teamcolor
+            ColoredCircle(color: team.color, size: 14),
 
             // Team name
             Expanded(
               child: buildUnitNameWidget(
+                context,
                 team,
                 isTeamMatch: true,
-                mainStyle: const TextStyle(
+                mainStyle: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: context.talleeColors.textColor,
                 ),
               ),
             ),
@@ -78,24 +72,26 @@ class TeamCard extends StatelessWidget {
                   Container(
                     width: 1,
                     height: 14,
-                    color: Colors.white.withValues(alpha: 0.35),
+                    color: context.talleeColors.textColor.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
 
                   // Teammember count
                   Row(
                     spacing: 5,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.people_alt_rounded,
                         size: 14,
-                        color: Colors.white,
+                        color: context.talleeColors.textColor,
                       ),
                       Text(
                         '${team.members.length}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ],
@@ -114,7 +110,7 @@ class TeamCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: CustomTheme.onBoxColor,
+          color: context.talleeColors.onBoxColor,
         ),
         child: Row(
           spacing: 8,
@@ -131,24 +127,18 @@ class TeamCard extends StatelessWidget {
                   Row(
                     spacing: 10,
                     children: [
-                      // Colored circle
-                      Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: teamColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      // Teamcolor
+                      ColoredCircle(color: team.color, size: 14),
 
                       // Team name
                       buildUnitNameWidget(
+                        context,
                         team,
                         isTeamMatch: true,
-                        mainStyle: const TextStyle(
+                        mainStyle: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
+                          color: context.talleeColors.textColor,
                         ),
                       ),
                     ],
@@ -160,12 +150,15 @@ class TeamCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         // Player tiles
-                        ...team.members.map((player) {
-                          return PlayerTile(
+                        ...team.members.map(
+                          (player) => PlayerTile(
                             player: player,
                             backgroundColor: Colors.transparent,
-                          );
-                        }),
+                            onTileTap: onPlayerTap == null
+                                ? null
+                                : () => onPlayerTap!(player),
+                          ),
+                        ),
                       ],
                     ),
                 ],

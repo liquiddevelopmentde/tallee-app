@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/duration_utils.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -201,10 +201,10 @@ class _TimerViewState extends State<TimerView> {
             ],
           ),
         ),
-        const Divider(
+        Divider(
           height: 1,
           thickness: 1,
-          color: CustomTheme.boxBorderColor,
+          color: context.talleeColors.boxBorderColor,
         ),
         const SizedBox(height: 4),
 
@@ -231,7 +231,7 @@ class _TimerViewState extends State<TimerView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
         spacing: 4,
         children: [
@@ -246,13 +246,14 @@ class _TimerViewState extends State<TimerView> {
                   width: 14,
                   height: 14,
                   decoration: BoxDecoration(
-                    color: getColorFromAppColor(unit.color),
+                    color: unit.color.colorValue(context),
                     shape: BoxShape.circle,
                   ),
                 ),
               ],
               Flexible(
                 child: buildUnitNameWidget(
+                  context,
                   unit,
                   isTeamMatch: isTeamMatch,
                   rowAlignment: MainAxisAlignment.center,
@@ -275,10 +276,10 @@ class _TimerViewState extends State<TimerView> {
                 child: Text(
                   formatTimer(effectiveMs(id)),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.w600,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                 ),
               ),

@@ -1,18 +1,15 @@
-import 'package:material_ui/material_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/team.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
@@ -95,6 +92,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   // --- Multiple Selection State ---
   List<Team> selectedUnits = [];
+
   List<Player> get selectedPlayers =>
       selectedUnits.expand((u) => u.members).toList();
   bool isPairingMode = false;
@@ -104,14 +102,38 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   late final TextEditingController searchBarController =
       TextEditingController();
 
+  final ScrollController selectedUnitsScrollController = ScrollController();
+
+  /// Ids of units the user added in this session. Only these play an
+  /// appear animation, preselected units are shown right away.
+  final Set<String> addedUnitIds = {};
+
+  /// Removed units that are still animating out, mapped to their old index
+  /// so they stay in place until the animation is done
+  final Map<Team, int> removingUnits = {};
+
+  /// The units shown in the bar: [selectedUnits] plus the [removingUnits]
+  List<Team> get displayedUnits {
+    final units = [...selectedUnits];
+    final sortedRemoving = removingUnits.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    for (final entry in sortedRemoving) {
+      units.insert(entry.value.clamp(0, units.length), entry.key);
+    }
+    return units;
+  }
+
   late final List<Player> skeletonData = List.filled(
     widget.mode == SelectionMode.single ? 5 : 7,
     Player(name: 'Player 0'),
   );
 
+  bool get showTileIcons => pairingSelection.isEmpty;
+
   @override
   void dispose() {
     searchBarController.dispose();
+    selectedUnitsScrollController.dispose();
     super.dispose();
   }
 
@@ -143,7 +165,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   void initializeWithAvailablePlayers() {
     allPlayers = [...widget.availablePlayers!];
-    allPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+    allPlayers.sortByLowercaseName((player) => player.name);
 
     if (widget.mode == SelectionMode.single) {
       suggestedPlayers = [...allPlayers];
@@ -181,41 +203,48 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final crossAxisAlignment = widget.mode == SelectionMode.single
+        ? CrossAxisAlignment.center
+        : CrossAxisAlignment.start;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      decoration: CustomTheme.standardBoxDecoration,
+      decoration: context.standardBoxDecoration,
       child: Column(
-        crossAxisAlignment: widget.mode == SelectionMode.single
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
+        spacing: 10,
+        crossAxisAlignment: crossAxisAlignment,
         children: [
           buildSearchBar(loc),
-          const SizedBox(height: 10),
-          if (widget.mode == SelectionMode.multiple) ...[
-            buildSelectedPlayersHeader(loc),
-            const SizedBox(height: 10),
-            buildSelectedPlayersBar(),
-            const SizedBox(height: 10),
-            Text(
-              loc.all_players,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-          ],
+
           Expanded(
             child: AppSkeleton(
               enabled: isLoading,
-              child: Visibility(
-                visible: suggestedPlayers.isNotEmpty,
-                replacement: TopCenteredMessage(
-                  icon: Icons.info,
-                  title: loc.info,
-                  message: getInfoText(context),
-                  fullscreen: false,
-                ),
-                child: widget.mode == SelectionMode.single
-                    ? buildSingleSelectionList()
-                    : buildMultipleSelectionList(),
+              child: Column(
+                crossAxisAlignment: crossAxisAlignment,
+                spacing: 10,
+                children: [
+                  if (widget.mode == SelectionMode.multiple &&
+                      (allPlayers.isNotEmpty || isLoading)) ...[
+                    buildSelectedPlayersHeader(loc),
+                    buildSelectedPlayersBar(),
+                    Text(
+                      loc.all_players,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                  Expanded(
+                    child: Visibility(
+                      visible: suggestedPlayers.isNotEmpty,
+                      replacement: getMessageWidget(loc),
+                      child: widget.mode == SelectionMode.single
+                          ? buildSingleSelectionList()
+                          : buildMultipleSelectionList(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -224,247 +253,317 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     );
   }
 
-  Widget buildSearchBar(AppLocalizations loc) {
-    return CustomSearchBar(
-      maxLength: MAX_PLAYER_NAME_LENGTH,
-      controller: searchBarController,
-      constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
-      hintText: loc.search_for_players,
-      trailingButtonShown: true,
-      trailingButtonicon: Icons.add_circle,
-      trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
-      onTrailingButtonPressed: () async {
-        addNewPlayerFromSearch(context: context);
-      },
-      onChanged: (value) {
-        setState(() {
-          if (value.isEmpty) {
-            updateSuggestedPlayers();
-          } else {
-            final List<({Player player, int score})> scoredPlayers = [];
+  Widget buildSearchBar(AppLocalizations loc) => CustomSearchBar(
+    maxLength: MAX_PLAYER_NAME_LENGTH,
+    controller: searchBarController,
+    constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
+    hintText: loc.search_for_players,
+    trailingButtonShown: true,
+    trailingButtonicon: Icons.add_circle,
+    trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
+    onTrailingButtonPressed: () => addNewPlayerFromSearch(context: context),
+    onChanged: (value) {
+      setState(() {
+        if (value.isEmpty) {
+          updateSuggestedPlayers();
+        } else {
+          final List<({Player player, int score})> scoredPlayers = [];
 
-            for (final player in allPlayers) {
-              final bool isNotSelected =
-                  widget.mode == SelectionMode.single ||
-                  !selectedPlayers.any((p) => p.id == player.id);
+          for (final player in allPlayers) {
+            final bool isNotSelected =
+                widget.mode == SelectionMode.single ||
+                !selectedPlayers.any((p) => p.id == player.id);
 
-              if (isNotSelected) {
-                final score = weightedRatio(player.name, value);
-                if (score >= FUZZY_SEARCH_THRESHOLD) {
-                  scoredPlayers.add((player: player, score: score));
-                }
+            if (isNotSelected) {
+              final score = weightedRatio(player.name, value);
+              if (score >= FUZZY_SEARCH_THRESHOLD) {
+                scoredPlayers.add((player: player, score: score));
               }
             }
-
-            scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
-            suggestedPlayers = scoredPlayers.map((e) => e.player).toList();
           }
-        });
-      },
-    );
-  }
 
-  Widget buildSelectedPlayersHeader(AppLocalizations loc) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
+          suggestedPlayers = scoredPlayers.map((e) => e.player).toList();
+        }
+      });
+    },
+  );
+
+  Widget buildSelectedPlayersHeader(AppLocalizations loc) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Expanded(
+        child: Text(
+          loc.selected_players,
+          overflow: TextOverflow.visible,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    ],
+  );
+
+  Widget buildSelectedPlayersBar() {
+    final loc = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Text(
-            isPairingMode
-                ? loc.click_another_player_to_create_a_pair
-                : loc.selected_players,
-            overflow: TextOverflow.visible,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isPairingMode ? CustomTheme.primaryColor : null,
-            ),
+        SizedBox(
+          height: 50,
+          child: displayedUnits.isEmpty
+              ? Center(child: Text(loc.no_players_selected))
+              : SingleChildScrollView(
+                  controller: selectedUnitsScrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (final unit in displayedUnits)
+                        buildAnimatedUnitTile(unit),
+                    ],
+                  ),
+                ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOutCubicEmphasized,
+          alignment: Alignment.topLeft,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: isPairingMode
+                ? Text.rich(
+                    TextSpan(
+                      children: [
+                        const WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Icon(
+                              Icons.link,
+                              size: 16,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                        TextSpan(text: loc.tap_another_player_to_create_a_pair),
+                      ],
+                    ),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primaryColor,
+                      overflow: TextOverflow.visible,
+                    ),
+                  )
+                : const SizedBox(width: double.infinity),
           ),
         ),
       ],
     );
   }
 
-  Widget buildSelectedPlayersBar() {
-    final loc = AppLocalizations.of(context);
-    return SizedBox(
-      height: 50,
-      child: selectedUnits.isEmpty
-          ? Center(child: Text(loc.no_players_selected))
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var unit in selectedUnits)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: buildUnitTile(unit),
-                    ),
-                ],
-              ),
-            ),
-    );
-  }
-
-  Widget buildSingleSelectionList() {
-    return RadioGroup<Player?>(
-      groupValue: selectedPlayer,
-      onChanged: (value) {
-        widget.onSingleChanged?.call(value);
-      },
-      child: ListView.builder(
-        itemCount: suggestedPlayers.length,
-        itemBuilder: (context, index) {
-          final player = suggestedPlayers[index];
-          return CustomRadioListTile<Player?>(
-            content: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: buildUnitNameWidget(
-                player,
-                mainStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-                countStyle: TextStyle(
-                  fontSize: 16,
-                  color: CustomTheme.textColor.withAlpha(100),
-                ),
-              ),
-            ),
-            value: player,
-            onContainerTap: (value) async {
-              await HapticFeedback.selectionClick();
-              setState(() {
-                if (selectedPlayer == value) {
-                  selectedPlayer = null;
-                } else {
-                  selectedPlayer = value;
-                }
-              });
-              widget.onSingleChanged?.call(selectedPlayer);
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget buildMultipleSelectionList() {
-    return ListView.separated(
+  Widget buildSingleSelectionList() => RadioGroup<Player?>(
+    groupValue: selectedPlayer,
+    onChanged: (value) {
+      widget.onSingleChanged?.call(value);
+    },
+    child: ListView.builder(
       itemCount: suggestedPlayers.length,
-      separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 10),
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (context, index) {
         final player = suggestedPlayers[index];
-        return TextIconListTile(
-          player: player,
-          icon: Icons.add,
-          onPressed: () async {
-            await HapticFeedback.selectionClick();
+        return CustomRadioListTile<Player?>(
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: buildUnitNameWidget(
+              context,
+              player,
+              mainStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+              countStyle: TextStyle(
+                fontSize: 16,
+                color: context.talleeColors.textColor.withAlpha(100),
+              ),
+            ),
+          ),
+          value: player,
+          onContainerTap: (value) {
+            Haptics.selectionClick();
             setState(() {
-              if (!selectedPlayers.any((p) => p.id == player.id)) {
-                selectedUnits.insert(0, Team(name: '', members: [player]));
-                suggestedPlayers.remove(player);
-                widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+              if (selectedPlayer == value) {
+                selectedPlayer = null;
+              } else {
+                selectedPlayer = value;
               }
             });
+            widget.onSingleChanged?.call(selectedPlayer);
           },
         );
       },
+    ),
+  );
+
+  Widget buildMultipleSelectionList() => ListView.separated(
+    itemCount: suggestedPlayers.length,
+    separatorBuilder: (BuildContext context, int index) =>
+        const SizedBox(height: 10),
+    itemBuilder: (BuildContext context, int index) {
+      final player = suggestedPlayers[index];
+      return TextIconListTile(
+        player: player,
+        icon: Icons.add,
+        onTileTap: () async => await togglePairingSelection(player),
+      );
+    },
+  );
+
+  Future<void> togglePairingSelection(Player player) async {
+    Haptics.selectionClick();
+    setState(() {
+      if (!selectedPlayers.any((p) => p.id == player.id)) {
+        final unit = Team(name: '', members: [player]);
+        selectedUnits.insert(0, unit);
+        addedUnitIds.add(unit.id);
+        suggestedPlayers.remove(player);
+        widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+        scrollSelectedUnitsToStart();
+      }
+    });
+  }
+
+  /// Scrolls the bar to the start so newly added units are visible
+  void scrollSelectedUnitsToStart() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!selectedUnitsScrollController.hasClients) return;
+      selectedUnitsScrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
+  /// [buildUnitTile] with an animation: the tile grows and fades in when
+  /// added, and shrinks and fades out when removed
+  Widget buildAnimatedUnitTile(Team unit) {
+    final isRemoving = removingUnits.containsKey(unit);
+    return TweenAnimationBuilder<double>(
+      key: ValueKey(unit.id),
+      tween: Tween(
+        begin: addedUnitIds.contains(unit.id) ? 0 : 1,
+        end: isRemoving ? 0 : 1,
+      ),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+      onEnd: () {
+        if (isRemoving) setState(() => removingUnits.remove(unit));
+      },
+      builder: (context, value, child) => ClipRect(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          widthFactor: value,
+          child: Opacity(
+            opacity: value,
+            child: Transform.scale(scale: 0.8 + 0.2 * value, child: child),
+          ),
+        ),
+      ),
+      child: IgnorePointer(
+        ignoring: isRemoving,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: buildUnitTile(unit),
+        ),
+      ),
     );
   }
 
   Widget buildUnitTile(Team unit) {
-    final isPaired = unit.members.length > 1;
-    final isSelectedForPairing = pairingSelection.contains(unit.id);
+    final isPaired = unit.isPair;
+    final isPlayerSelectedForPairing = pairingSelection.contains(unit.id);
+    final canPlayerBePaired =
+        widget.pairingEnabled &&
+        !isPaired &&
+        !isPlayerSelectedForPairing &&
+        pairingSelection.isNotEmpty;
+    final isNotPairable =
+        isPairingMode && !isPlayerSelectedForPairing && !canPlayerBePaired;
 
-    return Opacity(
-      opacity: 1.0,
-      child: GestureDetector(
-        onLongPressDown: !isPaired && widget.pairingEnabled
-            ? (_) => setState(() => pressingId = unit.id)
-            : null,
-        onLongPressCancel: () => setState(() => pressingId = null),
-        onLongPressEnd: (_) => setState(() => pressingId = null),
-        onLongPress: !isPaired && widget.pairingEnabled
-            ? () async {
-                await HapticFeedback.selectionClick();
-                setState(() {
-                  pressingId = null;
-                  if (isSelectedForPairing) {
-                    pairingSelection.remove(unit.id);
-                  } else {
-                    pairingSelection.add(unit.id);
-                  }
-                  isPairingMode = pairingSelection.isNotEmpty;
-                  widget.onMultipleChanged?.call(
-                    selectedPlayers,
-                    selectedUnits,
-                  );
-                });
-              }
-            : null,
-        child: Container(
-          decoration: isSelectedForPairing
-              ? BoxDecoration(
-                  border: Border.all(color: CustomTheme.primaryColor, width: 2),
-                  borderRadius: BorderRadius.circular(12),
-                )
-              : null,
+    return GestureDetector(
+      onTap: () =>
+          isPlayerSelectedForPairing ? resetPairing() : removeUnit(unit),
+      onLongPressDown: !isPaired && widget.pairingEnabled
+          ? (_) => setState(() => pressingId = unit.id)
+          : null,
+      onLongPressCancel: () => setState(() => pressingId = null),
+      onLongPressEnd: (_) => setState(() => pressingId = null),
+      onLongPress: !isPaired && widget.pairingEnabled
+          ? () async => handleParingSelection(unit)
+          : null,
+      child: AnimatedScale(
+        scale: pressingId == unit.id ? 0.94 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: AnimatedOpacity(
+          opacity: isNotPairable ? 0.4 : 1.0,
+          duration: const Duration(milliseconds: 200),
           child: isPaired
               ? PairTile(
                   pair: unit,
                   pairIconLeft: true,
-                  onIconTap: () => unmergeUnit(unit),
+                  showIcon: showTileIcons,
+                  onTileTap: () => unmergeUnit(unit),
                 )
               : PlayerTile(
                   player: unit.members.first,
-                  backgroundColor: pressingId == unit.id
-                      ? Colors.grey.shade800
+                  selected: isPlayerSelectedForPairing,
+                  showIcon: showTileIcons || canPlayerBePaired,
+                  icon: canPlayerBePaired ? Icons.add_link : Icons.close,
+                  onTileTap: canPlayerBePaired
+                      ? () async => handleParingSelection(unit)
                       : null,
-                  onTileTap:
-                      !isPaired &&
-                          widget.pairingEnabled &&
-                          pairingSelection.isNotEmpty &&
-                          !isSelectedForPairing
-                      ? () async {
-                          await HapticFeedback.selectionClick();
-                          setState(() {
-                            pairingSelection.add(unit.id);
-                            isPairingMode = pairingSelection.isNotEmpty;
-                            if (pairingSelection.length == 2) {
-                              autoMergePairingSelection();
-                              isPairingMode = pairingSelection.isNotEmpty;
-                            }
-                            widget.onMultipleChanged?.call(
-                              selectedPlayers,
-                              selectedUnits,
-                            );
-                          });
-                        }
-                      : null,
-                  onIconTap: () => setState(() {
-                    selectedUnits.remove(unit);
-                    pairingSelection.remove(unit.id);
-                    isPairingMode = pairingSelection.isNotEmpty;
-                    widget.onMultipleChanged?.call(
-                      selectedPlayers,
-                      selectedUnits,
-                    );
-
-                    final player = unit.members.first;
-                    final currentSearch = searchBarController.text
-                        .toLowerCase();
-                    if (currentSearch.isEmpty ||
-                        player.name.toLowerCase().contains(currentSearch)) {
-                      suggestedPlayers.add(player);
-                      suggestedPlayers.sort((a, b) => a.name.compareTo(b.name));
-                    }
-                  }),
                 ),
         ),
       ),
     );
+  }
+
+  /// Resets the pairing mode
+  void resetPairing() {
+    setState(() {
+      pairingSelection.clear();
+      isPairingMode = false;
+    });
+  }
+
+  /// Removes the player from selection and adds them back to suggestedPlayers
+  void removeUnit(Team unit) {
+    setState(() {
+      removingUnits[unit] = selectedUnits.indexOf(unit);
+      selectedUnits.remove(unit);
+      addedUnitIds.remove(unit.id);
+      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+
+      final player = unit.members.first;
+      final currentSearch = searchBarController.text.toLowerCase();
+      if (currentSearch.isEmpty ||
+          player.name.toLowerCase().contains(currentSearch)) {
+        suggestedPlayers.add(player);
+        suggestedPlayers.sortByLowercaseName((p) => p.name);
+      }
+    });
+  }
+
+  void handleParingSelection(Team unit) {
+    Haptics.selectionClick();
+    setState(() {
+      pairingSelection.add(unit.id);
+      isPairingMode = pairingSelection.isNotEmpty;
+      if (pairingSelection.length == 2) {
+        autoMergePairingSelection();
+        isPairingMode = pairingSelection.isNotEmpty;
+      }
+      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+    });
   }
 
   void autoMergePairingSelection() {
@@ -518,10 +617,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       if (!mounted) return;
       setState(() {
         if (widget.availablePlayers != null) {
-          widget.availablePlayers!.sort((a, b) => a.name.compareTo(b.name));
+          widget.availablePlayers!.sortByLowercaseName((p) => p.name);
           allPlayers = [...widget.availablePlayers!];
         } else {
-          loadedPlayers.sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
+          loadedPlayers.sortByLowercaseName((p) => p.name);
           allPlayers = [...loadedPlayers];
         }
 
@@ -591,11 +690,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
     if (success) {
       handleSuccessfulPlayerCreation(createdPlayer);
-      await HapticFeedback.successNotification();
-      showSnackBarMessage(loc.successfully_added_player(playerName));
+      context.showSnackBar(message: loc.successfully_added_player(playerName));
+      Haptics.successNotification();
     } else {
-      await HapticFeedback.errorNotification();
-      showSnackBarMessage(loc.could_not_add_player(playerName));
+      context.showSnackBar(message: loc.could_not_add_player(playerName));
+      Haptics.errorNotification();
     }
   }
 
@@ -618,8 +717,11 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       selectedPlayer = player;
       widget.onSingleChanged?.call(player);
     } else {
-      selectedUnits.insert(0, Team(name: '', members: [player]));
+      final unit = Team(name: '', members: [player]);
+      selectedUnits.insert(0, unit);
+      addedUnitIds.add(unit.id);
       widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+      scrollSelectedUnitsToStart();
     }
     allPlayers.add(player);
 
@@ -639,26 +741,52 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     }
   }
 
-  void showSnackBarMessage(String message) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
+  Widget getMessageWidget(AppLocalizations loc) {
+    final content = getInfoContent(loc);
+
+    return TopCenteredMessage(
+      icon: content.icon,
+      title: content.title,
+      message: content.message,
+      fullscreen: false,
+    );
   }
 
-  String getInfoText(BuildContext context) {
-    final loc = AppLocalizations.of(context);
+  bool get allPlayerSelected =>
+      // Multi selection
+      (widget.mode == SelectionMode.multiple &&
+          (selectedPlayers.length == allPlayers.length ||
+              widget.availablePlayers?.isEmpty == true)) ||
+      // Single selection
+      (widget.mode == SelectionMode.single &&
+          widget.availablePlayers?.isEmpty == true);
+
+  ({IconData icon, String title, String message}) getInfoContent(
+    AppLocalizations loc,
+  ) {
+    // No players in db
     if (allPlayers.isEmpty) {
-      return loc.no_players_created_yet;
-    } else if (widget.mode == SelectionMode.multiple &&
-        (selectedPlayers.length == allPlayers.length ||
-            widget.availablePlayers?.isEmpty == true)) {
-      return loc.all_players_selected;
-    } else if (widget.mode == SelectionMode.single &&
-        widget.availablePlayers?.isEmpty == true) {
-      return loc.all_players_selected;
-    } else {
-      return loc.no_players_found_with_that_name;
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.no_players_created_yet,
+      );
     }
+
+    // All players selected
+    if (allPlayerSelected) {
+      return (
+        icon: Icons.person_outline,
+        title: loc.no_players,
+        message: loc.all_players_selected,
+      );
+    }
+
+    // Not found
+    return (
+      icon: Icons.search,
+      title: loc.no_results,
+      message: loc.no_players_found_with_that_name,
+    );
   }
 }

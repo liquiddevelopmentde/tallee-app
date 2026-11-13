@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -20,16 +21,11 @@ import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dar
 class GroupDetailView extends StatefulWidget {
   /// A view that displays the profile of a group
   /// - [group]: The group to display
-  const GroupDetailView({
-    super.key,
-    required this.group,
-    required this.callback,
-  });
+  /// - [onGroupUpdated]: Callback invoked when a group is updated
+  const GroupDetailView({super.key, required this.group, this.onGroupUpdated});
 
-  /// The group to display
   final Group group;
-
-  final VoidCallback callback;
+  final VoidCallback? onGroupUpdated;
 
   @override
   State<GroupDetailView> createState() => _GroupDetailViewState();
@@ -59,14 +55,14 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
         title: Text(loc.group_profile),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              showDialog<bool>(
+              final confirmed = await showDialog<bool?>(
                 context: context,
                 builder: (context) => CustomAlertDialog(
                   title: '${loc.delete_group}?',
@@ -77,6 +73,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   actions: [
                     CustomDialogAction(
                       onPressed: () => Navigator.of(context).pop(true),
+                      accent: ButtonAccent.destructive,
                       text: loc.delete,
                     ),
                     CustomDialogAction(
@@ -86,14 +83,20 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     ),
                   ],
                 ),
-              ).then((confirmed) async {
-                if (confirmed! && context.mounted) {
-                  await db.groupDao.deleteGroup(groupId: group.id);
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  widget.callback.call();
-                }
-              });
+              );
+              if (confirmed == null || !confirmed) return;
+              if (!context.mounted) return;
+
+              final success = await db.groupDao.deleteGroup(groupId: group.id);
+              if (!context.mounted) return;
+              if (!success) {
+                context.showSnackBar(message: loc.error_deleting_group);
+                return;
+              }
+
+              context.showSnackBar(message: loc.group_deleted);
+              Navigator.of(context).pop();
+              widget.onGroupUpdated?.call();
             },
           ),
         ],
@@ -110,19 +113,20 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 bottom: 100,
               ),
               children: [
-                const Center(
+                Center(
                   child: ColoredIconContainer(
                     icon: GROUP_ICON,
+                    color: group.color.colorValue(context),
                     containerSize: 55,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   group.name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -131,9 +135,9 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       group.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.visible,
@@ -141,10 +145,10 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                 const SizedBox(height: 5),
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(group.createdAt)}',
-                  style: const TextStyle(
+                  '${loc.created_on} ${group.createdAt.toMediumDate(context)}',
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -154,28 +158,28 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   leadingWidget: const Icon(Icons.people),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: Wrap(
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.start,
                     spacing: 12,
                     runSpacing: 8,
-                    children: group.members.map((member) {
-                      return PlayerTile(
-                        player: member,
-                        onTileTap: () {
-                          Navigator.of(context).pushReplacement(
-                            adaptivePageRoute(
-                              settings: const RouteSettings(
-                                name: RouteNames.playerDetailView,
-                              ),
-                              builder: (context) => PlayerDetailView(
-                                player: member,
-                                onPlayerUpdated: widget.callback,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                    children: group.members
+                        .map(
+                          (member) => PlayerTile(
+                            player: member,
+                            onTileTap: () {
+                              Navigator.of(context).pushReplacement(
+                                adaptivePageRoute(
+                                  settings: const RouteSettings(
+                                    name: RouteNames.playerDetailView,
+                                  ),
+                                  builder: (context) => PlayerDetailView(
+                                    player: member,
+                                    onPlayerUpdated: widget.onGroupUpdated,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -196,28 +200,23 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 text: loc.edit_group,
                 icon: Icons.edit,
                 onPressed: () async {
-                  final updatedGroup = await Navigator.push<Group?>(
+                  final result = await Navigator.push(
                     context,
-                    adaptivePageRoute(
+                    adaptivePageRoute<({Group? updatedGroup})>(
                       settings: const RouteSettings(
                         name: RouteNames.createGroupView,
                       ),
-                      builder: (context) {
-                        return CreateGroupView(
-                          groupToEdit: group,
-                          onMembersChanged: () {
-                            loadStatistics();
-                          },
-                        );
-                      },
+                      builder: (context) => CreateGroupView(
+                        groupToEdit: group,
+                        onMembersChanged: loadStatistics,
+                      ),
                     ),
                   );
+                  final updatedGroup = result?.updatedGroup;
                   if (updatedGroup != null && mounted) {
-                    setState(() {
-                      group = updatedGroup;
-                    });
-                    loadStatistics();
-                    widget.callback();
+                    setState(() => group = updatedGroup);
+                    unawaited(loadStatistics());
+                    widget.onGroupUpdated?.call();
                   }
                 },
               ),
@@ -244,7 +243,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   String getBestPlayer(List<Match> matches) {
     final mvpCounts = <Player, int>{};
 
-    for (var match in matches) {
+    for (final match in matches) {
       final mvps = match.mvp;
       for (final mvpPlayer in mvps) {
         if (group.members.any((m) => m.id == mvpPlayer.id)) {

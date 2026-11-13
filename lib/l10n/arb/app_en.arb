@@ -1,13 +1,108 @@
 {
   "@@locale": "en",
+  "@could_not_add_player": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "@create_statistic": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@successfully_added_player": {
+    "description": "Success message when adding a player",
+    "placeholders": {
+      "playerName": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
+  "@top_n": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "active_matches": "Active Matches",
   "add_team": "Add Team",
+  "add_to_favourites": "Add to favourites",
   "all": "All",
   "all_players": "All players",
   "all_players_associated": "All players successfully associated",
   "all_players_selected": "All players selected",
   "all_time": "All time",
   "app_name": "Tallee",
+  "ascending": "Ascending",
   "associate_game": "Associate Game",
   "associate_group": "Associate Group",
   "associate_players": "Associate Players",
@@ -16,11 +111,13 @@
   "best_player": "Best Player",
   "best_score": "Best score",
   "cancel": "Cancel",
+  "choose_color_description": "Choose the color for your game.",
   "choose_date_range": "Choose date range",
   "choose_game": "Choose Game",
   "choose_group": "Choose Group",
   "choose_match_file": "Choose Match File",
   "choose_other_file": "Please choose another file.",
+  "choose_ruleset_description": "Choose the ruleset you want to play with.",
   "choose_scopes": "Choose Scopes",
   "choose_timeframes": "Choose Timeframes",
   "choose_types": "Choose Types",
@@ -45,13 +142,6 @@
   "continue_": "Continue",
   "copy_code": "Copy Code",
   "could_not_add_player": "Could not add player {playerName}",
-  "@could_not_add_player": {
-    "placeholders": {
-      "playerName": {
-        "type": "String"
-      }
-    }
-  },
   "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",
@@ -59,13 +149,6 @@
   "create_new_group": "Create new group",
   "create_new_match": "Create new match",
   "create_statistic": "Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}",
-  "@create_statistic": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "create_teams": "Create teams",
   "created_on": "Created on",
   "creation_date": "Creation date",
@@ -84,13 +167,6 @@
   "delete_app_data_description": "Permanently delete all app data. This action is irreversible.",
   "delete_game": "Delete Game",
   "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
-  "@delete_game_with_matches_warning": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "delete_group": "Delete Group",
   "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
   "delete_match": "Delete Match",
@@ -98,6 +174,7 @@
   "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
   "delete_statistic": "Delete statistic",
   "deleted": "Deleted",
+  "descending": "Descending",
   "description": "Description",
   "displayed_entries": "Displayed entries",
   "do_you_like_the_app": "Do you like the app?",
@@ -113,17 +190,13 @@
   "enable": "Enable",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",
+  "error_deleting_data": "Error while deleting data, please try again",
   "error_deleting_game": "Error while deleting game, please try again",
+  "error_deleting_group": "Error while deleting group, please try again",
+  "error_deleting_match": "Error while deleting match, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_editing_player": "Error while editing player, please try again",
   "error_loading_match": "Error loading match: {error}",
-  "@error_loading_match": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
   "error_report_hint": "Please describe the steps leading up to the error and how it appeared",
@@ -131,13 +204,6 @@
   "error_sending_feedback": "Feedback could not be sent. Please try again.",
   "error_while_processing_file_try_again": "Error while processing file. Please try again.",
   "expires_in": "Expires in {time}",
-  "@expires_in": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "export_canceled": "Export canceled",
   "export_data": "Export data",
   "favourites": "Favourites",
@@ -150,24 +216,20 @@
   "format_exception": "Format Exception (see console)",
   "game": "Game",
   "game_associated": "Game successfully associated",
+  "game_filter_description": "All statistics will be displayed that relate to one of the selected game templates.",
   "game_name": "Game Name",
   "games": "Games",
   "general": "General",
   "get_started": "Get started",
   "group": "Group",
   "group_associated": "Group successfully associated",
+  "group_deleted": "Group deleted",
+  "group_filter_description": "All statistics will be displayed that relate to one of the selected groups.",
   "group_members": "Group Members",
   "group_name": "Group name",
   "group_profile": "Group Profile",
   "groups": "Groups",
   "here_is_shared_match": "Here is the shared match \"{matchName}\"",
-  "@here_is_shared_match": {
-    "placeholders": {
-      "matchName": {
-        "type": "String"
-      }
-    }
-  },
   "highest_score": "Highest Score",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
@@ -194,13 +256,6 @@
   "legal_notice": "Legal Notice",
   "licenses": "Licenses",
   "lives": "{count, plural, =1{Life} other{Lives}}",
-  "@lives": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "loading": "Loading...",
   "loading_match": "Loading match...",
   "longest_time": "Longest Time",
@@ -208,6 +263,7 @@
   "loser": "Loser",
   "lowest_score": "Lowest Score",
   "manage_members": "Manage Members",
+  "match_deleted": "Match deleted",
   "match_in_progress": "Match in progress...",
   "match_name": "Match name",
   "match_not_ended_share_warning": "Matches can only be shared once they have ended.",
@@ -225,31 +281,31 @@
   "new_game_will_be_created": "New game will be created",
   "new_group_will_be_created": "New group will be created",
   "new_players_will_be_created": "{count, plural, =1{1 new player will be created} other{{count} new players will be created}}",
-  "@new_players_will_be_created": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "next": "Next",
   "no": "No",
   "no_data_available": "No data available",
   "no_data_to_export": "No data to export",
+  "no_games": "No Games",
   "no_games_created_yet": "No games created yet",
+  "no_groups": "No Groups",
   "no_groups_created_yet": "No groups created yet",
   "no_license_text_available": "No license text available",
+  "no_matches": "No Matches",
   "no_matches_created_yet": "No matches created yet",
   "no_matches_played_yet": "No games played yet",
   "no_matching_local_game_found": "No matching local game found.\nA new game will be created.",
   "no_matching_local_group_found": "No matching local group found.\nA new group will be created.",
+  "no_players": "No Players",
   "no_players_available": "No players available",
   "no_players_created_yet": "No players created yet",
   "no_players_found_with_that_name": "No players found with that name",
   "no_players_selected": "No players selected",
+  "no_results": "No Results",
   "no_results_entered_yet": "No results entered yet",
+  "no_statistics": "No Statistics",
   "no_statistics_created_yet": "No statistics created yet",
   "no_statistics_with_filter": "No statistics with the selected filter",
+  "no_suitable_matches_yet": "No suitable matches yet",
   "no_teams_available": "No teams available",
   "none": "None",
   "none_group": "None",
@@ -271,36 +327,24 @@
   "open_settings": "Open Settings",
   "optional": "optional",
   "pair": "{count, plural, =1{Pair} other{Pairs}}",
-  "@pair": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",
   "played_matches": "Played Matches",
   "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
-  "@player_count": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "player_name": "Player name",
   "player_profile": "Player Profile",
   "players": "Players",
   "point": "Point",
   "points": "Points",
+  "preview": "Preview",
   "preview_match": "Preview match",
   "privacy_policy": "Privacy Policy",
   "qr_code_expired": "QR Code expired",
   "qr_code_parsing_error": "The scanned code does not contain valid match data.",
   "random_color": "Random color",
   "remaining": "remaining",
+  "remove_from_favourites": "Remove from favourites",
   "report_error": "Report Error",
   "required": "required",
   "results": "Results",
@@ -319,9 +363,18 @@
   "search_for_timeframes": "Search for timeframes",
   "search_for_types": "Search for types",
   "select_a_classifier": "Select a classifier",
+  "select_a_color_description": "Select the display color for your statistic.",
   "select_a_display_color": "Select a display color.",
+  "select_a_group_color_description": "Select the display color for your group.",
   "select_a_scope": "Select a scope",
+  "select_a_scope_description": "Select the groups or game templates to limit your statistic to.",
+  "select_a_theme_description": "Select the app's displayed theme.",
   "select_a_timeframe": "Select a timeframe",
+  "select_a_timeframe_description": "Select the time period for your statistic.",
+  "select_a_type": "Select a type",
+  "select_a_type_description": "Select a type for your statistic.",
+  "select_games": "Select games",
+  "select_groups": "Select groups",
   "select_loser": "Select Loser",
   "select_the_filtered_timeframe": "Select the timeframe you want to filter by.",
   "select_winners": "Select Winners",
@@ -338,13 +391,6 @@
   "share_as_qr_code_info": "To share a match as a QR code with others, online sharing must be enabled",
   "share_as_token_info": "To share a match as a token with others, online sharing must be enabled",
   "share_match_text": "Here is the match data for our game! Enter code {code} in Tallee.",
-  "@share_match_text": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
   "share_match_title": "Match Share",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "shortest_time": "Shortest Time",
@@ -362,6 +408,7 @@
   "showcase_nav_match": "Now that we've created a game, we can switch to the Matches tab.",
   "showcase_select_winner": "To set your winners, simply select them here and tap the Save button below.",
   "skip": "Skip",
+  "sort": "Sort",
   "start_all": "Start all",
   "start_onboarding": "Start Onboarding",
   "start_timer": "Start timer",
@@ -370,16 +417,8 @@
   "stop_all": "Stop all",
   "stop_timer": "Stop timer",
   "successfully_added_player": "Successfully added player {playerName}",
-  "@successfully_added_player": {
-    "description": "Success message when adding a player",
-    "placeholders": {
-      "playerName": {
-        "type": "String",
-        "example": "John"
-      }
-    }
-  },
   "successfully_processed_file": "Successfully processed file",
+  "tap_another_player_to_create_a_pair": "Tap another player to create a pair",
   "tap_import_to_continue": "Tap import match to continue",
   "tap_to_browse": "Tap to browse",
   "tap_to_choose_different_game": "Tap the game to choose a different one",
@@ -391,6 +430,10 @@
   "teams": "Teams",
   "thank_you_for_feedback": "Thank you for your feedback!",
   "thank_you_for_report": "Thank you for your error report!",
+  "theme": "Theme",
+  "theme_dark": "Dark",
+  "theme_light": "Light",
+  "theme_system": "System",
   "there_are_no_games_matching_your_search": "There are no games matching your search",
   "there_is_no_game_matching_your_search": "There is no game matching your search",
   "there_is_no_group_matching_your_search": "There is no group matching your search",
@@ -399,15 +442,18 @@
   "this_cannot_be_undone": "This can't be undone.",
   "tie": "Tie",
   "timeframe": "Timeframe",
+  "timeframe_filter_description": "All statistics related to any of the selected time periods are displayed.",
   "today": "Today",
   "today_at": "Today at",
   "token_expired": "Token expired",
+  "top_n": "Top {count}",
   "total_losses": "Total losses",
   "total_matches": "Total matches",
   "total_score": "Total score",
   "total_time": "Total time",
   "total_wins": "Total wins",
   "type": "Type",
+  "type_filter_description": "All statistics matching any of the selected types are displayed.",
   "unexpected_error": "An unexpected error occurred.",
   "unknown_exception": "Unknown Exception (see console)",
   "unsatisfied": "Unsatisfied?",
@@ -419,11 +465,13 @@
   "update_features_fixes_desc": "Please update the app to access the latest features and improvements.",
   "update_now": "Update Now",
   "version": "Version",
+  "version_copied_to_clipboard": "Version copied to clipboard",
   "whats_new": "What's new?",
   "winner": "Winner",
   "winrate": "Winrate",
   "worst_score": "Worst score",
   "write_email": "Write an email",
   "yes": "Yes",
-  "yesterday_at": "Yesterday at"
+  "yesterday_at": "Yesterday at",
+  "your_statistic_will_be_shown_here": "Your statistic will be shown here"
 }

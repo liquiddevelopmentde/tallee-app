@@ -1,17 +1,17 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 
 class TopCenteredMessage extends StatelessWidget {
   /// A widget that displays a message centered at the top of the screen with an icon, title, and message.
   /// - [icon]: The icon to display above the title.
   /// - [title]: The title text to display.
   /// - [message]: An optional message text to display below the title.
-  /// - [content]: An optional widget to display below the title instead of the message text.
   /// - [fullscreen]: If true, the message will be displayed at the top of the
   const TopCenteredMessage({
     super.key,
     required this.icon,
     required this.title,
-    this.message,
+    required this.message,
     this.fullscreen = true,
   });
 
@@ -24,43 +24,42 @@ class TopCenteredMessage extends StatelessWidget {
   final bool fullscreen;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: fullscreen ? const EdgeInsets.only(top: 100) : null,
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      alignment: Alignment.topCenter,
-      child: Column(
-        mainAxisAlignment: fullscreen
-            ? MainAxisAlignment.start
-            : MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 45),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              overflow: TextOverflow.visible,
-            ),
-            textAlign: TextAlign.center,
-            softWrap: true,
+  Widget build(BuildContext context) => Container(
+    padding: fullscreen ? const EdgeInsets.only(top: 100) : null,
+    margin: const EdgeInsets.symmetric(horizontal: 10),
+    alignment: Alignment.topCenter,
+    child: Column(
+      mainAxisAlignment: fullscreen
+          ? MainAxisAlignment.start
+          : MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 45, color: context.talleeColors.hintColor),
+        const SizedBox(height: 10),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.visible,
           ),
-          if (message != null)
-            SizedBox(
-              width: 250,
-              child: Text(
-                message!,
-                style: const TextStyle(
-                  fontSize: 16,
-                  overflow: TextOverflow.visible,
-                ),
-                textAlign: TextAlign.center,
-                softWrap: true,
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+        if (message != null)
+          SizedBox(
+            width: 250,
+            child: Text(
+              message!,
+              style: TextStyle(
+                fontSize: 14,
+                overflow: TextOverflow.visible,
+                color: context.talleeColors.hintColor,
               ),
+              textAlign: TextAlign.center,
+              softWrap: true,
             ),
-        ],
-      ),
-    );
-  }
+          ),
+      ],
+    ),
+  );
 }

@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/statistic_table.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'statistic_dao.g.dart';
 
@@ -25,6 +25,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         displayCount: Value(statistic.displayCount),
         isFavourite: Value(statistic.isFavourite),
         position: Value(statistic.position),
+        sortDirection: Value(statistic.sortDirection),
       ),
       mode: InsertMode.insertOrReplace,
     );
@@ -71,6 +72,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
                 displayCount: Value(s.displayCount),
                 isFavourite: Value(s.isFavourite),
                 position: Value(s.position),
+                sortDirection: Value(s.sortDirection),
               ),
             )
             .toList(),
@@ -126,6 +128,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         color: row.color,
         isFavourite: row.isFavourite,
         position: row.position,
+        sortDirection: row.sortDirection,
       );
     }
     return null;
@@ -155,6 +158,7 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
           color: row.color,
           isFavourite: row.isFavourite,
           position: row.position,
+          sortDirection: row.sortDirection,
         );
       }),
     );
@@ -176,6 +180,20 @@ class StatisticDao extends DatabaseAccessor<AppDatabase>
         await (update(statisticTable)
               ..where((tbl) => tbl.id.equals(statisticId)))
             .write(StatisticTableCompanion(isFavourite: Value(isFavourite)));
+
+    return rowsUpdated > 0;
+  }
+
+  Future<bool> updatesortDirection(
+    String statisticId,
+    SortDirection sortDirection,
+  ) async {
+    final rowsUpdated =
+        await (update(
+          statisticTable,
+        )..where((tbl) => tbl.id.equals(statisticId))).write(
+          StatisticTableCompanion(sortDirection: Value(sortDirection)),
+        );
 
     return rowsUpdated > 0;
   }

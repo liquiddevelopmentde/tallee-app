@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:new_version_plus/model/version_status.dart';
 import 'package:once/once.dart';
@@ -9,9 +8,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_sheet_route.dart';
@@ -28,9 +29,7 @@ import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
-import 'package:tallee/state/game_search_provider.dart';
-import 'package:tallee/state/group_search_provider.dart';
-import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/search_provider.dart';
 import 'package:tallee/state/showcase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -45,11 +44,23 @@ class CustomNavigationBar extends StatefulWidget {
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
     with SingleTickerProviderStateMixin, RouteAware {
-  /// Currently selected tab index
   int currentIndex = 0;
 
   /// Key count to force rebuild of tab views
   int tabKeyCount = 0;
+
+  /// View types of the tabs, in the order of the navigation bar.
+  static const List<Type> tabViews = [
+    MatchView,
+    GroupView,
+    GameView,
+    StatisticsView,
+  ];
+
+  final List<ScrollController> tabScrollControllers = List.generate(
+    tabViews.length,
+    (_) => ScrollController(),
+  );
 
   final GlobalKey navbarGameViewKey = GlobalKey();
   final String navbarGameViewIdentifier = 'navbar_game_view';
@@ -66,9 +77,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   @override
   void initState() {
     super.initState();
-
     addExampleStats();
-
     showcaseProvider = context.read<ShowcaseProvider>();
     showcaseProvider.addListener(onShowcaseChanged);
 
@@ -94,7 +103,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   void didPopNext() {
     super.didPopNext();
     if (showcaseProvider.isTourActive) {
-      setState(() => currentIndex = 0);
       showTabShowcase();
     }
   }
@@ -103,12 +111,14 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   void dispose() {
     showcaseProvider.removeListener(onShowcaseChanged);
     routeObserver.unsubscribe(this);
+    for (final controller in tabScrollControllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
   void onShowcaseChanged() {
     if (showcaseProvider.isTourActive) {
-      setState(() => currentIndex = 0);
       showTabShowcase();
     }
   }
@@ -117,9 +127,10 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final matchSearchProvider = context.watch<MatchSearchProvider>();
-    final groupSearchProvider = context.watch<GroupSearchProvider>();
-    final gameSearchProvider = context.watch<GameSearchProvider>();
+    final searchProvider = context.read<SearchProvider>();
+    final isSearching = context.select<SearchProvider, bool>(
+      (provider) => provider.isSearching(tabViews[currentIndex]),
+    );
 
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
 
@@ -151,14 +162,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           currentTabTitle(context),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
             ? HapticIconButton(
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    adaptivePageRoute(builder: (_) => const MatchReceiveView()),
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.matchReceiveView,
+                      ),
+                      builder: (_) => const MatchReceiveView(),
+                    ),
                   );
                   if (mounted) {
                     setState(() {
@@ -170,45 +186,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               )
             : null,
         actions: [
-          // Only in MatchView
-          if (currentIndex == 0)
+          if (tabViews[currentIndex] != StatisticsView)
+            // Search Button
             HapticIconButton(
-              key: const ValueKey('match_search_button'),
+              key: ValueKey('search_button_${tabViews[currentIndex]}'),
               icon: Icon(
                 Icons.search,
-                color: matchSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
-                    : null,
+                color: isSearching ? AppColors.primaryColor : null,
               ),
-              onPressed: () => matchSearchProvider.toggleSearch(),
+              onPressed: () =>
+                  searchProvider.toggleSearch(tabViews[currentIndex]),
             ),
 
-          // Only in GroupView
-          if (currentIndex == 1)
-            HapticIconButton(
-              key: const ValueKey('group_search_button'),
-              icon: Icon(
-                Icons.search,
-                color: groupSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
-                    : null,
-              ),
-              onPressed: () => groupSearchProvider.toggleSearch(),
-            ),
-
-          // Only in GameView
-          if (currentIndex == 2)
-            HapticIconButton(
-              key: const ValueKey('game_search_button'),
-              icon: Icon(
-                Icons.search,
-                color: gameSearchProvider.isSearching
-                    ? CustomTheme.primaryColor
-                    : null,
-              ),
-              onPressed: () => gameSearchProvider.toggleSearch(),
-            ),
-
+          // Settings Button
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
@@ -228,16 +218,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ],
         elevation: 0,
       ),
-      backgroundColor: CustomTheme.backgroundColor,
-      body: tabs[currentIndex],
+      backgroundColor: context.talleeColors.backgroundColor,
+      body: PrimaryScrollController(
+        controller: tabScrollControllers[currentIndex],
+        child: tabs[currentIndex],
+      ),
       extendBody: true,
       bottomNavigationBar: Container(
         height: 115,
         decoration: BoxDecoration(
-          color: CustomTheme.navBarBackgroundColor,
+          color: context.talleeColors.navBarBackgroundColor,
           border: Border.all(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: CustomTheme.boxBorderColor,
+            color: context.talleeColors.boxBorderColor,
             width: 2,
           ),
           borderRadius: const BorderRadius.only(
@@ -258,7 +251,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
             children: <Widget>[
               CustomShowcaseWidget(
                 showcaseKey: navbarMatchViewKey,
-                identifier: navbarMatchViewIdentifier,
                 description: loc.showcase_nav_match,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
@@ -284,7 +276,6 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               ),
               CustomShowcaseWidget(
                 showcaseKey: navbarGameViewKey,
-                identifier: navbarGameViewIdentifier,
                 description: loc.showcase_nav_game,
                 disableBarrierInteraction: true,
                 disposeOnTap: true,
@@ -345,11 +336,23 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
   }
 
   /// Handles tab tap events. Updates the current [index] state.
+  /// Tapping on already active tab scrolls it back to top.
   void onTabTapped(int index) {
-    HapticFeedback.selectionClick();
-    setState(() {
-      currentIndex = index;
-    });
+    Haptics.selectionClick();
+    if (index == currentIndex) {
+      context.read<SearchProvider>().setSearchBarVisible(view: tabViews[index]);
+
+      final scrollController = tabScrollControllers[index];
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    } else {
+      setState(() => currentIndex = index);
+    }
   }
 
   /// Returns the title of the current tab based on [currentIndex].
@@ -395,14 +398,16 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     try {
       status = await newVersionPlus.getVersionStatus();
     } catch (error, stacktrace) {
-      if (isNetworkError(error)) return;
-      Sentry.captureException(
-        error,
-        stackTrace: stacktrace,
-        hint: Hint.withMap({'skipSnackBar': true}),
-        withScope: (scope) {
-          scope.level = SentryLevel.error;
-        },
+      if (error.isNetworkError) return;
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
       );
     }
 
@@ -412,51 +417,48 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          return CustomAlertDialog(
-            title: loc.update_available,
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  loc.update_available_content,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
-                    overflow: TextOverflow.visible,
-                  ),
+        builder: (BuildContext context) => CustomAlertDialog(
+          title: loc.update_available,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                loc.update_available_content,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  loc.update_features_fixes_desc,
-                  style: const TextStyle(
-                    color: CustomTheme.textColor,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              CustomDialogAction(
-                text: loc.update_now,
-                buttonType: ButtonType.primary,
-                onPressed: () async {
-                  final Uri url = Uri.parse(status!.appStoreLink);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url, mode: LaunchMode.externalApplication);
-                  }
-                },
               ),
-              CustomDialogAction(
-                text: loc.later,
-                buttonType: ButtonType.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              const SizedBox(height: 12),
+              Text(
+                loc.update_features_fixes_desc,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
+                ),
               ),
             ],
-          );
-        },
+          ),
+          actions: [
+            CustomDialogAction(
+              text: loc.update_now,
+              onPressed: () async {
+                final Uri url = Uri.parse(status!.appStoreLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+            ),
+            CustomDialogAction(
+              text: loc.later,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
       );
     }
   }

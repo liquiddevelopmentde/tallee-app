@@ -1,5 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu.dart';
 import 'package:tallee/presentation/widgets/dropdown/pull_down_menu/pull_down_menu_tile.dart';
 
@@ -10,12 +10,13 @@ class PullDownMenuButton extends StatelessWidget {
   /// - [items]: The tiles to display in the menu.
   /// - [icon]: The icon for the trigger button. Defaults to a vertical ellipsis.
   /// - [menuWidth]: The width of the opened menu. Defaults to 220.
-  const PullDownMenuButton({
+  PullDownMenuButton({
     super.key,
     required this.items,
     this.icon = const Icon(Icons.more_vert),
     this.menuWidth = 220,
-  });
+  }) : assert(menuWidth > 0, 'menuWidth must be greater than 0'),
+       assert(items.isNotEmpty, 'items must not be empty');
 
   final List<PullDownMenuTile> items;
   final Widget icon;

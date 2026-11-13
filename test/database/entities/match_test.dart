@@ -259,7 +259,7 @@ void main() {
       });
 
       test('addMatchesAsList() returns isFalse for empty list', () async {
-        var added = await database.matchDao.addMatchesAsList(matches: []);
+        final added = await database.matchDao.addMatchesAsList(matches: []);
         expect(added, isFalse);
       });
 
@@ -525,7 +525,7 @@ void main() {
       test('updateMatchEndedAt() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
-        DateTime newEndedAt = DateTime(2030, 1, 1, 12, 0, 0);
+        final DateTime newEndedAt = DateTime(2030, 1, 1, 12);
         await database.matchDao.updateMatchEndedAt(
           matchId: testMatch1.id,
           endedAt: newEndedAt,
@@ -551,7 +551,7 @@ void main() {
       test('updateMatchCreatedAt() works correctly', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
-        DateTime newCreatedAt = DateTime(2020, 1, 1, 12, 0, 0);
+        final DateTime newCreatedAt = DateTime(2020, 1, 1, 12);
         await database.matchDao.updateMatchCreatedAt(
           matchId: testMatch1.id,
           createdAt: newCreatedAt,
@@ -704,5 +704,55 @@ void main() {
         },
       );
     });
+
+    test(
+      'lives match persists remaining lives and is not marked as a tie',
+      () async {
+        final livesGame = Game(name: 'Lives Game', ruleset: Ruleset.lives);
+        final livesMatch = Match(
+          name: 'Lives Match',
+          game: livesGame,
+          players: [testPlayer1, testPlayer2],
+        );
+
+        await database.gameDao.addGame(game: livesGame);
+        await database.matchDao.addMatch(match: livesMatch);
+
+        for (final player in livesMatch.players) {
+          await database.scoreEntryDao.addScore(
+            playerId: player.id,
+            matchId: livesMatch.id,
+            entry: ScoreEntry(change: 3),
+          );
+        }
+
+        await database.scoreEntryDao.updateScore(
+          playerId: testPlayer1.id,
+          matchId: livesMatch.id,
+          entry: ScoreEntry(change: 2),
+        );
+        await database.scoreEntryDao.updateScore(
+          playerId: testPlayer2.id,
+          matchId: livesMatch.id,
+          entry: ScoreEntry(change: 1),
+        );
+        await database.matchDao.updateMatchEndedAt(
+          matchId: livesMatch.id,
+          endedAt: fixedDate,
+        );
+
+        final reloadedMatch = await database.matchDao.getMatchById(
+          matchId: livesMatch.id,
+        );
+
+        expect(reloadedMatch.scores[testPlayer1.id]?.change, 2);
+        expect(reloadedMatch.scores[testPlayer2.id]?.change, 1);
+        expect(reloadedMatch.isTie, isFalse);
+        expect(
+          reloadedMatch.mvp.map((player) => player.id),
+          containsAll([testPlayer1.id, testPlayer2.id]),
+        );
+      },
+    );
   });
 }

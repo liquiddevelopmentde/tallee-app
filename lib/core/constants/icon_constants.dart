@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:fluttericon/rpg_awesome_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/data/models/models.dart';
 
 /// The icon for the [Match] class

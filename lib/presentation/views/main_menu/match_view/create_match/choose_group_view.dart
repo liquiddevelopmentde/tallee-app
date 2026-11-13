@@ -1,45 +1,33 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants/value_constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
-import 'package:tallee/presentation/utils/navigation/route_names.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class ChooseGroupView extends StatefulWidget {
   /// A view that allows the user to choose a group from a list of groups.
   /// - [groups]: A list of available groups to choose from
   /// - [initialGroups]: The initially selected group
-  /// - [statistic]: Optional statistic payload for choosing groups for a statistic
-  /// - [selectedTypes]: Optional list of statistic types to determine the correct button text
   /// - [enableMultiSelection]: Whether multiple groups can be selected
+  /// - [description]: An optional description shown at the top
   const ChooseGroupView({
     super.key,
     required this.groups,
     this.initialGroups,
-    this.statistic,
-    this.selectedTypes,
     this.enableMultiSelection = false,
+    this.description,
   });
 
   final List<Group> groups;
   final List<Group>? initialGroups;
-  final Statistic? statistic;
-  final List<StatisticType>? selectedTypes;
   final bool enableMultiSelection;
+  final String? description;
 
   @override
   State<ChooseGroupView> createState() => _ChooseGroupViewState();
@@ -48,21 +36,23 @@ class ChooseGroupView extends StatefulWidget {
 class _ChooseGroupViewState extends State<ChooseGroupView> {
   final TextEditingController controller = TextEditingController();
 
-  late final List<Group> filteredGroups;
+  /// Currently selected group(s)
   late List<Group> selectedGroups;
+
+  /// Groups filtered according to the current search query
+  late final List<Group> filteredGroups;
+
+  List<Group> get groups =>
+      widget.groups..sort((a, b) => a.name.compareIgnoringCaseTo(b.name));
 
   // If selecting multiple is possible
   late bool enableMultiSelection;
 
-  // How many statistics get created
-  late int statAmount = widget.selectedTypes?.length ?? 0;
-
   @override
   void initState() {
-    filteredGroups = [...widget.groups];
     selectedGroups = widget.initialGroups ?? [];
-    enableMultiSelection =
-        widget.enableMultiSelection || widget.statistic != null;
+    filteredGroups = [...groups];
+    enableMultiSelection = widget.enableMultiSelection;
     super.initState();
   }
 
@@ -71,7 +61,7 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text(loc.choose_group)),
       body: PopScope(
@@ -85,150 +75,114 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
           Navigator.of(context).pop(popResult);
         },
         child: Column(
+          spacing: 10,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: CustomSearchBar(
-                controller: controller,
-                hintText: loc.search_for_groups,
-                onChanged: (value) {
-                  setState(() {
-                    filterGroups(value);
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Visibility(
-                visible: filteredGroups.isNotEmpty,
-                replacement: Visibility(
-                  visible: widget.groups.isNotEmpty,
-                  replacement: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: loc.no_groups_created_yet,
-                  ),
-                  child: TopCenteredMessage(
-                    icon: Icons.info,
-                    title: loc.info,
-                    message: AppLocalizations.of(context)
-                        .there_is_no_group_matching_your_search,
-                  ),
-                ),
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 85, top: 10),
-                  itemCount: filteredGroups.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GroupTile(
-                      group: filteredGroups[index],
-                      isHighlighted: selectedGroups.any(
-                        (group) => group.id == filteredGroups[index].id,
-                      ),
-                      onTap: () async {
-                        setState(() {
-                          if (selectedGroups.contains(filteredGroups[index])) {
-                            selectedGroups.removeWhere(
-                              (group) => group.id == filteredGroups[index].id,
-                            );
-                          } else {
-                            // In single select mode only allow one group
-                            if (!enableMultiSelection) {
-                              selectedGroups.clear();
-                            }
-                            selectedGroups.add(filteredGroups[index]);
-                          }
-                        });
-
-                        // Navigate back to create match view instantly
-                        if (!enableMultiSelection) {
-                          await Future.delayed(MINIMUM_SKELETON_DURATION)
-                              .then((_) {
-                                if (!context.mounted) return;
-                                Navigator.of(context).pop(
-                                  selectedGroups.isEmpty
-                                      ? null
-                                      : selectedGroups.first,
-                                );
-                              });
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            // Create statistic button
-            if (widget.statistic != null)
+            // Description
+            if (widget.description != null && groups.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 28),
-                child: BottomAnimatedButton(
-                  buttonConstraints: const BoxConstraints(minWidth: 390),
-                  buttonText: buttonText,
-                  onPressed: selectedGroups.isNotEmpty
-                      ? () => submitStatistic()
-                      : null,
+                padding: const EdgeInsetsGeometry.symmetric(horizontal: 32),
+                child: Text(
+                  widget.description!,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(color: context.talleeColors.hintColor),
                 ),
               ),
+
+            // Content
+            Expanded(
+              child: Column(
+                children: [
+                  if (groups.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: CustomSearchBar(
+                        controller: controller,
+                        hintText: loc.search_for_groups,
+                        onChanged: (value) {
+                          setState(() {
+                            filterGroups(value);
+                          });
+                        },
+                      ),
+                    ),
+
+                  if (groups.isEmpty)
+                    // No groups created
+                    Expanded(
+                      child: EmptyViewMessage(
+                        icon: GROUP_ICON,
+                        title: loc.no_groups,
+                        message: loc.no_groups_created_yet,
+                      ),
+                    )
+                  else if (filteredGroups.isEmpty)
+                    // No groups matching search query
+                    Expanded(
+                      child: EmptyViewMessage(
+                        icon: GROUP_ICON,
+                        title: loc.no_results,
+                        message: loc.there_is_no_group_matching_your_search,
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 25, top: 10),
+                        itemCount: filteredGroups.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            GroupTile(
+                              group: filteredGroups[index],
+                              isHighlighted: selectedGroups.any(
+                                (group) => group.id == filteredGroups[index].id,
+                              ),
+                              onTap: () async {
+                                setState(() {
+                                  if (selectedGroups.contains(
+                                    filteredGroups[index],
+                                  )) {
+                                    selectedGroups.removeWhere(
+                                      (group) =>
+                                          group.id == filteredGroups[index].id,
+                                    );
+                                  } else {
+                                    // In single select mode only allow one group
+                                    if (!enableMultiSelection) {
+                                      selectedGroups.clear();
+                                    }
+                                    selectedGroups.add(filteredGroups[index]);
+                                  }
+                                });
+
+                                // Navigate back to create match view instantly
+                                if (!enableMultiSelection) {
+                                  await Future.delayed(
+                                    MINIMUM_SKELETON_DURATION,
+                                  ).then((_) {
+                                    if (!context.mounted) return;
+                                    Navigator.of(context).pop(
+                                      selectedGroups.isEmpty
+                                          ? null
+                                          : selectedGroups.first,
+                                    );
+                                  });
+                                }
+                              },
+                            ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  String get buttonText =>
-      widget.statistic != null &&
-          widget.statistic!.scopes.contains(StatisticScope.selectedGames)
-      ? AppLocalizations.of(context).continue_
-      : AppLocalizations.of(context).create_statistic(statAmount);
-
   Object? get popResult {
-    if (widget.statistic != null) return null;
     if (enableMultiSelection) return selectedGroups;
     return selectedGroups.isEmpty ? null : selectedGroups.first;
-  }
-
-  Future<void> submitStatistic() async {
-    final statistic = widget.statistic!.copyWith(
-      selectedGroups: selectedGroups,
-    );
-    final db = context.read<AppDatabase>();
-
-    if (widget.statistic!.scopes.contains(StatisticScope.selectedGames)) {
-      // Choose a game
-      final games = await db.gameDao.getAllGames();
-      final filteredGames = filterGamesForRequiredRuleset(games);
-
-      if (mounted) {
-        final createdStatistic = await Navigator.of(context).push<Statistic>(
-          adaptivePageRoute(
-            settings: const RouteSettings(name: RouteNames.chooseGameView),
-            builder: (context) => ChooseGameView(
-              statistic: statistic,
-              games: filteredGames,
-              selectedTypes: widget.selectedTypes,
-            ),
-          ),
-        );
-
-        if (mounted && createdStatistic != null) {
-          Navigator.of(context).pop(createdStatistic);
-        }
-      }
-    } else {
-      // Create statistic
-      await db.statisticDao.addStatistic(statistic: statistic);
-      if (!mounted) return;
-      Navigator.of(context).pop(statistic);
-    }
-  }
-
-  /// Filters the [games] based on the rulesets required by the selected [StatisticType]s
-  List<Game> filterGamesForRequiredRuleset(List<Game> games) {
-    final Set<Ruleset> requiredRulesets = {
-      for (final t in widget.selectedTypes!) ...getRulesetForTypes(t),
-    };
-    return games.where((g) => requiredRulesets.contains(g.ruleset)).toList();
   }
 
   /// Filters the groups based on the search [query].
@@ -236,11 +190,11 @@ class _ChooseGroupViewState extends State<ChooseGroupView> {
     setState(() {
       if (query.isEmpty) {
         filteredGroups.clear();
-        filteredGroups.addAll(widget.groups);
+        filteredGroups.addAll(groups);
       } else {
         final List<({Group group, int score})> scoredGroups = [];
 
-        for (final group in widget.groups) {
+        for (final group in groups) {
           int maxScore = 0;
 
           // Check group name

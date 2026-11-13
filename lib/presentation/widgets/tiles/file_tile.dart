@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
@@ -33,16 +33,18 @@ class MatchFileTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        color: context.talleeColors.onBoxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          width: 2,
+        ),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       margin:
           margin ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       padding: const EdgeInsets.all(12),
       child: Row(
         spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.file_present, size: 36),
           Expanded(
@@ -52,7 +54,6 @@ class MatchFileTile extends StatelessWidget {
               children: [
                 Row(
                   spacing: 4,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Filename
                     Expanded(
@@ -65,10 +66,10 @@ class MatchFileTile extends StatelessWidget {
                             fileName ??
                                 '${match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
                             maxLines: 1,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: CustomTheme.textColor,
+                              color: context.talleeColors.textColor,
                             ),
                           ),
                         ),
@@ -78,9 +79,9 @@ class MatchFileTile extends StatelessWidget {
                     // Filesize
                     Text(
                       '${fileSize.toStringAsFixed(1)} KB',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                     ),
                   ],
@@ -94,8 +95,8 @@ class MatchFileTile extends StatelessWidget {
                         .map(
                           (item) => Text(
                             item,
-                            style: const TextStyle(
-                              color: CustomTheme.hintColor,
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor,
                             ),
                           ),
                         )
@@ -121,12 +122,10 @@ class MatchFileTile extends StatelessWidget {
     items.add(loc.player_count(match.players.length));
 
     // Teams & Pairs
-    final isTeamMatch = match.isTeamMatch;
-    final teams = match.teams ?? [];
-    if (isTeamMatch) {
-      items.add('${teams.length} ${loc.teams}');
-    } else if (teams.isNotEmpty) {
-      final pairAmount = teams.where((t) => t.members.length > 1).length;
+    if (match.isTeamMatch) {
+      items.add('${match.teams?.length ?? 0} ${loc.teams}');
+    } else {
+      final pairAmount = match.pairs.length;
       if (pairAmount > 0) items.add('$pairAmount ${loc.pair(pairAmount)}');
     }
 

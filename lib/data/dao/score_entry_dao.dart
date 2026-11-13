@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'score_entry_dao.g.dart';
 
@@ -303,9 +302,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /* Winner handling */
 
-  Future<bool> hasWinner({required String matchId}) async {
-    return await getWinner(matchId: matchId) != null;
-  }
+  Future<bool> hasWinner({required String matchId}) async =>
+      await getWinner(matchId: matchId) != null;
 
   // Setting the winner for a game and clearing previous winner if exists.
   Future<bool> setWinner({
@@ -364,9 +362,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Returns `true` if the winner was removed, `false` if there are multiple
   /// scores or if the winner cannot be removed.
-  Future<bool> removeWinner({required String matchId}) async {
-    return await deleteAllScoresForMatch(matchId: matchId);
-  }
+  Future<bool> removeWinner({required String matchId}) async =>
+      await deleteAllScoresForMatch(matchId: matchId);
 
   /* multiple winners handling */
 
@@ -409,9 +406,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /* Loser handling */
 
-  Future<bool> hasLoser({required String matchId}) async {
-    return await getLoser(matchId: matchId) != null;
-  }
+  Future<bool> hasLoser({required String matchId}) async =>
+      await getLoser(matchId: matchId) != null;
 
   // Setting the loser for a game and clearing previous loser if exists.
   Future<bool> setLoser({
@@ -497,7 +493,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       await db.scoreEntryDao.addScore(
         matchId: matchId,
         playerId: players[i].id,
-        entry: ScoreEntry(roundNumber: 0, change: players.length - i),
+        entry: ScoreEntry(change: players.length - i),
       );
     }
   }

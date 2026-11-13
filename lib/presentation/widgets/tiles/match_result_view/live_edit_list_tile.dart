@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_numeric_text/flutter_numeric_text.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class LiveEditListTile extends StatefulWidget {
@@ -19,7 +19,7 @@ class LiveEditListTile extends StatefulWidget {
   /// - [focusNode]:
   /// - [textInputAction]:
   /// - [onSubmitted]:
-  const LiveEditListTile({
+  LiveEditListTile({
     super.key,
     required this.title,
     required this.value,
@@ -30,7 +30,10 @@ class LiveEditListTile extends StatefulWidget {
     this.focusNode,
     this.textInputAction,
     this.onSubmitted,
-  });
+  }) : assert(
+         boundaries.min <= boundaries.max,
+         'boundaries.min must be less than or equal to boundaries.max',
+       );
 
   final Widget title;
   final int value;
@@ -103,215 +106,207 @@ class _LiveEditListTileState extends State<LiveEditListTile> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: CustomTheme.standardBoxDecoration,
-      child: Column(
-        spacing: 4,
-        children: [
-          // Colored unit name
-          Row(
-            spacing: 5,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget.color != null) ...[
-                // Colored circle
-                Container(
-                  width: 14,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: widget.color,
-                    shape: BoxShape.circle,
-                  ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+    decoration: context.standardBoxDecoration,
+    child: Column(
+      spacing: 4,
+      children: [
+        // Colored unit name
+        Row(
+          spacing: 5,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (widget.color != null) ...[
+              // Colored circle
+              Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: widget.color,
+                  shape: BoxShape.circle,
                 ),
-              ],
-              widget.title,
-            ],
-          ),
-
-          // Button row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Decrease button
-              FloatingAnimatedButton(
-                icon: Icons.remove_rounded,
-                onPressed: value > minValue
-                    ? () => onButtonPressed(-smallStep)
-                    : null,
-                onLongPressed: value > minValue
-                    ? () => onButtonPressed(-largeStep)
-                    : null,
               ),
+            ],
+            widget.title,
+          ],
+        ),
 
-              // Value display
-              Expanded(
-                child: widget.isLivesRuleset
-                    // Lives display
-                    ? TweenAnimationBuilder<double>(
-                        duration: animationDuration,
-                        curve: Curves.easeInOut,
-                        tween: Tween<double>(end: isLowestValue ? 1 : 0),
-                        child: SizedBox(
-                          width: measureTextWidth(
-                            value.toString(),
-                            valueTextStyle,
+        // Button row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Decrease button
+            FloatingAnimatedButton(
+              icon: Icons.remove_rounded,
+              onPressed: value > minValue
+                  ? () => onButtonPressed(-smallStep)
+                  : null,
+              onLongPressed: value > minValue
+                  ? () => onButtonPressed(-largeStep)
+                  : null,
+            ),
+
+            // Value display
+            Expanded(
+              child: widget.isLivesRuleset
+                  // Lives display
+                  ? TweenAnimationBuilder<double>(
+                      duration: animationDuration,
+                      curve: Curves.easeInOut,
+                      tween: Tween<double>(end: isLowestValue ? 1 : 0),
+                      child: SizedBox(
+                        width: measureTextWidth(
+                          value.toString(),
+                          valueTextStyle,
+                        ),
+                        child: NumericText(
+                          value.toString(),
+                          duration: animationDuration,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.visible,
+                          textWidthBasis: TextWidthBasis.longestLine,
+                          textHeightBehavior: const TextHeightBehavior(
+                            applyHeightToFirstAscent: false,
+                            applyHeightToLastDescent: false,
                           ),
-                          child: NumericText(
-                            value.toString(),
-                            duration: animationDuration,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.visible,
-                            textWidthBasis: TextWidthBasis.longestLine,
-                            textHeightBehavior: const TextHeightBehavior(
-                              applyHeightToFirstAscent: false,
-                              applyHeightToLastDescent: false,
-                            ),
-                            style: valueTextStyle.copyWith(
-                              color: CustomTheme.textColor,
+                          style: valueTextStyle.copyWith(
+                            color: context.talleeColors.textColor,
+                          ),
+                        ),
+                      ),
+                      builder: (context, t, child) {
+                        final iconColor = Color.lerp(
+                          context.talleeColors.errorColor,
+                          context.talleeColors.textColor.withAlpha(90),
+                          t,
+                        );
+
+                        final valueOpacity = 1.0 - t * (1.0 - 90 / 255);
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Hearts icon
+                            Icon(livesIcon, color: iconColor, size: 28),
+                            const SizedBox(width: 5),
+
+                            // Value
+                            Opacity(opacity: valueOpacity, child: child),
+                          ],
+                        );
+                      },
+                    )
+                  // Score display
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: SizedBox(
+                            height: 60,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              clipBehavior: Clip.none,
+                              children: [
+                                // Value
+                                SizedBox(
+                                  width: 150,
+                                  child: NumericText(
+                                    displayedText,
+                                    duration: suppressAnimation
+                                        ? Duration.zero
+                                        : animationDuration,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    textWidthBasis: TextWidthBasis.longestLine,
+                                    textHeightBehavior:
+                                        const TextHeightBehavior(
+                                          applyHeightToFirstAscent: false,
+                                          applyHeightToLastDescent: false,
+                                        ),
+                                    style: valueTextStyle.copyWith(
+                                      color: context.talleeColors.textColor,
+                                    ),
+                                  ),
+                                ),
+
+                                // Invisible input field.
+                                Positioned.fill(
+                                  top: 8,
+                                  left: 2,
+                                  child: MediaQuery.withNoTextScaling(
+                                    child: TextField(
+                                      controller: controller,
+                                      focusNode: focusNode,
+                                      onChanged: onTextChanged,
+                                      textInputAction: widget.textInputAction,
+                                      onSubmitted: (_) {
+                                        if (widget.onSubmitted != null) {
+                                          widget.onSubmitted!();
+                                        } else {
+                                          focusNode.unfocus();
+                                        }
+                                      },
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                            signed: true,
+                                          ),
+                                      inputFormatters: [
+                                        TextInputFormatter.withFunction(
+                                          (oldValue, newValue) =>
+                                              isValidScoreInput(newValue.text)
+                                              ? newValue
+                                              : oldValue,
+                                        ),
+                                      ],
+                                      textAlign: TextAlign.center,
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      showCursor: true,
+                                      enableInteractiveSelection: true,
+                                      cursorColor:
+                                          context.talleeColors.textColor,
+                                      cursorHeight: 36,
+                                      style: valueTextStyle.copyWith(
+                                        height: 1.0,
+                                        color: Colors.transparent,
+                                      ),
+                                      decoration: const InputDecoration(
+                                        isCollapsed: true,
+                                        border: InputBorder.none,
+                                        counterText: '',
+                                        contentPadding: EdgeInsets.zero,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        builder: (context, t, child) {
-                          final iconColor = Color.lerp(
-                            Colors.red,
-                            CustomTheme.textColor.withAlpha(90),
-                            t,
-                          );
+                      ],
+                    ),
+            ),
 
-                          final valueOpacity = 1.0 - t * (1.0 - 90 / 255);
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Hearts icon
-                              Icon(livesIcon, color: iconColor, size: 28),
-                              const SizedBox(width: 5),
-
-                              // Value
-                              Opacity(opacity: valueOpacity, child: child),
-                            ],
-                          );
-                        },
-                      )
-                    // Score display
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: SizedBox(
-                              height: 60,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                clipBehavior: Clip.none,
-                                children: [
-                                  // Value
-                                  SizedBox(
-                                    width: 150,
-                                    child: NumericText(
-                                      displayedText,
-                                      duration: suppressAnimation
-                                          ? Duration.zero
-                                          : animationDuration,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      textWidthBasis:
-                                          TextWidthBasis.longestLine,
-                                      textHeightBehavior:
-                                          const TextHeightBehavior(
-                                            applyHeightToFirstAscent: false,
-                                            applyHeightToLastDescent: false,
-                                          ),
-                                      style: valueTextStyle.copyWith(
-                                        color: CustomTheme.textColor,
-                                      ),
-                                    ),
-                                  ),
-
-                                  // Invisible input field.
-                                  Positioned.fill(
-                                    top: 8,
-                                    left: 2,
-                                    child: MediaQuery.withNoTextScaling(
-                                      child: TextField(
-                                        controller: controller,
-                                        focusNode: focusNode,
-                                        onChanged: onTextChanged,
-                                        textInputAction: widget.textInputAction,
-                                        onSubmitted: (_) {
-                                          if (widget.onSubmitted != null) {
-                                            widget.onSubmitted!();
-                                          } else {
-                                            focusNode.unfocus();
-                                          }
-                                        },
-                                        keyboardType:
-                                            const TextInputType.numberWithOptions(
-                                              signed: true,
-                                            ),
-                                        inputFormatters: [
-                                          TextInputFormatter.withFunction((
-                                            oldValue,
-                                            newValue,
-                                          ) {
-                                            return isValidScoreInput(
-                                                  newValue.text,
-                                                )
-                                                ? newValue
-                                                : oldValue;
-                                          }),
-                                        ],
-                                        textAlign: TextAlign.center,
-                                        textAlignVertical:
-                                            TextAlignVertical.center,
-                                        showCursor: true,
-                                        enableInteractiveSelection: true,
-                                        cursorColor: CustomTheme.textColor,
-                                        cursorHeight: 36,
-                                        style: valueTextStyle.copyWith(
-                                          height: 1.0,
-                                          color: Colors.transparent,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          isCollapsed: true,
-                                          border: InputBorder.none,
-                                          counterText: '',
-                                          contentPadding: EdgeInsets.zero,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-              ),
-
-              // Increase button
-              FloatingAnimatedButton(
-                icon: Icons.add_rounded,
-                onPressed: value < maxValue
-                    ? () => onButtonPressed(smallStep)
-                    : null,
-                onLongPressed: value < maxValue
-                    ? () => onButtonPressed(largeStep)
-                    : null,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            // Increase button
+            FloatingAnimatedButton(
+              icon: Icons.add_rounded,
+              onPressed: value < maxValue
+                  ? () => onButtonPressed(smallStep)
+                  : null,
+              onLongPressed: value < maxValue
+                  ? () => onButtonPressed(largeStep)
+                  : null,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 
   /// Measures the width of [text] rendered with [style].
   double measureTextWidth(String text, TextStyle style) {
