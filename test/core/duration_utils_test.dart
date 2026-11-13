@@ -53,4 +53,38 @@ void main() {
       );
     });
   });
+
+  group('foldElapsedMs', () {
+    final now = DateTime(2026, 1, 1, 12, 0, 0);
+
+    test('folds elapsed time into the base value', () {
+      expect(
+        foldElapsedMs(
+          baseMs: 5_000,
+          timerStartedAt: now.subtract(const Duration(seconds: 90)),
+          now: now,
+        ),
+        95_000,
+      );
+    });
+
+    test('returns the base value when stopped', () {
+      expect(
+        foldElapsedMs(baseMs: 5_000, timerStartedAt: null, now: now),
+        5_000,
+      );
+    });
+
+    test('clamps a backward system clock at zero elapsed', () {
+      // Clock moved back 10 s while running: must not subtract from base.
+      expect(
+        foldElapsedMs(
+          baseMs: 5_000,
+          timerStartedAt: now.add(const Duration(seconds: 10)),
+          now: now,
+        ),
+        5_000,
+      );
+    });
+  });
 }

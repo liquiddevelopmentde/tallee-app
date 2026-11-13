@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
+import 'package:tallee/core/duration_utils.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
 import 'package:tallee/data/models/models.dart';
@@ -516,7 +517,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: 0,
-        score: Value(existing?.score ?? 0),
         change: existing?.change ?? 0,
         timerStartedAt: Value(at),
       ),
@@ -534,8 +534,11 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final existing = await getScore(playerId: playerId, matchId: matchId);
     if (existing == null || existing.timerStartedAt == null) return;
 
-    final folded =
-        existing.score + at.difference(existing.timerStartedAt!).inMilliseconds;
+    final folded = foldElapsedMs(
+      baseMs: existing.change,
+      timerStartedAt: existing.timerStartedAt,
+      now: at,
+    );
 
     await (update(scoreEntryTable)..where(
           (tbl) =>
@@ -545,7 +548,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         ))
         .write(
           ScoreEntryTableCompanion(
-            score: Value(folded),
+            change: Value(folded),
             timerStartedAt: const Value(null),
           ),
         );
@@ -577,13 +580,15 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
     await batch((b) {
       for (final row in rows) {
+        final folded = foldElapsedMs(
+          baseMs: row.change,
+          timerStartedAt: row.timerStartedAt,
+          now: at,
+        );
         b.update(
           scoreEntryTable,
           ScoreEntryTableCompanion(
-            score: Value(
-              (row.score ?? 0) +
-                  at.difference(row.timerStartedAt!).inMilliseconds,
-            ),
+            change: Value(folded),
             timerStartedAt: const Value(null),
           ),
           where: (tbl) =>
@@ -605,7 +610,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return {
       for (final row in rows)
         row.playerId: (
-          elapsedMs: row.score ?? 0,
+          elapsedMs: row.change,
           timerStartedAt: row.timerStartedAt,
         ),
     };

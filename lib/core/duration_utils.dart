@@ -12,6 +12,21 @@ int effectiveTimerMs({
   return baseMs + now.difference(timerStartedAt).inMilliseconds;
 }
 
+/// Folds the elapsed time since [timerStartedAt] into the accumulated [baseMs].
+///
+/// The elapsed slice is clamped at zero: if the system clock moved backward
+/// while the timer was running, the raw difference would be negative and
+/// corrupt the stored total (and win shortest-time matches).
+int foldElapsedMs({
+  required int baseMs,
+  required DateTime? timerStartedAt,
+  required DateTime now,
+}) {
+  if (timerStartedAt == null) return baseMs;
+  final elapsed = now.difference(timerStartedAt).inMilliseconds;
+  return baseMs + (elapsed < 0 ? 0 : elapsed);
+}
+
 /// Formats a duration in milliseconds the way the app timer shows it.
 /// - under one minute: "45s"
 /// - under one hour: "1:05"

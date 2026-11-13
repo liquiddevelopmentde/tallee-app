@@ -812,7 +812,7 @@ void main() {
         await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          entry: ScoreEntry(roundNumber: 0, score: 5000, change: 0),
+          entry: ScoreEntry(roundNumber: 0, change: 5000),
         );
         final at = DateTime(2026, 1, 1, 12, 0, 0);
 
