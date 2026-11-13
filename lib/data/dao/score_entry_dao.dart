@@ -445,7 +445,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
     required List<Player> players,
   }) async {
-    var success = false;
+    var success = true;
     for (int i = 0; i < players.length; i++) {
       success &= await db.scoreEntryDao.addScore(
         matchId: matchId,

@@ -447,7 +447,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the scores for each player in the database.
   Future<bool> handleScores() async {
-    var success = false;
+    var success = true;
     if (useTeamLogic) {
       for (int i = 0; i < allTeams.length; i++) {
         final team = allTeams[i];
@@ -474,7 +474,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the placement for each player in the database.
   Future<bool> handlePlacement() async {
-    var success = false;
+    var success = true;
     if (useTeamLogic) {
       success &= await db.teamDao.setTeamPlacements(
         matchId: widget.match.id,
@@ -491,7 +491,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the remaining lives for each player/team in the database.
   Future<bool> handleLives() async {
-    var success = false;
+    var success = true;
     if (useTeamLogic) {
       for (final team in allTeams) {
         final lives = scores[team] ?? widget.defaultLives;
