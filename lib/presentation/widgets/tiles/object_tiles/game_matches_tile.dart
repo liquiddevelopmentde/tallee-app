@@ -82,7 +82,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
         final canExpand = collapsedCount < widget.matches.length;
 
         return InfoTile(
-          title: '${loc.matches} (${widget.matches.length})',
+          title: loc.matches,
           leadingWidget: const Icon(MATCH_ICON),
           horizontalAlignment: CrossAxisAlignment.start,
           padding: EdgeInsets.fromLTRB(
