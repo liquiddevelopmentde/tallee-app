@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
@@ -119,6 +120,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
   }
 
   void toggleExpanded() {
+    HapticFeedback.selectionClick();
     setState(() => _isExpanded = !_isExpanded);
 
     if (_isExpanded) {
