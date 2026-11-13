@@ -7,6 +7,16 @@ import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/player_profile_list_tile.dart';
 
+part 'match_chip_wrap.dart';
+part 'match_chips.dart';
+part 'match_expand_toggle.dart';
+
+/// Horizontal spacing between match chips.
+const double _chipSpacing = 12;
+
+/// Horizontal and top padding of the surrounding [InfoTile].
+const double _tilePadding = 12;
+
 class GameMatchesTile extends StatefulWidget {
   /// A tile that lists the matches played with a game as chips.
   /// - [matches]: The matches to display, ordered from newest to oldest.
@@ -33,12 +43,6 @@ class GameMatchesTile extends StatefulWidget {
 
 class _GameMatchesTileState extends State<GameMatchesTile>
     with SingleTickerProviderStateMixin {
-  /// Horizontal spacing between match chips.
-  static const double _chipSpacing = 12;
-
-  /// Horizontal and top padding of the surrounding [InfoTile].
-  static const double _tilePadding = 12;
-
   late AnimationController _expandController;
   late CurvedAnimation _expandAnimation;
 
@@ -99,77 +103,20 @@ class _GameMatchesTileState extends State<GameMatchesTile>
                       color: context.talleeColors.textColor,
                     ),
                   )
-                : buildMatchChips(collapsedCount, canExpand),
+                : _MatchChips(
+                    matches: widget.matches,
+                    collapsedCount: collapsedCount,
+                    canExpand: canExpand,
+                    isExpanded: _isExpanded,
+                    expandAnimation: _expandAnimation,
+                    onToggle: toggleExpanded,
+                    onMatchTap: widget.onMatchTap,
+                  ),
           ),
         );
       },
     );
   }
-
-  Widget buildMatchChips(int collapsedCount, bool canExpand) {
-    final visibleMatches = widget.matches.take(collapsedCount).toList();
-    final hiddenMatches = widget.matches.skip(collapsedCount).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildChipWrap(visibleMatches),
-        if (hiddenMatches.isNotEmpty)
-          SizeTransition(
-            sizeFactor: _expandAnimation,
-            alignment: AlignmentDirectional.topStart,
-            child: FadeTransition(
-              opacity: _expandAnimation,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: buildChipWrap(hiddenMatches),
-              ),
-            ),
-          ),
-        if (canExpand) buildExpandToggle(),
-      ],
-    );
-  }
-
-  Widget buildChipWrap(List<Match> matches) => Wrap(
-    spacing: _chipSpacing,
-    runSpacing: 8,
-    children: [
-      for (final match in matches)
-        PlayerProfileListTile(
-          title: match.name,
-          count: match.players.length,
-          onTap: () => widget.onMatchTap(match),
-        ),
-    ],
-  );
-
-  Widget buildExpandToggle() => SizedBox(
-    width: double.infinity,
-    height: 32,
-    child: GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: toggleExpanded,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: animation.drive(Tween(begin: 0.8, end: 1)),
-            child: child,
-          ),
-        ),
-        child: Icon(
-          _isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-          key: ValueKey(_isExpanded),
-          size: 20,
-          color: context.talleeColors.hintColor,
-        ),
-      ),
-    ),
-  );
 
   void toggleExpanded() {
     setState(() => _isExpanded = !_isExpanded);
