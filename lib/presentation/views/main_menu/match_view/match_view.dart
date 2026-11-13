@@ -310,6 +310,7 @@ class _MatchViewState extends State<MatchView> {
                                       Navigator.push(
                                         context,
                                         adaptivePageRoute(
+                                          fullscreenDialog: true,
                                           settings: const RouteSettings(
                                             name: RouteNames.matchResultView,
                                           ),
