@@ -46,7 +46,7 @@ class _GroupViewState extends State<GroupView> {
     Group(
       name: 'Skeleton Group',
       description: '',
-      members: List.filled(6, Player(name: 'Skeleton Player')),
+      members: List.filled(4, Player(name: 'Skeleton')),
     ),
   );
 
