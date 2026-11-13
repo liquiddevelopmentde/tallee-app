@@ -313,7 +313,7 @@ class _MatchTileState extends State<MatchTile> {
         spacing: 8,
         children: [
           Icon(
-            widget.match.game.ruleset == Ruleset.loser
+            widget.match.game.ruleset.isLoser
                 ? widget.match.game.ruleset.icon
                 : Icons.emoji_events,
             size: 20,
