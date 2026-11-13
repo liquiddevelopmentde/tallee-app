@@ -38,12 +38,18 @@ class _GameDetailViewState extends State<GameDetailView> {
   bool isLoading = true;
 
   late Game game;
-  List<Match> matches = [];
+  late List<Match> matches;
+
+  List<Match> get _skeletonMatches => [
+    for (var i = 0; i < 2; i++)
+      Match(name: 'Match $i', game: game, players: const []),
+  ];
 
   @override
   void initState() {
     super.initState();
     game = widget.game;
+    matches = _skeletonMatches;
     db = context.read<AppDatabase>();
     loadStatistics();
   }
