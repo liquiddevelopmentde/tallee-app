@@ -49,10 +49,15 @@ class SnackBarContent extends StatelessWidget {
                   onTap ??
                   () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
                 decoration: BoxDecoration(
                   color: context.talleeColors.boxColor,
-                  border: Border.all(color: context.talleeColors.boxBorderColor),
+                  border: Border.all(
+                    color: context.talleeColors.boxBorderColor,
+                  ),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
