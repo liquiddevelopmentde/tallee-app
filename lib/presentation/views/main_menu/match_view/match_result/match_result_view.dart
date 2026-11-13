@@ -102,16 +102,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       },
       child: Scaffold(
         backgroundColor: context.talleeColors.backgroundColor,
-        appBar: AppBar(
-          leading: HapticIconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              widget.onWinnerChanged?.call();
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(widget.match.name),
-        ),
+        appBar: AppBar(title: Text(widget.match.name)),
         body: Column(
           children: [
             Expanded(
