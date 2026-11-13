@@ -317,11 +317,14 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// not exist.
   Future<bool> deletePlayer({required Player player}) async {
     if (!await canTrueDelete(playerId: player.id)) {
-      final rowsAffected =
-          await (update(playerTable)..where((tbl) => tbl.id.equals(player.id)))
-              .write(const PlayerTableCompanion(deleted: Value(true)));
-      await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
-      return rowsAffected > 0;
+      return await transaction(() async {
+        final rowsAffected =
+            await (update(playerTable)
+                  ..where((tbl) => tbl.id.equals(player.id)))
+                .write(const PlayerTableCompanion(deleted: Value(true)));
+        await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
+        return rowsAffected > 0;
+      });
     } else {
       return await transaction(() async {
         final rowsAffected = await (delete(
