@@ -51,13 +51,31 @@
             "type": "string"
           },
           "ruleset": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "winner",
+              "loser",
+              "highestScore",
+              "lowestScore",
+              "lives",
+              "placement"
+            ]
           },
           "description": {
             "type": "string"
           },
           "color": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "red",
+              "orange",
+              "yellow",
+              "green",
+              "teal",
+              "blue",
+              "purple",
+              "pink"
+            ]
           }
         },
         "additionalProperties": false,
@@ -200,7 +218,17 @@
                   "type": "string"
                 },
                 "color": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "red",
+                    "orange",
+                    "yellow",
+                    "green",
+                    "teal",
+                    "blue",
+                    "purple",
+                    "pink"
+                  ]
                 },
                 "score": {
                   "type": [
@@ -256,11 +284,25 @@
           "scopes": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "allPlayers",
+                "selectedGroups",
+                "selectedGames"
+              ]
             }
           },
           "timeframe": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "last7Days",
+              "last30Days",
+              "last90Days",
+              "last180Days",
+              "lastYear",
+              "custom",
+              "allTime"
+            ]
           },
           "startDate": {
             "type": [
@@ -275,7 +317,17 @@
             ]
           },
           "color": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "red",
+              "orange",
+              "yellow",
+              "green",
+              "teal",
+              "blue",
+              "purple",
+              "pink"
+            ]
           },
           "selectedGroups": {
             "type": [
@@ -303,6 +355,13 @@
           },
           "position": {
             "type": "number"
+          },
+          "sortDirection": {
+            "type": "string",
+            "enum": [
+              "descending",
+              "ascending"
+            ]
           }
         },
         "additionalProperties": false,
@@ -315,7 +374,8 @@
           "color",
           "displayCount",
           "isFavourite",
-          "position"
+          "position",
+          "sortDirection"
         ]
       }
     }
