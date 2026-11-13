@@ -320,10 +320,10 @@ void main() {
         matches = await database.matchDao.getMatchesByGame(gameId: testGame.id);
 
         expect(matches, hasLength(2));
-        expect(matches.map((match) => match.id).toSet(), {
-          testMatch1.id,
-          testMatch2.id,
-        });
+        expect(
+          matches.map((match) => match.id),
+          unorderedEquals([testMatch1.id, testMatch2.id]),
+        );
 
         for (final match in matches) {
           expect(match.game.id, testGame.id);
