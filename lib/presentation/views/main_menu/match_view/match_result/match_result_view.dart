@@ -91,7 +91,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     final loc = AppLocalizations.of(context);
 
     return PopScope(
-      onPopInvokedWithResult: (bool didPop, dynamic result) {
+      onPopInvokedWithResult: (bool didPop, _) {
         if (didPop) {
           try {
             ShowcaseView.get().dismiss();
@@ -202,9 +202,18 @@ class _MatchResultViewState extends State<MatchResultView> {
                       text: loc.end_match,
                       onPressed: canSave
                           ? () async {
-                              await saveResults();
-                              await endMatch();
-                              if (context.mounted) Navigator.pop(context);
+                              final success = await saveResults();
+                              widget.onWinnerChanged?.call();
+
+                              if (!success) {
+                                await endMatch();
+                                if (context.mounted) Navigator.pop(context);
+                              } else {
+                                if (!context.mounted) return;
+                                context.showSnackBar(
+                                  message: loc.error_saving_results,
+                                );
+                              }
                             }
                           : null,
                     )
@@ -214,9 +223,17 @@ class _MatchResultViewState extends State<MatchResultView> {
                       text: loc.save_changes,
                       onPressed: canSave && hasChangedResult
                           ? () async {
-                              await saveResults();
+                              final success = await saveResults();
                               widget.onWinnerChanged?.call();
-                              if (context.mounted) Navigator.pop(context);
+
+                              if (!context.mounted) return;
+                              if (!success) {
+                                Navigator.pop(context);
+                              } else {
+                                context.showSnackBar(
+                                  message: loc.error_saving_results,
+                                );
+                              }
                             }
                           : null,
                     ),
@@ -353,18 +370,20 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the current input of values based on the ruleset.
-  Future<void> saveResults() async {
+  Future<bool> saveResults() async {
     if (ruleset.isWinner) {
-      await handleWinners();
+      return await handleWinners();
     } else if (ruleset.isLoser) {
-      await handleLoser();
+      return await handleLoser();
     } else if (ruleset.usesPoints) {
-      await handleScores();
+      return await handleScores();
     } else if (ruleset.isPlacement) {
-      await handlePlacement();
+      return await handlePlacement();
     } else if (ruleset.isLives) {
-      await handleLives();
+      return await handleLives();
     }
+
+    return false;
   }
 
   /// Sets Match.endedAt to the current time and requests a rating dialog to be shown.
@@ -373,7 +392,6 @@ class _MatchResultViewState extends State<MatchResultView> {
       matchId: widget.match.id,
       endedAt: DateTime.now(),
     );
-    widget.onWinnerChanged?.call();
 
     if (!mounted) return;
     final rateProvider = context.read<RateDialogProvider>();
@@ -428,12 +446,13 @@ class _MatchResultViewState extends State<MatchResultView> {
   }
 
   /// Handles saving the scores for each player in the database.
-  Future<void> handleScores() async {
+  Future<bool> handleScores() async {
+    var success = false;
     if (useTeamLogic) {
       for (int i = 0; i < allTeams.length; i++) {
         final team = allTeams[i];
         final score = scores[team] ?? 0;
-        await db.teamDao.updateTeamScore(
+        success &= await db.teamDao.updateTeamScore(
           matchId: widget.match.id,
           teamId: allTeams[i].id,
           score: score,
@@ -443,36 +462,40 @@ class _MatchResultViewState extends State<MatchResultView> {
       for (int i = 0; i < allPlayers.length; i++) {
         final player = allPlayers[i];
         final score = scores[player] ?? 0;
-        await db.scoreEntryDao.addScore(
+        success &= await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: allPlayers[i].id,
           entry: ScoreEntry(change: score),
         );
       }
     }
+    return success;
   }
 
   /// Handles saving the placement for each player in the database.
-  Future<void> handlePlacement() async {
+  Future<bool> handlePlacement() async {
+    var success = false;
     if (useTeamLogic) {
-      await db.teamDao.setTeamPlacements(
+      success &= await db.teamDao.setTeamPlacements(
         matchId: widget.match.id,
         teams: allTeams,
       );
     } else {
-      await db.scoreEntryDao.setPlacements(
+      success &= await db.scoreEntryDao.setPlacements(
         matchId: widget.match.id,
         players: allPlayers,
       );
     }
+    return success;
   }
 
   /// Handles saving the remaining lives for each player/team in the database.
-  Future<void> handleLives() async {
+  Future<bool> handleLives() async {
+    var success = false;
     if (useTeamLogic) {
       for (final team in allTeams) {
         final lives = scores[team] ?? widget.defaultLives;
-        await db.teamDao.updateTeamScore(
+        success &= await db.teamDao.updateTeamScore(
           matchId: widget.match.id,
           teamId: team.id,
           score: lives,
@@ -481,13 +504,14 @@ class _MatchResultViewState extends State<MatchResultView> {
     } else {
       for (final player in allPlayers) {
         final lives = scores[player] ?? widget.defaultLives;
-        await db.scoreEntryDao.addScore(
+        success &= await db.scoreEntryDao.addScore(
           matchId: widget.match.id,
           playerId: player.id,
           entry: ScoreEntry(change: lives),
         );
       }
     }
+    return success;
   }
 
   String getTitleForRuleset(AppLocalizations loc) {

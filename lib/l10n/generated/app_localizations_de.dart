@@ -116,6 +116,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get color_blue => 'Blau';
 
   @override
+  String get error_saving_results =>
+      'Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.';
+
+  @override
   String get color_green => 'Grün';
 
   @override

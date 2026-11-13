@@ -112,6 +112,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get color_blue => 'Blue';
 
   @override
+  String get error_saving_results => 'Error saving results, please try again.';
+
+  @override
   String get color_green => 'Green';
 
   @override

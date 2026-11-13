@@ -297,6 +297,12 @@ abstract class AppLocalizations {
   /// **'Blue'**
   String get color_blue;
 
+  /// No description provided for @error_saving_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving results, please try again.'**
+  String get error_saving_results;
+
   /// No description provided for @color_green.
   ///
   /// In en, this message translates to:

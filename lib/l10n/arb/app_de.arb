@@ -311,6 +311,7 @@
   "required": "erforderlich",
   "results": "Ergebnisse",
   "ruleset": "Regelwerk",
+  "error_saving_results": "Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.",
   "save_changes": "Änderungen speichern",
   "save_file": "Datei speichern",
   "save_match": "Spiel speichern",

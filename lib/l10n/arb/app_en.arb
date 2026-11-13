@@ -33,6 +33,7 @@
   "code_pasted_from_clipboard": "Code pasted from clipboard",
   "color": "Color",
   "color_blue": "Blue",
+  "error_saving_results": "Error saving results, please try again.",
   "color_green": "Green",
   "end_match": "End Match",
   "color_orange": "Orange",

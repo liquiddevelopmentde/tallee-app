@@ -438,17 +438,21 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* placement handling */
 
   /// Sets the placement for each player in a match.
-  /// The highest score is assigned to the first player, the second highest to the second player, and so on.
-  Future<void> setPlacements({
+  /// The highest score is assigned to the first player, the second highest to
+  /// the second player, and so on.
+  /// Returns `true` if every score add is successfull, `false` otherwise.
+  Future<bool> setPlacements({
     required String matchId,
     required List<Player> players,
   }) async {
+    var success = false;
     for (int i = 0; i < players.length; i++) {
-      await db.scoreEntryDao.addScore(
+      success &= await db.scoreEntryDao.addScore(
         matchId: matchId,
         playerId: players[i].id,
         entry: ScoreEntry(change: players.length - i),
       );
     }
+    return success;
   }
 }
