@@ -27,9 +27,8 @@ class Team {
   bool get isPair => members.length == 2;
 
   @override
-  String toString() {
-    return 'Team{id: $id, name: $name, color: $color, score: $score, timerStartedAt: $timerStartedAt, members: $members}';
-  }
+  String toString() =>
+      'Team{id: $id, name: $name, color: $color, score: $score, timerStartedAt: $timerStartedAt, members: $members}';
 
   Team copyWith({
     String? id,
@@ -39,17 +38,15 @@ class Team {
     int? score,
     DateTime? timerStartedAt,
     List<Player>? members,
-  }) {
-    return Team(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      createdAt: createdAt ?? this.createdAt,
-      color: color ?? this.color,
-      score: score ?? this.score,
-      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
-      members: members ?? this.members,
-    );
-  }
+  }) => Team(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    color: color ?? this.color,
+    score: score ?? this.score,
+    timerStartedAt: timerStartedAt ?? this.timerStartedAt,
+    members: members ?? this.members,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -116,20 +113,18 @@ class Team {
   factory Team.fromNormalizedJson(
     Map<String, dynamic> json,
     List<Player> members,
-  ) {
-    return Team(
-      id: json['id'],
-      name: json['name'],
-      createdAt: DateTime.parse(json['createdAt']),
-      color: AppColor.values.firstWhere(
-        (e) => e.name == json['color'],
-        orElse: () => AppColor.orange,
-      ),
-      score: json['score'],
-      timerStartedAt: json['timerStartedAt'] != null
-          ? DateTime.parse(json['timerStartedAt'] as String)
-          : null,
-      members: members,
-    );
-  }
+  ) => Team(
+    id: json['id'],
+    name: json['name'],
+    createdAt: DateTime.parse(json['createdAt']),
+    color: AppColor.values.firstWhere(
+      (e) => e.name == json['color'],
+      orElse: () => AppColor.orange,
+    ),
+    score: json['score'],
+    timerStartedAt: json['timerStartedAt'] != null
+        ? DateTime.parse(json['timerStartedAt'] as String)
+        : null,
+    members: members,
+  );
 }

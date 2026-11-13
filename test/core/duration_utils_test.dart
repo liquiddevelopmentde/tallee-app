@@ -26,7 +26,7 @@ void main() {
   });
 
   group('effectiveTimerMs', () {
-    final now = DateTime(2026, 1, 1, 12, 0, 0);
+    final now = DateTime(2026, 1, 1, 12);
 
     test('returns only the base value when stopped', () {
       expect(
@@ -55,7 +55,7 @@ void main() {
   });
 
   group('foldElapsedMs', () {
-    final now = DateTime(2026, 1, 1, 12, 0, 0);
+    final now = DateTime(2026, 1, 1, 12);
 
     test('folds elapsed time into the base value', () {
       expect(

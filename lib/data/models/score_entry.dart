@@ -13,23 +13,20 @@ class ScoreEntry {
        change = change ?? score ?? 0;
 
   @override
-  String toString() {
-    return 'ScoreEntry{roundNumber: $roundNumber, score: $score, change: $change, timerStartedAt: $timerStartedAt}';
-  }
+  String toString() =>
+      'ScoreEntry{roundNumber: $roundNumber, score: $score, change: $change, timerStartedAt: $timerStartedAt}';
 
   ScoreEntry copyWith({
     int? roundNumber,
     int? score,
     int? change,
     DateTime? timerStartedAt,
-  }) {
-    return ScoreEntry(
-      roundNumber: roundNumber ?? this.roundNumber,
-      score: score ?? this.score,
-      change: change ?? this.change,
-      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
-    );
-  }
+  }) => ScoreEntry(
+    roundNumber: roundNumber ?? this.roundNumber,
+    score: score ?? this.score,
+    change: change ?? this.change,
+    timerStartedAt: timerStartedAt ?? this.timerStartedAt,
+  );
 
   @override
   bool operator ==(Object other) =>

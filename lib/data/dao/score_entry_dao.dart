@@ -502,8 +502,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* Timer handling */
 
   /// Starts the timer for a single player. No-op if already running.
-  /// The accumulated [ScoreEntry.score] (ms) is kept; only [timerStartedAt] is
-  /// set.
+  /// The accumulated time in milliseconds is kept; only the start timestamp
+  /// is set.
   Future<void> startTimer({
     required String playerId,
     required String matchId,

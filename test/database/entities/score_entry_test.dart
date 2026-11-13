@@ -812,9 +812,9 @@ void main() {
         await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          entry: ScoreEntry(roundNumber: 0, change: 5000),
+          entry: ScoreEntry(change: 5000),
         );
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
 
         await database.scoreEntryDao.startTimer(
           playerId: testPlayer1.id,
@@ -830,8 +830,8 @@ void main() {
       });
 
       test('startTimer is a no-op when already running', () async {
-        final first = DateTime(2026, 1, 1, 12, 0, 0);
-        final second = DateTime(2026, 1, 1, 12, 5, 0);
+        final first = DateTime(2026, 1, 1, 12);
+        final second = DateTime(2026, 1, 1, 12, 5);
 
         await database.scoreEntryDao.startTimer(
           playerId: testPlayer1.id,
@@ -853,7 +853,7 @@ void main() {
       test(
         'stopTimer folds elapsed ms into score and clears the start',
         () async {
-          final start = DateTime(2026, 1, 1, 12, 0, 0);
+          final start = DateTime(2026, 1, 1, 12);
           await database.scoreEntryDao.startTimer(
             playerId: testPlayer1.id,
             matchId: testMatch1.id,
@@ -880,7 +880,7 @@ void main() {
           matchId: testMatch1.id,
           entry: ScoreEntry(score: 15000),
         );
-        final start = DateTime(2026, 1, 1, 12, 0, 0);
+        final start = DateTime(2026, 1, 1, 12);
 
         await database.scoreEntryDao.startTimer(
           playerId: testPlayer1.id,
@@ -903,7 +903,7 @@ void main() {
         await database.scoreEntryDao.stopTimer(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
-          at: DateTime(2026, 1, 1),
+          at: DateTime(2026),
         );
 
         final timers = await database.scoreEntryDao.getTimers(
@@ -913,7 +913,7 @@ void main() {
       });
 
       test('startAllTimers / stopAllTimers use one shared timestamp', () async {
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
         await database.scoreEntryDao.startAllTimers(
           matchId: testMatch1.id,
           playerIds: [testPlayer1.id, testPlayer2.id],
@@ -940,7 +940,7 @@ void main() {
       });
 
       test('starting and stopping timers does not end the match', () async {
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
         await database.scoreEntryDao.startAllTimers(
           matchId: testMatch1.id,
           playerIds: [testPlayer1.id],
@@ -958,7 +958,7 @@ void main() {
       });
 
       test('addScore preserves timerStartedAt', () async {
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
         await database.scoreEntryDao.addScore(
           playerId: testPlayer1.id,
           matchId: testMatch1.id,
@@ -973,7 +973,7 @@ void main() {
       });
 
       test('stopAllTimers leaves never-started players unscored', () async {
-        final start = DateTime(2026, 1, 1, 12, 0, 0);
+        final start = DateTime(2026, 1, 1, 12);
 
         // Only player 1 ever starts a timer.
         await database.scoreEntryDao.startTimer(

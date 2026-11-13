@@ -25,21 +25,19 @@ void main() {
     Group? group,
     DateTime? createdAt,
     DateTime? endedAt,
-  }) {
-    return Match(
-      name: name,
-      game: game,
-      players: players,
-      group: group,
-      createdAt: createdAt,
-      // Statistics ignore unfinished matches, so default to a finished one.
-      endedAt: endedAt ?? createdAt ?? DateTime(2026, 1, 1),
-      scores: {
-        for (final entry in scores.entries)
-          entry.key.id: ScoreEntry(score: entry.value),
-      },
-    );
-  }
+  }) => Match(
+    name: name,
+    game: game,
+    players: players,
+    group: group,
+    createdAt: createdAt,
+    // Statistics ignore unfinished matches, so default to a finished one.
+    endedAt: endedAt ?? createdAt ?? DateTime(2026),
+    scores: {
+      for (final entry in scores.entries)
+        entry.key.id: ScoreEntry(score: entry.value),
+    },
+  );
 
   setUp(() {
     testPlayer1 = Player(name: 'Alice');
@@ -257,7 +255,7 @@ void main() {
           name: 'm1',
           game: highestScoreGame,
           players: [testPlayer1, testPlayer2],
-          endedAt: DateTime(2026, 1, 1),
+          endedAt: DateTime(2026),
           scores: {testPlayer1.id: ScoreEntry(score: 10), testPlayer2.id: null},
         ),
       ];

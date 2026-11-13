@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/duration_utils.dart';
 import 'package:tallee/core/extensions/extensions.dart';
@@ -238,7 +238,6 @@ class _TimerViewState extends State<TimerView> {
           // Colored unit name
           Row(
             spacing: 5,
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isTeamMatch && unit is Team) ...[
@@ -269,7 +268,6 @@ class _TimerViewState extends State<TimerView> {
           // Time + toggle
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(width: 52),
               Expanded(

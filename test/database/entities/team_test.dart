@@ -585,7 +585,7 @@ void main() {
           matchId: testMatch1.id,
           score: 5000,
         );
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
 
         await database.teamDao.startTeamTimer(teamId: testTeam1.id, at: at);
 
@@ -598,8 +598,8 @@ void main() {
 
       test('startTeamTimer is a no-op when already running', () async {
         await database.matchDao.addMatch(match: testMatch1);
-        final first = DateTime(2026, 1, 1, 12, 0, 0);
-        final second = DateTime(2026, 1, 1, 12, 5, 0);
+        final first = DateTime(2026, 1, 1, 12);
+        final second = DateTime(2026, 1, 1, 12, 5);
 
         await database.teamDao.startTeamTimer(teamId: testTeam1.id, at: first);
         await database.teamDao.startTeamTimer(teamId: testTeam1.id, at: second);
@@ -614,7 +614,7 @@ void main() {
         'stopTeamTimer folds elapsed ms into score and clears start',
         () async {
           await database.matchDao.addMatch(match: testMatch1);
-          final start = DateTime(2026, 1, 1, 12, 0, 0);
+          final start = DateTime(2026, 1, 1, 12);
 
           await database.teamDao.startTeamTimer(
             teamId: testTeam1.id,
@@ -637,7 +637,7 @@ void main() {
         'startAllTeamTimers / stopAllTeamTimers share one timestamp',
         () async {
           await database.matchDao.addMatch(match: testMatch1);
-          final at = DateTime(2026, 1, 1, 12, 0, 0);
+          final at = DateTime(2026, 1, 1, 12);
 
           await database.teamDao.startAllTeamTimers(
             teamIds: [testTeam1.id, testTeam2.id],
@@ -659,7 +659,7 @@ void main() {
 
       test('start/stop does not end the match', () async {
         await database.matchDao.addMatch(match: testMatch1);
-        final at = DateTime(2026, 1, 1, 12, 0, 0);
+        final at = DateTime(2026, 1, 1, 12);
 
         await database.teamDao.startAllTeamTimers(
           teamIds: [testTeam1.id],
@@ -680,7 +680,7 @@ void main() {
         'finalizeTeamTimers folds totals, mirrors members, ends match',
         () async {
           await database.matchDao.addMatch(match: testMatch1);
-          final at = DateTime(2026, 1, 1, 12, 0, 0);
+          final at = DateTime(2026, 1, 1, 12);
 
           await database.teamDao.startAllTeamTimers(
             teamIds: [testTeam1.id, testTeam2.id],
@@ -723,7 +723,7 @@ void main() {
 
         await database.teamDao.startAllTeamTimers(
           teamIds: [testTeam1.id],
-          at: DateTime(2026, 1, 1, 12, 0, 0),
+          at: DateTime(2026, 1, 1, 12),
         );
         await database.teamDao.finalizeTeamTimers(
           matchId: testMatch1.id,

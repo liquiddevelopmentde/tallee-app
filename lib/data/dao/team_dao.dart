@@ -437,8 +437,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   /* Timer handling */
 
   /// Starts the timer for one team. No-op if already running.
-  /// The accumulated [TeamTable.score] (ms) is kept; only [timerStartedAt] is
-  /// set.
+  /// The accumulated time in milliseconds is kept; only the start timestamp
+  /// is set.
   Future<void> startTeamTimer({
     required String teamId,
     required DateTime at,
