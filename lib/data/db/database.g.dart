@@ -3080,6 +3080,16 @@ class $StatisticTableTable extends StatisticTable
     defaultValue: const Constant(0),
   );
   @override
+  late final GeneratedColumnWithTypeConverter<SortDirection, String>
+  sortDirection = GeneratedColumn<String>(
+    'sort_direction',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: Constant(SortDirection.descending.name),
+  ).withConverter<SortDirection>($StatisticTableTable.$convertersortDirection);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     createdAt,
@@ -3091,6 +3101,7 @@ class $StatisticTableTable extends StatisticTable
     displayCount,
     isFavourite,
     position,
+    sortDirection,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3208,6 +3219,12 @@ class $StatisticTableTable extends StatisticTable
         DriftSqlType.int,
         data['${effectivePrefix}position'],
       )!,
+      sortDirection: $StatisticTableTable.$convertersortDirection.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}sort_direction'],
+        )!,
+      ),
     );
   }
 
@@ -3222,6 +3239,10 @@ class $StatisticTableTable extends StatisticTable
       const EnumNameConverter<Timeframe>(Timeframe.values);
   static JsonTypeConverter2<AppColor, String, String> $convertercolor =
       const EnumNameConverter<AppColor>(AppColor.values);
+  static JsonTypeConverter2<SortDirection, String, String>
+  $convertersortDirection = const EnumNameConverter<SortDirection>(
+    SortDirection.values,
+  );
 }
 
 class StatisticTableData extends DataClass
@@ -3236,6 +3257,7 @@ class StatisticTableData extends DataClass
   final int displayCount;
   final bool isFavourite;
   final int position;
+  final SortDirection sortDirection;
   const StatisticTableData({
     required this.id,
     required this.createdAt,
@@ -3247,6 +3269,7 @@ class StatisticTableData extends DataClass
     required this.displayCount,
     required this.isFavourite,
     required this.position,
+    required this.sortDirection,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3277,6 +3300,11 @@ class StatisticTableData extends DataClass
     map['display_count'] = Variable<int>(displayCount);
     map['is_favourite'] = Variable<bool>(isFavourite);
     map['position'] = Variable<int>(position);
+    {
+      map['sort_direction'] = Variable<String>(
+        $StatisticTableTable.$convertersortDirection.toSql(sortDirection),
+      );
+    }
     return map;
   }
 
@@ -3296,6 +3324,7 @@ class StatisticTableData extends DataClass
       displayCount: Value(displayCount),
       isFavourite: Value(isFavourite),
       position: Value(position),
+      sortDirection: Value(sortDirection),
     );
   }
 
@@ -3321,6 +3350,9 @@ class StatisticTableData extends DataClass
       displayCount: serializer.fromJson<int>(json['displayCount']),
       isFavourite: serializer.fromJson<bool>(json['isFavourite']),
       position: serializer.fromJson<int>(json['position']),
+      sortDirection: $StatisticTableTable.$convertersortDirection.fromJson(
+        serializer.fromJson<String>(json['sortDirection']),
+      ),
     );
   }
   @override
@@ -3343,6 +3375,9 @@ class StatisticTableData extends DataClass
       'displayCount': serializer.toJson<int>(displayCount),
       'isFavourite': serializer.toJson<bool>(isFavourite),
       'position': serializer.toJson<int>(position),
+      'sortDirection': serializer.toJson<String>(
+        $StatisticTableTable.$convertersortDirection.toJson(sortDirection),
+      ),
     };
   }
 
@@ -3357,6 +3392,7 @@ class StatisticTableData extends DataClass
     int? displayCount,
     bool? isFavourite,
     int? position,
+    SortDirection? sortDirection,
   }) => StatisticTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -3368,6 +3404,7 @@ class StatisticTableData extends DataClass
     displayCount: displayCount ?? this.displayCount,
     isFavourite: isFavourite ?? this.isFavourite,
     position: position ?? this.position,
+    sortDirection: sortDirection ?? this.sortDirection,
   );
   StatisticTableData copyWithCompanion(StatisticTableCompanion data) {
     return StatisticTableData(
@@ -3385,6 +3422,9 @@ class StatisticTableData extends DataClass
           ? data.isFavourite.value
           : this.isFavourite,
       position: data.position.present ? data.position.value : this.position,
+      sortDirection: data.sortDirection.present
+          ? data.sortDirection.value
+          : this.sortDirection,
     );
   }
 
@@ -3400,7 +3440,8 @@ class StatisticTableData extends DataClass
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
-          ..write('position: $position')
+          ..write('position: $position, ')
+          ..write('sortDirection: $sortDirection')
           ..write(')'))
         .toString();
   }
@@ -3417,6 +3458,7 @@ class StatisticTableData extends DataClass
     displayCount,
     isFavourite,
     position,
+    sortDirection,
   );
   @override
   bool operator ==(Object other) =>
@@ -3431,7 +3473,8 @@ class StatisticTableData extends DataClass
           other.color == this.color &&
           other.displayCount == this.displayCount &&
           other.isFavourite == this.isFavourite &&
-          other.position == this.position);
+          other.position == this.position &&
+          other.sortDirection == this.sortDirection);
 }
 
 class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
@@ -3445,6 +3488,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<int> displayCount;
   final Value<bool> isFavourite;
   final Value<int> position;
+  final Value<SortDirection> sortDirection;
   final Value<int> rowid;
   const StatisticTableCompanion({
     this.id = const Value.absent(),
@@ -3457,6 +3501,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
     this.position = const Value.absent(),
+    this.sortDirection = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   StatisticTableCompanion.insert({
@@ -3470,6 +3515,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
     this.position = const Value.absent(),
+    this.sortDirection = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -3487,6 +3533,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Expression<int>? displayCount,
     Expression<bool>? isFavourite,
     Expression<int>? position,
+    Expression<String>? sortDirection,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3500,6 +3547,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       if (displayCount != null) 'display_count': displayCount,
       if (isFavourite != null) 'is_favourite': isFavourite,
       if (position != null) 'position': position,
+      if (sortDirection != null) 'sort_direction': sortDirection,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3515,6 +3563,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<int>? displayCount,
     Value<bool>? isFavourite,
     Value<int>? position,
+    Value<SortDirection>? sortDirection,
     Value<int>? rowid,
   }) {
     return StatisticTableCompanion(
@@ -3528,6 +3577,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       displayCount: displayCount ?? this.displayCount,
       isFavourite: isFavourite ?? this.isFavourite,
       position: position ?? this.position,
+      sortDirection: sortDirection ?? this.sortDirection,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3571,6 +3621,11 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     if (position.present) {
       map['position'] = Variable<int>(position.value);
     }
+    if (sortDirection.present) {
+      map['sort_direction'] = Variable<String>(
+        $StatisticTableTable.$convertersortDirection.toSql(sortDirection.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3590,6 +3645,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
           ..write('position: $position, ')
+          ..write('sortDirection: $sortDirection, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -8128,6 +8184,7 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
+      Value<SortDirection> sortDirection,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
@@ -8142,6 +8199,7 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
+      Value<SortDirection> sortDirection,
       Value<int> rowid,
     });
 
@@ -8293,6 +8351,12 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<SortDirection, SortDirection, String>
+  get sortDirection => $composableBuilder(
+    column: $table.sortDirection,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   Expression<bool> statisticScopeTableRefs(
     Expression<bool> Function($$StatisticScopeTableTableFilterComposer f) f,
   ) {
@@ -8427,6 +8491,11 @@ class $$StatisticTableTableOrderingComposer
     column: $table.position,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get sortDirection => $composableBuilder(
+    column: $table.sortDirection,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$StatisticTableTableAnnotationComposer
@@ -8471,6 +8540,12 @@ class $$StatisticTableTableAnnotationComposer
 
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SortDirection, String> get sortDirection =>
+      $composableBuilder(
+        column: $table.sortDirection,
+        builder: (column) => column,
+      );
 
   Expression<T> statisticScopeTableRefs<T extends Object>(
     Expression<T> Function($$StatisticScopeTableTableAnnotationComposer a) f,
@@ -8595,6 +8670,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
+                Value<SortDirection> sortDirection = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
                 id: id,
@@ -8607,6 +8683,7 @@ class $$StatisticTableTableTableManager
                 displayCount: displayCount,
                 isFavourite: isFavourite,
                 position: position,
+                sortDirection: sortDirection,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -8621,6 +8698,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
+                Value<SortDirection> sortDirection = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
                 id: id,
@@ -8633,6 +8711,7 @@ class $$StatisticTableTableTableManager
                 displayCount: displayCount,
                 isFavourite: isFavourite,
                 position: position,
+                sortDirection: sortDirection,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
