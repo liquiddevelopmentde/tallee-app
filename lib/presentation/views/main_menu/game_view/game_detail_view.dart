@@ -235,11 +235,11 @@ class _GameDetailViewState extends State<GameDetailView> {
 
   /// Loads statistics for this game
   Future<void> loadStatistics() async {
-    final gameMatches = await db.matchDao.getMatchesByGame(gameId: game.id);
+    final matches = await db.matchDao.getMatchesByGame(gameId: game.id);
     if (!mounted) return;
 
     setState(() {
-      matches = gameMatches;
+      this.matches = matches;
       isLoading = false;
     });
   }
