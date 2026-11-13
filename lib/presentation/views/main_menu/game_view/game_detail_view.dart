@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/core/extensions/date_time_extensions.dart';
 import 'package:tallee/core/extensions/snack_bar_extensions.dart';
@@ -91,14 +92,17 @@ class _GameDetailViewState extends State<GameDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                Text(
-                  game.ruleset.toLocalizedString(context),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: context.talleeColors.hintColor,
-                  ),
-                  textAlign: TextAlign.center,
+                const SizedBox(height: 0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(GAME_ICON, size: 20),
+                    const SizedBox(width: 6),
+                    Text(
+                      game.ruleset.toLocalizedString(context),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 if (game.description.isNotEmpty)
                   Padding(
