@@ -137,7 +137,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                 const SizedBox(height: 15),
 
                 // Statistics
-                DetailTile(rows: statisticRows(context)),
+                DetailTile.rich(rows: statisticRows(context)),
               ],
             ),
 
@@ -174,21 +174,46 @@ class _GameDetailViewState extends State<GameDetailView> {
   }
 
   /// The rows shown in the statistics tile, derived from [matches].
-  List<(String, String)> statisticRows(BuildContext context) {
+  List<(String, InlineSpan)> statisticRows(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
     return [
-      (loc.played_matches, matches.length.toString()),
-      (loc.best_player, bestPlayer()),
+      (loc.played_matches, TextSpan(text: matches.length.toString())),
+      (loc.best_player, bestPlayerSpan(context)),
       (
         loc.last_played,
-        matches.isEmpty ? '-' : matches.first.createdAt.toMediumDate(context),
+        TextSpan(
+          text: matches.isEmpty
+              ? '-'
+              : matches.first.createdAt.toMediumDate(context),
+        ),
       ),
     ];
   }
 
   /// The players with the most MVP titles across [matches], or `-` if none.
-  String bestPlayer() {
+  InlineSpan bestPlayerSpan(BuildContext context) {
+    final names = bestPlayerNames();
+    if (names.isEmpty) return const TextSpan(text: '-');
+
+    final parts = _splitNames(names);
+    return TextSpan(
+      children: [
+        TextSpan(text: parts.visible),
+        if (parts.hidden > 0)
+          TextSpan(
+            text: ' +${parts.hidden}',
+            style: TextStyle(
+              color: context.talleeColors.hintColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// The players with the most MVP titles across [matches].
+  List<String> bestPlayerNames() {
     final mvpCounts = <String, int>{};
     final playerNames = <String, String>{};
 
@@ -199,7 +224,7 @@ class _GameDetailViewState extends State<GameDetailView> {
       }
     }
 
-    if (mvpCounts.isEmpty) return '-';
+    if (mvpCounts.isEmpty) return const [];
 
     final sortedCounts = mvpCounts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
@@ -212,7 +237,7 @@ class _GameDetailViewState extends State<GameDetailView> {
             .toList()
           ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
-    return names.join(', ');
+    return names;
   }
 
   /// Opens the given [match], either in the result or the detail view.
@@ -281,4 +306,24 @@ class _GameDetailViewState extends State<GameDetailView> {
     widget.onGameUpdated?.call();
     Navigator.of(context).pop();
   }
+}
+
+/// Splits [names] into the part that fits into [maxChars] and the number of
+/// names that are hidden behind a `+N` suffix.
+({String visible, int hidden}) _splitNames(
+  List<String> names, {
+  int maxChars = 40,
+}) {
+  var result = '';
+  for (var i = 0; i < names.length; i++) {
+    final separator = i == 0 ? '' : ', ';
+    final candidate = '$result$separator${names[i]}';
+    final remaining = names.length - i - 1;
+    final suffix = remaining > 0 ? ' +$remaining' : '';
+    if (candidate.length + suffix.length > maxChars && i > 0) {
+      return (visible: result, hidden: names.length - i);
+    }
+    result = candidate;
+  }
+  return (visible: result, hidden: 0);
 }

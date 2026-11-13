@@ -4,9 +4,19 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 
 class DetailTile extends StatelessWidget {
-  const DetailTile({super.key, required this.rows});
+  /// Creates a detail tile with plain text values.
+  factory DetailTile({Key? key, required List<(String, String)> rows}) =>
+      DetailTile.rich(
+        key: key,
+        rows: [
+          for (final (label, value) in rows) (label, TextSpan(text: value)),
+        ],
+      );
 
-  final List<(String, String)> rows;
+  /// Creates a detail tile whose values can be styled individually.
+  const DetailTile.rich({super.key, required this.rows});
+
+  final List<(String, InlineSpan)> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +40,7 @@ class DetailTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Text(
+                    child: Text.rich(
                       value,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
