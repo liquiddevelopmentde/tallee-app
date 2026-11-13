@@ -162,7 +162,7 @@ class _GameMatchesTileState extends State<GameMatchesTile>
           ),
         ),
         child: Icon(
-          _isExpanded ? Icons.expand_less_rounded : Icons.more_horiz,
+          _isExpanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
           key: ValueKey(_isExpanded),
           size: 20,
           color: context.talleeColors.hintColor,
