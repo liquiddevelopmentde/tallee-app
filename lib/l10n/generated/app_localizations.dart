@@ -273,24 +273,6 @@ abstract class AppLocalizations {
   /// **'Choose where to save your match:'**
   String get choose_where_to_save;
 
-  /// No description provided for @classifier.
-  ///
-  /// In en, this message translates to:
-  /// **'Classifier'**
-  String get classifier;
-
-  /// No description provided for @classifier_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which metric is calculated and shown in this statistic.'**
-  String get classifier_description;
-
-  /// No description provided for @click_another_player_to_create_a_pair.
-  ///
-  /// In en, this message translates to:
-  /// **'Click another player to create a pair'**
-  String get click_another_player_to_create_a_pair;
-
   /// No description provided for @close.
   ///
   /// In en, this message translates to:
@@ -597,12 +579,6 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get description;
 
-  /// No description provided for @displayed_entries.
-  ///
-  /// In en, this message translates to:
-  /// **'Displayed entries'**
-  String get displayed_entries;
-
   /// No description provided for @do_you_like_the_app.
   ///
   /// In en, this message translates to:
@@ -644,12 +620,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit Match'**
   String get edit_match;
-
-  /// No description provided for @edit_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit name'**
-  String get edit_name;
 
   /// No description provided for @edit_player.
   ///
@@ -1239,12 +1209,6 @@ abstract class AppLocalizations {
   /// **'No'**
   String get no;
 
-  /// No description provided for @no_data_available.
-  ///
-  /// In en, this message translates to:
-  /// **'No data available'**
-  String get no_data_available;
-
   /// No description provided for @no_data_to_export.
   ///
   /// In en, this message translates to:
@@ -1671,12 +1635,6 @@ abstract class AppLocalizations {
   /// **'Scope'**
   String get scope;
 
-  /// No description provided for @scope_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which games or players are included in the calculation.'**
-  String get scope_description;
-
   /// No description provided for @search_for_games.
   ///
   /// In en, this message translates to:
@@ -1713,23 +1671,11 @@ abstract class AppLocalizations {
   /// **'Search for types'**
   String get search_for_types;
 
-  /// No description provided for @select_a_classifier.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a classifier'**
-  String get select_a_classifier;
-
   /// No description provided for @select_a_color_description.
   ///
   /// In en, this message translates to:
   /// **'Select the display color for your statistic.'**
   String get select_a_color_description;
-
-  /// No description provided for @select_a_display_color.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a display color.'**
-  String get select_a_display_color;
 
   /// No description provided for @select_a_group_color_description.
   ///
@@ -1754,12 +1700,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select the app\'s displayed theme.'**
   String get select_a_theme_description;
-
-  /// No description provided for @select_a_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a timeframe'**
-  String get select_a_timeframe;
 
   /// No description provided for @select_a_timeframe_description.
   ///
@@ -1796,12 +1736,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the timeframe you want to filter by.'**
-  String get select_the_filtered_timeframe;
 
   /// No description provided for @select_winners.
   ///
@@ -1850,12 +1784,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Internal server error'**
   String get server_error;
-
-  /// No description provided for @set_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Set name'**
-  String get set_name;
 
   /// No description provided for @settings.
   ///

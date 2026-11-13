@@ -103,17 +103,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle aus, wo du dein Match speichern möchtest:';
 
   @override
-  String get classifier => 'Klassifikator';
-
-  @override
-  String get classifier_description =>
-      'Lege fest, welche Kennzahl berechnet und in der Statistik angezeigt wird.';
-
-  @override
-  String get click_another_player_to_create_a_pair =>
-      'Klicke einen weiteren Spieler an, um ein Paar zu erstellen';
-
-  @override
   String get close => 'Schließen';
 
   @override
@@ -294,9 +283,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get description => 'Beschreibung';
 
   @override
-  String get displayed_entries => 'Angezeigte Einträge';
-
-  @override
   String get do_you_like_the_app => 'Gefällt dir die App?';
 
   @override
@@ -316,9 +302,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get edit_match => 'Spiel bearbeiten';
-
-  @override
-  String get edit_name => 'Name ändern';
 
   @override
   String get edit_player => 'Spieler bearbeiten';
@@ -662,9 +645,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no => 'Nein';
 
   @override
-  String get no_data_available => 'Keine Daten verfügbar';
-
-  @override
   String get no_data_to_export => 'Keine Daten zum exportieren';
 
   @override
@@ -909,10 +889,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scope => 'Bereich';
 
   @override
-  String get scope_description =>
-      'Bestimme, welche Spielvorlagen oder Spieler in die Berechnung einfließen.';
-
-  @override
   String get search_for_games => 'Nach Spielvorlagen suchen';
 
   @override
@@ -931,14 +907,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_types => 'Nach Typen suchen';
 
   @override
-  String get select_a_classifier => 'Klassifikator auswählen';
-
-  @override
   String get select_a_color_description =>
       'Wähle die Anzeigefarbe für deine Statistik aus.';
-
-  @override
-  String get select_a_display_color => 'Wähle eine Anzeigefarbe aus.';
 
   @override
   String get select_a_group_color_description =>
@@ -953,9 +923,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_a_theme_description => 'Wähle die Darstellung der App.';
-
-  @override
-  String get select_a_timeframe => 'Zeitraum auswählen';
 
   @override
   String get select_a_timeframe_description =>
@@ -976,10 +943,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get select_loser => 'Verlierer:in wählen';
-
-  @override
-  String get select_the_filtered_timeframe =>
-      'Wähle einen Zeitraum, nach dem gefiltert werden soll.';
 
   @override
   String get select_winners => 'Gewinner:innen wählen';
@@ -1005,9 +968,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get server_error => 'Interner Server Fehler';
-
-  @override
-  String get set_name => 'Name setzen';
 
   @override
   String get settings => 'Einstellungen';
