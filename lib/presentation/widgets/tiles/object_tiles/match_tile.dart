@@ -313,7 +313,9 @@ class _MatchTileState extends State<MatchTile> {
         spacing: 8,
         children: [
           Icon(
-            Icons.emoji_events,
+            widget.match.game.ruleset == Ruleset.loser
+                ? widget.match.game.ruleset.icon
+                : Icons.emoji_events,
             size: 20,
             color: context.talleeColors.warningColor,
           ),
