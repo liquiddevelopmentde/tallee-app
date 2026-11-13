@@ -205,7 +205,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               final success = await saveResults();
                               widget.onWinnerChanged?.call();
 
-                              if (!success) {
+                              if (success) {
                                 await endMatch();
                                 if (context.mounted) Navigator.pop(context);
                               } else {
