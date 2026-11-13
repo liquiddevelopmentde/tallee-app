@@ -280,7 +280,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     }
 
     context.showSnackBar(message: loc.game_deleted);
-    Navigator.of(context).pop();
     widget.onGameUpdated?.call();
+    Navigator.of(context).pop();
   }
 }
