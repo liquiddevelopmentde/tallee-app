@@ -54,7 +54,56 @@ class MatchProfileBody extends StatelessWidget {
         const Center(
           child: ColoredIconContainer(icon: MATCH_ICON, containerSize: 55),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
+
+        /// Group + Game
+        Expanded(
+          child: Row(
+            spacing: 5,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                spacing: 5,
+                children: [
+                  Icon(
+                    GAME_ICON,
+                    color: match.game.color.colorValue(context),
+                    size: 18,
+                  ),
+                  Text(
+                    match.game.name,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: match.game.color.colorValue(context),
+                    ),
+                  ),
+                ],
+              ),
+              if (match.group != null) ...[
+                const Text('/'),
+                Row(
+                  spacing: 5,
+                  children: [
+                    Icon(
+                      GROUP_ICON,
+                      color: context.talleeColors.hintColor,
+                      size: 20,
+                    ),
+                    Text(
+                      '${match.group!.name}${match.extraPlayerCount}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.talleeColors.hintColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
 
         // Match Name
         Text(
@@ -75,7 +124,7 @@ class MatchProfileBody extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: context.talleeColors.textColor),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 10),
+        /*      const SizedBox(height: 10),
 
         // Game and Group Info
         Column(
@@ -108,7 +157,7 @@ class MatchProfileBody extends StatelessWidget {
               ),
             ],
           ],
-        ),
+        ),*/
 
         const SizedBox(height: 15),
 
