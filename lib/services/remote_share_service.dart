@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -178,10 +179,20 @@ class RemoteShareService {
         match: null,
         filePath: filePath,
       );
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[parseAndValidateMatch] Exception');
       print('[parseAndValidateMatch] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return (
         result: ImportResult.unknownException,
         match: null,
