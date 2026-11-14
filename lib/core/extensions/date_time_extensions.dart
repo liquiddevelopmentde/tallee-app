@@ -16,6 +16,22 @@ extension DateTimeExtension on DateTime {
     return DateFormat(pattern, locale).format(this);
   }
 
+  bool isSameDay(DateTime other) =>
+      year == other.year && month == other.month && day == other.day;
+
+  bool get isToday => isSameDay(DateTime.now());
+
+  bool get isYesterday =>
+      isSameDay(DateTime.now().subtract(const Duration(days: 1)));
+
+  /// Number of calendar days between this date and today
+  int get daysAgo {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final date = DateTime(year, month, day);
+    return today.difference(date).inDays;
+  }
+
   // Returns a [DateTime] String formatted to just the time (14:26)
   String toTime(BuildContext context) => DateFormat('HH:mm').format(this);
 }
