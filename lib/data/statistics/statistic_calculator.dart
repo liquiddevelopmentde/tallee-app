@@ -341,7 +341,7 @@ class StatisticCalculator {
     var total = 0;
     for (final m in matches) {
       final s = m.scores[p.id];
-      if (s != null) total += s.score;
+      if (s != null) total += s.change;
     }
     return total;
   }
@@ -349,7 +349,7 @@ class StatisticCalculator {
   /// Returns a list of all scores the player has achieved in the given list of matches.
   static List<int> _scoresOf(Player p, List<Match> matches) => [
     for (final m in matches)
-      if (m.scores[p.id] != null) m.scores[p.id]!.score,
+      if (m.scores[p.id] != null) m.scores[p.id]!.change,
   ];
 
   /// Returns true if player has at least one score in the given matches.

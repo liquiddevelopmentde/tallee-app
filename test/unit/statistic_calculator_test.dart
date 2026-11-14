@@ -35,7 +35,7 @@ void main() {
     endedAt: endedAt ?? createdAt ?? DateTime(2026),
     scores: {
       for (final entry in scores.entries)
-        entry.key.id: ScoreEntry(score: entry.value),
+        entry.key.id: ScoreEntry(change: entry.value),
     },
   );
 
@@ -256,7 +256,7 @@ void main() {
           game: highestScoreGame,
           players: [testPlayer1, testPlayer2],
           endedAt: DateTime(2026),
-          scores: {testPlayer1.id: ScoreEntry(score: 10), testPlayer2.id: null},
+          scores: {testPlayer1.id: ScoreEntry(change: 10), testPlayer2.id: null},
         ),
       ];
 
@@ -288,7 +288,7 @@ void main() {
         name: 'unfinished',
         game: highestScoreGame,
         players: [testPlayer1],
-        scores: {testPlayer1.id: ScoreEntry(score: 50)},
+        scores: {testPlayer1.id: ScoreEntry(change: 50)},
       );
 
       final statistic = Statistic(

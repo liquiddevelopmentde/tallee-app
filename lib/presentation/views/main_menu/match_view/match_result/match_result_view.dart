@@ -241,7 +241,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
       scores = Map.fromEntries(
         allPlayers.map(
-          (player) => MapEntry(player, widget.match.scores[player.id]?.score),
+          (player) => MapEntry(player, widget.match.scores[player.id]?.change),
         ),
       );
     }

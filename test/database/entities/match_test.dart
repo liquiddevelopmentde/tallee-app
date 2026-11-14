@@ -58,7 +58,7 @@ void main() {
         game: testGame,
         group: testGroup1,
         players: [...testGroup1.members, testPlayer4, testPlayer5],
-        scores: {testPlayer4.id: ScoreEntry(score: 1)},
+        scores: {testPlayer4.id: ScoreEntry(change: 1)},
       );
       testMatch2 = Match(
         name: 'Second Test Match',
@@ -694,8 +694,8 @@ void main() {
             players: [testPlayer1],
             scoresByRound: {
               testPlayer1.id: [
-                ScoreEntry(roundNumber: 1, score: 10, change: 10),
-                ScoreEntry(roundNumber: 2, score: 20, change: 10),
+                ScoreEntry(roundNumber: 1, change: 10),
+                ScoreEntry(roundNumber: 2, change: 10),
               ],
             },
           );

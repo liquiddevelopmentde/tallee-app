@@ -385,7 +385,7 @@ class MatchProfileBody extends StatelessWidget {
       final players = List<Player>.from(match.players)
         ..sortByLowercaseName((p) => p.name);
       for (final player in players) {
-        int score = scores[player.id]?.score ?? 0;
+        int score = scores[player.id]?.change ?? 0;
         namedScores.add((
           buildUnitNameWidget(
             context,

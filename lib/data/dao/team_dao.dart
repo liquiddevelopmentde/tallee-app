@@ -313,7 +313,7 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
       await db.scoreEntryDao.addScore(
         playerId: member.id,
         matchId: matchId,
-        entry: ScoreEntry(score: score),
+        entry: ScoreEntry(change: score),
       );
     }
 

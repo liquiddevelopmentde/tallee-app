@@ -23,7 +23,7 @@ void main() {
       players: [testPlayer1, testPlayer2],
       group: testGroup,
       id: 'm1',
-      scores: {'p1': ScoreEntry(score: 10)},
+      scores: {'p1': ScoreEntry(change: 10)},
       teams: [
         Team(name: 'Team A', members: [testPlayer1], id: 't1'),
       ],

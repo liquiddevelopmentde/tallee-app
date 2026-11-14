@@ -416,13 +416,13 @@ class _MatchTileState extends State<MatchTile> {
     }
 
     if (ruleset.usesPoints) {
-      final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
+      final mvpScore = widget.match.scores[players.first.id]?.change ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
       );
     } else if (ruleset == Ruleset.longestTime ||
         ruleset == Ruleset.shortestTime) {
-      final mvpMs = widget.match.scores[players.first.id]?.score ?? 0;
+      final mvpMs = widget.match.scores[players.first.id]?.change ?? 0;
       children.add(
         TextSpan(text: ' (${formatTimer(mvpMs)})', style: labelStyle),
       );

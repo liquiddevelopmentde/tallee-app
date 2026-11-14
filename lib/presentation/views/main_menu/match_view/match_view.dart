@@ -85,7 +85,7 @@ class _MatchViewState extends State<MatchView> {
         Player(name: 'Player'),
         Player(id: 'mvp_id', name: 'Player'),
       ],
-      scores: {'mvp_id': ScoreEntry(score: 1)},
+      scores: {'mvp_id': ScoreEntry(change: 1)},
       endedAt: DateTime.now(),
     ),
   );

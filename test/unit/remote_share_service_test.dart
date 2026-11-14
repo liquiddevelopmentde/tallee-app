@@ -63,8 +63,8 @@ void main() {
         game: game,
         players: [player1, player2],
         scores: {
-          player1.id: ScoreEntry(score: 42),
-          player2.id: ScoreEntry(score: 24),
+          player1.id: ScoreEntry(change: 42),
+          player2.id: ScoreEntry(change: 24),
         },
       );
     });
@@ -304,8 +304,8 @@ void main() {
         group: group,
         players: [p1, p2],
         scores: {
-          p1.id: ScoreEntry(score: 0, change: 0),
-          p2.id: ScoreEntry(score: 0, change: 0),
+          p1.id: ScoreEntry(change: 0),
+          p2.id: ScoreEntry(change: 0),
         },
       );
 

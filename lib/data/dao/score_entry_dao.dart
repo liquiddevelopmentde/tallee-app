@@ -65,7 +65,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: entry.roundNumber,
-        score: Value(entry.score),
+        score: Value(entry.change),
         change: entry.change,
         timerStartedAt: Value(entry.timerStartedAt),
       ),
@@ -87,7 +87,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             playerId: playerId,
             matchId: matchId,
             roundNumber: score.roundNumber,
-            score: Value(score.score),
+            score: Value(score.change),
             change: score.change,
           ),
         )
@@ -123,7 +123,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
     return ScoreEntry(
       roundNumber: result.roundNumber,
-      score: result.score,
       change: result.change,
       timerStartedAt: result.timerStartedAt,
     );
@@ -141,7 +140,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in result) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
         timerStartedAt: row.timerStartedAt,
       );
@@ -170,7 +168,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in rows) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
         timerStartedAt: row.timerStartedAt,
       );
@@ -198,7 +195,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         .map(
           (row) => ScoreEntry(
             roundNumber: row.roundNumber,
-            score: row.score,
             change: row.change,
             timerStartedAt: row.timerStartedAt,
           ),
@@ -252,7 +248,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             ))
             .write(
               ScoreEntryTableCompanion(
-                score: Value(entry.score),
+                score: Value(entry.change),
                 change: Value(entry.change),
               ),
             );

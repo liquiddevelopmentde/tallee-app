@@ -1,29 +1,31 @@
 class ScoreEntry {
   final int roundNumber;
-  final int score;
   final int change;
   final DateTime? timerStartedAt;
 
+  // Backwards compatibility for UI PR
+  @Deprecated('Use change instead')
+  int get score => change;
+
   ScoreEntry({
-    int? score,
+    // Backwards compatibility for UI PR
+    @Deprecated('Use change instead') int? score,
     this.roundNumber = 0,
     int? change,
     this.timerStartedAt,
-  }) : score = score ?? change ?? 0,
-       change = change ?? score ?? 0;
+  }) : change = change ?? score ?? 0;
 
   @override
   String toString() =>
-      'ScoreEntry{roundNumber: $roundNumber, score: $score, change: $change, timerStartedAt: $timerStartedAt}';
+      'ScoreEntry{roundNumber: $roundNumber, change: $change, score: $score, timerStartedAt: $timerStartedAt}';
 
   ScoreEntry copyWith({
     int? roundNumber,
-    int? score,
     int? change,
+    @Deprecated('Use change instead') int? score,
     DateTime? timerStartedAt,
   }) => ScoreEntry(
     roundNumber: roundNumber ?? this.roundNumber,
-    score: score ?? this.score,
     change: change ?? this.change,
     timerStartedAt: timerStartedAt ?? this.timerStartedAt,
   );
@@ -34,24 +36,22 @@ class ScoreEntry {
       other is ScoreEntry &&
           runtimeType == other.runtimeType &&
           roundNumber == other.roundNumber &&
-          score == other.score &&
           change == other.change &&
           timerStartedAt == other.timerStartedAt;
 
   @override
-  int get hashCode => Object.hash(roundNumber, score, change, timerStartedAt);
+  int get hashCode => Object.hash(roundNumber, change, timerStartedAt);
 
   ScoreEntry.fromJson(Map<String, dynamic> json)
     : roundNumber = json['roundNumber'] ?? 0,
-      score = json['score'] ?? json['change'] ?? 0,
-      change = json['change'] ?? json['score'] ?? 0,
+      // Backwards compatibility for UI PR: fall back to score if change is missing
+      change = json['change'] != 0 ? json['change'] : json['score'] ?? 0,
       timerStartedAt = json['timerStartedAt'] != null
           ? DateTime.parse(json['timerStartedAt'] as String)
           : null;
 
   Map<String, dynamic> toJson() => {
     'roundNumber': roundNumber,
-    'score': score,
     'change': change,
     'timerStartedAt': timerStartedAt?.toIso8601String(),
   };

@@ -194,7 +194,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                 ScoreEntryTableCompanion.insert(
                   matchId: match.id,
                   playerId: entry.key,
-                  score: Value(scoreEntry.score),
+                  score: Value(scoreEntry.change),
                   roundNumber: scoreEntry.roundNumber,
                   change: scoreEntry.change,
                   timerStartedAt: Value(scoreEntry.timerStartedAt),
