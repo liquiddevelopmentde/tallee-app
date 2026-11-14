@@ -20,7 +20,8 @@ class EnterTokenComponent extends StatefulWidget {
   State<EnterTokenComponent> createState() => _EnterTokenComponentState();
 }
 
-class _EnterTokenComponentState extends State<EnterTokenComponent> {
+class _EnterTokenComponentState extends State<EnterTokenComponent>
+    with AutomaticKeepAliveClientMixin {
   TextEditingController tokenInputFieldController = TextEditingController();
 
   late Match match;
@@ -52,6 +53,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final loc = AppLocalizations.of(context);
     final defaultPinTheme = PinTheme(
       height: 60,
@@ -133,9 +135,10 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
             animationCurve: Curves.easeInOutCubic,
             animationDuration: const Duration(milliseconds: 100),
             onClipboardFound: (value) {
-              if (tokenInputFieldController.text != value) {
+              final normalizedValue = value.toUpperCase();
+              if (tokenInputFieldController.text != normalizedValue) {
                 Haptics.lightImpact();
-                tokenInputFieldController.text = value;
+                tokenInputFieldController.text = normalizedValue;
                 context.showSnackBar(message: loc.code_pasted_from_clipboard);
               }
             },
@@ -192,6 +195,9 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   String getErrorText(AppLocalizations loc) {
     if (isTokenValid == false) return loc.invalid_token;
