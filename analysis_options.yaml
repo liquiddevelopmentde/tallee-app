@@ -3,7 +3,6 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - lib/presentation/views/main_menu/settings_view/licenses/oss_licenses.dart
-    - lib/l10n/generated/*.dart
     - build/**
     - android/**
     - ios/**

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -85,6 +87,16 @@ class LocalShareService {
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ExportResult.unknownException;
     }
   }
@@ -184,10 +196,20 @@ class LocalShareService {
       print('[validateJson] $e');
       print(stack);
       return (ImportResult.formatException, null);
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[validateJson] Exception');
       print('[validateJson] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return (ImportResult.unknownException, null);
     }
   }
@@ -205,10 +227,20 @@ class LocalShareService {
     try {
       await importDataToDatabase(db, decoded);
       return ImportResult.success;
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[commitImport] Failed to write data');
       print('[commitImport] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ImportResult.unknownException;
     }
   }
@@ -448,6 +480,11 @@ class LocalShareService {
           .cast<Group>()
           .toList();
 
+      final type = StatisticType.values.firstWhere(
+        (e) => e.name == map['type'],
+        orElse: () => StatisticType.totalWins,
+      );
+
       return Statistic(
         id: map['id'] as String,
         createdAt: DateTime.parse(map['createdAt'] as String),
@@ -457,24 +494,21 @@ class LocalShareService {
         endDate: map['endDate'] != null
             ? DateTime.parse(map['endDate'] as String)
             : null,
-        type: StatisticType.values.firstWhere(
-          (e) => e.name == map['type'] || e.toString() == map['type'],
-          orElse: () => StatisticType.totalWins,
-        ),
+        type: type,
         scopes: (map['scopes'] as List<dynamic>? ?? [])
             .map(
               (scope) => StatisticScope.values.firstWhere(
-                (e) => e.name == scope || e.toString() == scope,
+                (e) => e.name == scope,
                 orElse: () => StatisticScope.allPlayers,
               ),
             )
             .toList(),
         timeframe: Timeframe.values.firstWhere(
-          (e) => e.name == map['timeframe'] || e.toString() == map['timeframe'],
+          (e) => e.name == map['timeframe'],
           orElse: () => Timeframe.allTime,
         ),
         color: AppColor.values.firstWhere(
-          (e) => e.name == map['color'] || e.toString() == map['color'],
+          (e) => e.name == map['color'],
           orElse: () => AppColor.orange,
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
@@ -482,6 +516,10 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
+        sortDirection: SortDirection.values.firstWhere(
+          (e) => e.name == map['sortDirection'],
+          orElse: () => type.defaultSortDirection,
+        ),
       );
     }).toList();
   }

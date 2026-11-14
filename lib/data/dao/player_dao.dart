@@ -257,19 +257,24 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// not exist.
   Future<bool> deletePlayer({required Player player}) async {
     if (!await canTrueDelete(playerId: player.id)) {
-      final rowsAffected =
-          await (update(playerTable)..where((tbl) => tbl.id.equals(player.id)))
-              .write(const PlayerTableCompanion(deleted: Value(true)));
-      await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
-      return rowsAffected > 0;
+      return await transaction(() async {
+        final rowsAffected =
+            await (update(playerTable)
+                  ..where((tbl) => tbl.id.equals(player.id)))
+                .write(const PlayerTableCompanion(deleted: Value(true)));
+        await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
+        return rowsAffected > 0;
+      });
     } else {
-      final rowsAffected = await (delete(
-        playerTable,
-      )..where((tbl) => tbl.id.equals(player.id))).go();
+      return await transaction(() async {
+        final rowsAffected = await (delete(
+          playerTable,
+        )..where((tbl) => tbl.id.equals(player.id))).go();
 
-      await cleanUpNameCount(deletedPlayer: player);
+        await cleanUpNameCount(deletedPlayer: player);
 
-      return rowsAffected > 0;
+        return rowsAffected > 0;
+      });
     }
   }
 
