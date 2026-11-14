@@ -2,7 +2,6 @@ import 'dart:core' hide Match;
 
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
@@ -39,11 +38,22 @@ class MatchTile extends StatefulWidget {
 }
 
 class _MatchTileState extends State<MatchTile> {
+  Match get match => widget.match;
+
+  Group? get group => match.group;
+
+  List<Player> get players =>
+      [...match.players]..sortByLowercaseName((p) => p.name);
+
+  bool get showGameName =>
+      match.game.name.compareIgnoringCaseTo(match.name) != 0;
+
+  bool get showBoth => showGameName && match.group != null;
+
+  bool get topRowShown => showGameName || match.group != null;
+
   @override
   Widget build(BuildContext context) {
-    final match = widget.match;
-    final group = match.group;
-    final players = [...match.players]..sortByLowercaseName((p) => p.name);
     final loc = AppLocalizations.of(context);
 
     return GestureDetector(
@@ -59,6 +69,56 @@ class _MatchTileState extends State<MatchTile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Game & group + date
+            if (topRowShown)
+              Row(
+                spacing: 5,
+                children: [
+                  Expanded(
+                    child: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        children: [
+                          if (showGameName)
+                            TextSpan(
+                              text: match.game.name,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: match.game.color.colorValue(context),
+                              ),
+                            ),
+                          if (group != null && showGameName)
+                            const TextSpan(text: ' / '),
+                          if (group != null)
+                            TextSpan(
+                              text:
+                                  '${match.group!.name}${match.extraPlayerCount}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: context.talleeColors.hintColor,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  if (topRowShown)
+                    // Date
+                    Text(
+                      getFormattedDate(),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: context.talleeColors.hintColor,
+                      ),
+                    ),
+                ],
+              ),
+
+            // Match name + date
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 8,
@@ -73,48 +133,19 @@ class _MatchTileState extends State<MatchTile> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
-                  formatDate(match.createdAt, context),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-
-            // Game Info
-            Row(
-              spacing: 20,
-              children: [
-                Row(
-                  spacing: 4,
-                  children: [
-                    const Icon(GAME_ICON, size: 16, color: Colors.grey),
-                    Text(
-                      match.game.name,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      overflow: TextOverflow.ellipsis,
+                if (!topRowShown)
+                  // Date
+                  Text(
+                    getFormattedDate(),
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.talleeColors.hintColor,
                     ),
-                  ],
-                ),
-
-                // Group Info
-                if (group != null) ...[
-                  Row(
-                    spacing: 6,
-                    children: [
-                      const Icon(GROUP_ICON, size: 18, color: Colors.grey),
-                      Text(
-                        '${match.group!.name}${match.extraPlayerCount}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
                   ),
-                ],
               ],
             ),
+
             const SizedBox(height: 8),
 
             buildMatchResultBanner(loc),
@@ -214,21 +245,22 @@ class _MatchTileState extends State<MatchTile> {
     );
   }
 
-  /// Formats the given [dateTime] into a human-readable string based on its
+  /// Formats the matches createdAt into a human-readable string based on its
   /// difference from the current date.
-  String formatDate(DateTime dateTime, BuildContext context) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
+  String getFormattedDate() {
     final loc = AppLocalizations.of(context);
+    final date = match.createdAt;
 
-    if (difference.inDays == 0) {
-      return '${loc.today_at} ${dateTime.toTime(context)}';
-    } else if (difference.inDays == 1) {
-      return '${loc.yesterday_at} ${dateTime.toTime(context)}';
-    } else if (difference.inDays < 7) {
-      return loc.days_ago(difference.inDays);
+    final daysAgo = date.daysAgo;
+
+    if (date.isToday) {
+      return '${loc.today_at} ${date.toTime(context)}';
+    } else if (date.isYesterday) {
+      return '${loc.yesterday_at} ${date.toTime(context)}';
+    } else if (daysAgo < 7) {
+      return loc.days_ago(daysAgo);
     } else {
-      return '${loc.created_on} ${dateTime.toMediumDate(context)}';
+      return date.toShortDate(context);
     }
   }
 
