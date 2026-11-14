@@ -20,11 +20,6 @@ import 'package:url_launcher/url_launcher.dart';
 class QrScanComponent extends StatefulWidget {
   const QrScanComponent({super.key, this.tabController});
 
-  /// The controller of the [TabBarView] that displays this widget.
-  ///
-  /// It is used to stop the camera while another tab is visible. The widget is
-  /// kept alive across tab switches so that the camera and the fade between
-  /// the scan frame and the error view are not replayed on every return.
   final TabController? tabController;
 
   @override
@@ -35,35 +30,31 @@ class _QrScanComponentState extends State<QrScanComponent>
     with AutomaticKeepAliveClientMixin {
   static const _fadeDuration = Duration(milliseconds: 300);
 
-  late final MobileScannerController controller;
-  late final AppLifecycleListener lifecycleListener;
+  late final MobileScannerController _controller;
+  late final AppLifecycleListener _lifecycleListener;
 
-  bool isProcessing = false;
-  String? errorMessage;
-  bool isStarting = false;
-  bool retryAfterSettings = false;
+  bool _isProcessing = false;
+  String? _errorMessage;
+  bool _isStarting = false;
+  bool _retryAfterSettings = false;
 
   @override
   bool get wantKeepAlive => true;
 
-  /// Whether this widget's tab is currently the visible one.
-  bool get _isVisible {
-    final tabController = widget.tabController;
-
-    return tabController == null || tabController.index == 0;
-  }
+  bool get _isVisible =>
+      widget.tabController == null || widget.tabController!.index == 0;
 
   @override
   void initState() {
     super.initState();
-    controller = MobileScannerController(
+    _controller = MobileScannerController(
       formats: [BarcodeFormat.qrCode],
       autoStart: false,
     );
 
-    lifecycleListener = AppLifecycleListener(
+    _lifecycleListener = AppLifecycleListener(
       onResume: handleAppResume,
-      onPause: controller.stop,
+      onPause: _controller.stop,
     );
 
     if (_isVisible) {
@@ -73,8 +64,8 @@ class _QrScanComponentState extends State<QrScanComponent>
 
   @override
   void dispose() {
-    lifecycleListener.dispose();
-    controller.dispose();
+    _lifecycleListener.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -117,7 +108,7 @@ class _QrScanComponentState extends State<QrScanComponent>
                       final scanAreaSize = constraints.maxWidth * 0.65;
 
                       return ValueListenableBuilder<MobileScannerState>(
-                        valueListenable: controller,
+                        valueListenable: _controller,
                         builder: (context, state, scanner) {
                           final errorCode = state.error?.errorCode;
                           final showError = errorCode != null;
@@ -163,22 +154,23 @@ class _QrScanComponentState extends State<QrScanComponent>
                                     ? _ScannerErrorView(
                                         key: const ValueKey('scannerError'),
                                         errorCode: errorCode,
-                                        onOpenSettings: openSettings,
+                                        onOpenSettingsPressed:
+                                            handleSettingsButtonPress,
                                       )
                                     : const SizedBox.expand(
                                         key: ValueKey('scannerRunning'),
                                       ),
                               ),
-                              StatusErrorOverlay(
-                                isProcessing: isProcessing,
-                                errorMessage: errorMessage,
+                              _StatusErrorOverlay(
+                                isProcessing: _isProcessing,
+                                errorMessage: _errorMessage,
                               ),
                             ],
                           );
                         },
                         child: MobileScanner(
                           tapToFocus: true,
-                          controller: controller,
+                          controller: _controller,
                           onDetect: handleQrCodeDetection,
                           errorBuilder: (context, error) =>
                               const SizedBox.shrink(),
@@ -218,30 +210,30 @@ class _QrScanComponentState extends State<QrScanComponent>
   }
 
   Future<void> startScanner() async {
-    if (isStarting || controller.value.isRunning) return;
-    isStarting = true;
+    if (_isStarting || _controller.value.isRunning) return;
+    _isStarting = true;
     try {
-      if (!controller.value.isRunning) {
-        await controller.start();
+      if (!_controller.value.isRunning) {
+        await _controller.start();
       }
     } on MobileScannerException {
       // The scanner widget renders the error through its errorBuilder.
     } finally {
-      isStarting = false;
+      _isStarting = false;
     }
   }
 
   /// Restarts the scanner when the app returns to the foreground.
   Future<void> handleAppResume() async {
     if (!_isVisible) return;
-    if (controller.value.error != null && !retryAfterSettings) return;
+    if (_controller.value.error != null && !_retryAfterSettings) return;
 
-    retryAfterSettings = false;
+    _retryAfterSettings = false;
     await startScanner();
   }
 
-  Future<void> openSettings() async {
-    retryAfterSettings = true;
+  Future<void> handleSettingsButtonPress() async {
+    _retryAfterSettings = true;
 
     try {
       if (Platform.isIOS) {
@@ -255,17 +247,17 @@ class _QrScanComponentState extends State<QrScanComponent>
 
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
     final barcodes = result.barcodes;
-    if (barcodes.isEmpty || isProcessing || !mounted) return;
+    if (barcodes.isEmpty || _isProcessing || !mounted) return;
 
     final token = barcodes.first.rawValue;
     if (token == null) return;
 
     setState(() {
-      isProcessing = true;
-      errorMessage = null;
+      _isProcessing = true;
+      _errorMessage = null;
     });
 
-    await controller.stop();
+    await _controller.stop();
 
     await Future.delayed(MINIMUM_SKELETON_DURATION);
 
@@ -292,7 +284,7 @@ class _QrScanComponentState extends State<QrScanComponent>
       if (mounted) {
         await startScanner();
         setState(() {
-          isProcessing = false;
+          _isProcessing = false;
         });
       }
     } catch (error) {
@@ -319,7 +311,7 @@ class _QrScanComponentState extends State<QrScanComponent>
 
   /// Displays the [message] for 4 seconds and then resets the state.
   Future<void> displayErrorMessage(String message) async {
-    setState(() => errorMessage = message);
+    setState(() => _errorMessage = message);
 
     await Future.delayed(const Duration(seconds: 4));
 
@@ -327,8 +319,8 @@ class _QrScanComponentState extends State<QrScanComponent>
       await startScanner();
 
       setState(() {
-        isProcessing = false;
-        errorMessage = null;
+        _isProcessing = false;
+        _errorMessage = null;
       });
     }
   }
@@ -336,12 +328,12 @@ class _QrScanComponentState extends State<QrScanComponent>
 
 class _ScannerErrorView extends StatelessWidget {
   final MobileScannerErrorCode errorCode;
-  final VoidCallback onOpenSettings;
+  final VoidCallback onOpenSettingsPressed;
 
   const _ScannerErrorView({
     super.key,
     required this.errorCode,
-    required this.onOpenSettings,
+    required this.onOpenSettingsPressed,
   });
 
   @override
@@ -384,7 +376,7 @@ class _ScannerErrorView extends StatelessWidget {
                   text: loc.open_settings,
                   icon: Icons.settings,
                   compact: true,
-                  onPressed: onOpenSettings,
+                  onPressed: onOpenSettingsPressed,
                 ),
               ],
             ],
@@ -395,15 +387,11 @@ class _ScannerErrorView extends StatelessWidget {
   }
 }
 
-class StatusErrorOverlay extends StatelessWidget {
+class _StatusErrorOverlay extends StatelessWidget {
   final bool isProcessing;
   final String? errorMessage;
 
-  const StatusErrorOverlay({
-    super.key,
-    required this.isProcessing,
-    this.errorMessage,
-  });
+  const _StatusErrorOverlay({required this.isProcessing, this.errorMessage});
 
   @override
   Widget build(BuildContext context) {
