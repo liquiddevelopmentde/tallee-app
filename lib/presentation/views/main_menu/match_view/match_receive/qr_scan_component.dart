@@ -1,5 +1,7 @@
 import 'dart:core' hide Match;
+import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:tallee/core/constants/constants.dart';
@@ -10,23 +12,46 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class QrScanComponent extends StatefulWidget {
-  const QrScanComponent({super.key});
+  const QrScanComponent({super.key, this.tabController});
+
+  /// The controller of the [TabBarView] that displays this widget.
+  ///
+  /// It is used to stop the camera while another tab is visible. The widget is
+  /// kept alive across tab switches so that the camera and the fade between
+  /// the scan frame and the error view are not replayed on every return.
+  final TabController? tabController;
 
   @override
   State<QrScanComponent> createState() => _QrScanComponentState();
 }
 
-class _QrScanComponentState extends State<QrScanComponent> {
+class _QrScanComponentState extends State<QrScanComponent>
+    with AutomaticKeepAliveClientMixin {
+  static const _fadeDuration = Duration(milliseconds: 300);
+
   late final MobileScannerController controller;
   late final AppLifecycleListener lifecycleListener;
 
   bool isProcessing = false;
   String? errorMessage;
   bool isStarting = false;
+  bool retryAfterSettings = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  /// Whether this widget's tab is currently the visible one.
+  bool get _isVisible {
+    final tabController = widget.tabController;
+
+    return tabController == null || tabController.index == 0;
+  }
 
   @override
   void initState() {
@@ -37,11 +62,13 @@ class _QrScanComponentState extends State<QrScanComponent> {
     );
 
     lifecycleListener = AppLifecycleListener(
-      onResume: startScanner,
+      onResume: handleAppResume,
       onPause: controller.stop,
     );
 
-    startScanner();
+    if (_isVisible) {
+      startScanner();
+    }
   }
 
   @override
@@ -53,6 +80,7 @@ class _QrScanComponentState extends State<QrScanComponent> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final loc = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -61,10 +89,6 @@ class _QrScanComponentState extends State<QrScanComponent> {
           DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: AppColors.standardBorderRadiusAll,
-              border: Border.all(
-                color: context.talleeColors.boxBorderColor,
-                width: 3,
-              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -73,43 +97,95 @@ class _QrScanComponentState extends State<QrScanComponent> {
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                AppColors.standardBorderRadius - 3,
+            child: DecoratedBox(
+              position: DecorationPosition.foreground,
+              decoration: BoxDecoration(
+                borderRadius: AppColors.standardBorderRadiusAll,
+                border: Border.all(
+                  color: context.talleeColors.boxBorderColor,
+                  width: 3,
+                ),
               ),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final scanAreaSize = constraints.maxWidth * 0.65;
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  AppColors.standardBorderRadius - 3,
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final scanAreaSize = constraints.maxWidth * 0.65;
 
-                    return Stack(
-                      children: [
-                        MobileScanner(
+                      return ValueListenableBuilder<MobileScannerState>(
+                        valueListenable: controller,
+                        builder: (context, state, scanner) {
+                          final errorCode = state.error?.errorCode;
+                          final showError = errorCode != null;
+
+                          return Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              const ColoredBox(color: Colors.black),
+                              AnimatedOpacity(
+                                opacity:
+                                    errorCode == null && state.isInitialized
+                                    ? 1.0
+                                    : 0.0,
+                                duration: _fadeDuration,
+                                curve: Curves.easeInOut,
+                                child: scanner,
+                              ),
+                              AnimatedOpacity(
+                                opacity: showError ? 0.0 : 1.0,
+                                duration: _fadeDuration,
+                                curve: Curves.easeInOut,
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: QrScannerOverlayShape(
+                                      borderColor: AppColors.primaryColor,
+                                      borderRadius: 20,
+                                      borderWidth: 6,
+                                      cutOutSize: scanAreaSize,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              AnimatedSwitcher(
+                                duration: _fadeDuration,
+                                switchInCurve: Curves.easeInOut,
+                                switchOutCurve: Curves.easeInOut,
+                                layoutBuilder: (child, previousChildren) =>
+                                    Stack(
+                                      fit: StackFit.expand,
+                                      children: [...previousChildren, ?child],
+                                    ),
+                                child: showError
+                                    ? _ScannerErrorView(
+                                        key: const ValueKey('scannerError'),
+                                        errorCode: errorCode,
+                                        onOpenSettings: openSettings,
+                                      )
+                                    : const SizedBox.expand(
+                                        key: ValueKey('scannerRunning'),
+                                      ),
+                              ),
+                              StatusErrorOverlay(
+                                isProcessing: isProcessing,
+                                errorMessage: errorMessage,
+                              ),
+                            ],
+                          );
+                        },
+                        child: MobileScanner(
                           tapToFocus: true,
                           controller: controller,
                           onDetect: handleQrCodeDetection,
+                          errorBuilder: (context, error) =>
+                              const SizedBox.shrink(),
                         ),
-                        // Scanner Overlay
-                        Positioned.fill(
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              shape: QrScannerOverlayShape(
-                                borderColor: AppColors.primaryColor,
-                                borderRadius: 20,
-                                borderWidth: 6,
-                                cutOutSize: scanAreaSize,
-                              ),
-                            ),
-                          ),
-                        ),
-                        StatusErrorOverlay(
-                          isProcessing: isProcessing,
-                          errorMessage: errorMessage,
-                        ),
-                      ],
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -148,13 +224,33 @@ class _QrScanComponentState extends State<QrScanComponent> {
       if (!controller.value.isRunning) {
         await controller.start();
       }
-    } on MobileScannerException catch (e) {
-      if (e.errorCode != MobileScannerErrorCode.controllerInitializing) {
-        rethrow;
-      }
+    } on MobileScannerException {
+      // The scanner widget renders the error through its errorBuilder.
     } finally {
       isStarting = false;
     }
+  }
+
+  /// Restarts the scanner when the app returns to the foreground.
+  Future<void> handleAppResume() async {
+    if (!_isVisible) return;
+    if (controller.value.error != null && !retryAfterSettings) return;
+
+    retryAfterSettings = false;
+    await startScanner();
+  }
+
+  Future<void> openSettings() async {
+    retryAfterSettings = true;
+
+    try {
+      if (Platform.isIOS) {
+        await launchUrl(Uri.parse('app-settings:'));
+      } else if (Platform.isAndroid) {
+        const channel = MethodChannel('de.liquiddev.tallee/settings');
+        await channel.invokeMethod<void>('openAppSettings');
+      }
+    } catch (_) {}
   }
 
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
@@ -235,6 +331,67 @@ class _QrScanComponentState extends State<QrScanComponent> {
         errorMessage = null;
       });
     }
+  }
+}
+
+class _ScannerErrorView extends StatelessWidget {
+  final MobileScannerErrorCode errorCode;
+  final VoidCallback onOpenSettings;
+
+  const _ScannerErrorView({
+    super.key,
+    required this.errorCode,
+    required this.onOpenSettings,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final message = switch (errorCode) {
+      MobileScannerErrorCode.permissionDenied => loc.camera_permission_denied,
+      MobileScannerErrorCode.unsupported => loc.camera_unsupported,
+      _ => loc.camera_error,
+    };
+
+    return ColoredBox(
+      color: Colors.black,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: context.talleeColors.errorColor,
+                size: 40,
+              ),
+              const SizedBox(height: 15),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  overflow: TextOverflow.visible,
+                ),
+                softWrap: true,
+              ),
+              if (errorCode == MobileScannerErrorCode.permissionDenied) ...[
+                const SizedBox(height: 20),
+                FloatingAnimatedButton(
+                  text: loc.open_settings,
+                  icon: Icons.settings,
+                  compact: true,
+                  onPressed: onOpenSettings,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
