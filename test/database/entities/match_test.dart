@@ -211,7 +211,7 @@ void main() {
         await database.matchDao.addMatch(match: testMatch1);
 
         // Delete one player from the match (soft delete)
-        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        await database.playerDao.deletePlayer(player: testPlayer4);
         var match = await database.matchDao.getMatchById(
           matchId: testMatch1.id,
         );
@@ -231,7 +231,7 @@ void main() {
         await database.matchDao.addMatch(match: testMatch1);
 
         // Delete one player from the match (soft delete)
-        await database.playerDao.deletePlayer(playerId: testPlayer4.id);
+        await database.playerDao.deletePlayer(player: testPlayer4);
         var allMatches = await database.matchDao.getAllMatches();
         expect(allMatches.length, 1);
         var match = allMatches.first;
@@ -602,7 +602,7 @@ void main() {
         );
 
         final softDeleted = await database.playerDao.deletePlayer(
-          playerId: testPlayer1.id,
+          player: testPlayer1,
         );
         expect(softDeleted, isTrue);
 
