@@ -187,6 +187,24 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         .toList();
   }
 
+  /// Retrieves all [Player]s with the given [name], including deleted ones.
+  Future<List<Player>> getPlayersByName({required String name}) async {
+    final query = select(playerTable)..where((p) => p.name.equals(name));
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Player(
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            createdAt: row.createdAt,
+            nameCount: row.nameCount,
+            deleted: row.deleted,
+          ),
+        )
+        .toList();
+  }
+
   /// Checks, if a player can be safely deleted.
   /// Returns `false`, if a player is in at least one match, else `true`.
   Future<bool> canTrueDelete({required String playerId}) async {
@@ -272,26 +290,51 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Checks the count of players with the [deletedPlayer]s name and
+  /// if there is only one player left with name it resets it to 0
+  /// Returns `true` if the count has been resetted, otherwise `false`.
+  Future<bool> cleanUpNameCount({required Player deletedPlayer}) async {
+    final query = (select(playerTable)
+      ..where((tbl) => tbl.name.equals(deletedPlayer.name)));
+    final result = await query.get();
+    final playerAmount = result.length;
+
+    if (playerAmount == 1) {
+      final id = result.first.id;
+      await updateNameCount(playerId: id, nameCount: 0);
+      return true;
+    }
+    return false;
+  }
+
   /* Delete */
 
-  /// Deletes the player with the given [playerId] from the database.
+  /// Deletes the [player] from the database.
   /// - [canTrueDelete] == `false`: Set deleted flag
   /// - [canTrueDelete] == `true`: Delete from database
   ///
   /// Returns `true` if the player was deleted/marked, `false` if the player did
   /// not exist.
-  Future<bool> deletePlayer({required String playerId}) async {
-    if (!await canTrueDelete(playerId: playerId)) {
-      final rowsAffected =
-          await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
-              .write(const PlayerTableCompanion(deleted: Value(true)));
-      await db.playerGroupDao.removePlayerFromAllGroups(playerId: playerId);
-      return rowsAffected > 0;
+  Future<bool> deletePlayer({required Player player}) async {
+    if (!await canTrueDelete(playerId: player.id)) {
+      return await transaction(() async {
+        final rowsAffected =
+            await (update(playerTable)
+                  ..where((tbl) => tbl.id.equals(player.id)))
+                .write(const PlayerTableCompanion(deleted: Value(true)));
+        await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
+        return rowsAffected > 0;
+      });
     } else {
-      final rowsAffected = await (delete(
-        playerTable,
-      )..where((tbl) => tbl.id.equals(playerId))).go();
-      return rowsAffected > 0;
+      return await transaction(() async {
+        final rowsAffected = await (delete(
+          playerTable,
+        )..where((tbl) => tbl.id.equals(player.id))).go();
+
+        await cleanUpNameCount(deletedPlayer: player);
+
+        return rowsAffected > 0;
+      });
     }
   }
 
@@ -306,25 +349,39 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Deletes all players marked as deleted from the database, if they are not associated with any match.
   /// Returns the number of players that were deleted.
   Future<int> purgeSoftDeletedPlayer() async {
-    final deletedPlayers = await (select(
-      playerTable,
-    )..where((tbl) => tbl.deleted.equals(true))).get();
+    final query = (select(playerTable)
+      ..where((tbl) => tbl.deleted.equals(true)));
+    final result = await query.get();
 
-    if (deletedPlayers.isEmpty) return 0;
+    if (result.isEmpty) return 0;
 
-    var removedPlayer = 0;
+    final deletedPlayers = result
+        .map(
+          (p) => Player(
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            createdAt: p.createdAt,
+            nameCount: p.nameCount,
+            deleted: p.deleted,
+          ),
+        )
+        .toList();
+
+    var removedAmount = 0;
     await transaction(() async {
       for (final player in deletedPlayers) {
         if (await canTrueDelete(playerId: player.id)) {
           final rowsAffected = await (delete(
             playerTable,
           )..where((tbl) => tbl.id.equals(player.id))).go();
-          removedPlayer += rowsAffected;
+          removedAmount += rowsAffected;
+          await cleanUpNameCount(deletedPlayer: player);
         }
       }
     });
 
-    return removedPlayer;
+    return removedAmount;
   }
 
   /* Name count management */
