@@ -81,7 +81,13 @@ class MatchProfileBody extends StatelessWidget {
                 ],
               ),
               if (match.group != null) ...[
-                const Text('/'),
+                Text(
+                  '/',
+                  style: TextStyle(
+                    color: context.talleeColors.hintColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 Row(
                   spacing: 5,
                   children: [

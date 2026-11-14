@@ -89,7 +89,13 @@ class _MatchTileState extends State<MatchTile> {
                               ),
                             ),
                           if (group != null && showGameName)
-                            const TextSpan(text: ' / '),
+                            TextSpan(
+                              text: ' / ',
+                              style: TextStyle(
+                                color: context.talleeColors.hintColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           if (group != null)
                             TextSpan(
                               text:
