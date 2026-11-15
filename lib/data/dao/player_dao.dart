@@ -401,7 +401,6 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
       // If more than one player exists with the same name, just increment
       // the nameCount for the new player
       final players = await getPlayersByName(name: name);
-      players.sort((a, b) => a.nameCount.compareTo(b.nameCount));
 
       // Generate a List<int> from 1 to [count]
       nameCount = List.generate(count, (i) => i + 1).firstWhere(
