@@ -753,11 +753,6 @@ void main() {
         await database.playerDao.addPlayer(player: testPlayer1);
         await database.playerDao.addPlayer(player: player2);
         await database.playerDao.addPlayer(player: player3);
-        print(
-          (await database.playerDao.getAllPlayers())
-              .map((p) => '${p.name}: ${p.nameCount}')
-              .toList(),
-        );
 
         // Deleting #2 leaves a gap: #1 and #3
         await database.playerDao.deletePlayer(player: player2);
