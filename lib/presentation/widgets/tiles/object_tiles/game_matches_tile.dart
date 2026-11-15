@@ -60,7 +60,8 @@ class _GameMatchesTileState extends State<GameMatchesTile>
     );
     _expandAnimation = CurvedAnimation(
       parent: _expandController,
-      curve: Curves.easeInOutCubicEmphasized,
+      curve: Curves.easeInOut.flipped,
+      reverseCurve: Curves.easeInOut,
     );
   }
 
