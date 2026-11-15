@@ -1,7 +1,7 @@
 part of 'game_matches_tile.dart';
 
-/// The button that expands or collapses the hidden match chips.
 class _ExpandToggle extends StatelessWidget {
+  /// The button that expands or collapses the hidden match chips.
   const _ExpandToggle({required this.isExpanded, required this.onToggle});
 
   final bool isExpanded;

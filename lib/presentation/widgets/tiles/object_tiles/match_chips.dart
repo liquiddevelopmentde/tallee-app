@@ -1,7 +1,7 @@
 part of 'game_matches_tile.dart';
 
-/// The match chips, split into the visible and the expandable part.
 class _MatchChips extends StatelessWidget {
+  /// The match chips, split into the visible and the expandable part.
   const _MatchChips({
     required this.matches,
     required this.collapsedCount,

@@ -1,7 +1,7 @@
 part of 'game_matches_tile.dart';
 
-/// A wrap of tappable [PlayerProfileListTile] chips for the given [matches].
 class _ChipWrap extends StatelessWidget {
+  /// A wrap of tappable [PlayerProfileListTile] chips for the given [matches].
   const _ChipWrap({required this.matches, required this.onMatchTap});
 
   final List<Match> matches;
