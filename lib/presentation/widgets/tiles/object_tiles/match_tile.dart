@@ -45,12 +45,7 @@ class _MatchTileState extends State<MatchTile> {
   List<Player> get players =>
       [...match.players]..sortByLowercaseName((p) => p.name);
 
-  bool get showGameName =>
-      match.game.name.compareIgnoringCaseTo(match.name) != 0;
-
-  bool get showBoth => showGameName && match.group != null;
-
-  bool get topRowShown => showGameName || match.group != null;
+  bool get showGroup => match.group != null;
 
   @override
   Widget build(BuildContext context) {
@@ -70,86 +65,64 @@ class _MatchTileState extends State<MatchTile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Game & group + date
-            if (topRowShown)
-              Row(
-                spacing: 5,
-                children: [
-                  Expanded(
-                    child: RichText(
-                      overflow: TextOverflow.ellipsis,
-                      text: TextSpan(
-                        children: [
-                          if (showGameName)
-                            TextSpan(
-                              text: match.game.name,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: match.game.color.colorValue(context),
-                              ),
-                            ),
-                          if (group != null && showGameName)
-                            TextSpan(
-                              text: ' / ',
-                              style: TextStyle(
-                                color: context.talleeColors.hintColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          if (group != null)
-                            TextSpan(
-                              text:
-                                  '${match.group!.name}${match.extraPlayerCount}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: context.talleeColors.hintColor,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  if (topRowShown)
-                    // Date
-                    Text(
-                      getFormattedDate(),
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: context.talleeColors.hintColor,
-                      ),
-                    ),
-                ],
-              ),
-
-            // Match name + date
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 8,
+              spacing: 5,
               children: [
                 Expanded(
-                  child: Text(
-                    match.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: RichText(
                     overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: match.game.name,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: match.game.color.colorValue(context),
+                          ),
+                        ),
+                        if (showGroup) ...[
+                          TextSpan(
+                            text: ' / ',
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor.withAlpha(
+                                150,
+                              ),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          TextSpan(
+                            text:
+                                '${match.group!.name}${match.extraPlayerCount}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: context.talleeColors.hintColor,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
-                if (!topRowShown)
-                  // Date
-                  Text(
-                    getFormattedDate(),
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.talleeColors.hintColor,
-                    ),
+
+                // Date
+                Text(
+                  getFormattedDate(),
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.talleeColors.hintColor,
                   ),
+                ),
               ],
+            ),
+
+            Text(
+              match.name,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
             ),
 
             const SizedBox(height: 8),
