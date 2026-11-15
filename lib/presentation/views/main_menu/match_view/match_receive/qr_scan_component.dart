@@ -1,9 +1,8 @@
 import 'dart:core' hide Match;
-import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
@@ -15,7 +14,6 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_receive/dat
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class QrScanComponent extends StatefulWidget {
   const QrScanComponent({super.key, this.tabController});
@@ -37,6 +35,7 @@ class _QrScanComponentState extends State<QrScanComponent>
   String? _errorMessage;
   bool _isStarting = false;
   bool _retryAfterSettings = false;
+  bool _cameraPermissionDenied = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -110,7 +109,9 @@ class _QrScanComponentState extends State<QrScanComponent>
                       return ValueListenableBuilder<MobileScannerState>(
                         valueListenable: _controller,
                         builder: (context, state, scanner) {
-                          final errorCode = state.error?.errorCode;
+                          final errorCode = _cameraPermissionDenied
+                              ? MobileScannerErrorCode.permissionDenied
+                              : state.error?.errorCode;
                           final showError = errorCode != null;
 
                           return Stack(
@@ -213,6 +214,25 @@ class _QrScanComponentState extends State<QrScanComponent>
     if (_isStarting || _controller.value.isRunning) return;
     _isStarting = true;
     try {
+      var permissionStatus = await Permission.camera.status;
+      if (!permissionStatus.isGranted) {
+        if (permissionStatus.isDenied) {
+          permissionStatus = await Permission.camera.request();
+        }
+
+        if (!permissionStatus.isGranted) {
+          await _controller.stop();
+          if (mounted) {
+            setState(() => _cameraPermissionDenied = true);
+          }
+          return;
+        }
+      }
+
+      if (mounted && _cameraPermissionDenied) {
+        setState(() => _cameraPermissionDenied = false);
+      }
+
       if (!_controller.value.isRunning) {
         await _controller.start();
       }
@@ -226,7 +246,11 @@ class _QrScanComponentState extends State<QrScanComponent>
   /// Restarts the scanner when the app returns to the foreground.
   Future<void> handleAppResume() async {
     if (!_isVisible) return;
-    if (_controller.value.error != null && !_retryAfterSettings) return;
+    if (_controller.value.error != null &&
+        !_retryAfterSettings &&
+        !_cameraPermissionDenied) {
+      return;
+    }
 
     _retryAfterSettings = false;
     await startScanner();
@@ -234,15 +258,7 @@ class _QrScanComponentState extends State<QrScanComponent>
 
   Future<void> handleSettingsButtonPress() async {
     _retryAfterSettings = true;
-
-    try {
-      if (Platform.isIOS) {
-        await launchUrl(Uri.parse('app-settings:'));
-      } else if (Platform.isAndroid) {
-        const channel = MethodChannel('de.liquiddev.tallee/settings');
-        await channel.invokeMethod<void>('openAppSettings');
-      }
-    } catch (_) {}
+    await openAppSettings();
   }
 
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
