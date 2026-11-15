@@ -227,7 +227,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               widget.onWinnerChanged?.call();
 
                               if (!context.mounted) return;
-                              if (!success) {
+                              if (success) {
                                 Navigator.pop(context);
                               } else {
                                 context.showSnackBar(
