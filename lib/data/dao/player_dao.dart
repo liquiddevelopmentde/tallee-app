@@ -17,7 +17,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// the new one.
   Future<bool> addPlayer({required Player player}) async {
     if (!await playerExists(playerId: player.id)) {
-      final int nameCount = await _processNameCount(name: player.name);
+      final int nameCount = await _getNewNameCount(name: player.name);
 
       await into(playerTable).insert(
         PlayerTableCompanion.insert(
@@ -181,7 +181,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final previousCount = previousPlayer.nameCount;
 
     // Determine the nameCount for the renamed player in the new group.
-    final newNameCount = await _processNameCount(name: name);
+    final newNameCount = await _getNewNameCount(name: name);
 
     final rowsAffected =
         await (update(
@@ -368,11 +368,9 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return null;
   }
 
-  /// Processes the name count for a new player with the given [name].
-  ///- 0 Player: returning 0
-  ///- 1 Player: returning 2, and initializes the nameCount for the existing player to 1
-  ///- Other: returning the existing count + 1
-  Future<int> _processNameCount({required String name}) async {
+  /// Calculates the name count for a new player with [name]. Initalizes the
+  /// name count for the first player if the new one is the second player.
+  Future<int> _getNewNameCount({required String name}) async {
     final highestPlayer = await getPlayerWithHighestNameCount(name: name);
     final highestCount = highestPlayer?.nameCount ?? -1;
     final newCount = await calculateNameCount(name: name);
