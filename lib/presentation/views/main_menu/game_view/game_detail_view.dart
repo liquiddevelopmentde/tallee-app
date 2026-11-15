@@ -134,16 +134,17 @@ class _GameDetailViewState extends State<GameDetailView> {
                 ),
                 const SizedBox(height: 20),
 
+                // Statistics
+                DetailTile.rich(rows: statisticRows(context)),
+
+                const SizedBox(height: 15),
+
                 // Matches
                 GameMatchesTile(
                   matches: matches,
                   isLoading: isLoading,
                   onMatchTap: openMatch,
                 ),
-                const SizedBox(height: 15),
-
-                // Statistics
-                DetailTile.rich(rows: statisticRows(context)),
               ],
             ),
 
