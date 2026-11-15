@@ -372,10 +372,15 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     // Reset all team scores without reopening the match
     await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
 
+    var success = true;
     for (final team in winners) {
-      await updateTeamScore(teamId: team.id, matchId: matchId, score: 1);
+      success &= await updateTeamScore(
+        teamId: team.id,
+        matchId: matchId,
+        score: 1,
+      );
     }
-    return true;
+    return success;
   }
 
   /// Removes the winner status from all Teams with the given [matchId] by setting its score to null.
