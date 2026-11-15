@@ -316,7 +316,9 @@ class _MatchViewState extends State<MatchView> {
                                           ),
                                           builder: (context) => MatchResultView(
                                             match: displayedMatches[index],
-                                            onWinnerChanged: loadMatches,
+                                            onWinnerChanged: () => loadMatches(
+                                              showSkeleton: false,
+                                            ),
                                           ),
                                         ),
                                       );
@@ -587,8 +589,8 @@ class _MatchViewState extends State<MatchView> {
   }
 
   /// Loads the matches from the database and sorts them by creation date.
-  void loadMatches() {
-    setState(() => isLoading = true);
+  void loadMatches({bool showSkeleton = true}) {
+    if (showSkeleton) setState(() => isLoading = true);
 
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
@@ -606,7 +608,7 @@ class _MatchViewState extends State<MatchView> {
             ? applyFilter(selectedFilter)
             : displayedMatches = [...allMatches];
 
-        isLoading = false;
+        if (showSkeleton) setState(() => isLoading = false);
       });
     });
   }
