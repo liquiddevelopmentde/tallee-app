@@ -58,7 +58,9 @@
               "highestScore",
               "lowestScore",
               "lives",
-              "placement"
+              "placement",
+              "longestTime",
+              "shortestTime"
             ]
           },
           "description": {
