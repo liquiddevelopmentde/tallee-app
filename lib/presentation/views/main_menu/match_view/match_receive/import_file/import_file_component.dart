@@ -40,12 +40,12 @@ class _ImportFileCardState extends State<ImportFileCard> {
     if (widget.initialFilePath != null) {
       loadInitialFile();
     }
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    dottedBorderColor = context.talleeColors.boxBorderColor;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        dottedBorderColor = context.talleeColors.boxBorderColor;
+      });
+    });
   }
 
   @override
