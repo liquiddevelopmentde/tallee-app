@@ -204,7 +204,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                       onPressed: canSave
                           ? () async {
                               final success = await saveResults();
-                              widget.onWinnerChanged?.call();
 
                               if (success) {
                                 await endMatch();
@@ -225,7 +224,6 @@ class _MatchResultViewState extends State<MatchResultView> {
                       onPressed: canSave && hasChangedResult
                           ? () async {
                               final success = await saveResults();
-                              widget.onWinnerChanged?.call();
 
                               if (!context.mounted) return;
                               if (success) {
@@ -372,19 +370,21 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Handles saving the current input of values based on the ruleset.
   Future<bool> saveResults() async {
+    bool success = false;
     if (ruleset.isWinner) {
-      return await handleWinners();
+      success = await handleWinners();
     } else if (ruleset.isLoser) {
-      return await handleLoser();
+      success = await handleLoser();
     } else if (ruleset.usesPoints) {
-      return await handleScores();
+      success = await handleScores();
     } else if (ruleset.isPlacement) {
-      return await handlePlacement();
+      success = await handlePlacement();
     } else if (ruleset.isLives) {
-      return await handleLives();
+      success = await handleLives();
     }
 
-    return false;
+    widget.onWinnerChanged?.call();
+    return success;
   }
 
   /// Sets Match.endedAt to the current time and requests a rating dialog to be shown.
