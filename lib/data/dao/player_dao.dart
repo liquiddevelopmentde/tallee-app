@@ -386,7 +386,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Calculates the name count for a new player with the given [name].
   /// - 0 Players: Name count is 0
   /// - 1 Player: Name count is 2 (since the existing player will be 1)
-  /// - Other: Name count is the existing count + 1
+  /// - Other: Find the next free name count in current players with [name]
   Future<int> calculateNameCount({required String name}) async {
     final count = await getNameCount(name: name);
     final int nameCount;
