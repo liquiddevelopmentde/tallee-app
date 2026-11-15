@@ -93,6 +93,7 @@ class _MatchResultViewState extends State<MatchResultView> {
     return PopScope(
       onPopInvokedWithResult: (bool didPop, _) {
         if (didPop) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           try {
             ShowcaseView.get().dismiss();
           } catch (_) {}
@@ -205,7 +206,7 @@ class _MatchResultViewState extends State<MatchResultView> {
                               final success = await saveResults();
                               widget.onWinnerChanged?.call();
 
-                              if (success) {
+                              if (!success) {
                                 await endMatch();
                                 if (context.mounted) Navigator.pop(context);
                               } else {
