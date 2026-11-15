@@ -210,19 +210,72 @@ class _GameDetailViewState extends State<GameDetailView> {
       return TextSpan(text: isLoading ? 'Skeleton Player' : '-');
     }
 
-    final parts = _splitNames(names);
-    return TextSpan(
-      children: [
-        TextSpan(text: parts.visible),
-        if (parts.hidden > 0)
-          TextSpan(
-            text: ' +${parts.hidden}',
-            style: TextStyle(
-              color: context.talleeColors.hintColor,
-              fontWeight: FontWeight.w500,
+    return WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxWidth = constraints.maxWidth;
+          const style = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+          final hintStyle = TextStyle(
+            color: context.talleeColors.hintColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+          );
+
+          var visibleNames = <String>[];
+          var hiddenCount = 0;
+
+          for (var i = 1; i <= names.length; i++) {
+            final sub = names.sublist(0, i);
+            final remaining = names.length - i;
+            final suffix = remaining > 0 ? ' +$remaining' : '';
+            final candidate = '${sub.join(', ')}$suffix';
+
+            final painter = TextPainter(
+              text: TextSpan(
+                text: candidate,
+                style: style,
+                children: remaining > 0
+                    ? [TextSpan(text: suffix, style: hintStyle)]
+                    : [],
+              ),
+              textDirection: Directionality.of(context),
+              textScaler: MediaQuery.textScalerOf(context),
+              maxLines: 1,
+            )..layout(maxWidth: maxWidth);
+
+            if (painter.didExceedMaxLines || painter.width > maxWidth) {
+              break;
+            }
+            visibleNames = sub;
+            hiddenCount = remaining;
+          }
+
+          if (visibleNames.isEmpty) {
+            visibleNames = [names.first];
+            hiddenCount = names.length - 1;
+          }
+
+          final remaining = hiddenCount;
+          final suffix = remaining > 0 ? ' +$remaining' : '';
+
+          return Align(
+            alignment: Alignment.centerRight,
+            child: Text.rich(
+              TextSpan(
+                style: style,
+                children: [
+                  TextSpan(text: visibleNames.join(', ')),
+                  if (remaining > 0) TextSpan(text: suffix, style: hintStyle),
+                ],
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
             ),
-          ),
-      ],
+          );
+        },
+      ),
     );
   }
 
@@ -320,24 +373,4 @@ class _GameDetailViewState extends State<GameDetailView> {
     widget.onGameUpdated?.call();
     Navigator.of(context).pop();
   }
-}
-
-/// Splits [names] into the part that fits into [maxChars] and the number of
-/// names that are hidden behind a `+N` suffix.
-({String visible, int hidden}) _splitNames(
-  List<String> names, {
-  int maxChars = 40,
-}) {
-  var result = '';
-  for (var i = 0; i < names.length; i++) {
-    final separator = i == 0 ? '' : ', ';
-    final candidate = '$result$separator${names[i]}';
-    final remaining = names.length - i - 1;
-    final suffix = remaining > 0 ? ' +$remaining' : '';
-    if (candidate.length + suffix.length > maxChars && i > 0) {
-      return (visible: result, hidden: names.length - i);
-    }
-    result = candidate;
-  }
-  return (visible: result, hidden: 0);
 }
