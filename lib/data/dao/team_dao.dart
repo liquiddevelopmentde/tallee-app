@@ -388,7 +388,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   Future<bool> removeWinnerTeams({required String matchId}) async =>
       await removeAllTeamScores(matchId: matchId);
 
-  /// Sets the team with the given [teamId] as the loser of the match with the given [matchId] by assigning a score of 0.
+  /// Sets the team with the given [teamId] as the loser of the match with the
+  /// given [matchId] by assigning a score of 0.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
   Future<bool> setLoserTeam({
     required String teamId,
