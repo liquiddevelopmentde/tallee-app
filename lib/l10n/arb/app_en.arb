@@ -88,7 +88,26 @@
   "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
+  "delete_player_and_groups_title": "{count, plural, =1{Delete player and group?} other{Delete player and groups?}}",
+  "@delete_player_and_groups_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
+  "delete_player_warning_groups_deleted": "{count, plural, =1{The following group will also be deleted because otherwise only one member would remain: {groups}} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}",
+  "@delete_player_warning_groups_deleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
   "delete_statistic": "Delete statistic",
   "deleted": "Deleted",
   "descending": "Descending",

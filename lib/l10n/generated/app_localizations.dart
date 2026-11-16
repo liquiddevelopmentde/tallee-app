@@ -543,11 +543,23 @@ abstract class AppLocalizations {
   /// **'Delete player?'**
   String get delete_player;
 
+  /// No description provided for @delete_player_and_groups_title.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Delete player and group?} other{Delete player and groups?}}'**
+  String delete_player_and_groups_title(int count);
+
   /// No description provided for @delete_player_warning_details.
   ///
   /// In en, this message translates to:
   /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
   String get delete_player_warning_details;
+
+  /// No description provided for @delete_player_warning_groups_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The following group will also be deleted because otherwise only one member would remain: {groups}} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}'**
+  String delete_player_warning_groups_deleted(int count, String groups);
 
   /// No description provided for @delete_statistic.
   ///

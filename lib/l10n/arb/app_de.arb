@@ -88,7 +88,26 @@
   "delete_group_warning_details": "Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.",
   "delete_match": "Spiel löschen",
   "delete_player": "Spieler:in löschen",
+  "delete_player_and_groups_title": "{count, plural, =1{Spieler:in und Gruppe löschen} other{Spieler:in und Gruppen löschen}}",
+  "@delete_player_and_groups_title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_player_warning_details": "Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.",
+  "delete_player_warning_groups_deleted": "{count, plural, =1{Folgende Gruppe wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre: {groups}} other{Folgende Gruppen werden ebenfalls gelöscht, weil sonst nur noch jeweils ein Mitglied übrig wäre: {groups}}}",
+  "@delete_player_warning_groups_deleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
   "delete_statistic": "Statistik löschen",
   "deleted": "Gelöscht",
   "descending": "Absteigend",
