@@ -55,6 +55,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     MatchView,
     GroupView,
     GameView,
+    UtilityView,
     StatisticsView,
   ];
 
