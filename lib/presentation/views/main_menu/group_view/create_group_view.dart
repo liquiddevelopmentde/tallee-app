@@ -44,7 +44,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// List of initially selected players (when editing a group)
   List<Player> initialSelectedPlayers = [];
 
-  AppColor? selectedColor = AppColor.orange;
+  AppColor? selectedColor;
 
   AppColor? lastSelectedColor;
 
