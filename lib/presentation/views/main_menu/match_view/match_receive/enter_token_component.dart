@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:material_ui/material_ui.dart' hide Material;
-import 'package:material_ui/material_ui.dart' show Material;
+import 'package:material_ui/material_ui.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/haptics.dart';
@@ -21,7 +20,8 @@ class EnterTokenComponent extends StatefulWidget {
   State<EnterTokenComponent> createState() => _EnterTokenComponentState();
 }
 
-class _EnterTokenComponentState extends State<EnterTokenComponent> {
+class _EnterTokenComponentState extends State<EnterTokenComponent>
+    with AutomaticKeepAliveClientMixin {
   TextEditingController tokenInputFieldController = TextEditingController();
 
   late Match match;
@@ -53,6 +53,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final loc = AppLocalizations.of(context);
     final defaultPinTheme = PinTheme(
       height: 60,
@@ -120,48 +121,47 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
         const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-          child: Material(
-            //TODO: remove when decoupled material is supported in pinput
-            color: Colors.transparent,
-            child: Pinput(
-              controller: tokenInputFieldController,
-              length: 6,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.characters,
-              hapticFeedbackType: HapticFeedbackType.selectionClick,
-              defaultPinTheme: defaultPinTheme,
-              focusedPinTheme: focusedPinTheme,
-              errorPinTheme: errorPinTheme,
-              disabledPinTheme: disabledPinTheme,
-              showCursor: false,
-              animationCurve: Curves.easeInOutCubic,
-              animationDuration: const Duration(milliseconds: 100),
-              onClipboardFound: (value) {
+          child: Pinput(
+            controller: tokenInputFieldController,
+            length: 6,
+            keyboardType: TextInputType.text,
+            textCapitalization: TextCapitalization.characters,
+            hapticFeedbackType: HapticFeedbackType.selectionClick,
+            defaultPinTheme: defaultPinTheme,
+            focusedPinTheme: focusedPinTheme,
+            errorPinTheme: errorPinTheme,
+            disabledPinTheme: disabledPinTheme,
+            showCursor: false,
+            animationCurve: Curves.easeInOutCubic,
+            animationDuration: const Duration(milliseconds: 100),
+            onClipboardFound: (value) {
+              final normalizedValue = value.toUpperCase();
+              if (tokenInputFieldController.text != normalizedValue) {
                 Haptics.lightImpact();
-                tokenInputFieldController.text = value;
+                tokenInputFieldController.text = normalizedValue;
                 context.showSnackBar(message: loc.code_pasted_from_clipboard);
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-                TextInputFormatter.withFunction(
-                  (oldValue, newValue) => TextEditingValue(
-                    text: newValue.text.toUpperCase(),
-                    selection: newValue.selection,
-                  ),
+              }
+            },
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+              TextInputFormatter.withFunction(
+                (oldValue, newValue) => TextEditingValue(
+                  text: newValue.text.toUpperCase(),
+                  selection: newValue.selection,
                 ),
-              ],
-              forceErrorState: isTokenValid == false || isMatchValid == false,
-              errorText: getErrorText(loc),
-              errorTextStyle: errorTextStyle,
-              errorBuilder: (errorText, pin) => SizedBox(
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    errorText ?? '',
-                    style: errorTextStyle,
-                    textAlign: TextAlign.center,
-                  ),
+              ),
+            ],
+            forceErrorState: isTokenValid == false || isMatchValid == false,
+            errorText: getErrorText(loc),
+            errorTextStyle: errorTextStyle,
+            errorBuilder: (errorText, pin) => SizedBox(
+              width: 300,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  errorText ?? '',
+                  style: errorTextStyle,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -195,6 +195,9 @@ class _EnterTokenComponentState extends State<EnterTokenComponent> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   String getErrorText(AppLocalizations loc) {
     if (isTokenValid == false) return loc.invalid_token;

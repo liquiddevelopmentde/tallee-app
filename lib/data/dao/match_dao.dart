@@ -205,10 +205,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       });
 
-      // Add player-match associations
+      // Add player-match associations for players that are not in teams.
+      // Team members are associated via addTeamsAsList below.
       await db.batch((b) {
         for (final match in matches) {
+          final playersInTeams = <String>{
+            for (final team in match.teams ?? <Team>[])
+              for (final member in team.members) member.id,
+          };
           for (final p in match.players) {
+            if (playersInTeams.contains(p.id)) continue;
             b.insert(
               db.playerMatchTable,
               PlayerMatchTableCompanion.insert(

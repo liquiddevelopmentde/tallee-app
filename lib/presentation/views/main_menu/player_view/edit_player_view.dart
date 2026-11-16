@@ -14,11 +14,11 @@ class EditPlayerView extends StatefulWidget {
   const EditPlayerView({
     super.key,
     required this.playerToEdit,
-    this.onPlayerChanged,
+    this.onPlayerUpdated,
   });
 
   final Player playerToEdit;
-  final VoidCallback? onPlayerChanged;
+  final VoidCallback? onPlayerUpdated;
 
   @override
   State<EditPlayerView> createState() => _EditPlayerViewState();
@@ -121,7 +121,7 @@ class _EditPlayerViewState extends State<EditPlayerView> {
 
     if (success) {
       Haptics.successNotification();
-      widget.onPlayerChanged?.call();
+      widget.onPlayerUpdated?.call();
       if (mounted) {
         Navigator.pop(context, updatedPlayer);
       }
@@ -156,6 +156,12 @@ class _EditPlayerViewState extends State<EditPlayerView> {
       success &= await db.playerDao.updatePlayerDescription(
         playerId: widget.playerToEdit.id,
         description: updatedPlayer.description,
+      );
+    }
+
+    if (success) {
+      updatedPlayer = await db.playerDao.getPlayerById(
+        playerId: widget.playerToEdit.id,
       );
     }
 

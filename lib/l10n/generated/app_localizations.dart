@@ -651,6 +651,12 @@ abstract class AppLocalizations {
   /// **'Enable'**
   String get enable;
 
+  /// No description provided for @end_match.
+  ///
+  /// In en, this message translates to:
+  /// **'End Match'**
+  String get end_match;
+
   /// No description provided for @enter_results.
   ///
   /// In en, this message translates to:
@@ -728,6 +734,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reporting an error helps us identify and fix problems in Tallee!'**
   String get error_report_info_text;
+
+  /// No description provided for @error_saving_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving results, please try again.'**
+  String get error_saving_results;
 
   /// No description provided for @error_sending_feedback.
   ///
@@ -884,12 +896,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Group name'**
   String get group_name;
-
-  /// No description provided for @group_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Group Profile'**
-  String get group_profile;
 
   /// No description provided for @groups.
   ///
@@ -1089,6 +1095,12 @@ abstract class AppLocalizations {
   /// **'Manage Members'**
   String get manage_members;
 
+  /// No description provided for @match.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get match;
+
   /// No description provided for @match_deleted.
   ///
   /// In en, this message translates to:
@@ -1112,12 +1124,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matches can only be shared once they have ended.'**
   String get match_not_ended_share_warning;
-
-  /// No description provided for @match_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Match Profile'**
-  String get match_profile;
 
   /// No description provided for @match_receive.
   ///

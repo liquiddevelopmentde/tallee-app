@@ -313,6 +313,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enable => 'Aktivieren';
 
   @override
+  String get end_match => 'Spiel beenden';
+
+  @override
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
@@ -362,6 +365,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_report_info_text =>
       'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
+
+  @override
+  String get error_saving_results =>
+      'Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.';
 
   @override
   String get error_sending_feedback =>
@@ -449,9 +456,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get group_name => 'Gruppenname';
-
-  @override
-  String get group_profile => 'Gruppenprofil';
 
   @override
   String get groups => 'Gruppen';
@@ -568,6 +572,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
+  String get match => 'Spiel';
+
+  @override
   String get match_deleted => 'Spiel gelöscht';
 
   @override
@@ -579,9 +586,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get match_not_ended_share_warning =>
       'Spiele können erst geteilt werden, wenn sie beendet wurden.';
-
-  @override
-  String get match_profile => 'Spielprofil';
 
   @override
   String get match_receive => 'Spiel empfangen';
