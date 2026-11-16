@@ -527,7 +527,7 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     final DateTime newCreatedAt;
     if (selectedCreationDate != null) {
       newCreatedAt = selectedCreationDate!;
-    } else if (isToday(originalMatch.createdAt)) {
+    } else if (originalMatch.createdAt.isToday) {
       newCreatedAt = originalMatch.createdAt;
     } else {
       newCreatedAt = clock.now();
@@ -605,14 +605,6 @@ class _CreateMatchViewState extends State<CreateMatchView> {
     return match;
   }
 
-  /// Returns true if the given [date] is today.
-  bool isToday(DateTime date) {
-    final now = clock.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
-  }
-
   /// Returns null if the given [date] is today, otherwise returns the date.
-  DateTime? nullIfToday(DateTime date) => isToday(date) ? null : date;
+  DateTime? nullIfToday(DateTime date) => date.isToday ? null : date;
 }
