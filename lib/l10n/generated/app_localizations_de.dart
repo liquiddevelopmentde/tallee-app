@@ -307,6 +307,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enable => 'Aktivieren';
 
   @override
+  String get end_match => 'Spiel beenden';
+
+  @override
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
@@ -356,6 +359,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_report_info_text =>
       'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
+
+  @override
+  String get error_saving_results =>
+      'Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.';
 
   @override
   String get error_sending_feedback =>

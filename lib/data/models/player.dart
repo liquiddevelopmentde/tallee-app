@@ -7,7 +7,7 @@ class Player {
   final String name;
   final String description;
   final bool deleted;
-  int nameCount;
+  final int nameCount;
 
   Player({
     required this.name,

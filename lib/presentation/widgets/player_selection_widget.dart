@@ -363,6 +363,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   Widget buildSingleSelectionList() => RadioGroup<Player?>(
     groupValue: selectedPlayer,
     onChanged: (value) {
+      Haptics.selectionClick();
+      setState(() => selectedPlayer = value);
       widget.onSingleChanged?.call(value);
     },
     child: ListView.builder(
@@ -387,7 +389,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
           ),
           value: player,
           onContainerTap: (value) {
-            Haptics.selectionClick();
             setState(() {
               if (selectedPlayer == value) {
                 selectedPlayer = null;
@@ -680,35 +681,58 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
 
   Future<void> addNewPlayerFromSearch({required BuildContext context}) async {
     final loc = AppLocalizations.of(context);
-    final playerName = searchBarController.text.trim();
 
-    int nameCount = calculateNameCount(playerName);
-    final createdPlayer = Player(name: playerName, nameCount: nameCount);
+    final playerName = searchBarController.text.trim();
+    final createdPlayer = Player(name: playerName);
     final success = await db.playerDao.addPlayer(player: createdPlayer);
 
-    if (!context.mounted) return;
-
-    if (success) {
-      handleSuccessfulPlayerCreation(createdPlayer);
-      context.showSnackBar(message: loc.successfully_added_player(playerName));
-      Haptics.successNotification();
-    } else {
+    if (!success && context.mounted) {
       context.showSnackBar(message: loc.could_not_add_player(playerName));
       Haptics.errorNotification();
+      return;
     }
+
+    final players = await db.playerDao.getPlayersByName(name: playerName);
+    // Collect updated player name counts
+    final nameCounts = {for (final p in players) p.id: p.nameCount};
+
+    applyNameCounts(nameCounts);
+    handleSuccessfulPlayerCreation(
+      createdPlayer.copyWith(nameCount: nameCounts[createdPlayer.id]),
+    );
+
+    if (!context.mounted) return;
+    context.showSnackBar(message: loc.successfully_added_player(playerName));
+    Haptics.successNotification();
   }
 
-  int calculateNameCount(String playerName) {
-    final playersWithSameName =
-        allPlayers.where((player) => player.name == playerName).toList()
-          ..sort((a, b) => a.nameCount.compareTo(b.nameCount));
+  /// Replace all players affected by name count changes with updated player objects.
+  void applyNameCounts(Map<String, int> nameCounts) {
+    if (nameCounts.isEmpty) return;
 
-    if (playersWithSameName.isEmpty) {
-      return 0;
-    } else if (playersWithSameName.length == 1) {
-      playersWithSameName[0].nameCount = 1;
+    // Helper function
+    Player updateNameCount(Player player) {
+      final nameCount = nameCounts[player.id];
+      return nameCount == null || nameCount == player.nameCount
+          ? player
+          : player.copyWith(nameCount: nameCount);
     }
-    return playersWithSameName.length + 1;
+
+    // Update all player collections
+    allPlayers = allPlayers.map(updateNameCount).toList();
+    suggestedPlayers = suggestedPlayers.map(updateNameCount).toList();
+    if (selectedPlayer != null) {
+      selectedPlayer = updateNameCount(selectedPlayer!);
+    }
+    selectedUnits = selectedUnits
+        .map(
+          (unit) => unit.members.any((m) => nameCounts.containsKey(m.id))
+              ? unit.copyWith(
+                  members: unit.members.map(updateNameCount).toList(),
+                )
+              : unit,
+        )
+        .toList();
   }
 
   void handleSuccessfulPlayerCreation(Player player) {
