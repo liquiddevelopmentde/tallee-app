@@ -255,18 +255,21 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   ///
   /// Returns `true` if the player was deleted/marked, `false` if the player did
   /// not exist.
-  Future<bool> deletePlayer({required Player player}) async {
-    if (!await canTrueDelete(playerId: player.id)) {
-      return await transaction(() async {
+  ///
+  /// Groups that would be left with fewer than two members after the deletion
+  /// are deleted as well, since groups require at least two members.
+  Future<bool> deletePlayer({required Player player}) async => transaction(
+    () async {
+      await _deleteGroupsLeftWithTooFewMembers(playerId: player.id);
+
+      if (!await canTrueDelete(playerId: player.id)) {
         final rowsAffected =
             await (update(playerTable)
                   ..where((tbl) => tbl.id.equals(player.id)))
                 .write(const PlayerTableCompanion(deleted: Value(true)));
         await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
         return rowsAffected > 0;
-      });
-    } else {
-      return await transaction(() async {
+      } else {
         final rowsAffected = await (delete(
           playerTable,
         )..where((tbl) => tbl.id.equals(player.id))).go();
@@ -274,7 +277,24 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         await cleanUpNameCount(deletedPlayer: player);
 
         return rowsAffected > 0;
-      });
+      }
+    },
+  );
+
+  /// Deletes all groups the player with [playerId] belongs to that would be
+  /// left with fewer than two members after the player is removed.
+  Future<void> _deleteGroupsLeftWithTooFewMembers({
+    required String playerId,
+  }) async {
+    final groups = await db.groupDao.getGroupsByPlayer(playerId: playerId);
+
+    for (final group in groups) {
+      final remainingMemberCount = group.members
+          .where((member) => member.id != playerId)
+          .length;
+      if (remainingMemberCount < 2) {
+        await db.groupDao.deleteGroup(groupId: group.id);
+      }
     }
   }
 
