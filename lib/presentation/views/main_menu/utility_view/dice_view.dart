@@ -89,6 +89,7 @@ class _DiceViewState extends State<DiceView>
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final sum = dice.fold(0, (total, die) => total + die.value);
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.dice)),
@@ -96,6 +97,16 @@ class _DiceViewState extends State<DiceView>
       body: SafeArea(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(
+                '$sum',
+                style: const TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
