@@ -306,7 +306,6 @@
   "qr_code_expired": "QR Code expired",
   "qr_code_parsing_error": "The scanned code does not contain valid match data.",
   "random_color": "Random color",
-  "remaining": "remaining",
   "remove_from_favourites": "Remove from favourites",
   "report_error": "Report Error",
   "required": "required",

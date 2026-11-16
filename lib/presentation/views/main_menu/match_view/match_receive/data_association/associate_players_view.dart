@@ -33,33 +33,37 @@ class AssociatePlayersView extends StatefulWidget {
 }
 
 class _AssociatePlayersViewState extends State<AssociatePlayersView> {
-  final Map<String, Player?> associations = {};
+  /// Imported player ID -> the player stored locally for it.
+  final Map<String, Player> associations = {};
+
+  /// Imported players that are created as new instead of reused. Tracked
+  /// separately because imported and local IDs can collide (same-device import).
+  final Set<String> createAsNewIds = {};
+
   List<Player>? cachedAllPlayers;
 
   @override
   void initState() {
     super.initState();
     for (final player in playersToAssociate) {
-      associations[player.id] = null;
+      associations[player.id] = createNewPlayer(player);
+      createAsNewIds.add(player.id);
     }
     autoAssociatePlayers();
   }
+
+  /// Copy of [importedPlayer] with a new ID, so the import inserts it instead
+  /// of skipping it as an already existing player.
+  Player createNewPlayer(Player importedPlayer) => Player(
+    name: importedPlayer.name,
+    description: importedPlayer.description,
+  );
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final players = playersToAssociate;
-    final allPlayers = cachedAllPlayers ?? [];
-
-    final unassignedCount = players
-        .where((player) => associations[player.id] == null)
-        .length;
-
-    final newPlayersCount = players.where((player) {
-      final assoc = associations[player.id];
-      if (assoc == null) return false;
-      return !allPlayers.any((lp) => lp.id == assoc.id);
-    }).length;
+    final newPlayersCount = createAsNewIds.length;
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.associate_players), centerTitle: true),
@@ -71,17 +75,11 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: unassignedCount == 0
-                      ? (newPlayersCount > 0 ? Colors.orange : Colors.green)
-                      : unassignedCount == players.length
-                      ? Colors.red
-                      : Colors.redAccent,
+                  color: newPlayersCount > 0 ? Colors.orange : Colors.green,
                   borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
-                  unassignedCount != 0
-                      ? '$unassignedCount ${loc.remaining}'
-                      : newPlayersCount > 0
+                  newPlayersCount > 0
                       ? loc.new_players_will_be_created(newPlayersCount)
                       : loc.all_players_associated,
                   style: const TextStyle(
@@ -99,24 +97,33 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 itemCount: players.length,
                 itemBuilder: (context, index) {
                   final player = players[index];
-                  final associatedPlayer = associations[player.id];
+                  final associatedPlayer = associations[player.id] ?? player;
                   final isNew =
-                      associatedPlayer != null &&
-                      !allPlayers.any((lp) => lp.id == associatedPlayer.id);
+                      createAsNewIds.contains(player.id) ||
+                      !associations.containsKey(player.id);
 
                   return AssociatePlayerTile(
                     player: player,
                     associatedPlayer: associatedPlayer,
                     isNew: isNew,
-                    borderColor: associatedPlayer != null
-                        ? (isNew ? Colors.orange : Colors.green).withAlpha(150)
-                        : Colors.red.withAlpha(150),
+                    borderColor: (isNew ? Colors.orange : Colors.green)
+                        .withAlpha(150),
                     onTap: () async {
-                      final selectedPlayer = await showPlayerSelectionSheet(
+                      final result = await showPlayerSelectionSheet(
                         associatedPlayer,
+                        isCreateAsNew: isNew,
                       );
+                      // Dismissed: keep the current association.
+                      if (!mounted || result == null) return;
                       setState(() {
-                        associations[player.id] = selectedPlayer ?? player;
+                        // Deselected: create as new.
+                        associations[player.id] =
+                            result.player ?? createNewPlayer(player);
+                        if (result.player == null) {
+                          createAsNewIds.add(player.id);
+                        } else {
+                          createAsNewIds.remove(player.id);
+                        }
                       });
                     },
                   );
@@ -127,26 +134,24 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: BottomAnimatedButton(
                 text: widget.match.group == null ? loc.save_match : loc.confirm,
-                onPressed: unassignedCount == 0
-                    ? () async {
-                        if (widget.match.group == null) {
-                          await saveMatch();
-                        } else {
-                          await Navigator.of(context).push(
-                            adaptivePageRoute(
-                              settings: const RouteSettings(
-                                name: RouteNames.associateGroupView,
-                              ),
-                              builder: (context) => AssociateGroupView(
-                                match: widget.match,
-                                associations: associations,
-                                associatedGame: widget.associatedGame,
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    : null,
+                onPressed: () async {
+                  if (widget.match.group == null) {
+                    await saveMatch();
+                  } else {
+                    await Navigator.of(context).push(
+                      adaptivePageRoute(
+                        settings: const RouteSettings(
+                          name: RouteNames.associateGroupView,
+                        ),
+                        builder: (context) => AssociateGroupView(
+                          match: widget.match,
+                          associations: associations,
+                          associatedGame: widget.associatedGame,
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ],
@@ -158,19 +163,11 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
   Future<void> saveMatch() async {
     final db = context.read<AppDatabase>();
 
-    // Filter null values and cast to Map<String, Player>
-    final playerAssociations = <String, Player>{};
-    for (final entry in associations.entries) {
-      if (entry.value != null) {
-        playerAssociations[entry.key] = entry.value!;
-      }
-    }
-
     try {
       await RemoteShareService().saveImportedMatch(
         db: db,
         importedMatch: widget.match,
-        playerAssociations: playerAssociations,
+        playerAssociations: associations,
         associatedGame: widget.associatedGame,
         associatedGroup: null,
       );
@@ -188,24 +185,22 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  Future<Player?> showPlayerSelectionSheet(Player? currentSelection) async {
+  /// Returns `(player: null)` if the selection was cleared (create as new) and
+  /// `null` if the sheet was dismissed without a change.
+  Future<({Player? player})?> showPlayerSelectionSheet(
+    Player currentSelection, {
+    required bool isCreateAsNew,
+  }) async {
     final db = context.read<AppDatabase>();
     cachedAllPlayers ??= await db.playerDao.getAllPlayers();
     final allPlayers = cachedAllPlayers!;
 
-    final isCreateAsNew =
-        currentSelection != null &&
-        !allPlayers.any((p) => p.id == currentSelection.id);
-
-    final associatedPlayerIds = associations.values
-        .where(
-          (p) =>
-              p != null &&
-              p.id != currentSelection?.id &&
-              allPlayers.any((lp) => lp.id == p.id),
-        )
-        .map((p) => p!.id)
-        .toSet();
+    final associatedPlayerIds = {
+      for (final entry in associations.entries)
+        if (!createAsNewIds.contains(entry.key) &&
+            entry.value.id != currentSelection.id)
+          entry.value.id,
+    };
 
     final availablePlayers = allPlayers
         .where((p) => !associatedPlayerIds.contains(p.id))
@@ -213,20 +208,20 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     if (!mounted) return null;
 
-    return showModalBottomSheet<Player?>(
+    return showModalBottomSheet<({Player? player})>(
       context: context,
       backgroundColor: context.talleeColors.backgroundColor,
       builder: (context) => PlayerSelectionWidget.single(
         onSingleChanged: (player) async {
           await Future.delayed(const Duration(milliseconds: 200));
           if (!context.mounted) return;
-          Navigator.of(context).pop(player);
+          Navigator.of(context).pop((player: player));
         },
         onPlayerCreated: () {
+          // New player is in the DB now, don't re-run auto-associations
           setState(() {
             cachedAllPlayers = null;
           });
-          autoAssociatePlayers();
         },
         availablePlayers: availablePlayers,
         initialSelectedPlayer: isCreateAsNew ? null : currentSelection,
@@ -243,6 +238,7 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
 
     setState(() {
       final usedLocalPlayerIds = <String>{};
+      createAsNewIds.clear();
 
       for (final importedPlayer in playersToAssociate) {
         // 1. Try exact ID match first
@@ -283,8 +279,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
           associations[importedPlayer.id] = match;
           usedLocalPlayerIds.add(match.id);
         } else {
-          // Default to Create as New if no match found
-          associations[importedPlayer.id] = importedPlayer;
+          // No match: default to create as new.
+          associations[importedPlayer.id] = createNewPlayer(importedPlayer);
+          createAsNewIds.add(importedPlayer.id);
         }
       }
     });
