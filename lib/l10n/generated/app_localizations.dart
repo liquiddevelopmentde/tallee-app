@@ -579,12 +579,6 @@ abstract class AppLocalizations {
   /// **'Dice'**
   String get dice;
 
-  /// No description provided for @displayed_entries.
-  ///
-  /// In en, this message translates to:
-  /// **'Displayed entries'**
-  String get displayed_entries;
-
   /// No description provided for @do_you_like_the_app.
   ///
   /// In en, this message translates to:

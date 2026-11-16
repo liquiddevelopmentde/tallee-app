@@ -274,9 +274,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dice => 'Würfel';
 
   @override
-  String get displayed_entries => 'Angezeigte Einträge';
-
-  @override
   String get do_you_like_the_app => 'Gefällt dir die App?';
 
   @override

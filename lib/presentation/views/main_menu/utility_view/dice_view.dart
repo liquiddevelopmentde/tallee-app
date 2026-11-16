@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/theme/app_colors.dart';
-import 'package:tallee/core/theme/theme_context_extensions.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_stepper.dart';
@@ -140,7 +140,7 @@ class _DiceViewState extends State<DiceView>
             Padding(
               padding: const EdgeInsets.only(bottom: 24),
               child: BottomAnimatedButton(
-                buttonText: loc.throw_dice,
+                text: loc.throw_dice,
                 sizeRelativeToWidth: 0.6,
                 onPressed: _throw,
               ),

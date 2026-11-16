@@ -270,9 +270,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dice => 'Dice';
 
   @override
-  String get displayed_entries => 'Displayed entries';
-
-  @override
   String get do_you_like_the_app => 'Do you like the app?';
 
   @override
