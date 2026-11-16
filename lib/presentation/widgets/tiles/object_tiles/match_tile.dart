@@ -45,7 +45,7 @@ class _MatchTileState extends State<MatchTile> {
   List<Player> get players =>
       [...match.players]..sortByLowercaseName((p) => p.name);
 
-  bool get showGroup => match.group != null;
+  bool get showGroup => group != null;
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +93,7 @@ class _MatchTileState extends State<MatchTile> {
                           ),
 
                           TextSpan(
-                            text:
-                                '${match.group!.name}${match.extraPlayerCount}',
+                            text: '${group!.name}${match.extraPlayerCount}',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
