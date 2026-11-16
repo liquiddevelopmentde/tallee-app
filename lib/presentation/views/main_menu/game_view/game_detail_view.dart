@@ -4,6 +4,7 @@ import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/extensions/build_context_extensions.dart';
 import 'package:tallee/core/extensions/date_time_extensions.dart';
 import 'package:tallee/core/extensions/snack_bar_extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/match.dart';
@@ -18,7 +19,7 @@ import 'package:tallee/presentation/widgets/buttons/haptic_icon_button.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
 import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/detail_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/object_tiles/game_matches_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/game_matches_tile/game_matches_tile.dart';
 
 class GameDetailView extends StatefulWidget {
   /// A view that displays the profile of a game
@@ -38,18 +39,21 @@ class _GameDetailViewState extends State<GameDetailView> {
   bool isLoading = true;
 
   late Game game;
-  late List<Match> matches;
 
-  List<Match> get _skeletonMatches => [
-    for (var i = 0; i < 2; i++)
-      Match(name: 'Match $i', game: game, players: const []),
-  ];
+  /// Matches of this game, initially filled with skeleton matches.
+  List<Match> matches = List.generate(
+    2,
+    (index) => Match(
+      name: 'Match $index',
+      game: Game(name: 'Game name', ruleset: Ruleset.winner),
+      players: const [],
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
     game = widget.game;
-    matches = _skeletonMatches;
     db = context.read<AppDatabase>();
     loadStatistics();
   }
@@ -74,12 +78,7 @@ class _GameDetailViewState extends State<GameDetailView> {
           alignment: Alignment.center,
           children: [
             ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
-              ),
+              padding: AppSpacing.detailViewPadding,
               children: [
                 Center(
                   child: ColoredIconContainer(
@@ -181,24 +180,30 @@ class _GameDetailViewState extends State<GameDetailView> {
   }
 
   /// The rows shown in the statistics tile, derived from [matches].
-  List<(String, InlineSpan, bool)> statisticRows(BuildContext context) {
+  List<({String label, InlineSpan value, bool isLoading})> statisticRows(
+    BuildContext context,
+  ) {
     final loc = AppLocalizations.of(context);
 
     return [
       (
-        loc.played_matches,
-        TextSpan(text: matches.length.toString()),
-        isLoading,
+        label: loc.played_matches,
+        value: TextSpan(text: matches.length.toString()),
+        isLoading: isLoading,
       ),
-      (loc.best_player, bestPlayerSpan(context), isLoading),
       (
-        loc.last_played,
-        TextSpan(
+        label: loc.best_player,
+        value: bestPlayerSpan(context),
+        isLoading: isLoading,
+      ),
+      (
+        label: loc.last_played,
+        value: TextSpan(
           text: matches.isEmpty
               ? '-'
               : matches.first.createdAt.toMediumDate(context),
         ),
-        isLoading,
+        isLoading: isLoading,
       ),
     ];
   }

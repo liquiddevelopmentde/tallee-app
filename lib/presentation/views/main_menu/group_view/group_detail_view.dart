@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -106,12 +107,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
           alignment: Alignment.center,
           children: [
             ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
-              ),
+              padding: AppSpacing.detailViewPadding,
               children: [
                 Center(
                   child: ColoredIconContainer(
@@ -187,9 +183,21 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                 // Statistics
                 DetailTile(
                   rows: [
-                    (loc.members, group.members.length.toString(), false),
-                    (loc.played_matches, totalMatches.toString(), isLoading),
-                    (loc.best_player, bestPlayer, isLoading),
+                    (
+                      label: loc.members,
+                      value: group.members.length.toString(),
+                      isLoading: false,
+                    ),
+                    (
+                      label: loc.played_matches,
+                      value: totalMatches.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.best_player,
+                      value: bestPlayer,
+                      isLoading: isLoading,
+                    ),
                   ],
                 ),
               ],

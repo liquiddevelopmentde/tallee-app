@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -134,12 +135,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
           alignment: Alignment.center,
           children: [
             ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
-              ),
+              padding: AppSpacing.detailViewPadding,
               children: [
                 // Icon
                 Center(
@@ -331,12 +327,21 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 // Statistics
                 DetailTile(
                   rows: [
-                    (loc.matches_played, totalMatches.toString(), isLoading),
-                    (loc.matches_won, matchesWon.toString(), isLoading),
                     (
-                      loc.winrate,
-                      '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
-                      isLoading,
+                      label: loc.matches_played,
+                      value: totalMatches.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.matches_won,
+                      value: matchesWon.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.winrate,
+                      value:
+                          '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
+                      isLoading: isLoading,
                     ),
                   ],
                 ),

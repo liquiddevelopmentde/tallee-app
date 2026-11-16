@@ -7,24 +7,23 @@ import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 class DetailTile extends StatelessWidget {
   /// Creates a detail tile with plain text values.
   ///
-  /// Each row is a `(label, value, isLoading)` record; `isLoading` shows the
+  /// Each row is a `({label, value, isLoading})` record; `isLoading` shows the
   /// value as a skeleton while it is still being loaded.
-  factory DetailTile({Key? key, required List<(String, String, bool)> rows}) =>
-      DetailTile.rich(
-        key: key,
-        rows: [
-          for (final (label, value, isLoading) in rows)
-            (label, TextSpan(text: value), isLoading),
-        ],
-      );
+  DetailTile({
+    super.key,
+    required List<({String label, String value, bool isLoading})> rows,
+  }) : rows = [
+         for (final (:label, :value, :isLoading) in rows)
+           (label: label, value: TextSpan(text: value), isLoading: isLoading),
+       ];
 
   /// Creates a detail tile whose values can be styled individually.
   ///
-  /// Each row is a `(label, value, isLoading)` record; `isLoading` shows the
+  /// Each row is a `({label, value, isLoading})` record; `isLoading` shows the
   /// value as a skeleton while it is still being loaded.
   const DetailTile.rich({super.key, required this.rows});
 
-  final List<(String, InlineSpan, bool)> rows;
+  final List<({String label, InlineSpan value, bool isLoading})> rows;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class DetailTile extends StatelessWidget {
       leadingWidget: const Icon(Icons.bar_chart),
       content: Column(
         children: [
-          for (final (label, value, isLoading) in rows)
+          for (final (:label, :value, :isLoading) in rows)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(
@@ -42,7 +41,7 @@ class DetailTile extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: context.talleeColors.textColor,
                     ),
                   ),
