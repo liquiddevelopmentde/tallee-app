@@ -92,6 +92,18 @@ class MatchProfileBody extends StatelessWidget {
 
         const SizedBox(height: 15),
 
+        // Results
+        InfoTile(
+          title: loc.results,
+          leadingWidget: const Icon(Icons.emoji_events),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: getResultWidget(context, loc),
+          ),
+        ),
+
+        const SizedBox(height: 15),
+
         // Teams / Pairs or Players
         if (match.isTeamMatch) ...[
           // Teams
@@ -182,17 +194,6 @@ class MatchProfileBody extends StatelessWidget {
               description: match.game.ruleset.toLocalizedString(context),
               color: match.game.color,
             ),
-          ),
-        ),
-        const SizedBox(height: 15),
-
-        // Results
-        InfoTile(
-          title: loc.results,
-          leadingWidget: const Icon(Icons.emoji_events),
-          content: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            child: getResultWidget(context, loc),
           ),
         ),
 

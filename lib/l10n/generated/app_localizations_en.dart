@@ -445,9 +445,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get group_name => 'Group name';
 
   @override
-  String get group_profile => 'Group Profile';
-
-  @override
   String get groups => 'Groups';
 
   @override
@@ -565,6 +562,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manage_members => 'Manage Members';
 
   @override
+  String get match => 'Match';
+
+  @override
   String get match_deleted => 'Match deleted';
 
   @override
@@ -576,9 +576,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get match_not_ended_share_warning =>
       'Matches can only be shared once they have ended.';
-
-  @override
-  String get match_profile => 'Match Profile';
 
   @override
   String get match_receive => 'Match Receive';

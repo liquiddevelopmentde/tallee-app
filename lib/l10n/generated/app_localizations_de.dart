@@ -452,9 +452,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group_name => 'Gruppenname';
 
   @override
-  String get group_profile => 'Gruppenprofil';
-
-  @override
   String get groups => 'Gruppen';
 
   @override
@@ -572,6 +569,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
+  String get match => 'Spiel';
+
+  @override
   String get match_deleted => 'Spiel gelöscht';
 
   @override
@@ -583,9 +583,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get match_not_ended_share_warning =>
       'Spiele können erst geteilt werden, wenn sie beendet wurden.';
-
-  @override
-  String get match_profile => 'Spielprofil';
 
   @override
   String get match_receive => 'Spiel empfangen';

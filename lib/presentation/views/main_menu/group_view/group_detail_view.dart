@@ -58,7 +58,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     return Scaffold(
       backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        title: Text(loc.group_profile),
+        title: Text(loc.group),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),
@@ -148,7 +148,32 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 20),
+
+                // Statistics
+                DetailTile(
+                  rows: [
+                    (
+                      label: loc.members,
+                      value: group.members.length.toString(),
+                      isLoading: false,
+                    ),
+                    (
+                      label: loc.played_matches,
+                      value: totalMatches.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.best_player,
+                      value: bestPlayer,
+                      isLoading: isLoading,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
                 InfoTile(
                   title: loc.members,
                   leadingWidget: const Icon(Icons.people),
@@ -177,28 +202,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         )
                         .toList(),
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Statistics
-                DetailTile(
-                  rows: [
-                    (
-                      label: loc.members,
-                      value: group.members.length.toString(),
-                      isLoading: false,
-                    ),
-                    (
-                      label: loc.played_matches,
-                      value: totalMatches.toString(),
-                      isLoading: isLoading,
-                    ),
-                    (
-                      label: loc.best_player,
-                      value: bestPlayer,
-                      isLoading: isLoading,
-                    ),
-                  ],
                 ),
               ],
             ),

@@ -227,10 +227,34 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
 
+                // Statistics
+                DetailTile(
+                  rows: [
+                    (
+                      label: loc.matches_played,
+                      value: totalMatches.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.matches_won,
+                      value: matchesWon.toString(),
+                      isLoading: isLoading,
+                    ),
+                    (
+                      label: loc.winrate,
+                      value:
+                          '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
+                      isLoading: isLoading,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
                 // Groups
                 if (!isPlayerDeleted) ...[
                   InfoTile(
-                    title: '${loc.groups} ($totalGroups)',
+                    title: loc.groups,
                     leadingWidget: const Icon(GROUP_ICON),
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: AppSkeleton(
@@ -279,7 +303,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
                 // Matches
                 InfoTile(
-                  title: '${loc.matches} ($totalMatches)',
+                  title: loc.matches,
                   leadingWidget: const Icon(MATCH_ICON),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -321,29 +345,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             ),
                           ),
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Statistics
-                DetailTile(
-                  rows: [
-                    (
-                      label: loc.matches_played,
-                      value: totalMatches.toString(),
-                      isLoading: isLoading,
-                    ),
-                    (
-                      label: loc.matches_won,
-                      value: matchesWon.toString(),
-                      isLoading: isLoading,
-                    ),
-                    (
-                      label: loc.winrate,
-                      value:
-                          '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
-                      isLoading: isLoading,
-                    ),
-                  ],
                 ),
               ],
             ),
