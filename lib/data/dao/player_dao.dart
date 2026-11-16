@@ -17,7 +17,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// the new one.
   Future<bool> addPlayer({required Player player}) async {
     if (!await playerExists(playerId: player.id)) {
-      final int nameCount = await _processNameCount(name: player.name);
+      final int nameCount = await _getNewNameCount(name: player.name);
 
       await into(playerTable).insert(
         PlayerTableCompanion.insert(
@@ -34,77 +34,17 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return false;
   }
 
-  /// Adds multiple [players] to the database in a batch operation.
-  /// Uses insertOrIgnore to avoid triggering cascade deletes on
-  /// player_group associations when players already exist.
+  /// Adds multiple [players] to the database in one transaction.
   Future<bool> addPlayersAsList({required List<Player> players}) async {
     if (players.isEmpty) return false;
 
-    // Filter out players that already exist
-    final newPlayers = <Player>[];
-    for (final player in players) {
-      if (!await playerExists(playerId: player.id)) {
-        newPlayers.add(player);
+    return transaction(() async {
+      var anyAdded = false;
+      for (final player in players) {
+        if (await addPlayer(player: player)) anyAdded = true;
       }
-    }
-
-    if (newPlayers.isEmpty) return false;
-
-    // Group players by name
-    final nameGroups = <String, List<Player>>{};
-    for (final player in newPlayers) {
-      nameGroups.putIfAbsent(player.name, () => []).add(player);
-    }
-
-    final playersToInsert = <PlayerTableCompanion>[];
-
-    // Process each group of players with the same name
-    for (final entry in nameGroups.entries) {
-      final name = entry.key;
-      final playersWithName = entry.value;
-
-      // Get the current nameCount
-      var nameCount = await _processNameCount(name: name);
-
-      // One player with the same name
-      if (playersWithName.length == 1) {
-        final player = playersWithName[0];
-        playersToInsert.add(
-          PlayerTableCompanion.insert(
-            id: player.id,
-            name: player.name,
-            description: player.description,
-            createdAt: player.createdAt,
-            nameCount: Value(nameCount),
-          ),
-        );
-      } else {
-        if (nameCount == 0) nameCount++;
-        // Multiple players with the same name
-        for (var i = 0; i < playersWithName.length; i++) {
-          final player = playersWithName[i];
-          playersToInsert.add(
-            PlayerTableCompanion.insert(
-              id: player.id,
-              name: player.name,
-              description: player.description,
-              createdAt: player.createdAt,
-              nameCount: Value(nameCount + i),
-            ),
-          );
-        }
-      }
-    }
-
-    await db.batch(
-      (b) => b.insertAll(
-        playerTable,
-        playersToInsert,
-        mode: InsertMode.insertOrReplace,
-      ),
-    );
-
-    return true;
+      return anyAdded;
+    });
   }
 
   /* Read */
@@ -187,6 +127,24 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
         .toList();
   }
 
+  /// Retrieves all [Player]s with the given [name], including deleted ones.
+  Future<List<Player>> getPlayersByName({required String name}) async {
+    final query = select(playerTable)..where((p) => p.name.equals(name));
+    final result = await query.get();
+    return result
+        .map(
+          (row) => Player(
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            createdAt: row.createdAt,
+            nameCount: row.nameCount,
+            deleted: row.deleted,
+          ),
+        )
+        .toList();
+  }
+
   /// Checks, if a player can be safely deleted.
   /// Returns `false`, if a player is in at least one match, else `true`.
   Future<bool> canTrueDelete({required String playerId}) async {
@@ -223,7 +181,7 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     final previousCount = previousPlayer.nameCount;
 
     // Determine the nameCount for the renamed player in the new group.
-    final newNameCount = await _processNameCount(name: name);
+    final newNameCount = await _getNewNameCount(name: name);
 
     final rowsAffected =
         await (update(
@@ -272,26 +230,51 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return rowsAffected > 0;
   }
 
+  /// Checks the count of players with the [deletedPlayer]s name and
+  /// if there is only one player left with name it resets it to 0
+  /// Returns `true` if the count has been resetted, otherwise `false`.
+  Future<bool> cleanUpNameCount({required Player deletedPlayer}) async {
+    final query = (select(playerTable)
+      ..where((tbl) => tbl.name.equals(deletedPlayer.name)));
+    final result = await query.get();
+    final playerAmount = result.length;
+
+    if (playerAmount == 1) {
+      final id = result.first.id;
+      await updateNameCount(playerId: id, nameCount: 0);
+      return true;
+    }
+    return false;
+  }
+
   /* Delete */
 
-  /// Deletes the player with the given [playerId] from the database.
+  /// Deletes the [player] from the database.
   /// - [canTrueDelete] == `false`: Set deleted flag
   /// - [canTrueDelete] == `true`: Delete from database
   ///
   /// Returns `true` if the player was deleted/marked, `false` if the player did
   /// not exist.
-  Future<bool> deletePlayer({required String playerId}) async {
-    if (!await canTrueDelete(playerId: playerId)) {
-      final rowsAffected =
-          await (update(playerTable)..where((tbl) => tbl.id.equals(playerId)))
-              .write(const PlayerTableCompanion(deleted: Value(true)));
-      await db.playerGroupDao.removePlayerFromAllGroups(playerId: playerId);
-      return rowsAffected > 0;
+  Future<bool> deletePlayer({required Player player}) async {
+    if (!await canTrueDelete(playerId: player.id)) {
+      return await transaction(() async {
+        final rowsAffected =
+            await (update(playerTable)
+                  ..where((tbl) => tbl.id.equals(player.id)))
+                .write(const PlayerTableCompanion(deleted: Value(true)));
+        await db.playerGroupDao.removePlayerFromAllGroups(playerId: player.id);
+        return rowsAffected > 0;
+      });
     } else {
-      final rowsAffected = await (delete(
-        playerTable,
-      )..where((tbl) => tbl.id.equals(playerId))).go();
-      return rowsAffected > 0;
+      return await transaction(() async {
+        final rowsAffected = await (delete(
+          playerTable,
+        )..where((tbl) => tbl.id.equals(player.id))).go();
+
+        await cleanUpNameCount(deletedPlayer: player);
+
+        return rowsAffected > 0;
+      });
     }
   }
 
@@ -306,25 +289,39 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// Deletes all players marked as deleted from the database, if they are not associated with any match.
   /// Returns the number of players that were deleted.
   Future<int> purgeSoftDeletedPlayer() async {
-    final deletedPlayers = await (select(
-      playerTable,
-    )..where((tbl) => tbl.deleted.equals(true))).get();
+    final query = (select(playerTable)
+      ..where((tbl) => tbl.deleted.equals(true)));
+    final result = await query.get();
 
-    if (deletedPlayers.isEmpty) return 0;
+    if (result.isEmpty) return 0;
 
-    var removedPlayer = 0;
+    final deletedPlayers = result
+        .map(
+          (p) => Player(
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            createdAt: p.createdAt,
+            nameCount: p.nameCount,
+            deleted: p.deleted,
+          ),
+        )
+        .toList();
+
+    var removedAmount = 0;
     await transaction(() async {
       for (final player in deletedPlayers) {
         if (await canTrueDelete(playerId: player.id)) {
           final rowsAffected = await (delete(
             playerTable,
           )..where((tbl) => tbl.id.equals(player.id))).go();
-          removedPlayer += rowsAffected;
+          removedAmount += rowsAffected;
+          await cleanUpNameCount(deletedPlayer: player);
         }
       }
     });
 
-    return removedPlayer;
+    return removedAmount;
   }
 
   /* Name count management */
@@ -371,24 +368,25 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     return null;
   }
 
-  /// Processes the name count for a new player with the given [name].
-  ///- 0 Player: returning 0
-  ///- 1 Player: returning 2, and initializes the nameCount for the existing player to 1
-  ///- Other: returning the existing count + 1
-  Future<int> _processNameCount({required String name}) async {
-    final nameCount = await calculateNameCount(name: name);
-    if (nameCount == 2) {
-      // If one other player exists with the same name, initialize the nameCount
+  /// Calculates the name count for a new player with [name]. Initalizes the
+  /// name count for the first player if the new one is the second player.
+  Future<int> _getNewNameCount({required String name}) async {
+    final highestPlayer = await getPlayerWithHighestNameCount(name: name);
+    final highestCount = highestPlayer?.nameCount ?? -1;
+    final newCount = await calculateNameCount(name: name);
+
+    if (newCount == 2 && highestCount < 2) {
+      // One other player with name exists
       await initializeNameCount(name: name);
     }
-    return nameCount;
+    return newCount;
   }
 
   @visibleForTesting
   /// Calculates the name count for a new player with the given [name].
   /// - 0 Players: Name count is 0
   /// - 1 Player: Name count is 2 (since the existing player will be 1)
-  /// - Other: Name count is the existing count + 1
+  /// - Other: Find the next free name count in current players with [name]
   Future<int> calculateNameCount({required String name}) async {
     final count = await getNameCount(name: name);
     final int nameCount;
@@ -402,7 +400,18 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
     } else {
       // If more than one player exists with the same name, just increment
       // the nameCount for the new player
-      nameCount = count + 1;
+      final players = await getPlayersByName(name: name);
+
+      // Generate a List<int> from 1 to [count]
+      nameCount = List.generate(count, (i) => i + 1).firstWhere(
+        // Check for every number in the list if no player in players has that
+        // number and return the first number which then is the new nameCount
+        (n) => !players.any((p) => p.nameCount == n),
+
+        // If no nameCount is missing (nameCounts are in consecutive order),
+        // the new name count is the highest nameCount + 1
+        orElse: () => count + 1,
+      );
     }
     return nameCount;
   }

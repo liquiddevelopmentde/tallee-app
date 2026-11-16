@@ -294,15 +294,6 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String matchId,
     required int score,
   }) async {
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-      const TeamTableCompanion(score: Value(null)),
-    );
-    await _deleteAllScoresForMembersOfTeam(teamId: teamId, matchId: matchId);
-
     final rowsAffected =
         await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
           TeamTableCompanion(score: Value(score)),
@@ -331,8 +322,13 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     return true;
   }
 
-  /// Removes the scores for all teams in the match with the given [matchId] by setting their scores to null.
-  Future<bool> removeAllTeamScores({required String matchId}) async {
+  /// Removes the scores for all teams in the match with the given [matchId] by
+  /// setting their scores to null and deleting all player scores.
+  /// If [removeEndedAt] is `true`, the match is marked as ongoing again.
+  Future<bool> removeAllTeamScores({
+    required String matchId,
+    bool removeEndedAt = true,
+  }) async {
     // collect all teamIds for the given matchId from playerMatchTable
     final teamIds =
         await (selectOnly(playerMatchTable)
@@ -350,7 +346,10 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
           await (update(teamTable)..where((t) => t.id.isIn(filteredTeamIds)))
               .write(const TeamTableCompanion(score: Value(null)));
     }
-    await db.scoreEntryDao.deleteAllScoresForMatch(matchId: matchId);
+    await db.scoreEntryDao.deleteAllScoresForMatch(
+      matchId: matchId,
+      removeEndedAt: removeEndedAt,
+    );
     return rowsAffected > 0;
   }
 
@@ -374,43 +373,50 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
   /* Score handling */
 
-  /// Sets the team with the given [teamId] as the winner of the match with the given [matchId] by assigning a score of 1.
-  /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> setWinnerTeam({
-    required String teamId,
-    required String matchId,
-  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 1);
-
   /// Sets multiple teams as winners of the match with the given [matchId] by assigning a score of 1 to each team.
   /// Returns `true` if all scores were updated successfully, `false` otherwise.
   Future<bool> setWinnerTeams({
     required List<Team> winners,
     required String matchId,
   }) async {
-    // Reset all team scores .
-    await removeAllTeamScores(matchId: matchId);
-    // Reset all score entries
-    for (final team in winners) {
-      await _deleteAllScoresForMembersOfTeam(teamId: team.id, matchId: matchId);
-    }
+    // Reset all team scores without reopening the match
+    await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
 
+    var success = true;
     for (final team in winners) {
-      await updateTeamScore(teamId: team.id, matchId: matchId, score: 1);
+      success &= await updateTeamScore(
+        teamId: team.id,
+        matchId: matchId,
+        score: 1,
+      );
     }
-    return true;
+    return success;
   }
 
   /// Removes the winner status from all Teams with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
-  Future<bool> removeWinnerTeam({required String matchId}) async =>
+  Future<bool> removeWinnerTeams({required String matchId}) async =>
       await removeAllTeamScores(matchId: matchId);
 
-  /// Sets the team with the given [teamId] as the loser of the match with the given [matchId] by assigning a score of 0.
+  /// Sets the team with the given [teamId] as the loser of the match with the
+  /// given [matchId] by assigning a score of 0.
   /// Returns `true` if the score was updated successfully, `false` otherwise.
   Future<bool> setLoserTeam({
     required String teamId,
     required String matchId,
-  }) async => await updateTeamScore(teamId: teamId, matchId: matchId, score: 0);
+  }) async {
+    // Reset all team scores without reopening the match
+    await removeAllTeamScores(matchId: matchId, removeEndedAt: false);
+
+    /// Set score of loser team to 0
+    final success = await updateTeamScore(
+      teamId: teamId,
+      matchId: matchId,
+      score: 0,
+    );
+
+    return success;
+  }
 
   /// Removes the loser from the match with the given [matchId] by setting its score to null.
   /// Returns `true` if the score was updated successfully, `false` otherwise.

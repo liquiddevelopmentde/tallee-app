@@ -120,7 +120,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 );
                 if (confirmed != true || !context.mounted) return;
 
-                await db.playerDao.deletePlayer(playerId: widget.player.id);
+                await db.playerDao.deletePlayer(player: widget.player);
                 if (!context.mounted) return;
                 Navigator.pop(context);
                 widget.onPlayerUpdated?.call();
@@ -350,17 +350,18 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                   text: loc.edit_player,
                   icon: Icons.edit,
                   onPressed: () async {
-                    final updatedPlayer = await Navigator.of(context).push(
-                      adaptivePageRoute(
-                        settings: const RouteSettings(
-                          name: RouteNames.editPlayerView,
-                        ),
-                        builder: (context) => EditPlayerView(
-                          playerToEdit: player,
-                          onPlayerChanged: widget.onPlayerUpdated,
-                        ),
-                      ),
-                    );
+                    final updatedPlayer = await Navigator.of(context)
+                        .push<Player?>(
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.editPlayerView,
+                            ),
+                            builder: (context) => EditPlayerView(
+                              playerToEdit: player,
+                              onPlayerUpdated: widget.onPlayerUpdated,
+                            ),
+                          ),
+                        );
                     if (updatedPlayer != null) {
                       setState(() {
                         player = updatedPlayer;

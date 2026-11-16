@@ -3,7 +3,6 @@ import 'dart:core' hide Match;
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/duration_utils.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_colors.dart';
@@ -313,35 +312,17 @@ class _MatchTileState extends State<MatchTile> {
       child: Row(
         spacing: 8,
         children: [
-          getMvpIcon(),
+          Icon(
+            match.game.ruleset.isLoser
+                ? match.game.ruleset.icon
+                : Icons.emoji_events,
+            size: 20,
+            color: context.talleeColors.warningColor,
+          ),
           Expanded(child: winnerTextWidget),
         ],
       ),
     );
-  }
-
-  // Returns the appropriate icon based on the match's ruleset.
-  Icon getMvpIcon() {
-    final icon = widget.match.game.ruleset.icon;
-
-    switch (widget.match.game.ruleset) {
-      case Ruleset.winner:
-        return Icon(icon, size: 20, color: Colors.amber);
-      case Ruleset.loser:
-        return Icon(icon, size: 20, color: Colors.blue);
-      case Ruleset.lowestScore:
-        return Icon(icon, size: 20, color: Colors.orange);
-      case Ruleset.highestScore:
-        return Icon(icon, size: 20, color: Colors.green);
-      case Ruleset.placement:
-        return Icon(icon, size: 20, color: Colors.deepOrangeAccent);
-      case Ruleset.lives:
-        return Icon(icon, size: 20, color: Colors.red);
-      case Ruleset.longestTime:
-        return Icon(icon, size: 20, color: Colors.indigo);
-      case Ruleset.shortestTime:
-        return Icon(icon, size: 20, color: Colors.teal);
-    }
   }
 
   // Returns the appropiate winner text widget
@@ -392,9 +373,7 @@ class _MatchTileState extends State<MatchTile> {
         ruleset.isWinner ||
             ruleset.isHighestScore ||
             ruleset.isLowestScore ||
-            ruleset.isLives ||
-            ruleset == Ruleset.longestTime ||
-            ruleset == Ruleset.shortestTime
+            ruleset.isLives
         ? players
         : [players.first];
 
@@ -416,15 +395,9 @@ class _MatchTileState extends State<MatchTile> {
     }
 
     if (ruleset.usesPoints) {
-      final mvpScore = widget.match.scores[players.first.id]?.change ?? 0;
+      final mvpScore = widget.match.scores[players.first.id]?.score ?? 0;
       children.add(
         TextSpan(text: ' (${getPointLabel(loc, mvpScore)})', style: labelStyle),
-      );
-    } else if (ruleset == Ruleset.longestTime ||
-        ruleset == Ruleset.shortestTime) {
-      final mvpMs = widget.match.scores[players.first.id]?.change ?? 0;
-      children.add(
-        TextSpan(text: ' (${formatTimer(mvpMs)})', style: labelStyle),
       );
     }
 
@@ -454,11 +427,7 @@ class _MatchTileState extends State<MatchTile> {
       color: context.talleeColors.textColor.withAlpha(100),
     );
 
-    final isTimer =
-        ruleset == Ruleset.longestTime || ruleset == Ruleset.shortestTime;
-
-    final score =
-        (ruleset.isHighestScore || ruleset.isLowestScore || isTimer)
+    final score = (ruleset.isHighestScore || ruleset.isLowestScore)
         ? widget.match.teams!
                   .firstWhere((team) => team.id == mvt.first.id)
                   .score ??
@@ -483,11 +452,7 @@ class _MatchTileState extends State<MatchTile> {
             ),
           ],
           if (score != null)
-            TextSpan(
-              text:
-                  ' (${isTimer ? formatTimer(score) : getPointLabel(loc, score)})',
-              style: mainStyle,
-            ),
+            TextSpan(text: ' (${getPointLabel(loc, score)})', style: mainStyle),
         ],
       ),
       maxLines: 1,
