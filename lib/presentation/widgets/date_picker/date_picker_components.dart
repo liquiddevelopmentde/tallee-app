@@ -272,31 +272,27 @@ class _DayCell extends StatelessWidget {
   static DateTime dateOnly(DateTime date) =>
       DateTime(date.year, date.month, date.day);
 
-  static bool isSameDay(DateTime? a, DateTime? b) =>
-      a != null &&
-      b != null &&
-      a.year == b.year &&
-      a.month == b.month &&
-      a.day == b.day;
-
   @override
   Widget build(BuildContext context) {
     final isCurrentMonth =
         cellDate.year == month.year && cellDate.month == month.month;
     final isDisabled = !isCurrentMonth || isDateDisabled(cellDate);
-    final isToday = isSameDay(cellDate, clock.now());
+    final isToday = cellDate.isSameDay(clock.now());
     var isSelected = false;
     var isStart = false;
     var isEnd = false;
     var isInRange = false;
 
     if (selectionMode == DatePickerSelectionMode.single) {
-      isSelected = isCurrentMonth && isSameDay(cellDate, selectedDate);
+      isSelected =
+          isCurrentMonth &&
+          selectedDate != null &&
+          cellDate.isSameDay(selectedDate!);
     } else {
       final start = selectedRange?.startDate;
       final end = selectedRange?.endDate;
-      isStart = isCurrentMonth && isSameDay(cellDate, start);
-      isEnd = isCurrentMonth && isSameDay(cellDate, end);
+      isStart = isCurrentMonth && start != null && cellDate.isSameDay(start);
+      isEnd = isCurrentMonth && end != null && cellDate.isSameDay(end);
       if (start != null && end != null) {
         final day = dateOnly(cellDate);
         isInRange =
