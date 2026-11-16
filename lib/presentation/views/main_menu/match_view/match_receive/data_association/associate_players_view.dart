@@ -75,7 +75,9 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                 margin: AppSpacing.standardMargin,
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 decoration: BoxDecoration(
-                  color: newPlayersCount > 0 ? Colors.orange : Colors.green,
+                  color: newPlayersCount > 0
+                      ? context.talleeColors.warningColor
+                      : context.talleeColors.successColor,
                   borderRadius: AppColors.standardBorderRadiusAll,
                 ),
                 child: Text(
@@ -101,13 +103,15 @@ class _AssociatePlayersViewState extends State<AssociatePlayersView> {
                   final isNew =
                       createAsNewIds.contains(player.id) ||
                       !associations.containsKey(player.id);
+                  final statusColor = isNew
+                      ? context.talleeColors.warningColor
+                      : context.talleeColors.successColor;
 
                   return AssociatePlayerTile(
                     player: player,
                     associatedPlayer: associatedPlayer,
                     isNew: isNew,
-                    borderColor: (isNew ? Colors.orange : Colors.green)
-                        .withAlpha(150),
+                    borderColor: statusColor.withAlpha(150),
                     onTap: () async {
                       final result = await showPlayerSelectionSheet(
                         associatedPlayer,
