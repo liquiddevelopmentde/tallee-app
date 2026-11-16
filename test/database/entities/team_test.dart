@@ -747,7 +747,7 @@ void main() {
       });
 
       test(
-        'finalizeTeamTimers folds totals, mirrors members, ends match',
+        'finalizeTeamTimers folds totals and mirrors members without ending the match',
         () async {
           await database.matchDao.addMatch(match: testMatch1);
           final at = DateTime(2026, 1, 1, 12);
@@ -784,7 +784,7 @@ void main() {
           final match = await database.matchDao.getMatchById(
             matchId: testMatch1.id,
           );
-          expect(match.endedAt, isNotNull);
+          expect(match.endedAt, isNull);
         },
       );
 

@@ -10,6 +10,7 @@ import 'package:tallee/presentation/views/main_menu/match_view/match_result/live
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/placement_drag_list.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_looser_widget.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/select_winner_widget.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/timer_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/state/rate_dialog_provider.dart';
 
@@ -53,8 +54,12 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
+  /// Whether the match uses a time-based ruleset.
+  bool get isTimer =>
+      ruleset == Ruleset.longestTime || ruleset == Ruleset.shortestTime;
+
   bool get canSave {
-    if (ruleset.isPlacement || ruleset.isLives) return true;
+    if (ruleset.isPlacement || ruleset.isLives || isTimer) return true;
     if (selectedPlayers.isNotEmpty || selectedTeams.isNotEmpty) return true;
     return areScoresValid;
   }
@@ -70,6 +75,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Whether the current input differs from the scores stored in the [match].
   bool get hasChangedResult {
+    if (isTimer) return true;
     switch (ruleset) {
       case Ruleset.winner:
       case Ruleset.loser:
@@ -107,7 +113,13 @@ class _MatchResultViewState extends State<MatchResultView> {
         body: Column(
           children: [
             Expanded(
-              child: ruleset.usesNumericScore
+              child: isTimer
+                  ? TimerView(
+                      match: widget.match,
+                      onTimersChanged: () => setState(() {}),
+                      onMatchReopened: widget.onWinnerChanged,
+                    )
+                  : ruleset.usesNumericScore
                   ? ruleset.isLives
                         ? LiveEditView.lives(
                             match: widget.match,
@@ -335,6 +347,10 @@ class _MatchResultViewState extends State<MatchResultView> {
               ),
             ),
           );
+
+        case Ruleset.longestTime:
+        case Ruleset.shortestTime:
+          break;
       }
     } else {
       allPlayers = List.of(widget.match.players);
@@ -364,6 +380,10 @@ class _MatchResultViewState extends State<MatchResultView> {
               ),
             ),
           );
+
+        case Ruleset.longestTime:
+        case Ruleset.shortestTime:
+          break;
       }
     }
   }
@@ -381,6 +401,8 @@ class _MatchResultViewState extends State<MatchResultView> {
       success = await handlePlacement();
     } else if (ruleset.isLives) {
       success = await handleLives();
+    } else if (isTimer) {
+      success = await handleTimers();
     }
 
     widget.onWinnerChanged?.call();
@@ -513,6 +535,23 @@ class _MatchResultViewState extends State<MatchResultView> {
       }
     }
     return success;
+  }
+
+  /// Stops all running timers and persists their final totals. For team
+  /// matches this also mirrors each team total into its members' score entries.
+  Future<bool> handleTimers() async {
+    if (useTeamLogic) {
+      await db.teamDao.finalizeTeamTimers(
+        matchId: widget.match.id,
+        teamIds: allTeams.map((team) => team.id).toList(),
+      );
+    } else {
+      await db.scoreEntryDao.stopAllTimers(
+        matchId: widget.match.id,
+        at: DateTime.now(),
+      );
+    }
+    return true;
   }
 
   String getTitleForRuleset(AppLocalizations loc) {
