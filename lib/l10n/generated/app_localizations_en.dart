@@ -414,9 +414,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get games => 'Games';
 
   @override
-  String get match => 'Match';
-
-  @override
   String get general => 'General';
 
   @override
@@ -554,6 +551,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manage_members => 'Manage Members';
+
+  @override
+  String get match => 'Match';
 
   @override
   String get match_deleted => 'Match deleted';

@@ -831,12 +831,6 @@ abstract class AppLocalizations {
   /// **'Games'**
   String get games;
 
-  /// No description provided for @match.
-  ///
-  /// In en, this message translates to:
-  /// **'Match'**
-  String get match;
-
   /// No description provided for @general.
   ///
   /// In en, this message translates to:
@@ -1082,6 +1076,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Members'**
   String get manage_members;
+
+  /// No description provided for @match.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get match;
 
   /// No description provided for @match_deleted.
   ///
