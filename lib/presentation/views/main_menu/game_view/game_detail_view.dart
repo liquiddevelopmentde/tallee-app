@@ -61,7 +61,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     return Scaffold(
       backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        title: Text(loc.game_profile),
+        title: Text(loc.game),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),
