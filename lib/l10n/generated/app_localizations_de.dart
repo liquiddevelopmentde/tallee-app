@@ -421,9 +421,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_name => 'Spielvorlagenname';
 
   @override
-  String get game_profile => 'Spielvorlagenprofil';
-
-  @override
   String get games => 'Spielvorlagen';
 
   @override

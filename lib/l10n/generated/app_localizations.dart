@@ -831,12 +831,6 @@ abstract class AppLocalizations {
   /// **'Game Name'**
   String get game_name;
 
-  /// No description provided for @game_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Game Profile'**
-  String get game_profile;
-
   /// No description provided for @games.
   ///
   /// In en, this message translates to:

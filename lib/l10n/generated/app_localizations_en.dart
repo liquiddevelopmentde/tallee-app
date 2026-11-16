@@ -414,9 +414,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_name => 'Game Name';
 
   @override
-  String get game_profile => 'Game Profile';
-
-  @override
   String get games => 'Games';
 
   @override
