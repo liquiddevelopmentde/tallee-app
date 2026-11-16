@@ -11,7 +11,8 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/scanner_error_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/status_error_overlay.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
@@ -152,7 +153,7 @@ class _QrScanComponentState extends State<QrScanComponent>
                                       children: [...previousChildren, ?child],
                                     ),
                                 child: showError
-                                    ? _ScannerErrorView(
+                                    ? ScannerErrorView(
                                         key: const ValueKey('scannerError'),
                                         errorCode: errorCode,
                                         onOpenSettingsPressed:
@@ -162,7 +163,7 @@ class _QrScanComponentState extends State<QrScanComponent>
                                         key: ValueKey('scannerRunning'),
                                       ),
                               ),
-                              _StatusErrorOverlay(
+                              StatusErrorOverlay(
                                 isProcessing: _isProcessing,
                                 errorMessage: _errorMessage,
                               ),
@@ -339,131 +340,5 @@ class _QrScanComponentState extends State<QrScanComponent>
         _errorMessage = null;
       });
     }
-  }
-}
-
-class _ScannerErrorView extends StatelessWidget {
-  final MobileScannerErrorCode errorCode;
-  final VoidCallback onOpenSettingsPressed;
-
-  const _ScannerErrorView({
-    super.key,
-    required this.errorCode,
-    required this.onOpenSettingsPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context);
-    final message = switch (errorCode) {
-      MobileScannerErrorCode.permissionDenied => loc.camera_permission_denied,
-      MobileScannerErrorCode.unsupported => loc.camera_unsupported,
-      _ => loc.camera_error,
-    };
-
-    return ColoredBox(
-      color: Colors.black,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: context.talleeColors.errorColor,
-                size: 40,
-              ),
-              const SizedBox(height: 15),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  overflow: TextOverflow.visible,
-                ),
-                softWrap: true,
-              ),
-              if (errorCode == MobileScannerErrorCode.permissionDenied) ...[
-                const SizedBox(height: 20),
-                FloatingAnimatedButton(
-                  text: loc.open_settings,
-                  icon: Icons.settings,
-                  compact: true,
-                  onPressed: onOpenSettingsPressed,
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusErrorOverlay extends StatelessWidget {
-  final bool isProcessing;
-  final String? errorMessage;
-
-  const _StatusErrorOverlay({required this.isProcessing, this.errorMessage});
-
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context);
-    return Positioned.fill(
-      child: AnimatedOpacity(
-        opacity: isProcessing ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        child: IgnorePointer(
-          ignoring: !isProcessing,
-          child: Container(
-            color: Colors.black.withValues(alpha: 0.7),
-            padding: const EdgeInsets.all(20),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (errorMessage != null) ...[
-                    Icon(
-                      Icons.error_outline,
-                      color: context.talleeColors.errorColor,
-                      size: 40,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        overflow: TextOverflow.visible,
-                      ),
-                      softWrap: true,
-                    ),
-                  ] else if (isProcessing) ...[
-                    const CircularProgressIndicator(
-                      color: AppColors.primaryColor,
-                      strokeWidth: 4,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      loc.loading_match,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
