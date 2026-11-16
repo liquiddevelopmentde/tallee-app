@@ -57,7 +57,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     return Scaffold(
       backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        title: Text(loc.group_profile),
+        title: Text(loc.group),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),

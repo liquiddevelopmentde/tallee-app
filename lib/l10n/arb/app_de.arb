@@ -150,6 +150,7 @@
   "game_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
+  "match": "Spiel",
   "general": "Allgemein",
   "get_started": "Los geht's!",
   "group": "Gruppe",
@@ -158,7 +159,6 @@
   "group_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.",
   "group_members": "Gruppenmitglieder",
   "group_name": "Gruppenname",
-  "group_profile": "Gruppenprofil",
   "groups": "Gruppen",
   "here_is_shared_match": "Hier ist das geteilte Match \"{matchName}\"",
   "@here_is_shared_match": {

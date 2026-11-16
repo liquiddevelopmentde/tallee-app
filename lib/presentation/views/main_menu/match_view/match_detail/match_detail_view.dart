@@ -53,7 +53,7 @@ class _MatchDetailViewState extends State<MatchDetailView> {
     return Scaffold(
       backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        title: Text(loc.match_profile),
+        title: Text(loc.match),
         actions: [
           PullDownMenuButton(
             items: [
