@@ -257,10 +257,10 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
   /// not exist.
   ///
   /// Groups that would be left with fewer than two members after the deletion
-  /// are deleted as well, since groups require at least two members.
+  /// are deleted as well.
   Future<bool> deletePlayer({required Player player}) async => transaction(
     () async {
-      await _deleteGroupsLeftWithTooFewMembers(playerId: player.id);
+      await deleteOrphanedGroupsForPlayer(playerId: player.id);
 
       if (!await canTrueDelete(playerId: player.id)) {
         final rowsAffected =
@@ -283,16 +283,11 @@ class PlayerDao extends DatabaseAccessor<AppDatabase> with _$PlayerDaoMixin {
 
   /// Deletes all groups the player with [playerId] belongs to that would be
   /// left with fewer than two members after the player is removed.
-  Future<void> _deleteGroupsLeftWithTooFewMembers({
-    required String playerId,
-  }) async {
+  Future<void> deleteOrphanedGroupsForPlayer({required String playerId}) async {
     final groups = await db.groupDao.getGroupsByPlayer(playerId: playerId);
 
     for (final group in groups) {
-      final remainingMemberCount = group.members
-          .where((member) => member.id != playerId)
-          .length;
-      if (remainingMemberCount < 2) {
+      if (group.members.length <= 2) {
         await db.groupDao.deleteGroup(groupId: group.id);
       }
     }
