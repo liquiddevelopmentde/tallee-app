@@ -915,6 +915,12 @@ abstract class AppLocalizations {
   /// **'Highest Score'**
   String get highest_score;
 
+  /// No description provided for @highest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Points are counted, the highest score wins.'**
+  String get highest_score_description;
+
   /// No description provided for @import_canceled.
   ///
   /// In en, this message translates to:
@@ -1065,6 +1071,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{Life} other{Lives}}'**
   String lives(int count);
 
+  /// No description provided for @lives_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone starts with lives, players with lives left win.'**
+  String get lives_description;
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:
@@ -1083,11 +1095,23 @@ abstract class AppLocalizations {
   /// **'Loser'**
   String get loser;
 
+  /// No description provided for @loser_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose the loser after the match.'**
+  String get loser_description;
+
   /// No description provided for @lowest_score.
   ///
   /// In en, this message translates to:
   /// **'Lowest Score'**
   String get lowest_score;
+
+  /// No description provided for @lowest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Points are counted, the lowest score wins.'**
+  String get lowest_score_description;
 
   /// No description provided for @manage_members.
   ///
@@ -1490,6 +1514,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Placement'**
   String get placement;
+
+  /// No description provided for @placement_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You rank all players from first to last.'**
+  String get placement_description;
 
   /// No description provided for @played_matches.
   ///
@@ -2240,6 +2270,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Winner'**
   String get winner;
+
+  /// No description provided for @winner_description.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose the winner(s) after the match.'**
+  String get winner_description;
 
   /// No description provided for @winrate.
   ///
