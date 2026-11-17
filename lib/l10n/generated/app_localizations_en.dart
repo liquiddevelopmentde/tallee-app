@@ -63,6 +63,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get camera_error => 'An error occurred while accessing the camera.';
+
+  @override
+  String get camera_permission_denied =>
+      'Camera permission is required to scan QR codes. Please allow camera access in your device settings.';
+
+  @override
+  String get camera_unsupported =>
+      'Scanning QR codes is not supported on this device.';
+
+  @override
   String get choose_color_description => 'Choose the color for your game.';
 
   @override
@@ -297,6 +308,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enable => 'Enable';
 
   @override
+  String get end_match => 'End Match';
+
+  @override
   String get enter_results => 'Enter Results';
 
   @override
@@ -345,6 +359,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_report_info_text =>
       'Reporting an error helps us identify and fix problems in Tallee!';
+
+  @override
+  String get error_saving_results => 'Error saving results, please try again.';
 
   @override
   String get error_sending_feedback =>
@@ -431,9 +448,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get group_name => 'Group name';
-
-  @override
-  String get group_profile => 'Group Profile';
 
   @override
   String get groups => 'Groups';
@@ -550,6 +564,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manage_members => 'Manage Members';
 
   @override
+  String get match => 'Match';
+
+  @override
   String get match_deleted => 'Match deleted';
 
   @override
@@ -561,9 +578,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get match_not_ended_share_warning =>
       'Matches can only be shared once they have ended.';
-
-  @override
-  String get match_profile => 'Match Profile';
 
   @override
   String get match_receive => 'Match Receive';

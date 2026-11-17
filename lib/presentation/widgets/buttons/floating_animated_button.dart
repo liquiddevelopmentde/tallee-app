@@ -10,18 +10,21 @@ class FloatingAnimatedButton extends StatefulWidget {
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
   /// - [onLongPressed]: The callback to be invoked when the button is pressed longer
+  /// - [compact]: Whether to use reduced padding and content sizing.
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
     this.text,
     this.onLongPressed,
+    this.compact = false,
   });
 
   final void Function()? onPressed;
   final IconData icon;
   final String? text;
   final void Function()? onLongPressed;
+  final bool compact;
 
   @override
   State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
@@ -95,6 +98,10 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         : textColor;
 
     final fgColor = textColor.contrastTextColor;
+    final iconSize = widget.compact ? 20.0 : 26.0;
+    final horizontalPadding = widget.compact ? 14.0 : 20.0;
+    final verticalPadding = widget.compact ? 10.0 : 14.0;
+    final textSize = widget.compact ? 16.0 : 18.0;
 
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
@@ -144,18 +151,21 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             color: bgColor,
             borderRadius: BorderRadius.circular(30),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, size: 26, color: fgColor),
+              Icon(widget.icon, size: iconSize, color: fgColor),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
                   widget.text!,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: textSize,
                     fontWeight: FontWeight.bold,
                     color: fgColor,
                   ),
