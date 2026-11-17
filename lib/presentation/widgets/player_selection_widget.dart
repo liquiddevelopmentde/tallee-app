@@ -101,8 +101,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   final Set<String> recentlyAddedPlayerIds = {};
 
   final TextEditingController searchBarController = TextEditingController();
-  final FocusNode searchBarFocusNode = FocusNode();
-  bool isSearchBarFocused = false;
 
   final ScrollController selectedUnitsScrollController = ScrollController();
 
@@ -135,7 +133,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   @override
   void dispose() {
     searchBarController.dispose();
-    searchBarFocusNode.dispose();
     selectedUnitsScrollController.dispose();
     super.dispose();
   }
@@ -145,8 +142,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     super.initState();
     db = context.read<AppDatabase>();
     suggestedPlayers = skeletonData;
-
-    searchBarFocusNode.addListener(handleSearchBarFocusChange);
 
     if (widget.mode == SelectionMode.single) {
       selectedPlayer = widget.initialSelectedPlayer;
@@ -166,13 +161,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       suggestedPlayers = skeletonData;
       loadPlayerList();
     }
-  }
-
-  void handleSearchBarFocusChange() {
-    if (!mounted) {
-      return;
-    }
-    setState(() => isSearchBarFocused = searchBarFocusNode.hasFocus);
   }
 
   void initializeWithAvailablePlayers() {
@@ -258,21 +246,22 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                               width: double.infinity,
                               height: 0,
                             ),
-                            crossFadeState: isSearchBarFocused
+                            crossFadeState:
+                                searchBarController.text.trim().isNotEmpty
                                 ? CrossFadeState.showSecond
                                 : CrossFadeState.showFirst,
                           ),
                         ],
                       ),
                     ),
-                  ],
-                  Text(
-                    loc.all_players,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    Text(
+                      loc.all_players,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  ],
                   Expanded(
                     child: Visibility(
                       visible: suggestedPlayers.isNotEmpty,
@@ -294,7 +283,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   Widget buildSearchBar(AppLocalizations loc) => CustomSearchBar(
     maxLength: MAX_PLAYER_NAME_LENGTH,
     controller: searchBarController,
-    focusNode: searchBarFocusNode,
     constraints: const BoxConstraints(maxHeight: 45, minHeight: 45),
     hintText: loc.search_for_players,
     trailingButtonShown: true,
