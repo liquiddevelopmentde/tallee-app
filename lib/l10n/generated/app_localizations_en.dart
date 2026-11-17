@@ -63,6 +63,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get camera_error => 'An error occurred while accessing the camera.';
+
+  @override
+  String get camera_permission_denied =>
+      'Camera permission is required to scan QR codes. Please allow camera access in your device settings.';
+
+  @override
+  String get camera_unsupported =>
+      'Scanning QR codes is not supported on this device.';
+
+  @override
   String get choose_color_description => 'Choose the color for your game.';
 
   @override
