@@ -14,6 +14,7 @@ class SelectionSheet<T> extends StatefulWidget {
   /// - [selectedValue]: A pre selected value when opening the sheet
   /// - [onValueUpdated]: A callback when a value is selected
   /// - [labelBuilder]: The builder for the text label
+  /// - [subtitleBuilder]: The builder for an optional subtitle below the label
   /// - [leadingBuilder]: The builder for the leading Widget
   const SelectionSheet({
     super.key,
@@ -23,6 +24,7 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.selectedValue,
     required this.onValueUpdated,
     required this.labelBuilder,
+    this.subtitleBuilder,
     this.leadingBuilder,
   }) : selectedValues = const [],
        onValuesUpdated = null,
@@ -37,6 +39,7 @@ class SelectionSheet<T> extends StatefulWidget {
   /// - [selectedValues]: A list of pre selected values when opening the sheet
   /// - [onValuesUpdated]: A callback when values are selected
   /// - [labelBuilder]: The builder for the text label
+  /// - [subtitleBuilder]: The builder for an optional subtitle below the label
   /// - [leadingBuilder]: The builder for the leading Widget
   const SelectionSheet.multiple({
     super.key,
@@ -46,6 +49,7 @@ class SelectionSheet<T> extends StatefulWidget {
     required this.selectedValues,
     required this.onValuesUpdated,
     required this.labelBuilder,
+    this.subtitleBuilder,
     this.leadingBuilder,
     this.exclusivePairs = const [],
   }) : selectedValue = null,
@@ -58,6 +62,7 @@ class SelectionSheet<T> extends StatefulWidget {
   final List<(T, T)> exclusivePairs;
 
   final String Function(BuildContext context, T value) labelBuilder;
+  final String Function(BuildContext context, T value)? subtitleBuilder;
   final Widget Function(T value)? leadingBuilder;
 
   final T? selectedValue;
@@ -159,17 +164,38 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
                     decoration: context.standardBoxDecoration,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      spacing: 12,
                       children: [
-                        Row(
-                          spacing: 12,
-                          children: [
-                            // Leading widget
-                            if (widget.leadingBuilder != null)
-                              widget.leadingBuilder!(value),
+                        Expanded(
+                          child: Row(
+                            spacing: 12,
+                            children: [
+                              // Leading widget
+                              if (widget.leadingBuilder != null)
+                                widget.leadingBuilder!(value),
 
-                            // Label
-                            Text(widget.labelBuilder(context, value)),
-                          ],
+                              // Label & optional subtitle
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(widget.labelBuilder(context, value)),
+                                    if (widget.subtitleBuilder != null)
+                                      Text(
+                                        widget.subtitleBuilder!(context, value),
+                                        softWrap: true,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: context.talleeColors.hintColor,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
 
                         if (!widget.isMultiSelection)
