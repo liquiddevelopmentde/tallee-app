@@ -46,7 +46,7 @@ class _GroupTileState extends State<GroupTile> {
       },
       child: AnimatedContainer(
         margin: AppSpacing.tileMargin,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        padding: AppSpacing.tilePadding,
         decoration: widget.isHighlighted
             ? context.highlightedBoxDecoration
             : context.standardBoxDecoration.copyWith(

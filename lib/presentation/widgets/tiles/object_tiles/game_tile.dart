@@ -55,12 +55,9 @@ class GameTile extends StatelessWidget {
       },
       child: AnimatedContainer(
         margin: AppSpacing.tileMargin,
-        padding: EdgeInsets.only(
-          top: 12,
-          bottom: 12,
-          left: 12,
+        padding: AppSpacing.tilePadding.copyWith(
           // When chevron is shown, we need less padding
-          right: showChevron ? 8 : 12,
+          right: showChevron ? 8 : AppSpacing.tilePadding.right,
         ),
         decoration: !isHighlighted
             ? context.standardBoxDecoration
