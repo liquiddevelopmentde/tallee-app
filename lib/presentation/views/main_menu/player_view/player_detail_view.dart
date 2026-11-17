@@ -231,10 +231,24 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 ),
                 const SizedBox(height: 20),
 
+                // Statistics
+                DetailTile(
+                  rows: [
+                    (loc.matches_played, totalMatches.toString()),
+                    (loc.matches_won, matchesWon.toString()),
+                    (
+                      loc.winrate,
+                      '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
                 // Groups
                 if (!isPlayerDeleted) ...[
                   InfoTile(
-                    title: '${loc.groups} ($totalGroups)',
+                    title: loc.groups,
                     leadingWidget: const Icon(GROUP_ICON),
                     horizontalAlignment: CrossAxisAlignment.start,
                     content: AppSkeleton(
@@ -283,7 +297,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
                 // Matches
                 InfoTile(
-                  title: '${loc.matches} ($totalMatches)',
+                  title: loc.matches,
                   leadingWidget: const Icon(MATCH_ICON),
                   horizontalAlignment: CrossAxisAlignment.start,
                   content: AppSkeleton(
@@ -325,19 +339,6 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                             ),
                           ),
                   ),
-                ),
-                const SizedBox(height: 15),
-
-                // Statistics
-                DetailTile(
-                  rows: [
-                    (loc.matches_played, totalMatches.toString()),
-                    (loc.matches_won, matchesWon.toString()),
-                    (
-                      loc.winrate,
-                      '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
-                    ),
-                  ],
                 ),
               ],
             ),

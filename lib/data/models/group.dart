@@ -15,12 +15,13 @@ class Group {
   Group({
     required this.name,
     required this.members,
-    this.color = AppColor.orange,
+    AppColor? color,
     String? id,
     DateTime? createdAt,
     String? description,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
+       color = color ?? AppColor.randomColor(),
        description = description ?? '';
 
   @override

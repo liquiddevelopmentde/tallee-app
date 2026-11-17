@@ -498,6 +498,7 @@ class _StatisticsViewState extends State<StatisticsView> {
     return GestureDetector(
       key: ValueKey(statistic.id),
       onTap: () async {
+        Haptics.selectionClick();
         if (!context.mounted) return;
         final navigator = Navigator.of(context);
         await navigator.push(

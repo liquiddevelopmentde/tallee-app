@@ -141,9 +141,7 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
         Flexible(
           child: RadioGroup<T>(
             groupValue: selectedValue,
-            onChanged: (value) {
-              if (value != null) handleValueSelection(value);
-            },
+            onChanged: handleValueSelection,
             child: ListView.separated(
               shrinkWrap: true,
               separatorBuilder: (_, _) => const SizedBox(height: 12),
@@ -221,11 +219,13 @@ class _SelectionSheetState<T> extends State<SelectionSheet<T>> {
   );
 
   /// Handles the general value selection
-  Future<void> handleValueSelection(T value) async {
+  Future<void> handleValueSelection(T? value) async {
     unawaited(HapticFeedback.selectionClick());
     if (!widget.isMultiSelection && value == selectedValue) return;
 
-    widget.isMultiSelection ? onValuesChanged(value) : onValueChanged(value);
+    widget.isMultiSelection
+        ? onValuesChanged(value as T)
+        : onValueChanged(value);
 
     // Pop sheet
     if (!widget.isMultiSelection) {
