@@ -359,6 +359,8 @@ class _CreateGameViewState extends State<CreateGameView> {
         leadingBuilder: (Ruleset rs) => Icon(rs.icon, size: 22),
         labelBuilder: (BuildContext ctx, Ruleset rs) =>
             rs.toLocalizedString(ctx),
+        subtitleBuilder: (BuildContext ctx, Ruleset rs) =>
+            rs.toLocalizedDescription(ctx),
         onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
       ),
     );
