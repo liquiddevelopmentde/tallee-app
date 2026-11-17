@@ -86,7 +86,7 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
                 child: TabBarView(
                   controller: tabController,
                   children: [
-                    const QrScanComponent(),
+                    QrScanComponent(tabController: tabController),
                     const EnterTokenComponent(),
                     ImportFileCard(initialFilePath: widget.initialFilePath),
                   ],
