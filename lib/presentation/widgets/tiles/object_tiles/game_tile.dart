@@ -11,7 +11,6 @@ class GameTile extends StatelessWidget {
   /// - [game]: The game object displayed on the tile.
   /// - [gameCount]: How many matches use this game.
   /// - [onTap]: The callback invoked when the tile is tapped.
-  /// - [onLongPress]: The callback invoked when the tile is long pressed.
   /// - [isHighlighted]: A boolean to determine if the tile should be highlighted.
   /// - [borderColor]: Optional color for the highlight border. If null gamecolor is used.
   const GameTile({
@@ -19,7 +18,6 @@ class GameTile extends StatelessWidget {
     required this.game,
     this.gameCount,
     this.onTap,
-    this.onLongPress,
     this.isHighlighted = false,
     this.borderColor,
   });
@@ -27,7 +25,6 @@ class GameTile extends StatelessWidget {
   final Game game;
   final int? gameCount;
   final VoidCallback? onTap;
-  final VoidCallback? onLongPress;
   final bool isHighlighted;
   final Color? borderColor;
 
@@ -38,7 +35,6 @@ class GameTile extends StatelessWidget {
     final ruleset = game.ruleset.toLocalizedString(context);
     final gameColor = game.color.colorValue(context);
     final highlightBorderColor = borderColor ?? gameColor;
-    final showChevron = onLongPress != null;
 
     return GestureDetector(
       onTap: () {
@@ -47,18 +43,9 @@ class GameTile extends StatelessWidget {
           onTap!.call();
         }
       },
-      onLongPress: () {
-        Haptics.heavyImpact();
-        if (onLongPress != null) {
-          onLongPress!.call();
-        }
-      },
       child: AnimatedContainer(
         margin: AppSpacing.tileMargin,
-        padding: AppSpacing.tilePadding.copyWith(
-          // When chevron is shown, we need less padding
-          right: showChevron ? 8 : AppSpacing.tilePadding.right,
-        ),
+        padding: AppSpacing.tilePadding,
         decoration: !isHighlighted
             ? context.standardBoxDecoration
             : context.highlightedBoxDecoration.copyWith(
@@ -69,98 +56,84 @@ class GameTile extends StatelessWidget {
                 ),
               ),
         duration: const Duration(milliseconds: 200),
-        child: Row(
-          spacing: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Title row
-                  Row(
-                    spacing: 8,
+            // Title row
+            Row(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Colored Icon
+                ColoredIconContainer(
+                  icon: game.ruleset.icon,
+                  color: gameColor,
+                  margin: EdgeInsets.zero,
+                ),
+
+                // Title & Ruleset
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Colored Icon
-                      ColoredIconContainer(
-                        icon: game.ruleset.icon,
-                        color: gameColor,
-                        margin: EdgeInsets.zero,
-                      ),
-
-                      // Title & Ruleset
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Title
-                            Text(
-                              title,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: false,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-
-                            // Ruleset
-                            Text(
-                              ruleset,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              softWrap: false,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: context.talleeColors.hintColor,
-                              ),
-                            ),
-                          ],
+                      // Title
+                      Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
 
-                      // Gamecount
-                      if (gameCount != null)
-                        Row(
-                          spacing: 8,
-                          children: [
-                            const Icon(MATCH_ICON),
-                            Text(
-                              gameCount.toString(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                      // Ruleset
+                      Text(
+                        ruleset,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.talleeColors.hintColor,
                         ),
+                      ),
                     ],
                   ),
+                ),
 
-                  // Description
-                  if (description.isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Padding(
-                      // Padding to keep the visual start correct
-                      padding: const EdgeInsets.only(left: 2),
-                      child: Text(
-                        description,
-                        style: const TextStyle(fontSize: 14),
-                        overflow: TextOverflow.visible,
+                // Gamecount
+                if (gameCount != null)
+                  Row(
+                    spacing: 8,
+                    children: [
+                      const Icon(MATCH_ICON),
+                      Text(
+                        gameCount.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    const SizedBox(height: 2.5),
-                  ],
-                ],
-              ),
+                    ],
+                  ),
+              ],
             ),
 
-            // Chevron
-            if (showChevron)
-              Icon(Icons.chevron_right, color: context.talleeColors.hintColor),
+            // Description
+            if (description.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Padding(
+                // Padding to keep the visual start correct
+                padding: const EdgeInsets.only(left: 2),
+                child: Text(
+                  description,
+                  style: const TextStyle(fontSize: 14),
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+              const SizedBox(height: 2.5),
+            ],
           ],
         ),
       ),
