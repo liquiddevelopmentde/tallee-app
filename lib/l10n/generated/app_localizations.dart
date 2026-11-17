@@ -201,6 +201,24 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// No description provided for @camera_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while accessing the camera.'**
+  String get camera_error;
+
+  /// No description provided for @camera_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR codes. Please allow camera access in your device settings.'**
+  String get camera_permission_denied;
+
+  /// No description provided for @camera_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning QR codes is not supported on this device.'**
+  String get camera_unsupported;
+
   /// No description provided for @choose_color_description.
   ///
   /// In en, this message translates to:
