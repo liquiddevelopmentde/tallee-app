@@ -9,6 +9,7 @@ import 'package:tallee/core/theme/app_spacing.dart';
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
   /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
+  ///   Has to return true or false for the buttons success/error state.
   /// - [text]: The text of the button.
   /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
@@ -32,7 +33,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
          'sizeRelativeToWidth must be 0 < size <= 1',
        );
 
-  final Future<void> Function()? onPressed;
+  final Future<bool> Function()? onPressed;
   final String? text;
   final BoxConstraints? buttonConstraints;
   final double? sizeRelativeToWidth;
@@ -209,39 +210,26 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
       buttonState = ApiButtonState.loading;
     });
 
+    bool isSuccess;
     try {
-      await widget.onPressed!();
+      isSuccess = await widget.onPressed!();
+    } catch (_) {
+      isSuccess = false;
+    }
 
-      if (mounted) {
-        setState(() {
-          buttonState = ApiButtonState.success;
-        });
-        Haptics.heavyImpact();
+    if (!mounted) return;
 
-        // Fire and forget reset
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              buttonState = ApiButtonState.idle;
-            });
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          buttonState = ApiButtonState.error;
-        });
+    setState(() {
+      buttonState = isSuccess ? ApiButtonState.success : ApiButtonState.error;
+    });
+    Haptics.heavyImpact();
 
-        Haptics.heavyImpact();
+    await Future.delayed(const Duration(seconds: 2));
 
-        await Future.delayed(const Duration(seconds: 2));
-        if (mounted) {
-          setState(() {
-            buttonState = ApiButtonState.idle;
-          });
-        }
-      }
+    if (mounted) {
+      setState(() {
+        buttonState = ApiButtonState.idle;
+      });
     }
   }
 
