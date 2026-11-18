@@ -187,9 +187,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
           text: loc.import_match,
           sizeRelativeToWidth: 0.9,
           onPressed: validateToken(tokenInputFieldController.text)
-              ? () async {
-                  await handleApiMatchRequest(tokenInputFieldController.text);
-                }
+              ? () => handleApiMatchRequest(tokenInputFieldController.text)
               : null,
         ),
       ],
@@ -205,34 +203,44 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
     return '';
   }
 
-  Future<void> handleApiMatchRequest(String token) async {
+  Future<bool> handleApiMatchRequest(String token) async {
     final loc = AppLocalizations.of(context);
 
     try {
       final response = await RemoteShareService().getMatchByToken(
         tokenInputFieldController.text,
       );
-      isTokenValid = true;
+
+      if (!mounted) return false;
 
       // If an import error occured
-      if (!response.result.isSuccess && mounted) {
-        errorMessage = response.result.toLocalizedMatchImportString(context);
-      } else {
+      if (!response.result.isSuccess) {
         setState(() {
-          isMatchValid = true;
-          match = response.match!;
+          isTokenValid = true;
+          isMatchValid = false;
+          errorMessage = response.result.toLocalizedMatchImportString(context);
         });
-        if (mounted) {
-          Navigator.of(context).push(
-            adaptivePageRoute(
-              settings: const RouteSettings(name: RouteNames.previewMatchView),
-              builder: (_) => PreviewMatchView(match: match),
-              fullscreenDialog: true,
-            ),
-          );
-        }
+        return false;
       }
+
+      setState(() {
+        isTokenValid = true;
+        isMatchValid = true;
+        match = response.match!;
+      });
+
+      Navigator.of(context).push(
+        adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.previewMatchView),
+          builder: (_) => PreviewMatchView(match: match),
+          fullscreenDialog: true,
+        ),
+      );
+
+      return true;
     } catch (error) {
+      if (!mounted) return false;
+
       if (error is NetworkException) {
         errorMessage = loc.network_error;
         setState(() => isMatchValid = false);
@@ -254,7 +262,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         setState(() => isMatchValid = false);
       }
 
-      rethrow; // redirect error to button
+      return false;
     }
   }
 
