@@ -281,13 +281,14 @@ class _QrScanComponentState extends State<QrScanComponent>
     try {
       final response = await RemoteShareService().getMatchByToken(token);
 
+      if (!mounted) return;
+
       // If an import error occured
-      if (!response.result.isSuccess && mounted) {
+      if (!response.result.isSuccess) {
         final message = response.result.toLocalizedMatchImportString(context);
         await displayErrorMessage(message);
       } else {
         final loadedMatch = response.match!;
-        if (!mounted) return;
 
         await Navigator.of(context).push(
           adaptivePageRoute(
