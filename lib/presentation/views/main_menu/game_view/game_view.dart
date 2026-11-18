@@ -248,7 +248,6 @@ class _GameViewState extends State<GameView> with RouteAware {
             ],
           ),
           // Outside the skeleton so it is not cross-faded on loading changes
-
           Positioned(
             bottom: AppSpacing.floatingButtonBottom(context),
             child: CustomShowcaseWidget(
