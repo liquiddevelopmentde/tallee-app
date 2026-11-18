@@ -85,8 +85,6 @@ class LocalShareService {
         return ExportResult.success;
       }
     } catch (e, stack) {
-      print('[exportData] $e');
-      print(stack);
       unawaited(
         Sentry.captureException(
           e,
@@ -131,10 +129,7 @@ class LocalShareService {
     final String jsonString;
     try {
       jsonString = await file.readAsString();
-    } on Exception catch (e, stack) {
-      print('[getDataFromPath] Failed to read file');
-      print('[getDataFromPath] $e');
-      print(stack);
+    } on Exception catch (_) {
       return (ImportResult.fileReadError, null);
     }
 
@@ -191,15 +186,9 @@ class LocalShareService {
         }
         return (ImportResult.success, decoded);
       }
-    } on FormatException catch (e, stack) {
-      print('[validateJson] FormatException');
-      print('[validateJson] $e');
-      print(stack);
+    } on FormatException catch (_) {
       return (ImportResult.formatException, null);
     } catch (e, stack) {
-      print('[validateJson] Exception');
-      print('[validateJson] $e');
-      print(stack);
       unawaited(
         Sentry.captureException(
           e,
@@ -228,9 +217,6 @@ class LocalShareService {
       await importDataToDatabase(db, decoded);
       return ImportResult.success;
     } catch (e, stack) {
-      print('[commitImport] Failed to write data');
-      print('[commitImport] $e');
-      print(stack);
       unawaited(
         Sentry.captureException(
           e,
