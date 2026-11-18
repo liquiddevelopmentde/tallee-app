@@ -61,9 +61,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get best_score => 'Beste Punktzahl';
 
   @override
-  String get cancel => 'Abbrechen';
-
-  @override
   String get camera_error =>
       'Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.';
 
@@ -74,6 +71,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get camera_unsupported =>
       'Das Scannen von QR-Codes wird auf diesem Gerät nicht unterstützt.';
+
+  @override
+  String get cancel => 'Abbrechen';
 
   @override
   String get choose_color_description =>
@@ -414,7 +414,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get finished_matches => 'Beendete Spiele';
 
   @override
-  String get format_exception => 'Formatfehler (siehe Konsole)';
+  String get format_exception => 'Formatfehler';
 
   @override
   String get game => 'Spielvorlage';
