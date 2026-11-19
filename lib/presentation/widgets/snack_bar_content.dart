@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_colors.dart';
@@ -45,9 +46,14 @@ class SnackBarContent extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: GestureDetector(
-              onTap:
-                  onTap ??
-                  () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+              onTap: () {
+                HapticFeedback.selectionClick();
+                if (onTap != null) {
+                  onTap!();
+                } else {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                }
+              },
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -96,7 +102,10 @@ class SnackBarContent extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           foregroundColor: AppColors.primaryColor,
                         ),
-                        onPressed: onActionTap,
+                        onPressed: () {
+                          HapticFeedback.selectionClick();
+                          onActionTap!();
+                        },
                         child: Text(
                           actionLabel!,
                           style: const TextStyle(
