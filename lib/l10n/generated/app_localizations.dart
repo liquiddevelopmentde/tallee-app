@@ -195,12 +195,6 @@ abstract class AppLocalizations {
   /// **'Best score'**
   String get best_score;
 
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
   /// No description provided for @camera_error.
   ///
   /// In en, this message translates to:
@@ -218,6 +212,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scanning QR codes is not supported on this device.'**
   String get camera_unsupported;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 
   /// No description provided for @choose_color_description.
   ///
