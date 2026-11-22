@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.1.0+751
+version: 0.1.0+752
 
 environment:
   sdk: ^3.13.5
@@ -75,8 +75,6 @@ flutter:
     - assets/schemas/match_schema.json
     - .env
     - assets/logo-animation.json
-    - assets/privacy_policy/privacy_policy_en.md
-    - assets/privacy_policy/privacy_policy_de.md
 
   fonts:
     - family: Inter

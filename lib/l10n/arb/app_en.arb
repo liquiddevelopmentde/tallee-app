@@ -67,7 +67,6 @@
   "creation_date": "Creation date",
   "custom": "Custom",
   "danger_zone": "Danger Zone",
-  "data": "Data",
   "data_backup": "Data & Backup",
   "data_successfully_deleted": "Data successfully deleted",
   "data_successfully_exported": "Data successfully exported",
@@ -123,7 +122,6 @@
       }
     }
   },
-  "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
   "error_report_hint": "Please describe the steps leading up to the error and how it appeared",
   "error_report_info_text": "Reporting an error helps us identify and fix problems in Tallee!",
