@@ -59,7 +59,7 @@ class _MatchShareViewState extends State<MatchShareView>
   void initState() {
     super.initState();
     final sharingConsent = SharedPreferencesService.sharingConsent;
-    serverSharingEnabled = sharingConsent ?? true;
+    serverSharingEnabled = sharingConsent ?? false;
     tabController = TabController(
       length: 3,
       vsync: this,
