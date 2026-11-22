@@ -210,9 +210,8 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.legal_notice,
                     icon: Icons.account_balance_sharp,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
-                    },
+                    onPressed: () async =>
+                        await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL)),
                   ),
 
                   // Privacy policy tile
@@ -220,11 +219,9 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.privacy_policy,
                     icon: Icons.gpp_good_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      await launchUrl(
-                        Uri.parse(LIQUID_WEBSITE_TALLEE_PRIVACY_POLICY_URL),
-                      );
-                    },
+                    onPressed: () async => await launchUrl(
+                      Uri.parse(LIQUID_WEBSITE_TALLEE_PRIVACY_POLICY_URL),
+                    ),
                   ),
 
                   // Socials & copyright
