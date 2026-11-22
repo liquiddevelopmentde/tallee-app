@@ -67,7 +67,6 @@
   "creation_date": "Erstellungsdatum",
   "custom": "Benutzerdefiniert",
   "danger_zone": "Gefahrenzone",
-  "data": "Daten",
   "data_backup": "Daten & Backup",
   "data_successfully_deleted": "Daten erfolgreich gelöscht",
   "data_successfully_exported": "Daten erfolgreich exportiert",
@@ -123,7 +122,6 @@
       }
     }
   },
-  "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
   "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist",
   "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",

@@ -203,9 +203,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get danger_zone => 'Gefahrenzone';
 
   @override
-  String get data => 'Daten';
-
-  @override
   String get data_backup => 'Daten & Backup';
 
   @override
@@ -350,10 +347,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String error_loading_match(String error) {
     return 'Fehler beim Laden: $error';
   }
-
-  @override
-  String get error_loading_privacy_policy =>
-      'Fehler beim Laden der Datenschutzerklärung';
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';

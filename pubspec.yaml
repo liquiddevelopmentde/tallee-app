@@ -75,8 +75,6 @@ flutter:
     - assets/schemas/match_schema.json
     - .env
     - assets/logo-animation.json
-    - assets/privacy_policy/privacy_policy_en.md
-    - assets/privacy_policy/privacy_policy_de.md
 
   fonts:
     - family: Inter

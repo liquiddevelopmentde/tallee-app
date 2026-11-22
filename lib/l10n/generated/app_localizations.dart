@@ -459,12 +459,6 @@ abstract class AppLocalizations {
   /// **'Danger Zone'**
   String get danger_zone;
 
-  /// No description provided for @data.
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
-
   /// No description provided for @data_backup.
   ///
   /// In en, this message translates to:
@@ -710,12 +704,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
-
-  /// No description provided for @error_loading_privacy_policy.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading privacy policy'**
-  String get error_loading_privacy_policy;
 
   /// No description provided for @error_reading_file.
   ///
