@@ -32,21 +32,21 @@ class _ImportFileCardState extends State<ImportFileCard> {
 
   late ({ImportResult result, Match? match, String filePath}) data;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialFilePath != null) {
-      loadInitialFile();
-    }
-  }
-
-  Color borderColor(BuildContext context) {
+  Color get borderColor {
     final colors = context.talleeColors;
     if (successfulImport) return colors.successColor;
     if (lastResult == null || lastResult!.isCanceled) {
       return colors.boxBorderColor;
     }
     return colors.errorColor;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFilePath != null) {
+      loadInitialFile();
+    }
   }
 
   @override
@@ -68,7 +68,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: borderColor(context),
+                color: borderColor,
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
