@@ -39,7 +39,7 @@ import sys
 API: str = os.environ["API"]
 REPO: str = os.environ["REPO"]
 BRANCH: str = os.environ["BRANCH"]
-ACTOR: str = os.environ.get("ACTOR", "")
+ACTOR: str = os.environ["ACTOR"]
 DEFAULT_BRANCH: str = os.environ["DEFAULT_BRANCH"]
 MIN_SCORE: float = float(os.environ["MIN_SCORE"])
 AUTH: Dict[str, str] = {"Authorization": "token " + os.environ["TOKEN"]}
