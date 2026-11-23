@@ -10,6 +10,7 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
+import 'package:tallee/presentation/widgets/game_group_display.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
 
@@ -66,45 +67,11 @@ class _MatchTileState extends State<MatchTile> {
           children: [
             // Game & group + date
             Row(
-              spacing: 5,
               children: [
-                Expanded(
-                  child: RichText(
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: match.game.name,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: match.game.color.colorValue(context),
-                          ),
-                        ),
-                        if (showGroup) ...[
-                          TextSpan(
-                            text: ' / ',
-                            style: TextStyle(
-                              color: context.talleeColors.hintColor.withAlpha(
-                                150,
-                              ),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                // Game & group
+                Expanded(child: GameGroupDisplay(match: match)),
 
-                          TextSpan(
-                            text: '${group!.name}${match.extraPlayerCount}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: context.talleeColors.hintColor,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
+                const SizedBox(width: 8),
 
                 // Date
                 Text(

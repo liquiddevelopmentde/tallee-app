@@ -10,6 +10,7 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
 import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+import 'package:tallee/presentation/widgets/game_group_display.dart';
 import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
@@ -57,59 +58,7 @@ class MatchProfileBody extends StatelessWidget {
         const SizedBox(height: 15),
 
         /// Group + Game
-        Expanded(
-          child: Row(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                spacing: 5,
-                children: [
-                  Icon(
-                    GAME_ICON,
-                    color: match.game.color.colorValue(context),
-                    size: 18,
-                  ),
-                  Text(
-                    match.game.name,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: match.game.color.colorValue(context),
-                    ),
-                  ),
-                ],
-              ),
-              if (match.group != null) ...[
-                Text(
-                  '/',
-                  style: TextStyle(
-                    color: context.talleeColors.hintColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  spacing: 5,
-                  children: [
-                    Icon(
-                      GROUP_ICON,
-                      color: context.talleeColors.hintColor,
-                      size: 20,
-                    ),
-                    Text(
-                      '${match.group!.name}${match.extraPlayerCount}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: context.talleeColors.hintColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-        ),
+        GameGroupDisplay(match: match, centered: true),
 
         // Match Name
         Text(
