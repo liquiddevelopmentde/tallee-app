@@ -30,16 +30,9 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ImportResult? lastResult;
   String? fileName;
 
-  late ({ImportResult result, Match? match, String filePath}) data;
+  late Color dottedBorderColor;
 
-  Color get borderColor {
-    final colors = context.talleeColors;
-    if (successfulImport) return colors.successColor;
-    if (lastResult == null || lastResult!.isCanceled) {
-      return colors.boxBorderColor;
-    }
-    return colors.errorColor;
-  }
+  late ({ImportResult result, Match? match, String filePath}) data;
 
   @override
   void initState() {
@@ -47,6 +40,12 @@ class _ImportFileCardState extends State<ImportFileCard> {
     if (widget.initialFilePath != null) {
       loadInitialFile();
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        dottedBorderColor = context.talleeColors.boxBorderColor;
+      });
+    });
   }
 
   @override
@@ -68,7 +67,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: borderColor,
+                color: dottedBorderColor,
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
@@ -165,16 +164,28 @@ class _ImportFileCardState extends State<ImportFileCard> {
   void processFile(
     ({ImportResult result, Match? match, String filePath}) data,
   ) {
-    final success = data.result.isSuccess;
-    if (success) {
+    lastResult = data.result;
+    if (data.result.isSuccess) {
       Haptics.successNotification();
+      setState(() {
+        successfulImport = true;
+        dottedBorderColor = Colors.green;
+      });
     } else {
-      Haptics.errorNotification();
+      if (!data.result.isCanceled) {
+        Haptics.errorNotification();
+      }
+      successfulImport = false;
+
+      setState(() {
+        if (!data.result.isCanceled) {
+          dottedBorderColor = Colors.red;
+        } else {
+          dottedBorderColor = context.talleeColors.boxBorderColor;
+        }
+      });
     }
-    setState(() {
-      lastResult = data.result;
-      successfulImport = success;
-      fileName = data.filePath.split('/').last;
-    });
+    final path = data.filePath;
+    fileName = path.split('/').last;
   }
 }
