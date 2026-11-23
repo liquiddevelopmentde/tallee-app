@@ -59,7 +59,15 @@ class _ChooseTileState extends State<ChooseTile> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (widget.trailing != null) widget.trailing!,
+                if (widget.trailing != null)
+                  Flexible(
+                    child: DefaultTextStyle.merge(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      child: widget.trailing!,
+                    ),
+                  ),
                 if (widget.onPressed != null) ...[
                   const SizedBox(width: 10),
                   const Icon(Icons.arrow_forward_ios, size: 16),
