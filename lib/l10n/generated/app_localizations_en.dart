@@ -263,6 +263,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
 
   @override
+  String delete_player_warning_groups_deleted(int count, String groups) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'The following groups will also be deleted because otherwise only one member would remain in each: $groups',
+      one:
+          'The group \"$groups\" will also be deleted, because otherwise only one member would remain.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete_statistic => 'Delete statistic';
 
   @override

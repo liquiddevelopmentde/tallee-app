@@ -268,6 +268,19 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
 
   @override
+  String delete_player_warning_groups_deleted(int count, String groups) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Folgende Gruppen werden ebenfalls gelöscht, weil sonst nur noch jeweils ein Mitglied übrig wäre: $groups',
+      one:
+          'Die Gruppe \"$groups\" wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete_statistic => 'Statistik löschen';
 
   @override
