@@ -306,7 +306,6 @@
   "qr_code_expired": "QR-Code abgelaufen",
   "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Spiel-Daten.",
   "random_color": "Zufällige Farbe",
-  "remaining": "verbleibend",
   "remove_from_favourites": "Aus Favoriten entfernen",
   "report_error": "Fehler melden",
   "required": "erforderlich",
