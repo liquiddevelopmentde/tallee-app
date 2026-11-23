@@ -291,10 +291,6 @@ class _DataManagementViewState extends State<DataManagementView> {
         if (context.mounted) {
           context.showSnackBar(message: loc.data_successfully_imported);
         }
-      case ImportResult.canceled:
-        if (context.mounted) {
-          context.showSnackBar(message: result.toLocalizedString(context));
-        }
       default:
         Haptics.errorNotification();
         if (context.mounted) {
@@ -315,9 +311,7 @@ class _DataManagementViewState extends State<DataManagementView> {
           context.showSnackBar(message: loc.data_successfully_exported);
         }
       case ExportResult.canceled:
-        if (context.mounted) {
-          context.showSnackBar(message: result.toLocalizedString(context));
-        }
+        break;
       case ExportResult.unknownException:
       case ExportResult.noData:
         Haptics.errorNotification();
