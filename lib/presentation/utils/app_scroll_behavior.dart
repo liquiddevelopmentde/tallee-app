@@ -1,4 +1,6 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/presentation/utils/capped_bouncing_scroll_physics.dart';
 
 /// App-wide scroll behavior adapted to the current platform.
 class AppScrollBehavior extends MaterialScrollBehavior {
@@ -9,7 +11,7 @@ class AppScrollBehavior extends MaterialScrollBehavior {
     final platform = getPlatform(context);
 
     if (platform == TargetPlatform.iOS) {
-      return const BouncingScrollPhysics(
+      return const CappedBouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       );
     }
@@ -23,4 +25,18 @@ class AppScrollBehavior extends MaterialScrollBehavior {
     Widget child,
     ScrollableDetails details,
   ) => child;
+
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    if (axisDirectionToAxis(details.direction) != Axis.vertical) return child;
+
+    if (getPlatform(context) == TargetPlatform.iOS) {
+      return CupertinoScrollbar(controller: details.controller, child: child);
+    }
+    return Scrollbar(controller: details.controller, child: child);
+  }
 }
