@@ -67,7 +67,9 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   int selectedLives = 3;
   Ruleset? selectedRuleset = Ruleset.winner;
-  AppColor? selectedColor = AppColor.orange;
+
+  AppColor? selectedColor;
+  AppColor? lastSelectedColor;
 
   bool get isEditMode => widget.gameToEdit != null;
 
@@ -204,11 +206,16 @@ class _CreateGameViewState extends State<CreateGameView> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          ColoredCircle(color: selectedColor),
-                          Text(
-                            selectedColor!.toLocalizedString(context),
-                            textAlign: TextAlign.right,
-                          ),
+                          if (selectedColor == null) ...[
+                            const ColoredCircle(isRandomColor: true),
+                            Text(loc.random_color, textAlign: TextAlign.right),
+                          ] else ...[
+                            ColoredCircle(color: selectedColor),
+                            Text(
+                              selectedColor!.toLocalizedString(context),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -236,8 +243,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                       text: isEditMode ? loc.edit_game : loc.create_game,
                       onPressed:
                           gameNameController.text.trim().isNotEmpty &&
-                              selectedRuleset != null &&
-                              selectedColor != null
+                              selectedRuleset != null
                           ? () async {
                               if (!isEditMode &&
                                   showcaseProvider.shouldShowShowcase(
@@ -259,7 +265,15 @@ class _CreateGameViewState extends State<CreateGameView> {
                                 description: gameDescriptionController.text
                                     .trim(),
                                 ruleset: selectedRuleset!,
-                                color: selectedColor!,
+                                color:
+                                    selectedColor ??
+                                    AppColor.randomColor(
+                                      exclude: [
+                                        lastSelectedColor,
+                                        if (isEditMode)
+                                          widget.gameToEdit!.color,
+                                      ],
+                                    ),
                               );
                               if (isEditMode) {
                                 await handleGameUpdate(newGame);
@@ -344,17 +358,22 @@ class _CreateGameViewState extends State<CreateGameView> {
   void showColorSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<AppColor>(
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
         title: loc.color,
         description: loc.choose_color_description,
-        values: AppColor.values,
+        values: const [null, ...AppColor.values],
         selectedValue: selectedColor,
-        leadingBuilder: (AppColor clr) => ColoredCircle(color: clr),
-        labelBuilder: (BuildContext ctx, AppColor clr) =>
-            clr.toLocalizedString(ctx),
+        leadingBuilder: (AppColor? clr) => clr == null
+            ? const ColoredCircle(isRandomColor: true)
+            : ColoredCircle(color: clr),
+        labelBuilder: (BuildContext ctx, AppColor? clr) =>
+            clr == null ? loc.random_color : clr.toLocalizedString(ctx),
         onValueUpdated: (AppColor? clr) {
           if (clr == selectedColor) return;
-          setState(() => selectedColor = clr);
+          setState(() {
+            lastSelectedColor = selectedColor;
+            selectedColor = clr;
+          });
         },
       ),
     );
