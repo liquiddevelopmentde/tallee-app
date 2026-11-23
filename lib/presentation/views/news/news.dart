@@ -4,30 +4,21 @@ import 'package:tallee/data/dto/news_item.dart';
 
 final news = {
   NewsItem(
-    icon: Icons.pin_drop,
-    iconColor: AppColor.red,
-    localizedHeading: {'de': 'Lorem ipsum', 'en': 'Lorem ipsum'},
+    icon: Icons.palette_rounded,
+    iconColor: AppColor.purple,
+    localizedHeading: {'de': 'UI Verbesserungen', 'en': 'UI Improvements'},
     localizedText: {
-      'de': 'Lorem ipsum dolor sit amet, _consetetur_ sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.',
-      'en': 'Lorem ipsum dolor sit amet, _consetetur_ sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.',
+      'de': 'Kleine **Anzeige-** und **Konsistenzfehler** wurden behoben.',
+      'en': 'Fixed minor **display bugs** and **consistency issues**.',
     },
   ),
   NewsItem(
-    icon: Icons.exposure_rounded,
-    iconColor: AppColor.green,
-    localizedHeading: {'de': 'Lorem ipsum', 'en': 'Lorem ipsum'},
-    localizedText: {
-      'de': 'labore et **dolore** magna aliquyam erat, sed diam **voluptua**. At vero eos et accusam et justo duo dolores et ea rebum. ',
-      'en': 'labore et **dolore** magna aliquyam erat, sed diam **voluptua**. At vero eos et accusam et justo duo dolores et ea rebum. ',
-    },
-  ),
-  NewsItem(
-    icon: Icons.dark_mode_rounded,
+    icon: Icons.feedback_rounded,
     iconColor: AppColor.blue,
-    localizedHeading: {'de': 'Lorem ipsum', 'en': 'Lorem ipsum'},
+    localizedHeading: {'de': 'Bug gefunden?', 'en': 'Found a Bug?'},
     localizedText: {
-      'de': 'Stet clita kasd _gubergren_, no sea takimata sanctus est **Lorem* ipsum dolor sit amet.',
-      'en': 'Stet clita kasd _gubergren_, no sea takimata sanctus est **Lorem* ipsum dolor sit amet.',
+      'de': 'Gib uns gerne Feedback oder melde Fehler über den **Feedback-Button** in den Einstellungen, um Tallee weiter zu verbessern!',
+      'en': 'Feel free to share feedback or report bugs via the **feedback button** in the settings to help us improve Tallee!',
     },
   ),
 };
