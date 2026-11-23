@@ -470,7 +470,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get highest_score_description =>
-      'Es werden Punkte gezählt, die höchste Punktzahl gewinnt.';
+      'Zähle Punkte – höchste Punktzahl gewinnt.';
 
   @override
   String get import_canceled => 'Import abgebrochen';
@@ -562,7 +562,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get lives_description =>
-      'Alle starten mit Leben, wer noch Leben übrig hat, gewinnt.';
+      'Zähle Leben – wer am Ende noch Leben hat, gewinnt.';
 
   @override
   String get loading => 'Lädt...';
@@ -574,15 +574,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loser => 'Verlierer:in';
 
   @override
-  String get loser_description =>
-      'Du wählst nach dem Spiel die Verlierer:in aus.';
+  String get loser_description => 'Wähle nach dem Spiel die Verlierer:in aus.';
 
   @override
   String get lowest_score => 'Niedrigste Punkte';
 
   @override
   String get lowest_score_description =>
-      'Es werden Punkte gezählt, die niedrigste Punktzahl gewinnt.';
+      'Zähle Punkte – niedrigste Punktzahl gewinnt.';
 
   @override
   String get manage_members => 'Mitglieder bearbeiten';
@@ -823,7 +822,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get placement_description =>
-      'Du ordnest alle Spieler:innen vom ersten bis zum letzten Platz.';
+      'Ordne alle Spieler:innen vom ersten bis zum letzten Platz.';
 
   @override
   String get played_matches => 'Gespielte Spiele';
@@ -1255,7 +1254,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get winner_description =>
-      'Du wählst nach dem Spiel die Gewinner:innen aus.';
+      'Wähle nach dem Spiel die Gewinner:innen aus.';
 
   @override
   String get winrate => 'Siegquote';

@@ -171,7 +171,7 @@
     }
   },
   "highest_score": "Highest Score",
-  "highest_score_description": "Points are counted, the highest score wins.",
+  "highest_score_description": "Count points, the highest score wins.",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
   "import_description": "Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.",
@@ -204,13 +204,13 @@
       }
     }
   },
-  "lives_description": "Everyone starts with lives, players with lives left win.",
+  "lives_description": "Track lives, players with lives left win.",
   "loading": "Loading...",
   "loading_match": "Loading match...",
   "loser": "Loser",
-  "loser_description": "You choose the loser after the match.",
+  "loser_description": "Choose the loser after the match.",
   "lowest_score": "Lowest Score",
-  "lowest_score_description": "Points are counted, the lowest score wins.",
+  "lowest_score_description": "Count points, the lowest score wins.",
   "manage_members": "Manage Members",
   "match": "Match",
   "match_deleted": "Match deleted",
@@ -292,7 +292,7 @@
   "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",
-  "placement_description": "You rank all players from first to last.",
+  "placement_description": "Rank all players from first to last.",
   "played_matches": "Played Matches",
   "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
   "@player_count": {
@@ -448,7 +448,7 @@
   "version_copied_to_clipboard": "Version copied to clipboard",
   "whats_new": "What's new?",
   "winner": "Winner",
-  "winner_description": "You choose the winner(s) after the match.",
+  "winner_description": "Choose the winner(s) after the match.",
   "winrate": "Winrate",
   "worst_score": "Worst score",
   "write_email": "Write an email",
