@@ -153,6 +153,13 @@ def main() -> None:
 
     if event == "pull_request" and action == "opened":
         assign_author(pr, pull["user"]["login"])
+        # Reviewers selected on creation fire a separate "review_requested" event that may
+        # be processed before this one. Use the live state so a stale "WIP:" title in the
+        # payload does not demote the PR back to "In Progress".
+        live: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+        if live.get("requested_reviewers"):
+            action = "review_requested"
+            title = live["title"]
 
     # Only react to manual actions: skip anything triggered by the bot itself,
     # which also prevents feedback loops between label and title.
