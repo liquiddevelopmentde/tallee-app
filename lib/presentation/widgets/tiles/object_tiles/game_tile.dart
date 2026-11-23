@@ -63,60 +63,76 @@ class GameTile extends StatelessWidget {
           children: [
             // Title row
             Row(
-              spacing: 8,
+              spacing: 10,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Colored Icon
+                // Game Icon
                 ColoredIconContainer(
                   icon: game.ruleset.icon,
                   color: gameColor,
                   margin: EdgeInsets.zero,
                 ),
 
-                // Title & Ruleset
+                // Text content
                 Expanded(
-                  child: Column(
+                  child: Row(
+                    spacing: 5,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title
-                      Text(
-                        title,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                      // Title & Ruleset
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title
+                            Text(
+                              title,
+                              maxLines: 1,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+
+                            // Ruleset
+                            Text(
+                              ruleset,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: context.talleeColors.hintColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
-                      // Ruleset
-                      Text(
-                        ruleset,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: context.talleeColors.hintColor,
+                      // Gamecount
+                      if (gameCount != null)
+                        Row(
+                          spacing: 8,
+                          children: [
+                            Icon(
+                              MATCH_ICON,
+                              color: context.talleeColors.hintColor,
+                              size: 22,
+                            ),
+                            Text(
+                              gameCount.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: context.talleeColors.hintColor,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
                     ],
                   ),
                 ),
-
-                // Gamecount
-                if (gameCount != null)
-                  Row(
-                    spacing: 8,
-                    children: [
-                      const Icon(MATCH_ICON),
-                      Text(
-                        gameCount.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
               ],
             ),
 

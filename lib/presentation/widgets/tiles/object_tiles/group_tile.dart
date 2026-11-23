@@ -80,6 +80,7 @@ class _GroupTileState extends State<GroupTile> {
                       // Name row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 5,
                         children: [
                           // Name
                           Flexible(
@@ -98,11 +99,16 @@ class _GroupTileState extends State<GroupTile> {
                             mainAxisSize: MainAxisSize.min,
                             spacing: 8,
                             children: [
-                              const Icon(Icons.group, size: 22),
+                              Icon(
+                                Icons.group,
+                                color: context.talleeColors.hintColor,
+                                size: 22,
+                              ),
                               Text(
                                 '${widget.group.members.length}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  color: context.talleeColors.hintColor,
                                 ),
                               ),
                             ],
