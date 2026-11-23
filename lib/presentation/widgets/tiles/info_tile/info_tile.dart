@@ -15,6 +15,7 @@ class InfoTile extends StatefulWidget {
     required this.content,
     this.trailingWidget,
     this.margin,
+    this.padding,
     this.height,
     this.width,
     this.horizontalAlignment = CrossAxisAlignment.center,
@@ -25,6 +26,7 @@ class InfoTile extends StatefulWidget {
   final Widget? trailingWidget;
   final Widget content;
   final EdgeInsets? margin;
+  final EdgeInsets? padding;
   final double? height;
   final double? width;
   final CrossAxisAlignment horizontalAlignment;
@@ -36,7 +38,7 @@ class InfoTile extends StatefulWidget {
 class _InfoTileState extends State<InfoTile> {
   @override
   Widget build(BuildContext context) => Container(
-    padding: AppSpacing.tilePadding,
+    padding: widget.padding ?? AppSpacing.tilePadding,
     margin: widget.margin,
     height: widget.height,
     width: widget.width ?? 380,
