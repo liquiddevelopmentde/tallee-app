@@ -490,6 +490,93 @@ void main() {
         },
       );
 
+      test('deletePlayer() deletes groups that would be left with fewer than '
+          'two members', () async {
+        final duoGroup = Group(
+          name: 'Duo Group',
+          members: [testPlayer1, testPlayer2],
+        );
+        final trioGroup = Group(
+          name: 'Trio Group',
+          members: [testPlayer1, testPlayer2, testPlayer3],
+        );
+        final soloGroup = Group(name: 'Solo Group', members: [testPlayer1]);
+        await database.groupDao.addGroupsAsList(
+          groups: [duoGroup, trioGroup, soloGroup],
+        );
+
+        final deleted = await database.playerDao.deletePlayer(
+          player: testPlayer1,
+        );
+        expect(deleted, isTrue);
+
+        // Groups with less than two remaining members are deleted
+        expect(
+          await database.groupDao.groupExists(groupId: duoGroup.id),
+          isFalse,
+        );
+        expect(
+          await database.groupDao.groupExists(groupId: soloGroup.id),
+          isFalse,
+        );
+
+        // Groups with at least two remaining members stay
+        expect(
+          await database.groupDao.groupExists(groupId: trioGroup.id),
+          isTrue,
+        );
+        final remainingGroup = await database.groupDao.getGroupById(
+          groupId: trioGroup.id,
+        );
+        expect(
+          remainingGroup.members.map((member) => member.id),
+          unorderedEquals([testPlayer2.id, testPlayer3.id]),
+        );
+      });
+
+      test(
+        'deletePlayer() deletes groups when the player is only soft deleted',
+        () async {
+          await database.playerDao.addPlayersAsList(
+            players: [testPlayer1, testPlayer2],
+          );
+
+          final game = Game(name: 'test-game', ruleset: Ruleset.highestScore);
+          await database.gameDao.addGame(game: game);
+
+          final match = Match(
+            name: 'test-match',
+            game: game,
+            players: [testPlayer1, testPlayer2],
+          );
+          await database.matchDao.addMatch(match: match);
+
+          final group = Group(
+            name: 'Duo Group',
+            members: [testPlayer1, testPlayer2],
+          );
+          await database.groupDao.addGroup(group: group);
+
+          final deleted = await database.playerDao.deletePlayer(
+            player: testPlayer1,
+          );
+          expect(deleted, isTrue);
+
+          // Player is only soft deleted ...
+          final player = await database.playerDao.getPlayerById(
+            playerId: testPlayer1.id,
+          );
+          expect(player, isNotNull);
+          expect(player.deleted, isTrue);
+
+          // ... but the group with one remaining member is deleted
+          expect(
+            await database.groupDao.groupExists(groupId: group.id),
+            isFalse,
+          );
+        },
+      );
+
       test('deleteAllPlayers() removes all players', () async {
         await database.playerDao.addPlayersAsList(
           players: [testPlayer1, testPlayer2, testPlayer3],

@@ -97,14 +97,27 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
+                final groupsToDelete = await getGroupsDeletedWithPlayer();
+                if (!context.mounted) return;
+
                 final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
-                    content: Text(
-                      loc.delete_player_warning_details,
-                      overflow: TextOverflow.visible,
-                    ),
+                    content: groupsToDelete.isNotEmpty
+                        ? Text(
+                            loc.delete_player_warning_groups_deleted(
+                              groupsToDelete.length,
+                              groupsToDelete
+                                  .map((group) => group.name)
+                                  .join(', '),
+                            ),
+                            overflow: TextOverflow.visible,
+                          )
+                        : Text(
+                            loc.delete_player_warning_details,
+                            overflow: TextOverflow.visible,
+                          ),
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
@@ -373,6 +386,19 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
         ),
       ),
     );
+  }
+
+  /// Returns the groups that would be deleted along with this player, because
+  /// they would be left with fewer than two members.
+  Future<List<Group>> getGroupsDeletedWithPlayer() async {
+    final groups = await db.groupDao.getGroupsByPlayer(playerId: player.id);
+    return groups
+        .where(
+          (group) =>
+              group.members.where((member) => member.id != player.id).length <
+              2,
+        )
+        .toList();
   }
 
   /// Loads statistics for this player
