@@ -58,9 +58,9 @@ def api(path: str) -> Tuple[int, Dict[str, str], Any]:
     :param path: The API path to request.
     :returns: The status code, response headers and parsed body.
     """
-    req: Request = Request(API + path, headers=AUTH)
+    request: Request = Request(API + path, headers=AUTH)
     try:
-        with urlopen(req) as response:
+        with urlopen(request) as response:
             return response.status, dict(response.headers), json.load(response)
     except HTTPError as err:
         return err.code, dict(err.headers), None
@@ -160,12 +160,12 @@ def assign_actor(number: Any) -> None:
         print(f"'{ACTOR}' already assigned to issue #{number}")
         return
     data: bytes = json.dumps({"assignees": assignees + [ACTOR]}).encode()
-    req: Request = Request(
+    request: Request = Request(
         f"{API}/repos/{REPO}/issues/{number}",
         data=data, method="PATCH",
         headers={**AUTH, "Content-Type": "application/json"},
     )
-    with urlopen(req) as response:
+    with urlopen(request) as response:
         print(f"assigned '{ACTOR}' to issue #{number} (HTTP {response.status})")
 
 
@@ -176,12 +176,12 @@ def assign(number: Any) -> None:
     :param number: The issue number to link the branch to.
     """
     data: bytes = json.dumps({"ref": BRANCH}).encode()
-    req: Request = Request(
+    request: Request = Request(
         f"{API}/repos/{REPO}/issues/{number}",
         data=data, method="PATCH",
         headers={**AUTH, "Content-Type": "application/json"},
     )
-    with urlopen(req) as response:
+    with urlopen(request) as response:
         print(f"assigned branch '{BRANCH}' to issue #{number} (HTTP {response.status})")
     assign_actor(number)
     with open(os.environ["GITHUB_OUTPUT"], "a") as output:
