@@ -289,32 +289,35 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     trailingButtonicon: Icons.add_circle,
     trailingButtonEnabled: searchBarController.text.trim().isNotEmpty,
     onTrailingButtonPressed: () => addNewPlayerFromSearch(context: context),
-    onChanged: (value) {
-      setState(() {
-        if (value.isEmpty) {
-          updateSuggestedPlayers();
-        } else {
-          final List<({Player player, int score})> scoredPlayers = [];
-
-          for (final player in allPlayers) {
-            final bool isNotSelected =
-                widget.mode == SelectionMode.single ||
-                !selectedPlayers.any((p) => p.id == player.id);
-
-            if (isNotSelected) {
-              final score = weightedRatio(player.name, value);
-              if (score >= FUZZY_SEARCH_THRESHOLD) {
-                scoredPlayers.add((player: player, score: score));
-              }
-            }
-          }
-
-          scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
-          suggestedPlayers = scoredPlayers.map((e) => e.player).toList();
-        }
-      });
-    },
+    onChanged: applySearchValue,
   );
+
+  /// Applies the search bar [value] to suggested players
+  void applySearchValue(String value) {
+    if (value.isEmpty) {
+      setState(updateSuggestedPlayers);
+    } else {
+      final List<({Player player, int score})> scoredPlayers = [];
+
+      for (final player in allPlayers) {
+        final bool isNotSelected =
+            widget.mode == SelectionMode.single ||
+            !selectedPlayers.any((p) => p.id == player.id);
+
+        if (isNotSelected) {
+          final score = weightedRatio(player.name, value);
+          if (score >= FUZZY_SEARCH_THRESHOLD) {
+            scoredPlayers.add((player: player, score: score));
+          }
+        }
+      }
+
+      scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
+      setState(
+        () => suggestedPlayers = scoredPlayers.map((e) => e.player).toList(),
+      );
+    }
+  }
 
   Widget buildSelectedPlayersHeader(AppLocalizations loc) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -441,33 +444,37 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         player: player,
         icon: isRecentlyAdded ? Icons.check : Icons.add,
         iconColor: isRecentlyAdded ? context.talleeColors.successColor : null,
-        onTileTap: () async => await togglePairingSelection(player),
+        onTileTap: () => addPlayerToSelection(player),
       );
     },
   );
 
-  Future<void> togglePairingSelection(Player player) async {
+  /// Adds a player to the selectedPlayers and handles the animation
+  Future<void> addPlayerToSelection(Player player) async {
+    if (selectedPlayers.any((p) => p.id == player.id)) return;
+
     Haptics.selectionClick();
     setState(() {
-      if (!selectedPlayers.any((p) => p.id == player.id)) {
-        final unit = Team(name: '', members: [player]);
-        selectedUnits.insert(0, unit);
-        addedUnitIds.add(unit.id);
-        recentlyAddedPlayerIds.add(player.id);
-        widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-        scrollSelectedUnitsToStart();
-
-        Future.delayed(const Duration(milliseconds: 400), () {
-          if (!mounted || !recentlyAddedPlayerIds.contains(player.id)) {
-            return;
-          }
-          setState(() {
-            suggestedPlayers.remove(player);
-            recentlyAddedPlayerIds.remove(player.id);
-          });
-        });
-      }
+      final unit = Team(name: '', members: [player]);
+      selectedUnits.insert(0, unit);
+      addedUnitIds.add(unit.id);
+      recentlyAddedPlayerIds.add(player.id);
     });
+
+    widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
+    scrollSelectedUnitsToStart();
+
+    await Future.delayed(const Duration(milliseconds: 400), () {});
+    if (!mounted) return;
+    if (!recentlyAddedPlayerIds.contains(player.id)) return;
+
+    setState(() {
+      suggestedPlayers.removeWhere((p) => p.id == player.id);
+      recentlyAddedPlayerIds.remove(player.id);
+    });
+
+    searchBarController.clear();
+    updateSuggestedPlayers();
   }
 
   /// Scrolls the bar to the start so newly added units are visible
