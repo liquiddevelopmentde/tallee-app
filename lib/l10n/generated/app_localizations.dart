@@ -561,12 +561,6 @@ abstract class AppLocalizations {
   /// **'Delete player?'**
   String get delete_player;
 
-  /// No description provided for @delete_player_and_groups_title.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{Delete player and group?} other{Delete player and groups?}}'**
-  String delete_player_and_groups_title(int count);
-
   /// No description provided for @delete_player_warning_details.
   ///
   /// In en, this message translates to:

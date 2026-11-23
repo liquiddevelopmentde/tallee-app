@@ -267,17 +267,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_player => 'Spieler:in löschen';
 
   @override
-  String delete_player_and_groups_title(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Spieler:in und Gruppen löschen',
-      one: 'Spieler:in und Gruppe löschen',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get delete_player_warning_details =>
       'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
 

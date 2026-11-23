@@ -262,17 +262,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_player => 'Delete player?';
 
   @override
-  String delete_player_and_groups_title(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Delete player and groups?',
-      one: 'Delete player and group?',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get delete_player_warning_details =>
       'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
 
