@@ -237,9 +237,17 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                             firstCurve: Curves.easeOut,
                             secondCurve: Curves.easeIn,
                             firstChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 buildSelectedPlayersHeader(loc),
                                 buildSelectedPlayersBar(),
+                                Text(
+                                  loc.all_players,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                             secondChild: const SizedBox(
@@ -252,13 +260,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
                                 : CrossFadeState.showFirst,
                           ),
                         ],
-                      ),
-                    ),
-                    Text(
-                      loc.all_players,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
