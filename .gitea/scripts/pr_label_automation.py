@@ -114,6 +114,17 @@ def sync_wip(pr: int, action: str, title: str) -> None:
             add_label(pr, IN_PROGRESS)
 
 
+def has_open_review_requests(pr: int) -> bool:
+    """
+    Check whether a pull request has review requests that are still waiting for a verdict.
+
+    :param pr: The pull request number.
+    :returns: True if at least one user or team is still requested to review.
+    """
+    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+    return bool(pull.get("requested_reviewers") or pull.get("requested_reviewers_teams"))
+
+
 def has_reviewers(pr: int, author: str) -> bool:
     """
     Check whether a pull request still has any reviewer: either an open review request
@@ -123,13 +134,33 @@ def has_reviewers(pr: int, author: str) -> bool:
     :param author: The login of the pull request author, whose own reviews are ignored.
     :returns: True if at least one reviewer remains.
     """
-    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
-    if pull.get("requested_reviewers") or pull.get("requested_reviewers_teams"):
+    if has_open_review_requests(pr):
         return True
     return any(
         review.get("state") in ("APPROVED", "REQUEST_CHANGES", "REQUEST_REVIEW")
         and not review.get("dismissed")
         and (review.get("user") or {}).get("login") != author
+        for review in get_all(f"/repos/{REPO}/pulls/{pr}/reviews")
+    )
+
+
+def has_valid_approval(pr: int, head_sha: str) -> bool:
+    """
+    Check whether a pull request still has an approval for its current head commit.
+
+    An approval counts only if it is neither dismissed nor stale and was given on
+    the current head commit, so a push after the approval invalidates it even if
+    Gitea has not dismissed the review yet.
+
+    :param pr: The pull request number.
+    :param head_sha: The SHA of the current head commit.
+    :returns: True if at least one valid approval remains.
+    """
+    return any(
+        review.get("state") == "APPROVED"
+        and not review.get("dismissed")
+        and not review.get("stale")
+        and review.get("commit_id") == head_sha
         for review in get_all(f"/repos/{REPO}/pulls/{pr}/reviews")
     )
 
@@ -204,6 +235,14 @@ def main() -> None:
         sync_wip(pr, action, title)
 
     target: Optional[str] = target_label(event, action, payload)
+
+    # New commits after an approval: the approval no longer covers the code and Gitea
+    # removes the approving reviewer. Unless a valid approval for the new head remains,
+    # the PR goes back to "Ready for Review" if other reviewers are still requested,
+    # otherwise to "In Progress".
+    if event == "pull_request" and action in ("synchronize", "synchronized"):
+        if READY_FOR_MERGE in pr_labels(pr) and not has_valid_approval(pr, pull["head"]["sha"]):
+            target = READY_FOR_REVIEW if has_open_review_requests(pr) else IN_PROGRESS
 
     # A reviewer stepping out only sends the PR back to "In Progress" if nobody is left
     # to review it; otherwise the current state (e.g. "Revision") stays as it is.
