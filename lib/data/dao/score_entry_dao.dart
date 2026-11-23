@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/db/tables/score_entry_table.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/score_entry.dart';
+import 'package:tallee/data/models/models.dart';
 
 part 'score_entry_dao.g.dart';
 
@@ -14,6 +13,45 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   ScoreEntryDao(super.db);
 
   /* Create */
+
+  Future<void> addRound({
+    required String matchId,
+    required Map<String, int> roundScores,
+    required int roundNumber,
+  }) async {
+    await db.transaction(() async {
+      for (final entry in roundScores.entries) {
+        final playerId = entry.key;
+        final roundChange = entry.value;
+
+        final existingScores = await getAllPlayerScoresInMatch(
+          playerId: playerId,
+          matchId: matchId,
+        );
+
+        // Exclude any existing score for this roundNumber if replacing/updating
+        final filteredScores = existingScores
+            .where((s) => s.roundNumber != roundNumber)
+            .toList();
+        final previousTotalScore = filteredScores.isEmpty
+            ? 0
+            : filteredScores.fold<int>(0, (sum, s) => sum + s.change);
+
+        final newScore = previousTotalScore + roundChange;
+
+        await into(scoreEntryTable).insert(
+          ScoreEntryTableCompanion.insert(
+            playerId: playerId,
+            matchId: matchId,
+            roundNumber: roundNumber,
+            score: Value(newScore),
+            change: roundChange,
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
+  }
 
   /// Adds a score entry to the database.
   Future<bool> addScore({
@@ -26,7 +64,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: entry.roundNumber,
-        score: entry.score,
+        score: Value(entry.change),
         change: entry.change,
       ),
       mode: InsertMode.insertOrReplace,
@@ -47,7 +85,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             playerId: playerId,
             matchId: matchId,
             roundNumber: score.roundNumber,
-            score: score.score,
+            score: Value(score.change),
             change: score.change,
           ),
         )
@@ -81,11 +119,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final result = await query.getSingleOrNull();
     if (result == null) return null;
 
-    return ScoreEntry(
-      roundNumber: result.roundNumber,
-      score: result.score,
-      change: result.change,
-    );
+    return ScoreEntry(roundNumber: result.roundNumber, change: result.change);
   }
 
   /// Retrieves all scores for a specific match.
@@ -100,7 +134,6 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in result) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
       );
       scoresByPlayer[row.playerId] = score;
@@ -111,7 +144,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /// Retrieves scores for multiple matches in a single operation.
   /// Returns a map where the key is the matchId and the value is a map of playerId -> ScoreEntry.
-  Future<Map<String, Map<String, ScoreEntry?>>> getScoresForMatches({
+  Future<Map<String, Map<String, List<ScoreEntry>>>> getScoresForMatches({
     required List<String> matchIds,
   }) async {
     if (matchIds.isEmpty) return {};
@@ -120,7 +153,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
       ..where((tbl) => tbl.matchId.isIn(matchIds));
     final rows = await query.get();
 
-    final Map<String, Map<String, ScoreEntry?>> resultMap = {};
+    final Map<String, Map<String, List<ScoreEntry>>> resultMap = {};
     for (final id in matchIds) {
       resultMap[id] = {};
     }
@@ -128,10 +161,12 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     for (final row in rows) {
       final score = ScoreEntry(
         roundNumber: row.roundNumber,
-        score: row.score,
         change: row.change,
       );
-      resultMap.putIfAbsent(row.matchId, () => {})[row.playerId] = score;
+      resultMap
+          .putIfAbsent(row.matchId, () => {})
+          .putIfAbsent(row.playerId, () => [])
+          .add(score);
     }
 
     return resultMap;
@@ -150,11 +185,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     final result = await query.get();
     return result
         .map(
-          (row) => ScoreEntry(
-            roundNumber: row.roundNumber,
-            score: row.score,
-            change: row.change,
-          ),
+          (row) => ScoreEntry(roundNumber: row.roundNumber, change: row.change),
         )
         .toList()
       ..sort(
@@ -205,7 +236,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
             ))
             .write(
               ScoreEntryTableCompanion(
-                score: Value(entry.score),
+                score: Value(entry.change),
                 change: Value(entry.change),
               ),
             );
@@ -232,13 +263,18 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Deletes all score entries for a match.
-  Future<bool> deleteAllScoresForMatch({required String matchId}) async {
+  /// If [removeEndedAt] is `true`, the match is marked as ongoing again.
+  Future<bool> deleteAllScoresForMatch({
+    required String matchId,
+    bool removeEndedAt = true,
+  }) async {
     final query = delete(scoreEntryTable)
       ..where((tbl) => tbl.matchId.equals(matchId));
-    var rowsAffected = await query.go();
+    final rowsAffected = await query.go();
+
+    if (!removeEndedAt) return rowsAffected > 0;
 
     final success = await db.matchDao.removeMatchEndedAt(matchId: matchId);
-
     return rowsAffected > 0 && success;
   }
 
@@ -254,42 +290,15 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     return rowsAffected > 0;
   }
 
-  /* Winner handling */
+  /* Winners handling */
 
-  Future<bool> hasWinner({required String matchId}) async {
-    return await getWinner(matchId: matchId) != null;
-  }
+  /// Checks if a match has a winner by looking for a score entry where score is 1.
+  Future<bool> hasWinner({required String matchId}) async =>
+      (await getWinners(matchId: matchId)).isNotEmpty;
 
-  // Setting the winner for a game and clearing previous winner if exists.
-  Future<bool> setWinner({
-    required String matchId,
-    required String playerId,
-  }) async {
-    // Clear previous winner if exists
-    await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-
-    // Set the winner's score to 1
-    final rowsAffected = await into(scoreEntryTable).insert(
-      ScoreEntryTableCompanion.insert(
-        playerId: playerId,
-        matchId: matchId,
-        roundNumber: 0,
-        score: 1,
-        change: 0,
-      ),
-      mode: InsertMode.insertOrReplace,
-    );
-
-    return rowsAffected > 0;
-  }
-
-  /// Retrieves the winner of a match by looking for a score entry where score
-  /// is 1. Returns `null` if no player found, else the first with the score.
-  Future<Player?> getWinner({required String matchId}) async {
+  /// Retrieves the winners of a match by looking for a score entry where score
+  /// is 1. Returns empty list if no players were found.
+  Future<List<Player>> getWinners({required String matchId}) async {
     final query =
         select(scoreEntryTable).join([
           innerJoin(
@@ -302,26 +311,29 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         );
 
     final result = await query.get();
-    if (result.isEmpty) return null;
+    if (result.isEmpty) return [];
 
-    final playerData = result.first.readTable(db.playerTable);
-    return Player(
-      id: playerData.id,
-      name: playerData.name,
-      createdAt: playerData.createdAt,
-      description: playerData.description,
-    );
+    final playerData = result
+        .map((row) => row.readTable(db.playerTable))
+        .toList();
+
+    return playerData
+        .map(
+          (p) => Player(
+            id: p.id,
+            name: p.name,
+            createdAt: p.createdAt,
+            description: p.description,
+          ),
+        )
+        .toList();
   }
 
-  /// Removes the winner of a match.
+  /// Removes the winners of a match.
   ///
-  /// Returns `true` if the winner was removed, `false` if there are multiple
-  /// scores or if the winner cannot be removed.
-  Future<bool> removeWinner({required String matchId}) async {
-    return await deleteAllScoresForMatch(matchId: matchId);
-  }
-
-  /* multiple winners handling */
+  /// Returns `true` if more than 0 rows were affected.
+  Future<bool> removeWinners({required String matchId}) async =>
+      await deleteAllScoresForMatch(matchId: matchId);
 
   /// Sets the winners for a match.
   ///
@@ -331,12 +343,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String matchId,
   }) async {
     // Clear previous winners if exists
-    await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-
+    await deleteAllScoresForMatch(matchId: matchId, removeEndedAt: false);
     if (winners.isEmpty) return false;
 
     await batch((batch) {
@@ -348,8 +355,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
                 playerId: player.id,
                 matchId: matchId,
                 roundNumber: 0,
-                score: 1,
-                change: 0,
+                score: const Value(1),
+                change: 1,
               ),
             )
             .toList(),
@@ -362,9 +369,8 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
 
   /* Loser handling */
 
-  Future<bool> hasLoser({required String matchId}) async {
-    return await getLoser(matchId: matchId) != null;
-  }
+  Future<bool> hasLoser({required String matchId}) async =>
+      await getLoser(matchId: matchId) != null;
 
   // Setting the loser for a game and clearing previous loser if exists.
   Future<bool> setLoser({
@@ -372,11 +378,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
     required String playerId,
   }) async {
     // Clear previous losers if exists
-    await deleteAllScoresForMatch(matchId: matchId);
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
+    await deleteAllScoresForMatch(matchId: matchId, removeEndedAt: false);
 
     // Set the losers score to 0
     final rowsAffected = await into(scoreEntryTable).insert(
@@ -384,7 +386,7 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
         playerId: playerId,
         matchId: matchId,
         roundNumber: 0,
-        score: 0,
+        score: const Value(0),
         change: 0,
       ),
       mode: InsertMode.insertOrReplace,
@@ -436,22 +438,21 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   /* placement handling */
 
   /// Sets the placement for each player in a match.
-  /// The highest score is assigned to the first player, the second highest to the second player, and so on.
-  Future<void> setPlacements({
+  /// The highest score is assigned to the first player, the second highest to
+  /// the second player, and so on.
+  /// Returns `true` if every score add is successfull, `false` otherwise.
+  Future<bool> setPlacements({
     required String matchId,
     required List<Player> players,
   }) async {
-    await db.matchDao.updateMatchEndedAt(
-      matchId: matchId,
-      endedAt: DateTime.now(),
-    );
-
+    var success = true;
     for (int i = 0; i < players.length; i++) {
-      await db.scoreEntryDao.addScore(
+      success &= await db.scoreEntryDao.addScore(
         matchId: matchId,
         playerId: players[i].id,
-        entry: ScoreEntry(roundNumber: 0, score: players.length - i, change: 0),
+        entry: ScoreEntry(change: players.length - i),
       );
     }
+    return success;
   }
 }

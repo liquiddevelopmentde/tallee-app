@@ -25,14 +25,15 @@ An open-source app to track card- and board games, manage players & groups and g
 ![Flutter](https://img.shields.io/badge/Flutter-3.47.2-027DFD?logo=flutter)
 ![iOS26](https://img.shields.io/badge/iOS-26-white?logo=apple)
 ![Android17](https://img.shields.io/badge/Android-17-3DDC84?logo=android)
+![Renovate](https://img.shields.io/badge/Maintained_with-Renovate-308BE3?logo=renovate&logoColor=FFFFFF)
 
 ## This is Tallee
 
 <table align="center" cellspacing="8">
   <tr>
-    <td><img src="/artefacts/wireframe-1.png" alt="Screenshot of the match view" width="330" /></td>
-    <td><img src="/artefacts/wireframe-2.png" alt="Screenshot of the group view" width="330" /></td>
-    <td><img src="/artefacts/wireframe-3.png" alt="Screenshot of the statistics view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-1.webp" alt="Screenshot of the match view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-2.webp" alt="Screenshot of the group view" width="330" /></td>
+    <td><img src="/artefacts/screenshot-3.webp" alt="Screenshot of the statistics view" width="330" /></td>
   </tr>
 </table>
 

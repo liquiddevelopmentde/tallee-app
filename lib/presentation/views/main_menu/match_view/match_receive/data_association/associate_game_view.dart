@@ -1,0 +1,218 @@
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_game_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_players_view.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
+
+class AssociateGameView extends StatefulWidget {
+  const AssociateGameView({required this.match, super.key});
+
+  final Match match;
+
+  @override
+  State<AssociateGameView> createState() => _AssociateGameViewState();
+}
+
+class _AssociateGameViewState extends State<AssociateGameView> {
+  Game? associatedGame;
+
+  @override
+  void initState() {
+    super.initState();
+    autoAssociateGame();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(loc.associate_game), centerTitle: true),
+        body: Column(
+          children: [
+            Align(
+              child: Container(
+                margin: AppSpacing.standardMargin,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: associatedGame == null ? Colors.orange : Colors.green,
+                  borderRadius: AppColors.standardBorderRadiusAll,
+                ),
+                child: Text(
+                  associatedGame != null
+                      ? loc.game_associated
+                      : loc.new_game_will_be_created,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    overflow: TextOverflow.visible,
+                  ),
+                  softWrap: true,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            GameTile(game: widget.match.game),
+            const Icon(Icons.arrow_downward, size: 30),
+            const SizedBox(height: 10),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 150),
+              layoutBuilder:
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: associatedGame == null
+                  ? GestureDetector(
+                      onTap: navigateToGameSelection,
+                      child: Container(
+                        key: const ValueKey('no_association'),
+                        margin: AppSpacing.tileMargin,
+                        height: 138,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: context.standardBoxDecoration.copyWith(
+                          border: Border.all(
+                            color: Colors.orange.withAlpha(150),
+                          ),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.add_box,
+                                size: 35,
+                                color: Colors.orange,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                loc.no_matching_local_game_found,
+                                style: TextStyle(
+                                  color: context.talleeColors.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                              ),
+                              Text(
+                                loc.tap_to_choose_existing,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
+                                  fontSize: 14,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : GameTile(
+                      game: associatedGame!,
+                      key: ValueKey(associatedGame!.id),
+                      onTap: navigateToGameSelection,
+                      isHighlighted: true,
+                      borderColor: Colors.green.withAlpha(150),
+                    ),
+            ),
+            const SizedBox(height: 2),
+            if (associatedGame != null)
+              Text(
+                loc.tap_to_choose_different_game,
+                style: TextStyle(
+                  color: context.talleeColors.hintColor,
+                  fontSize: 14,
+                  overflow: TextOverflow.visible,
+                ),
+                softWrap: true,
+              ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: BottomAnimatedButton(
+                text: loc.confirm,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.associatePlayersView,
+                      ),
+                      builder: (context) => AssociatePlayersView(
+                        match: widget.match,
+                        associatedGame: associatedGame,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> navigateToGameSelection() async {
+    final db = context.read<AppDatabase>();
+    final allGames = await db.gameDao.getAllGames();
+
+    // Filter games by ruleset
+    final filteredGames = allGames
+        .where((g) => g.ruleset == widget.match.game.ruleset)
+        .toList();
+
+    if (!mounted) return;
+
+    final selected = await Navigator.push<Game>(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGameView),
+        builder: (context) => ChooseGameView(
+          games: filteredGames,
+          initialSelectedGames: [?associatedGame],
+        ),
+      ),
+    );
+
+    setState(() {
+      associatedGame = selected;
+    });
+  }
+
+  Future<void> autoAssociateGame() async {
+    final db = context.read<AppDatabase>();
+    final allGames = await db.gameDao.getAllGames();
+
+    if (!mounted) return;
+
+    final importedGame = widget.match.game;
+    final match = allGames
+        .where(
+          (localGame) =>
+              localGame.name.toLowerCase() == importedGame.name.toLowerCase() &&
+              localGame.ruleset == importedGame.ruleset,
+        )
+        .firstOrNull;
+
+    if (match != null) {
+      setState(() {
+        associatedGame = match;
+      });
+    }
+  }
+}

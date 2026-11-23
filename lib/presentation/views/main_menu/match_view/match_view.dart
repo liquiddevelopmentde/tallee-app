@@ -1,24 +1,38 @@
+import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:fluttericon/rpg_awesome_icons.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:once/once.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:rate_my_app/rate_my_app.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/configs.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/create_match/create_match_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/cards/text_chip.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/object_tiles/match_tile.dart';
-import 'package:tallee/presentation/widgets/top_centered_message.dart';
-import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MatchView extends StatefulWidget {
   /// A view that displays a list of matches
@@ -30,20 +44,35 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   late final AppDatabase db;
-  late final MatchSearchProvider _searchProvider;
+  late final SearchProvider searchProvider;
+  late RateDialogProvider rateProvider;
+
   bool isLoading = true;
+
+  /// Last known search mode, used to detect toggles in [handleSearchToggle]
+  bool wasSearching = false;
+  MatchFilter selectedFilter =
+      SharedPreferencesService.matchFilter ?? MatchFilter.all;
+
+  final GlobalKey matchViewCreateButtonKey = GlobalKey();
+  final String matchViewCreateButtonIdentifier =
+      'match_view_create_match_button';
+
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
+
+  late final ShowcaseProvider showcaseProvider;
 
   TextEditingController searchBarController = TextEditingController();
 
   /// Loaded matches from the database, initially filled with skeleton matches
-  List<Match> matches = List.filled(
+  List<Match> allMatches = List.generate(
     4,
-    Match(
+    (_) => Match(
       name: 'Skeleton match name',
       game: Game(
         name: 'Game name',
         ruleset: Ruleset.winner,
-        color: AppColor.blue,
+        color: AppColor.randomColor(),
       ),
       group: Group(
         name: 'Group name',
@@ -61,28 +90,42 @@ class _MatchViewState extends State<MatchView> {
     ),
   );
 
-  late List<Match> filteredMatches = [...matches];
+  /// Matches based on the selected filter
+  late List<Match> filteredMatches = [...allMatches];
+
+  /// Matches based on the search query
+  late List<Match> displayedMatches = [...allMatches];
 
   @override
   void initState() {
     super.initState();
-    db = Provider.of<AppDatabase>(context, listen: false);
-    _searchProvider = Provider.of<MatchSearchProvider>(context, listen: false);
-    _searchProvider.addListener(_handleSearchToggle);
+    db = context.read<AppDatabase>();
 
-    Once.runOnce(
-      'exampleStats',
-      callback: () {
-        addExampleStatistics();
-      },
-    );
+    searchProvider = context.read<SearchProvider>();
+    wasSearching = searchProvider.isSearching(MatchView);
+    searchProvider.addListener(handleSearchToggle);
+
+    rateProvider = context.read<RateDialogProvider>();
+    rateProvider.addListener(handleRatingDialog);
+
+    showcaseProvider = context.read<ShowcaseProvider>();
 
     loadMatches();
+
+    if (showcaseProvider.hasSeen(navbarMatchViewIdentifier)) {
+      handleShowcase(
+        widgetKeys: [matchViewCreateButtonKey],
+        identifiers: [matchViewCreateButtonIdentifier],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
   }
 
   @override
   void dispose() {
-    _searchProvider.removeListener(_handleSearchToggle);
+    searchProvider.removeListener(handleSearchToggle);
+    rateProvider.removeListener(handleRatingDialog);
     searchBarController.dispose();
     super.dispose();
   }
@@ -90,21 +133,22 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final searchProvider = Provider.of<MatchSearchProvider>(context);
+    final searchProvider = context.read<SearchProvider>();
 
     // Reset filtered matches when search is disabled
-    if (!searchProvider.isSearching) {
-      filteredMatches = [...matches];
+    if (!searchProvider.isSearching(MatchView)) {
+      applySearch('');
     }
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         alignment: Alignment.center,
         children: [
           Column(
             children: [
+              // Searchbar
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 switchInCurve: Curves.easeOutCubic,
@@ -127,7 +171,9 @@ class _MatchViewState extends State<MatchView> {
                     ),
                   );
                 },
-                child: searchProvider.isSearching
+                child:
+                    searchProvider.isSearching(MatchView) &&
+                        searchProvider.isSearchBarVisible(MatchView)
                     ? Padding(
                         key: const ValueKey('match-searchbar-visible'),
                         padding: const EdgeInsets.only(
@@ -138,9 +184,17 @@ class _MatchViewState extends State<MatchView> {
                         child: CustomSearchBar(
                           controller: searchBarController,
                           hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              applySearch('');
+                            });
+                          },
                           onChanged: (value) {
                             setState(() {
-                              filterMatches(value);
+                              applySearch(value);
                             });
                           },
                         ),
@@ -149,72 +203,182 @@ class _MatchViewState extends State<MatchView> {
                         key: ValueKey('match-searchbar-hidden'),
                       ),
               ),
+
+              // Content
               Expanded(
                 child: AppSkeleton(
                   enabled: isLoading,
-                  child: Visibility(
-                    visible: matches.isNotEmpty,
-                    replacement: Center(
-                      child: TopCenteredMessage(
-                        icon: Icons.info,
-                        title: loc.info,
-                        message: loc.no_matches_created_yet,
-                      ),
-                    ),
-                    child: Visibility(
-                      visible: filteredMatches.isNotEmpty,
-                      replacement: Center(
-                        child: TopCenteredMessage(
-                          icon: Icons.info,
-                          title: loc.info,
-                          message: loc.there_is_no_match_matching_your_search,
-                        ),
-                      ),
-                      child: ListView.builder(
-                        padding: CustomTheme.listViewPadding(context),
-                        itemCount: filteredMatches.length,
+                  child: Column(
+                    children: [
+                      // Matches in db
+                      if (allMatches.isNotEmpty) ...[
+                        SingleChildScrollView(
+                          padding: AppSpacing.filterRowPadding,
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 5,
+                            children: [
+                              // All matches
+                              TextChip(
+                                text: loc.all,
+                                onTap: () => applyFilter(MatchFilter.all),
+                                activated: selectedFilter == MatchFilter.all,
+                              ),
 
-                        itemBuilder: (BuildContext context, int index) {
-                          return MatchTile(
-                            onPlayerEdited: loadMatches,
-                            width: MediaQuery.sizeOf(context).width * 0.95,
-                            onTap: () async {
-                              Navigator.push(
-                                context,
-                                adaptivePageRoute(
-                                  builder: (context) => MatchDetailView(
-                                    match: filteredMatches[index],
-                                    onMatchUpdate: loadMatches,
+                              // Active matches
+                              TextChip(
+                                text: loc.active_matches,
+                                onTap: () => applyFilter(MatchFilter.active),
+                                activated: selectedFilter == MatchFilter.active,
+                              ),
+
+                              // Finished matches
+                              TextChip(
+                                text: loc.finished_matches,
+                                onTap: () => applyFilter(MatchFilter.finished),
+                                activated:
+                                    selectedFilter == MatchFilter.finished,
+                              ),
+
+                              // Team matches
+                              TextChip(
+                                text: loc.team_matches,
+                                onTap: () => applyFilter(MatchFilter.team),
+                                activated: selectedFilter == MatchFilter.team,
+                              ),
+
+                              // To keep padding on the right side
+                              const SizedBox(width: 5),
+                            ],
+                          ),
+                        ),
+
+                        // No matches in filter
+                        if (filteredMatches.isEmpty)
+                          Expanded(
+                            child: EmptyViewMessage(
+                              icon: Icons.filter_alt,
+                              title: loc.no_results,
+                              message:
+                                  loc.there_is_no_match_matching_your_filter,
+                            ),
+                          )
+                        // No matches in search
+                        else if (displayedMatches.isEmpty)
+                          Expanded(
+                            child: EmptyViewMessage(
+                              icon: Icons.search,
+                              title: loc.no_results,
+                              message:
+                                  loc.there_is_no_match_matching_your_search,
+                            ),
+                          )
+                        // Normal matches
+                        else
+                          Expanded(
+                            child: SearchBarScrollListener(
+                              isSearchBarVisible: searchProvider
+                                  .isSearchBarVisible(MatchView),
+                              onVisibilityChanged: (visible) =>
+                                  searchProvider.setSearchBarVisible(
+                                    view: MatchView,
+                                    visible: visible,
                                   ),
+                              child: ListView.builder(
+                                padding: AppSpacing.listViewPadding(context),
+                                itemCount: displayedMatches.length,
+                                itemBuilder: (context, index) => MatchTile(
+                                  width:
+                                      MediaQuery.sizeOf(context).width *
+                                      AppSpacing.contentWidthFactor,
+                                  onTap: () async {
+                                    if (displayedMatches[index].endedAt !=
+                                        null) {
+                                      Navigator.push(
+                                        context,
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.matchDetailView,
+                                          ),
+                                          builder: (context) => MatchDetailView(
+                                            match: displayedMatches[index],
+                                            onMatchUpdate: loadMatches,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        adaptivePageRoute(
+                                          fullscreenDialog: true,
+                                          settings: const RouteSettings(
+                                            name: RouteNames.matchResultView,
+                                          ),
+                                          builder: (context) => MatchResultView(
+                                            match: displayedMatches[index],
+                                            onWinnerChanged: () => loadMatches(
+                                              showSkeleton: false,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  match: displayedMatches[index],
                                 ),
-                              );
-                            },
-                            match: filteredMatches[index],
-                          );
-                        },
-                      ),
-                    ),
+                              ),
+                            ),
+                          ),
+                      ]
+                      // No matches in db
+                      else if (!isLoading)
+                        Expanded(
+                          child: EmptyViewMessage(
+                            icon: MATCH_ICON,
+                            spacing: 15,
+                            title: loc.no_matches,
+                            message: loc.no_matches_created_yet,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
             ],
           ),
+
+          // Create match button
           Positioned(
-            bottom: MediaQuery.paddingOf(context).bottom + 20,
-            child: FloatingAnimatedButton(
-              text: loc.create_match,
-              icon: RpgAwesome.clovers_card,
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  adaptivePageRoute(
-                    builder: (context) => CreateMatchView(
-                      onWinnerChanged: loadMatches,
-                      onMatchesUpdated: loadMatches,
-                    ),
-                  ),
-                );
+            bottom: AppSpacing.floatingButtonBottom(context),
+            child: CustomShowcaseWidget(
+              showcaseKey: matchViewCreateButtonKey,
+              description: loc.showcase_match_view_create,
+              disableBarrierInteraction: true,
+              disposeOnTap: true,
+              onTargetClick: () {
+                navigateToCreateMatchView();
+                showcaseProvider.markAsSeen('match_view_create_match_button');
               },
+              tooltipPosition: TooltipPosition.top,
+              targetBorderRadius: BorderRadius.circular(30),
+              child: FloatingAnimatedButton(
+                text: loc.create_match,
+                icon: Icons.add,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.createMatchView,
+                      ),
+                      builder: (context) => CreateMatchView(
+                        onWinnerChanged: loadMatches,
+                        onMatchesUpdated: loadMatches,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -222,14 +386,52 @@ class _MatchViewState extends State<MatchView> {
     );
   }
 
-  void filterMatches(String query) {
+  void navigateToCreateMatchView() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createMatchView),
+        builder: (context) => CreateMatchView(
+          onWinnerChanged: loadMatches,
+          onMatchesUpdated: loadMatches,
+        ),
+      ),
+    );
+  }
+
+  /// Applies the passed [filter] and also applies the search query
+  /// to the filteredMatches
+  void applyFilter(MatchFilter filter) {
+    switch (filter) {
+      case MatchFilter.all:
+        filteredMatches = [...allMatches];
+      case MatchFilter.active:
+        filteredMatches = allMatches.where((match) => !match.hasEnded).toList();
+      case MatchFilter.finished:
+        filteredMatches = allMatches.where((match) => match.hasEnded).toList();
+      case MatchFilter.team:
+        filteredMatches = allMatches
+            .where((match) => match.isTeamMatch)
+            .toList();
+    }
+
+    setState(() {
+      selectedFilter = filter;
+      displayedMatches = [...filteredMatches];
+      applySearch(searchBarController.text);
+    });
+
+    SharedPreferencesService.matchFilter = filter;
+  }
+
+  void applySearch(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredMatches = [...matches];
+        displayedMatches = [...filteredMatches];
       } else {
         final List<({Match match, int score})> scoredMatches = [];
 
-        for (final match in matches) {
+        for (final match in filteredMatches) {
           int maxScore = 0;
 
           // Check match name
@@ -258,73 +460,156 @@ class _MatchViewState extends State<MatchView> {
             }
           }
 
-          if (maxScore >= Constants.FUZZY_SEARCH_THRESHOLD) {
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
             scoredMatches.add((match: match, score: maxScore));
           }
         }
 
         // Sort by score descending
         scoredMatches.sort((a, b) => b.score.compareTo(a.score));
-        filteredMatches = scoredMatches.map((e) => e.match).toList();
+        displayedMatches = scoredMatches.map((e) => e.match).toList();
       }
     });
   }
 
-  void _handleSearchToggle() {
-    if (!mounted) {
+  void handleRatingDialog() {
+    if (!mounted || !rateProvider.shouldShow) return;
+
+    rateProvider.markAsShown();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) triggerRatingDialog();
+    });
+  }
+
+  /// Triggers the rate dialog if the user has not rated the app yet and the conditions are met.
+  Future<void> triggerRatingDialog() async {
+    // show only in prod or dev
+    if (IS_TEST_ENV) return;
+    if (!RATE_MY_APP.shouldOpenDialog) return;
+
+    final loc = AppLocalizations.of(context);
+    bool? didUserLikeApp;
+
+    await Future.delayed(const Duration(milliseconds: 500), () async {
+      didUserLikeApp = await showPreRateDialog(loc);
+    });
+
+    switch (didUserLikeApp) {
+      case null:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.laterButtonPressed);
+      case true:
+        if (mounted) unawaited(RATE_MY_APP.showStarRateDialog(context));
+      case false:
+        await RATE_MY_APP.callEvent(RateMyAppEventType.noButtonPressed);
+        if (mounted) {
+          await Future.delayed(
+            const Duration(milliseconds: 500),
+            () => showBadRatingDialog(loc),
+          );
+        }
+    }
+  }
+
+  /// Shows a dialog to check for the users opinion on the app
+  Future<bool?> showPreRateDialog(AppLocalizations loc) async =>
+      await showDialog<bool>(
+        context: context,
+        builder: (context) => CustomAlertDialog(
+          closeButtonColor: context.talleeColors.hintColor,
+          showCloseButton: true,
+          title: loc.do_you_like_the_app,
+          content: Text(loc.feedback_info_text, overflow: TextOverflow.visible),
+          actions: [
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(true),
+              accent: ButtonAccent.emphasized,
+              text: loc.yes,
+            ),
+            CustomDialogAction(
+              onPressed: () => Navigator.of(context).pop(false),
+              text: loc.no,
+            ),
+          ],
+        ),
+      );
+
+  /// Shows a dialog prompting the user to contact support via email if they are unsatisfied with the app.
+  void showBadRatingDialog(AppLocalizations loc) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: loc.unsatisfied,
+        content: Text(
+          loc.contact_us_through_mail,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () {
+              Navigator.of(context).pop();
+              launchUrl(Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'));
+            },
+            text: loc.write_email,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void handleSearchToggle() {
+    if (!mounted) return;
+
+    // Only the search bar visibility changed (scrolling or tab tap)
+    if (searchProvider.isSearching(MatchView) == wasSearching) {
+      setState(() {});
       return;
     }
+    wasSearching = searchProvider.isSearching(MatchView);
 
-    if (!_searchProvider.isSearching) {
-      searchBarController.clear();
-    }
+    setState(() {
+      if (!searchProvider.isSearching(MatchView)) {
+        searchBarController.clear();
+      } else {
+        final scrollController = PrimaryScrollController.of(context);
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
   }
 
   /// Loads the matches from the database and sorts them by creation date.
-  void loadMatches() {
-    isLoading = true;
+  void loadMatches({bool showSkeleton = true}) {
+    if (showSkeleton) setState(() => isLoading = true);
+
     Future.wait([
       db.matchDao.getAllMatches(includeDeletedPlayer: true),
-      Future.delayed(Constants.MINIMUM_SKELETON_DURATION),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
     ]).then((results) {
-      if (mounted) {
-        setState(() {
-          final loadedMatches = results[0] as List<Match>;
-          matches = [...loadedMatches]
-            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-          if (searchBarController.text.isEmpty) {
-            filteredMatches = [...matches];
-          } else {
-            filterMatches(searchBarController.text);
-          }
-          isLoading = false;
-        });
-      }
-    });
-  }
+      if (!mounted) return;
 
-  Future<void> addExampleStatistics() async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
-    final stat1 = Statistic(
-      type: StatisticType.totalWins,
-      color: AppColor.blue,
-      displayCount: 3,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat2 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.pink,
-      displayCount: 5,
-      scopes: [StatisticScope.allPlayers],
-    );
-    final stat3 = Statistic(
-      type: StatisticType.averageScore,
-      color: AppColor.green,
-      displayCount: 8,
-      scopes: [StatisticScope.allPlayers],
-    );
-    await db.statisticDao.addStatisticsAsList(
-      statistics: [stat1, stat2, stat3],
-    );
+      final loadedMatches = results[0] as List<Match>;
+      setState(() {
+        allMatches = [...loadedMatches]
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        filteredMatches = [...allMatches];
+
+        searchBarController.text.isNotEmpty || selectedFilter != MatchFilter.all
+            ? applyFilter(selectedFilter)
+            : displayedMatches = [...allMatches];
+
+        if (showSkeleton) setState(() => isLoading = false);
+      });
+    });
   }
 }

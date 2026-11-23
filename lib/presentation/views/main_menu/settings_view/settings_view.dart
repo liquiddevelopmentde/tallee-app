@@ -1,28 +1,29 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/constants/configs.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/data_management_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
-import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
-import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
-import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
@@ -35,48 +36,38 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  PackageInfo _packageInfo = PackageInfo(
-    appName: 'n.A.',
-    packageName: 'n.A.',
-    version: 'n.A.',
-    buildNumber: 'n.A.',
-  );
+  final PackageInfo packageInfo = PackageInfoService.info;
 
   bool isOnlineSharingEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    _initPackageInfo();
     loadSettings();
   }
+
+  String get formattedVersion => IS_PROD_ENV
+      ? 'v${packageInfo.version} (${packageInfo.buildNumber})'
+      : 'v${packageInfo.version}-${ENVIRONMENT.tag} (${packageInfo.buildNumber})';
+
+  String get rawSemVer => IS_PROD_ENV
+      ? '${packageInfo.version}+${packageInfo.buildNumber}'
+      : '${packageInfo.version}-${ENVIRONMENT.tag}+${packageInfo.buildNumber}';
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return ScaffoldMessenger(
       child: Builder(
-        builder: (scaffoldMessengerContext) {
-          return Scaffold(
-            appBar: AppBar(title: Text(loc.settings)),
-            backgroundColor: CustomTheme.backgroundColor,
-            body: SingleChildScrollView(
+        builder: (scaffoldMessengerContext) => Scaffold(
+          appBar: AppBar(title: Text(loc.settings)),
+          backgroundColor: context.talleeColors.backgroundColor,
+          body: SafeArea(
+            child: SingleChildScrollView(
               child: Column(
                 spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, bottom: 10),
-                    child: Text(
-                      textAlign: TextAlign.start,
-                      loc.settings,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16,
@@ -85,25 +76,58 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                     child: Text(
                       textAlign: TextAlign.start,
-                      loc.data,
+                      loc.general,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+
+                  // Theme selection tile
                   SettingsListTile(
-                    title: loc.export_data,
-                    icon: Icons.upload,
-                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () => handleExport(scaffoldMessengerContext),
+                    title: loc.theme,
+                    icon: Icons.brightness_6_rounded,
+                    suffixWidget: Row(
+                      spacing: 10,
+                      children: [
+                        Text(
+                          getThemeModeLabel(
+                            loc,
+                            context.watch<ThemeProvider>().themeMode,
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios, size: 16),
+                      ],
+                    ),
+                    onPressed: () => showThemeModeSheet(loc),
                   ),
+
+                  // Send feedback tile
                   SettingsListTile(
-                    title: loc.import_data,
-                    icon: Icons.download,
+                    title: loc.send_feedback,
+                    icon: Icons.chat_bubble_outline_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () => handleImport(scaffoldMessengerContext),
+                    onPressed: () async {
+                      final result = await Navigator.push<bool>(
+                        context,
+                        adaptivePageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.feedbackFormView,
+                          ),
+                          fullscreenDialog: true,
+                          builder: (context) => const FeedbackFormView(),
+                        ),
+                      );
+                      if (result == true && scaffoldMessengerContext.mounted) {
+                        scaffoldMessengerContext.showSnackBar(
+                          message: loc.thank_you_for_feedback,
+                        );
+                      }
+                    },
                   ),
+
+                  // Online sharing tile
                   SettingsListTile(
                     title: loc.online_sharing_title,
                     icon: Icons.cloud,
@@ -114,18 +138,40 @@ class _SettingsViewState extends State<SettingsView> {
                         setState(() {
                           isOnlineSharingEnabled = value;
                         });
-                        await SharedPreferencesService.setSharingConsent(value);
+                        SharedPreferencesService.sharingConsent = value;
                       },
                     ),
-                    onPressed: null,
                   ),
+
+                  // Show app walkthrough tile
                   SettingsListTile(
-                    title: loc.delete_all_data,
-                    icon: Icons.delete,
+                    title: loc.start_onboarding,
+                    icon: Icons.explore,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () =>
-                        showDeleteDialog(scaffoldMessengerContext, loc),
+                    onPressed: () {
+                      context.read<ShowcaseProvider>().restartTour();
+                      Navigator.of(context).pop(0);
+                    },
                   ),
+
+                  // Data & backup tile
+                  SettingsListTile(
+                    title: loc.data_backup,
+                    icon: Icons.storage_rounded,
+                    suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        adaptivePageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.dataManagementView,
+                          ),
+                          builder: (context) => const DataManagementView(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  // Legal heading
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16,
@@ -141,88 +187,94 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                     ),
                   ),
+
+                  // Licenses tile
                   SettingsListTile(
                     title: loc.licenses,
                     icon: Icons.insert_drive_file,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
+                        adaptivePageRoute(
+                          settings: const RouteSettings(
+                            name: RouteNames.licensesView,
+                          ),
                           builder: (context) => const LicensesView(),
                         ),
                       );
                     },
                   ),
+
+                  // Legal notice tile
                   SettingsListTile(
                     title: loc.legal_notice,
                     icon: Icons.account_balance_sharp,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      await launchUrl(
-                        Uri.parse(Constants.LIQUID_WEBSITE_LEGAL_URL),
-                      );
-                    },
+                    onPressed: () async =>
+                        await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL)),
                   ),
+
+                  // Privacy policy tile
                   SettingsListTile(
                     title: loc.privacy_policy,
                     icon: Icons.gpp_good_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const PrivacyPolicyView(),
-                        ),
-                      );
-                    },
+                    onPressed: () async => await launchUrl(
+                      Uri.parse(LIQUID_WEBSITE_TALLEE_PRIVACY_POLICY_URL),
+                    ),
                   ),
+
+                  // Socials & copyright
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, bottom: 20),
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
                     child: Center(
                       child: Column(
                         spacing: 4,
                         children: [
+                          // Scoial icons
                           Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 10,
                               children: [
+                                // Website
                                 HapticIconButton(
                                   icon: const Icon(Icons.language),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
-                                    launchUrl(
-                                      Uri.parse(Constants.LIQUID_WEBSITE_URL),
-                                    ),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
+                                    launchUrl(Uri.parse(LIQUID_WEBSITE_URL));
                                   },
                                 ),
+
+                                // Github
                                 HapticIconButton(
                                   icon: const FaIcon(FontAwesomeIcons.github),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
-                                    launchUrl(
-                                      Uri.parse(Constants.LIQUID_GITHUB_URL),
-                                    ),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
+                                    launchUrl(Uri.parse(LIQUID_GITHUB_URL));
                                   },
                                 ),
+
+                                // Mail
                                 HapticIconButton(
                                   icon: Icon(
                                     Platform.isIOS
                                         ? CupertinoIcons.mail_solid
                                         : Icons.email,
                                   ),
-                                  onPressed: () => {
-                                    HapticFeedback.lightImpact(),
+                                  onPressed: () {
+                                    Haptics.lightImpact();
                                     launchUrl(
-                                      Uri.parse(
-                                        'mailto:${Constants.LIQUID_CONTACT_EMAIL}',
-                                      ),
-                                    ),
+                                      Uri.parse('mailto:$LIQUID_CONTACT_EMAIL'),
+                                    );
                                   },
                                 ),
                               ],
                             ),
                           ),
+
+                          // Copyright
                           Text(
                             '© ${DateFormat('yyyy').format(DateTime.now())} Liquid Development',
                             style: TextStyle(
@@ -231,12 +283,24 @@ class _SettingsViewState extends State<SettingsView> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
-                            'Version ${_packageInfo.version} (${_packageInfo.buildNumber})',
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+
+                          // App version
+                          GestureDetector(
+                            onTap: () => copyVersionToClipboard(
+                              scaffoldMessengerContext,
+                              rawSemVer,
+                            ),
+                            onLongPress: () => copyVersionToClipboard(
+                              scaffoldMessengerContext,
+                              rawSemVer,
+                            ),
+                            child: Text(
+                              formattedVersion,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],
@@ -246,194 +310,68 @@ class _SettingsViewState extends State<SettingsView> {
                 ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  /// Displays a snackbar based on the import result.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [result] The result of the import operation.
-  void showImportSnackBar({
-    required BuildContext context,
-    required ImportResult result,
-  }) async {
-    final loc = AppLocalizations.of(context);
-    switch (result) {
-      case ImportResult.success:
-        HapticFeedback.successNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_imported,
-          );
-        }
-      case ImportResult.matchSchemaDetected:
-        break;
-      case ImportResult.invalidSchema:
-      case ImportResult.invalidData:
-      case ImportResult.fileReadError:
-      case ImportResult.fileNotFound:
-      case ImportResult.canceled:
-      case ImportResult.formatException:
-      case ImportResult.unknownException:
-        HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: translateImportResultToString(result, context),
-          );
-        }
-    }
-  }
-
-  /// Displays a snackbar based on the export result.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [result] The result of the export operation.
-  void showExportSnackBar({
-    required BuildContext context,
-    required ExportResult result,
-  }) async {
-    final loc = AppLocalizations.of(context);
-    switch (result) {
-      case ExportResult.success:
-        HapticFeedback.successNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: loc.data_successfully_exported,
-          );
-        }
-      case ExportResult.canceled:
-      case ExportResult.unknownException:
-      case ExportResult.noData:
-        HapticFeedback.errorNotification();
-        if (context.mounted) {
-          showSnackbar(
-            context: context,
-            message: translateExportResultToString(result, context),
-          );
-        }
-    }
-  }
-
-  /// Displays a snackbar with the given message and optional action.
-  ///
-  /// [context] The BuildContext to show the snackbar in.
-  /// [message] The message to display in the snackbar.
-  void showSnackbar({required BuildContext context, required String message}) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(CustomSnackBar(message: message));
-  }
-
-  /// Initializes the package information.
-  Future<void> _initPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
-    setState(() {
-      _packageInfo = info;
-    });
-  }
-
-  void handleExport(BuildContext scaffoldMessengerContext) async {
-    final String json = await LocalShareService.getAppDataAsJson(
-      scaffoldMessengerContext,
-    );
-
-    ExportResult result;
-
-    if (json.isEmpty) {
-      result = ExportResult.noData;
-    } else {
-      result = await LocalShareService.exportData(json, 'data');
-    }
-    if (!scaffoldMessengerContext.mounted) return;
-    showExportSnackBar(context: scaffoldMessengerContext, result: result);
-  }
-
-  void handleImport(BuildContext scaffoldMessengerContext) async {
-    final path = await LocalShareService.pickImportFilePath();
-
-    if (path == null) {
-      if (!scaffoldMessengerContext.mounted) return;
-      showImportSnackBar(
-        context: scaffoldMessengerContext,
-        result: ImportResult.canceled,
-      );
-      return;
-    }
-
-    if (!scaffoldMessengerContext.mounted) return;
-
-    // Pre-check the file type to avoid showing PreviewImportDataView for single matches
-    final (status, _) = await LocalShareService.getDataFromPath(path);
-
-    if (status == ImportResult.matchSchemaDetected) {
-      if (!scaffoldMessengerContext.mounted) return;
-      Navigator.of(scaffoldMessengerContext).push(
-        adaptivePageRoute(
-          builder: (context) => MatchReceiveView(initialFilePath: path),
-        ),
-      );
-      return;
-    }
-
-    if (!scaffoldMessengerContext.mounted) return;
-    final result = await Navigator.of(scaffoldMessengerContext)
-        .push<ImportResult>(
-          adaptivePageRoute<ImportResult>(
-            fullscreenDialog: true,
-            builder: (_) => PreviewImportDataView(filePath: path),
-          ),
-        );
-
-    if (result == null) return;
-    if (!scaffoldMessengerContext.mounted) return;
-    showImportSnackBar(context: scaffoldMessengerContext, result: result);
-  }
-
-  void showDeleteDialog(
+  void copyVersionToClipboard(
     BuildContext scaffoldMessengerContext,
-    AppLocalizations loc,
+    String rawSemVer,
   ) {
-    showDialog<bool>(
-      context: context,
-      builder: (context) => CustomAlertDialog(
-        title: '${loc.delete_all_data}?',
-        content: Text(
-          loc.this_cannot_be_undone,
-          overflow: TextOverflow.visible,
-        ),
-        actions: [
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(true),
-            text: loc.delete,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(context).pop(false),
-            buttonType: ButtonType.secondary,
-            text: loc.cancel,
-          ),
-        ],
-      ),
-    ).then((confirmed) {
-      if (confirmed == true && mounted && scaffoldMessengerContext.mounted) {
-        LocalShareService.deleteAllData(context);
-        showSnackbar(
-          context: scaffoldMessengerContext,
-          message: AppLocalizations.of(context).data_successfully_deleted,
-        );
-      }
-    });
+    Clipboard.setData(ClipboardData(text: rawSemVer));
+    Haptics.lightImpact();
+    final loc = AppLocalizations.of(context);
+    scaffoldMessengerContext.showSnackBar(
+      message: loc.version_copied_to_clipboard,
+    );
   }
+
+  /// Shows a sheet for selecting the theme mode
+  void showThemeModeSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<ThemeMode>(
+        title: loc.theme,
+        description: loc.select_a_theme_description,
+        values: ThemeMode.values,
+        selectedValue: context.watch<ThemeProvider>().themeMode,
+        onValueUpdated: (ThemeMode? tm) =>
+            context.read<ThemeProvider>().setThemeMode(tm!),
+        labelBuilder: (BuildContext ctx, ThemeMode tm) =>
+            getThemeModeLabel(loc, tm),
+        leadingBuilder: (ThemeMode tm) => Icon(
+          getThemeModeIcon(tm),
+          size: 20,
+          color: context.talleeColors.textColor,
+        ),
+      ),
+    );
+  }
+
+  /// Returns the correct icon for the given [mode].
+  IconData getThemeModeIcon(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.dark:
+        return Icons.dark_mode;
+      case ThemeMode.light:
+        return Icons.light_mode;
+      case ThemeMode.system:
+        return Icons.contrast;
+    }
+  }
+
+  /// Returns the correct localized String for the given [mode].
+  String getThemeModeLabel(AppLocalizations loc, ThemeMode mode) =>
+      switch (mode) {
+        ThemeMode.system => loc.theme_system,
+        ThemeMode.dark => loc.theme_dark,
+        ThemeMode.light => loc.theme_light,
+      };
 
   Future<void> loadSettings() async {
-    final onlineSharing = SharedPreferencesService.getStoredSharingConsent();
+    final onlineSharing = SharedPreferencesService.sharingConsent;
     setState(() {
       isOnlineSharingEnabled = onlineSharing ?? false;
     });

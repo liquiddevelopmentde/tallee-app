@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_detail_view.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_detail_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_detail/match_detail_view.dart';
 import 'package:tallee/presentation/views/main_menu/player_view/edit_player_view.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
@@ -22,11 +23,11 @@ class PlayerDetailView extends StatefulWidget {
   const PlayerDetailView({
     super.key,
     required this.player,
-    required this.onPlayerUpdated,
+    this.onPlayerUpdated,
   });
 
   final Player player;
-  final VoidCallback onPlayerUpdated;
+  final VoidCallback? onPlayerUpdated;
 
   @override
   State<PlayerDetailView> createState() => _PlayerDetailViewState();
@@ -65,11 +66,13 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
+  bool get isPlayerDeleted => widget.player.deleted;
+
   @override
   void initState() {
     super.initState();
     player = widget.player;
-    db = Provider.of<AppDatabase>(context, listen: false);
+    db = context.read<AppDatabase>();
     loadData();
   }
 
@@ -89,11 +92,11 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
       appBar: AppBar(
         title: Text(loc.player_profile),
         actions: [
-          if (!widget.player.deleted)
+          if (!isPlayerDeleted)
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
-                showDialog<bool>(
+                final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
@@ -104,6 +107,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
+                        accent: ButtonAccent.destructive,
                         text: loc.delete,
                       ),
                       CustomDialogAction(
@@ -113,14 +117,13 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                       ),
                     ],
                   ),
-                ).then((confirmed) async {
-                  if (confirmed! && context.mounted) {
-                    await db.playerDao.deletePlayer(playerId: widget.player.id);
-                    if (!context.mounted) return;
-                    Navigator.pop(context);
-                    widget.onPlayerUpdated();
-                  }
-                });
+                );
+                if (confirmed != true || !context.mounted) return;
+
+                await db.playerDao.deletePlayer(player: widget.player);
+                if (!context.mounted) return;
+                Navigator.pop(context);
+                widget.onPlayerUpdated?.call();
               },
             ),
         ],
@@ -139,25 +142,66 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
               ),
               children: [
                 // Icon
-                const Center(
+                Center(
                   child: ColoredIconContainer(
-                    icon: Icons.person,
+                    muted: isPlayerDeleted,
+                    icon: PLAYER_ICON,
                     containerSize: 55,
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
                 // Playername + Playercount
                 Center(
                   child: buildUnitNameWidget(
+                    context,
                     player,
-                    mainStyle: const TextStyle(
+                    mainStyle: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: CustomTheme.textColor,
+                      color: context.talleeColors.textColor,
                     ),
                   ),
                 ),
+
+                // Deleted badge
+                if (isPlayerDeleted)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.talleeColors.redColor.withAlpha(75),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 5,
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: context.talleeColors.redColor,
+                            size: 15,
+                          ),
+                          Text(
+                            loc.deleted,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: context.talleeColors.redColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
                 // Description
                 if (player.description.isNotEmpty)
@@ -165,123 +209,27 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       player.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
                     ),
                   ),
 
-                // Deleted state
-                if (widget.player.deleted) ...[
-                  Text(
-                    loc.deleted,
-                    style: const TextStyle(fontSize: 13, color: Colors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
                 const SizedBox(height: 5),
 
                 // Created at date
                 Text(
-                  '${loc.created_on} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(player.createdAt)}',
-                  style: const TextStyle(
+                  '${loc.created_on} ${player.createdAt.toMediumDate(context)}',
+                  style: TextStyle(
                     fontSize: 12,
-                    color: CustomTheme.textColor,
+                    color: context.talleeColors.textColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-
-                // Groups
-                if (!widget.player.deleted) ...[
-                  InfoTile(
-                    title: '${loc.groups} ($totalGroups)',
-                    leadingWidget: const Icon(Icons.people),
-                    horizontalAlignment: CrossAxisAlignment.start,
-                    content: AppSkeleton(
-                      enabled: isLoading,
-                      fixLayoutBuilder: true,
-                      alignment: Alignment.topLeft,
-                      child: playerGroups.isNotEmpty
-                          ? Wrap(
-                              alignment: WrapAlignment.start,
-                              crossAxisAlignment: WrapCrossAlignment.start,
-                              spacing: 12,
-                              runSpacing: 8,
-                              children: playerGroups.map((group) {
-                                return PlayerProfileListTile(
-                                  title: group.name,
-                                  count: group.members.length,
-                                  onTap: () {
-                                    Navigator.of(context).pushReplacement(
-                                      adaptivePageRoute(
-                                        builder: (context) => GroupDetailView(
-                                          group: group,
-                                          callback: widget.onPlayerUpdated,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              }).toList(),
-                            )
-                          : Text(
-                              loc.not_part_of_any_group,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: CustomTheme.textColor,
-                              ),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                ],
-
-                // Matches
-                InfoTile(
-                  title: '${loc.matches} ($totalMatches)',
-                  leadingWidget: const Icon(Icons.sports_esports),
-                  horizontalAlignment: CrossAxisAlignment.start,
-                  content: AppSkeleton(
-                    enabled: isLoading,
-                    fixLayoutBuilder: true,
-                    alignment: Alignment.topLeft,
-                    child: playerMatches.isNotEmpty
-                        ? Wrap(
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            spacing: 12,
-                            runSpacing: 8,
-                            children: playerMatches.map((match) {
-                              return PlayerProfileListTile(
-                                title: match.name,
-                                count: match.players.length,
-                                onTap: () {
-                                  Navigator.of(context).pushReplacement(
-                                    adaptivePageRoute(
-                                      builder: (context) => MatchDetailView(
-                                        match: match,
-                                        onMatchUpdate: widget.onPlayerUpdated,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Text(
-                            loc.no_matches_played_yet,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: CustomTheme.textColor,
-                            ),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 15),
 
                 // Statistics
                 DetailTile(
@@ -294,25 +242,127 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                     ),
                   ],
                 ),
+
+                const SizedBox(height: 15),
+
+                // Groups
+                if (!isPlayerDeleted) ...[
+                  InfoTile(
+                    title: loc.groups,
+                    leadingWidget: const Icon(GROUP_ICON),
+                    horizontalAlignment: CrossAxisAlignment.start,
+                    content: AppSkeleton(
+                      enabled: isLoading,
+                      fixLayoutBuilder: true,
+                      alignment: Alignment.topLeft,
+                      child: playerGroups.isNotEmpty
+                          ? Wrap(
+                              spacing: 12,
+                              runSpacing: 8,
+                              children: playerGroups
+                                  .map(
+                                    (group) => PlayerProfileListTile(
+                                      title: group.name,
+                                      count: group.members.length,
+                                      onTap: () {
+                                        Navigator.of(context).pushReplacement(
+                                          adaptivePageRoute(
+                                            settings: const RouteSettings(
+                                              name: RouteNames.groupDetailView,
+                                            ),
+                                            builder: (context) =>
+                                                GroupDetailView(
+                                                  group: group,
+                                                  onGroupUpdated:
+                                                      widget.onPlayerUpdated,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                  .toList(),
+                            )
+                          : Text(
+                              loc.not_part_of_any_group,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: context.talleeColors.textColor,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ],
+
+                // Matches
+                InfoTile(
+                  title: loc.matches,
+                  leadingWidget: const Icon(MATCH_ICON),
+                  horizontalAlignment: CrossAxisAlignment.start,
+                  content: AppSkeleton(
+                    enabled: isLoading,
+                    fixLayoutBuilder: true,
+                    alignment: Alignment.topLeft,
+                    child: playerMatches.isNotEmpty
+                        ? Wrap(
+                            spacing: 12,
+                            runSpacing: 8,
+                            children: playerMatches
+                                .map(
+                                  (match) => PlayerProfileListTile(
+                                    title: match.name,
+                                    count: match.players.length,
+                                    onTap: () {
+                                      Navigator.of(context).pushReplacement(
+                                        adaptivePageRoute(
+                                          settings: const RouteSettings(
+                                            name: RouteNames.matchDetailView,
+                                          ),
+                                          builder: (context) => MatchDetailView(
+                                            match: match,
+                                            onMatchUpdate: () =>
+                                                widget.onPlayerUpdated?.call(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                                .toList(),
+                          )
+                        : Text(
+                            loc.no_matches_played_yet,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: context.talleeColors.textColor,
+                            ),
+                          ),
+                  ),
+                ),
               ],
             ),
 
             // Edit player button
-            if (!widget.player.deleted)
+            if (!isPlayerDeleted)
               Positioned(
                 bottom: MediaQuery.viewPaddingOf(context).bottom,
                 child: FloatingAnimatedButton(
                   text: loc.edit_player,
                   icon: Icons.edit,
                   onPressed: () async {
-                    final updatedPlayer = await Navigator.of(context).push(
-                      adaptivePageRoute(
-                        builder: (context) => EditPlayerView(
-                          playerToEdit: player,
-                          onPlayerChanged: widget.onPlayerUpdated,
-                        ),
-                      ),
-                    );
+                    final updatedPlayer = await Navigator.of(context)
+                        .push<Player?>(
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.editPlayerView,
+                            ),
+                            builder: (context) => EditPlayerView(
+                              playerToEdit: player,
+                              onPlayerUpdated: widget.onPlayerUpdated,
+                            ),
+                          ),
+                        );
                     if (updatedPlayer != null) {
                       setState(() {
                         player = updatedPlayer;

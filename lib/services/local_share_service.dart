@@ -1,35 +1,39 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/remote_share_service.dart';
-import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:tallee/services/shared.dart';
 
 class LocalShareService {
   /// Deletes all data from the database.
+  ///
+  /// Runs in a single transaction: if any step fails, nothing is deleted.
   static Future<void> deleteAllData(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
-    await db.statisticDao.deleteAllStatistics();
-    await db.matchDao.deleteAllMatches();
-    await db.teamDao.deleteAllTeams();
-    await db.groupDao.deleteAllGroups();
-    await db.gameDao.deleteAllGames();
-    await db.playerDao.deleteAllPlayers();
-    SharedPreferencesService.deleteAllFilters(includeFavourites: true);
+    await db.transaction(() async {
+      await db.statisticDao.deleteAllStatistics();
+      await db.matchDao.deleteAllMatches();
+      await db.teamDao.deleteAllTeams();
+      await db.groupDao.deleteAllGroups();
+      await db.gameDao.deleteAllGames();
+      await db.playerDao.deleteAllPlayers();
+    });
   }
 
   /// Retrieves all application data and converts it to a JSON string.
   /// Returns the JSON string representation of the data in normalized format.
   static Future<String> getAppDataAsJson(BuildContext context) async {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
 
     final matches = await db.matchDao.getAllMatches(includeDeletedPlayer: true);
     final groups = await db.groupDao.getAllGroups();
@@ -48,6 +52,7 @@ class LocalShareService {
     }
 
     final Map<String, dynamic> jsonMap = {
+      'version': APP_DATA_SCHEMA_VERSION,
       'players': players.map((player) => player.toNormalizedJson()).toList(),
       'groups': groups.map((group) => group.toNormalizedJson()).toList(),
       'games': games.map((game) => game.toJson()).toList(),
@@ -70,7 +75,7 @@ class LocalShareService {
     try {
       final bytes = Uint8List.fromList(utf8.encode(jsonString));
       final path = await FilePicker.saveFile(
-        fileName: '$fileName.tallee',
+        fileName: '$fileName.$APP_DATA_FILE_EXTENSION',
         bytes: bytes,
       );
 
@@ -82,6 +87,16 @@ class LocalShareService {
     } catch (e, stack) {
       print('[exportData] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ExportResult.unknownException;
     }
   }
@@ -89,17 +104,12 @@ class LocalShareService {
   /// Opens the file picker and returns the path of the selected `.tallee`
   /// file, or `null` if the picker was cancelled or no path is available.
   static Future<String?> pickImportFilePath() async {
-    final result = await FilePicker.pickFiles(
-      allowMultiple: false,
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
-      allowedExtensions: ['tallee'],
+      allowedExtensions: [APP_DATA_FILE_EXTENSION],
     );
 
-    if (result == null || result.files.isEmpty) {
-      return null;
-    }
-
-    return result.files.single.path;
+    return file?.path;
   }
 
   /// Reads and validates a .tallee file at [filePath].
@@ -108,6 +118,10 @@ class LocalShareService {
   static Future<(ImportResult, String?)> getDataFromPath(
     String filePath,
   ) async {
+    if (!filePath.toLowerCase().endsWith('.$APP_DATA_FILE_EXTENSION')) {
+      return (ImportResult.invalidExtension, null);
+    }
+
     final file = File(filePath);
     final exists = await file.exists();
     if (!exists) {
@@ -124,9 +138,8 @@ class LocalShareService {
       return (ImportResult.fileReadError, null);
     }
 
-    final (status, _) = await _validateJson(jsonString);
-    if (status != ImportResult.success &&
-        status != ImportResult.matchSchemaDetected) {
+    final (status, _) = await validateJson(jsonString);
+    if (!status.isSuccess) {
       return (status, null);
     }
 
@@ -137,51 +150,66 @@ class LocalShareService {
   ///
   /// Returns the decoded map on success, or an error status with a `null` map
   /// when validation fails or the JSON is malformed.
-  static Future<(ImportResult, Map<String, dynamic>?)> _validateJson(
+  static Future<(ImportResult, Map<String, dynamic>?)> validateJson(
     String jsonString,
   ) async {
     try {
-      final isValidAppSchema = await validateJsonSchema(
-        jsonString,
-        'assets/app_schema.json',
+      final isAppDataJson = await validateJsonSchema(
+        jsonString: jsonString,
+        schemaAssetPath: 'assets/schemas/app_schema.json',
       );
 
-      if (isValidAppSchema) {
-        final decoded = json.decode(jsonString) as Map<String, dynamic>;
+      final isMatchDataJson = await validateJsonSchema(
+        jsonString: jsonString,
+        schemaAssetPath: 'assets/schemas/match_schema.json',
+      );
 
+      if (!isAppDataJson && !isMatchDataJson) {
+        return (ImportResult.invalidSchema, null);
+      }
+
+      final decoded = json.decode(jsonString) as Map<String, dynamic>;
+      final isVersionCorrect = isSchemaVersionCorrect(
+        jsonMap: decoded,
+        schemaVersion: APP_DATA_SCHEMA_VERSION,
+      );
+
+      if (!isVersionCorrect) {
+        return (ImportResult.incompatibleVersion, null);
+      }
+
+      // Import app data
+      if (isAppDataJson) {
         if (!validateContent(decoded)) {
           return (ImportResult.invalidData, null);
         }
-
         return (ImportResult.success, decoded);
-      }
-
-      // Check if it's a single match
-      final isValidMatchSchema = await validateJsonSchema(
-        jsonString,
-        'assets/match_schema.json',
-      );
-
-      if (isValidMatchSchema) {
-        final decoded = json.decode(jsonString) as Map<String, dynamic>;
-
+      } else {
+        // Import match data
         if (!RemoteShareService.validateContent(decoded)) {
           return (ImportResult.invalidData, null);
         }
-
-        return (ImportResult.matchSchemaDetected, null);
+        return (ImportResult.success, decoded);
       }
-
-      return (ImportResult.invalidSchema, null);
     } on FormatException catch (e, stack) {
       print('[validateJson] FormatException');
       print('[validateJson] $e');
       print(stack);
       return (ImportResult.formatException, null);
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[validateJson] Exception');
       print('[validateJson] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return (ImportResult.unknownException, null);
     }
   }
@@ -191,69 +219,83 @@ class LocalShareService {
     AppDatabase db,
     String jsonString,
   ) async {
-    final (status, decoded) = await _validateJson(jsonString);
-    if (status != ImportResult.success || decoded == null) {
+    final (status, decoded) = await validateJson(jsonString);
+    if (!status.isSuccess || decoded == null) {
       return status;
     }
 
     try {
       await importDataToDatabase(db, decoded);
       return ImportResult.success;
-    } on Exception catch (e, stack) {
+    } catch (e, stack) {
       print('[commitImport] Failed to write data');
       print('[commitImport] $e');
       print(stack);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
       return ImportResult.unknownException;
     }
   }
 
-  /// Validates field lengths against the defined constants.
+  /// Validates field lengths against the defined
   @visibleForTesting
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate players
-    final players = decoded['players'] as List<dynamic>? ?? [];
+    final players = (decoded['players'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final p in players) {
       final name = p['name'] as String?;
-      if (name != null && name.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+      if (name != null && name.length > MAX_PLAYER_NAME_LENGTH) {
         return false;
       }
     }
 
     // Validate games
-    final games = decoded['games'] as List<dynamic>? ?? [];
+    final games = (decoded['games'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in games) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GAME_NAME_LENGTH) {
+      if (name != null && name.length > MAX_GAME_NAME_LENGTH) {
         return false;
       }
       final desc = g['description'] as String?;
-      if (desc != null && desc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+      if (desc != null && desc.length > MAX_GAME_DESCRIPTION_LENGTH) {
         return false;
       }
     }
 
     // Validate groups
-    final groups = decoded['groups'] as List<dynamic>? ?? [];
+    final groups = (decoded['groups'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final g in groups) {
       final name = g['name'] as String?;
-      if (name != null && name.length > Constants.MAX_GROUP_NAME_LENGTH) {
+      if (name != null && name.length > MAX_GROUP_NAME_LENGTH) {
         return false;
       }
     }
 
     // Validate matches and teams
-    final matches = decoded['matches'] as List<dynamic>? ?? [];
+    final matches = (decoded['matches'] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     for (final m in matches) {
       final name = m['name'] as String?;
-      if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
+      if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
         return false;
       }
 
-      final teams = m['teams'] as List<dynamic>? ?? [];
+      final teams = (m['teams'] as List<dynamic>? ?? [])
+          .cast<Map<String, dynamic>>();
       for (final t in teams) {
         final teamName = t['name'] as String?;
-        if (teamName != null &&
-            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
+        if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {
           return false;
         }
       }
@@ -287,36 +329,20 @@ class LocalShareService {
 
     final importedStats = parseStatsFromJson(decodedJson, gameById, groupById);
 
-    // Wrap the entire import in a single transaction to ensure atomicity
-    // and prevent foreign key constraint violations due to intermediate states.
-    print('[importDataToDatabase] START');
     await db.transaction(() async {
-      // Order is important for foreign key constraints:
       // 1. Games & Players (no dependencies)
-      print('[importDataToDatabase] adding games');
       await db.gameDao.addGamesAsList(games: importedGames);
-      print('[importDataToDatabase] added games');
-
-      print('[importDataToDatabase] adding players');
       await db.playerDao.addPlayersAsList(players: importedPlayers);
-      print('[importDataToDatabase] added players');
 
       // 2. Groups (depend on players)
-      print('[importDataToDatabase] adding groups');
       await db.groupDao.addGroupsAsList(groups: importedGroups);
-      print('[importDataToDatabase] added groups');
 
       // 3. Matches (now handles its own games/players/groups internally but safely)
-      print('[importDataToDatabase] adding matches');
       await db.matchDao.addMatchesAsList(matches: importedMatches);
-      print('[importDataToDatabase] added matches');
 
       // 4. Statistics (depend on games and groups)
-      print('[importDataToDatabase] adding statistics');
       await db.statisticDao.addStatisticsAsList(statistics: importedStats);
-      print('[importDataToDatabase] added statistics');
     });
-    print('[importDataToDatabase] END');
   }
 
   /* Parsing Methods */
@@ -364,22 +390,19 @@ class LocalShareService {
   static List<Team> parseTeamsFromJson(
     List<dynamic> teamsJson,
     Map<String, Player> playerById,
-  ) {
-    return teamsJson.map((t) {
-      final map = t as Map<String, dynamic>;
-      final memberIds = (map['memberIds'] as List<dynamic>? ?? [])
-          .cast<String>();
+  ) => teamsJson.map((t) {
+    final map = t as Map<String, dynamic>;
+    final memberIds = (map['memberIds'] as List<dynamic>? ?? []).cast<String>();
 
-      // Ignore invalid member IDs (missing players) instead of throwing
-      final members = memberIds
-          .map((id) => playerById[id])
-          .where((p) => p != null)
-          .cast<Player>()
-          .toList();
+    // Ignore invalid member IDs (missing players) instead of throwing
+    final members = memberIds
+        .map((id) => playerById[id])
+        .where((p) => p != null)
+        .cast<Player>()
+        .toList();
 
-      return Team.fromNormalizedJson(map, members);
-    }).toList();
-  }
+    return Team.fromNormalizedJson(map, members);
+  }).toList();
 
   /// Parses matches from JSON data.
   @visibleForTesting
@@ -457,6 +480,11 @@ class LocalShareService {
           .cast<Group>()
           .toList();
 
+      final type = StatisticType.values.firstWhere(
+        (e) => e.name == map['type'],
+        orElse: () => StatisticType.totalWins,
+      );
+
       return Statistic(
         id: map['id'] as String,
         createdAt: DateTime.parse(map['createdAt'] as String),
@@ -466,24 +494,21 @@ class LocalShareService {
         endDate: map['endDate'] != null
             ? DateTime.parse(map['endDate'] as String)
             : null,
-        type: StatisticType.values.firstWhere(
-          (e) => e.name == map['type'] || e.toString() == map['type'],
-          orElse: () => StatisticType.totalWins,
-        ),
+        type: type,
         scopes: (map['scopes'] as List<dynamic>? ?? [])
             .map(
               (scope) => StatisticScope.values.firstWhere(
-                (e) => e.name == scope || e.toString() == scope,
+                (e) => e.name == scope,
                 orElse: () => StatisticScope.allPlayers,
               ),
             )
             .toList(),
         timeframe: Timeframe.values.firstWhere(
-          (e) => e.name == map['timeframe'] || e.toString() == map['timeframe'],
+          (e) => e.name == map['timeframe'],
           orElse: () => Timeframe.allTime,
         ),
         color: AppColor.values.firstWhere(
-          (e) => e.name == map['color'] || e.toString() == map['color'],
+          (e) => e.name == map['color'],
           orElse: () => AppColor.orange,
         ),
         selectedGroups: selectedGroups.isEmpty ? null : selectedGroups,
@@ -491,6 +516,10 @@ class LocalShareService {
         displayCount: map['displayCount'],
         isFavourite: map['isFavourite'],
         position: map['position'],
+        sortDirection: SortDirection.values.firstWhere(
+          (e) => e.name == map['sortDirection'],
+          orElse: () => type.defaultSortDirection,
+        ),
       );
     }).toList();
   }

@@ -450,6 +450,15 @@ class $GroupTableTable extends GroupTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<AppColor, String> color =
+      GeneratedColumn<String>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<AppColor>($GroupTableTable.$convertercolor);
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
   );
@@ -462,7 +471,13 @@ class $GroupTableTable extends GroupTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, createdAt, name, description];
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    name,
+    color,
+    description,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -528,6 +543,12 @@ class $GroupTableTable extends GroupTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      color: $GroupTableTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}color'],
+        )!,
+      ),
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
@@ -539,17 +560,22 @@ class $GroupTableTable extends GroupTable
   $GroupTableTable createAlias(String alias) {
     return $GroupTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<AppColor, String, String> $convertercolor =
+      const EnumNameConverter<AppColor>(AppColor.values);
 }
 
 class GroupTableData extends DataClass implements Insertable<GroupTableData> {
   final String id;
   final DateTime createdAt;
   final String name;
+  final AppColor color;
   final String description;
   const GroupTableData({
     required this.id,
     required this.createdAt,
     required this.name,
+    required this.color,
     required this.description,
   });
   @override
@@ -558,6 +584,11 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     map['id'] = Variable<String>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['name'] = Variable<String>(name);
+    {
+      map['color'] = Variable<String>(
+        $GroupTableTable.$convertercolor.toSql(color),
+      );
+    }
     map['description'] = Variable<String>(description);
     return map;
   }
@@ -567,6 +598,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
+      color: Value(color),
       description: Value(description),
     );
   }
@@ -580,6 +612,9 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       name: serializer.fromJson<String>(json['name']),
+      color: $GroupTableTable.$convertercolor.fromJson(
+        serializer.fromJson<String>(json['color']),
+      ),
       description: serializer.fromJson<String>(json['description']),
     );
   }
@@ -590,6 +625,9 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       'id': serializer.toJson<String>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<String>(
+        $GroupTableTable.$convertercolor.toJson(color),
+      ),
       'description': serializer.toJson<String>(description),
     };
   }
@@ -598,11 +636,13 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
     String? id,
     DateTime? createdAt,
     String? name,
+    AppColor? color,
     String? description,
   }) => GroupTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     name: name ?? this.name,
+    color: color ?? this.color,
     description: description ?? this.description,
   );
   GroupTableData copyWithCompanion(GroupTableCompanion data) {
@@ -610,6 +650,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
       description: data.description.present
           ? data.description.value
           : this.description,
@@ -622,13 +663,14 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, name, description);
+  int get hashCode => Object.hash(id, createdAt, name, color, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -636,6 +678,7 @@ class GroupTableData extends DataClass implements Insertable<GroupTableData> {
           other.id == this.id &&
           other.createdAt == this.createdAt &&
           other.name == this.name &&
+          other.color == this.color &&
           other.description == this.description);
 }
 
@@ -643,12 +686,14 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
   final Value<String> id;
   final Value<DateTime> createdAt;
   final Value<String> name;
+  final Value<AppColor> color;
   final Value<String> description;
   final Value<int> rowid;
   const GroupTableCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.name = const Value.absent(),
+    this.color = const Value.absent(),
     this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -656,16 +701,19 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     required String id,
     required DateTime createdAt,
     required String name,
+    required AppColor color,
     required String description,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
        name = Value(name),
+       color = Value(color),
        description = Value(description);
   static Insertable<GroupTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
     Expression<String>? name,
+    Expression<String>? color,
     Expression<String>? description,
     Expression<int>? rowid,
   }) {
@@ -673,6 +721,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
       if (id != null) 'id': id,
       if (createdAt != null) 'created_at': createdAt,
       if (name != null) 'name': name,
+      if (color != null) 'color': color,
       if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
@@ -682,6 +731,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     Value<String>? id,
     Value<DateTime>? createdAt,
     Value<String>? name,
+    Value<AppColor>? color,
     Value<String>? description,
     Value<int>? rowid,
   }) {
@@ -689,6 +739,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
+      color: color ?? this.color,
       description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
@@ -706,6 +757,11 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (color.present) {
+      map['color'] = Variable<String>(
+        $GroupTableTable.$convertercolor.toSql(color.value),
+      );
+    }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
@@ -721,6 +777,7 @@ class GroupTableCompanion extends UpdateCompanion<GroupTableData> {
           ..write('id: $id, ')
           ..write('createdAt: $createdAt, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2581,9 +2638,9 @@ class $ScoreEntryTableTable extends ScoreEntryTable
   late final GeneratedColumn<int> score = GeneratedColumn<int>(
     'score',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _changeMeta = const VerificationMeta('change');
   @override
@@ -2646,8 +2703,6 @@ class $ScoreEntryTableTable extends ScoreEntryTable
         _scoreMeta,
         score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
       );
-    } else if (isInserting) {
-      context.missing(_scoreMeta);
     }
     if (data.containsKey('change')) {
       context.handle(
@@ -2681,7 +2736,7 @@ class $ScoreEntryTableTable extends ScoreEntryTable
       score: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}score'],
-      )!,
+      ),
       change: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}change'],
@@ -2700,13 +2755,13 @@ class ScoreEntryTableData extends DataClass
   final String playerId;
   final String matchId;
   final int roundNumber;
-  final int score;
+  final int? score;
   final int change;
   const ScoreEntryTableData({
     required this.playerId,
     required this.matchId,
     required this.roundNumber,
-    required this.score,
+    this.score,
     required this.change,
   });
   @override
@@ -2715,7 +2770,9 @@ class ScoreEntryTableData extends DataClass
     map['player_id'] = Variable<String>(playerId);
     map['match_id'] = Variable<String>(matchId);
     map['round_number'] = Variable<int>(roundNumber);
-    map['score'] = Variable<int>(score);
+    if (!nullToAbsent || score != null) {
+      map['score'] = Variable<int>(score);
+    }
     map['change'] = Variable<int>(change);
     return map;
   }
@@ -2725,7 +2782,9 @@ class ScoreEntryTableData extends DataClass
       playerId: Value(playerId),
       matchId: Value(matchId),
       roundNumber: Value(roundNumber),
-      score: Value(score),
+      score: score == null && nullToAbsent
+          ? const Value.absent()
+          : Value(score),
       change: Value(change),
     );
   }
@@ -2739,7 +2798,7 @@ class ScoreEntryTableData extends DataClass
       playerId: serializer.fromJson<String>(json['playerId']),
       matchId: serializer.fromJson<String>(json['matchId']),
       roundNumber: serializer.fromJson<int>(json['roundNumber']),
-      score: serializer.fromJson<int>(json['score']),
+      score: serializer.fromJson<int?>(json['score']),
       change: serializer.fromJson<int>(json['change']),
     );
   }
@@ -2750,7 +2809,7 @@ class ScoreEntryTableData extends DataClass
       'playerId': serializer.toJson<String>(playerId),
       'matchId': serializer.toJson<String>(matchId),
       'roundNumber': serializer.toJson<int>(roundNumber),
-      'score': serializer.toJson<int>(score),
+      'score': serializer.toJson<int?>(score),
       'change': serializer.toJson<int>(change),
     };
   }
@@ -2759,13 +2818,13 @@ class ScoreEntryTableData extends DataClass
     String? playerId,
     String? matchId,
     int? roundNumber,
-    int? score,
+    Value<int?> score = const Value.absent(),
     int? change,
   }) => ScoreEntryTableData(
     playerId: playerId ?? this.playerId,
     matchId: matchId ?? this.matchId,
     roundNumber: roundNumber ?? this.roundNumber,
-    score: score ?? this.score,
+    score: score.present ? score.value : this.score,
     change: change ?? this.change,
   );
   ScoreEntryTableData copyWithCompanion(ScoreEntryTableCompanion data) {
@@ -2810,7 +2869,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
   final Value<String> playerId;
   final Value<String> matchId;
   final Value<int> roundNumber;
-  final Value<int> score;
+  final Value<int?> score;
   final Value<int> change;
   final Value<int> rowid;
   const ScoreEntryTableCompanion({
@@ -2825,13 +2884,12 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     required String playerId,
     required String matchId,
     required int roundNumber,
-    required int score,
+    this.score = const Value.absent(),
     required int change,
     this.rowid = const Value.absent(),
   }) : playerId = Value(playerId),
        matchId = Value(matchId),
        roundNumber = Value(roundNumber),
-       score = Value(score),
        change = Value(change);
   static Insertable<ScoreEntryTableData> custom({
     Expression<String>? playerId,
@@ -2855,7 +2913,7 @@ class ScoreEntryTableCompanion extends UpdateCompanion<ScoreEntryTableData> {
     Value<String>? playerId,
     Value<String>? matchId,
     Value<int>? roundNumber,
-    Value<int>? score,
+    Value<int?>? score,
     Value<int>? change,
     Value<int>? rowid,
   }) {
@@ -3022,6 +3080,16 @@ class $StatisticTableTable extends StatisticTable
     defaultValue: const Constant(0),
   );
   @override
+  late final GeneratedColumnWithTypeConverter<SortDirection, String>
+  sortDirection = GeneratedColumn<String>(
+    'sort_direction',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: Constant(SortDirection.descending.name),
+  ).withConverter<SortDirection>($StatisticTableTable.$convertersortDirection);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     createdAt,
@@ -3033,6 +3101,7 @@ class $StatisticTableTable extends StatisticTable
     displayCount,
     isFavourite,
     position,
+    sortDirection,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3150,6 +3219,12 @@ class $StatisticTableTable extends StatisticTable
         DriftSqlType.int,
         data['${effectivePrefix}position'],
       )!,
+      sortDirection: $StatisticTableTable.$convertersortDirection.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}sort_direction'],
+        )!,
+      ),
     );
   }
 
@@ -3164,6 +3239,10 @@ class $StatisticTableTable extends StatisticTable
       const EnumNameConverter<Timeframe>(Timeframe.values);
   static JsonTypeConverter2<AppColor, String, String> $convertercolor =
       const EnumNameConverter<AppColor>(AppColor.values);
+  static JsonTypeConverter2<SortDirection, String, String>
+  $convertersortDirection = const EnumNameConverter<SortDirection>(
+    SortDirection.values,
+  );
 }
 
 class StatisticTableData extends DataClass
@@ -3178,6 +3257,7 @@ class StatisticTableData extends DataClass
   final int displayCount;
   final bool isFavourite;
   final int position;
+  final SortDirection sortDirection;
   const StatisticTableData({
     required this.id,
     required this.createdAt,
@@ -3189,6 +3269,7 @@ class StatisticTableData extends DataClass
     required this.displayCount,
     required this.isFavourite,
     required this.position,
+    required this.sortDirection,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3219,6 +3300,11 @@ class StatisticTableData extends DataClass
     map['display_count'] = Variable<int>(displayCount);
     map['is_favourite'] = Variable<bool>(isFavourite);
     map['position'] = Variable<int>(position);
+    {
+      map['sort_direction'] = Variable<String>(
+        $StatisticTableTable.$convertersortDirection.toSql(sortDirection),
+      );
+    }
     return map;
   }
 
@@ -3238,6 +3324,7 @@ class StatisticTableData extends DataClass
       displayCount: Value(displayCount),
       isFavourite: Value(isFavourite),
       position: Value(position),
+      sortDirection: Value(sortDirection),
     );
   }
 
@@ -3263,6 +3350,9 @@ class StatisticTableData extends DataClass
       displayCount: serializer.fromJson<int>(json['displayCount']),
       isFavourite: serializer.fromJson<bool>(json['isFavourite']),
       position: serializer.fromJson<int>(json['position']),
+      sortDirection: $StatisticTableTable.$convertersortDirection.fromJson(
+        serializer.fromJson<String>(json['sortDirection']),
+      ),
     );
   }
   @override
@@ -3285,6 +3375,9 @@ class StatisticTableData extends DataClass
       'displayCount': serializer.toJson<int>(displayCount),
       'isFavourite': serializer.toJson<bool>(isFavourite),
       'position': serializer.toJson<int>(position),
+      'sortDirection': serializer.toJson<String>(
+        $StatisticTableTable.$convertersortDirection.toJson(sortDirection),
+      ),
     };
   }
 
@@ -3299,6 +3392,7 @@ class StatisticTableData extends DataClass
     int? displayCount,
     bool? isFavourite,
     int? position,
+    SortDirection? sortDirection,
   }) => StatisticTableData(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -3310,6 +3404,7 @@ class StatisticTableData extends DataClass
     displayCount: displayCount ?? this.displayCount,
     isFavourite: isFavourite ?? this.isFavourite,
     position: position ?? this.position,
+    sortDirection: sortDirection ?? this.sortDirection,
   );
   StatisticTableData copyWithCompanion(StatisticTableCompanion data) {
     return StatisticTableData(
@@ -3327,6 +3422,9 @@ class StatisticTableData extends DataClass
           ? data.isFavourite.value
           : this.isFavourite,
       position: data.position.present ? data.position.value : this.position,
+      sortDirection: data.sortDirection.present
+          ? data.sortDirection.value
+          : this.sortDirection,
     );
   }
 
@@ -3342,7 +3440,8 @@ class StatisticTableData extends DataClass
           ..write('color: $color, ')
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
-          ..write('position: $position')
+          ..write('position: $position, ')
+          ..write('sortDirection: $sortDirection')
           ..write(')'))
         .toString();
   }
@@ -3359,6 +3458,7 @@ class StatisticTableData extends DataClass
     displayCount,
     isFavourite,
     position,
+    sortDirection,
   );
   @override
   bool operator ==(Object other) =>
@@ -3373,7 +3473,8 @@ class StatisticTableData extends DataClass
           other.color == this.color &&
           other.displayCount == this.displayCount &&
           other.isFavourite == this.isFavourite &&
-          other.position == this.position);
+          other.position == this.position &&
+          other.sortDirection == this.sortDirection);
 }
 
 class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
@@ -3387,6 +3488,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
   final Value<int> displayCount;
   final Value<bool> isFavourite;
   final Value<int> position;
+  final Value<SortDirection> sortDirection;
   final Value<int> rowid;
   const StatisticTableCompanion({
     this.id = const Value.absent(),
@@ -3399,6 +3501,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
     this.position = const Value.absent(),
+    this.sortDirection = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   StatisticTableCompanion.insert({
@@ -3412,6 +3515,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     this.displayCount = const Value.absent(),
     this.isFavourite = const Value.absent(),
     this.position = const Value.absent(),
+    this.sortDirection = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -3429,6 +3533,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Expression<int>? displayCount,
     Expression<bool>? isFavourite,
     Expression<int>? position,
+    Expression<String>? sortDirection,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3442,6 +3547,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       if (displayCount != null) 'display_count': displayCount,
       if (isFavourite != null) 'is_favourite': isFavourite,
       if (position != null) 'position': position,
+      if (sortDirection != null) 'sort_direction': sortDirection,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3457,6 +3563,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     Value<int>? displayCount,
     Value<bool>? isFavourite,
     Value<int>? position,
+    Value<SortDirection>? sortDirection,
     Value<int>? rowid,
   }) {
     return StatisticTableCompanion(
@@ -3470,6 +3577,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
       displayCount: displayCount ?? this.displayCount,
       isFavourite: isFavourite ?? this.isFavourite,
       position: position ?? this.position,
+      sortDirection: sortDirection ?? this.sortDirection,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3513,6 +3621,11 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
     if (position.present) {
       map['position'] = Variable<int>(position.value);
     }
+    if (sortDirection.present) {
+      map['sort_direction'] = Variable<String>(
+        $StatisticTableTable.$convertersortDirection.toSql(sortDirection.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3532,6 +3645,7 @@ class StatisticTableCompanion extends UpdateCompanion<StatisticTableData> {
           ..write('displayCount: $displayCount, ')
           ..write('isFavourite: $isFavourite, ')
           ..write('position: $position, ')
+          ..write('sortDirection: $sortDirection, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4832,7 +4946,7 @@ class $$PlayerTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerTableTable, PlayerTableData>(table),
                   $$PlayerTableTableReferences(db, table, e),
                 ),
               )
@@ -4854,10 +4968,11 @@ class $$PlayerTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (playerGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          PlayerGroupTableData
+                          PlayerGroupTableData,
+                          $PlayerGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4868,17 +4983,16 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).playerGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                       if (playerMatchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          PlayerMatchTableData
+                          PlayerMatchTableData,
+                          $PlayerMatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4889,17 +5003,16 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).playerMatchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                       if (scoreEntryTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PlayerTableData,
                           $PlayerTableTable,
-                          ScoreEntryTableData
+                          ScoreEntryTableData,
+                          $ScoreEntryTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayerTableTableReferences
@@ -4910,10 +5023,8 @@ class $$PlayerTableTableTableManager
                                 table,
                                 p0,
                               ).scoreEntryTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                     ];
@@ -4946,6 +5057,7 @@ typedef $$GroupTableTableCreateCompanionBuilder = GroupTableCompanion Function({
   required String id,
   required DateTime createdAt,
   required String name,
+  required AppColor color,
   required String description,
   Value<int> rowid,
 });
@@ -4953,6 +5065,7 @@ typedef $$GroupTableTableUpdateCompanionBuilder = GroupTableCompanion Function({
   Value<String> id,
   Value<DateTime> createdAt,
   Value<String> name,
+  Value<AppColor> color,
   Value<String> description,
   Value<int> rowid,
 });
@@ -5047,6 +5160,12 @@ class $$GroupTableTableFilterComposer
     column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<AppColor, AppColor, String> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<String> get description => $composableBuilder(
     column: $table.description,
@@ -5153,6 +5272,11 @@ class $$GroupTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get description => $composableBuilder(
     column: $table.description,
     builder: (column) => ColumnOrderings(column),
@@ -5176,6 +5300,9 @@ class $$GroupTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AppColor, String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
@@ -5294,12 +5421,14 @@ class $$GroupTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<AppColor> color = const Value.absent(),
                 Value<String> description = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => GroupTableCompanion(
                 id: id,
                 createdAt: createdAt,
                 name: name,
+                color: color,
                 description: description,
                 rowid: rowid,
               ),
@@ -5308,19 +5437,21 @@ class $$GroupTableTableTableManager
                 required String id,
                 required DateTime createdAt,
                 required String name,
+                required AppColor color,
                 required String description,
                 Value<int> rowid = const Value.absent(),
               }) => GroupTableCompanion.insert(
                 id: id,
                 createdAt: createdAt,
                 name: name,
+                color: color,
                 description: description,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$GroupTableTable, GroupTableData>(table),
                   $$GroupTableTableReferences(db, table, e),
                 ),
               )
@@ -5342,10 +5473,11 @@ class $$GroupTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (matchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          MatchTableData
+                          MatchTableData,
+                          $MatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5356,17 +5488,16 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).matchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                       if (playerGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          PlayerGroupTableData
+                          PlayerGroupTableData,
+                          $PlayerGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5377,17 +5508,16 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).playerGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                       if (statisticGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GroupTableData,
                           $GroupTableTable,
-                          StatisticGroupTableData
+                          StatisticGroupTableData,
+                          $StatisticGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GroupTableTableReferences
@@ -5398,10 +5528,8 @@ class $$GroupTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.groupId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'group_id',
                           typedResults: items,
                         ),
                     ];
@@ -5777,7 +5905,7 @@ class $$GameTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$GameTableTable, GameTableData>(table),
                   $$GameTableTableReferences(db, table, e),
                 ),
               )
@@ -5794,10 +5922,11 @@ class $$GameTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (matchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GameTableData,
                           $GameTableTable,
-                          MatchTableData
+                          MatchTableData,
+                          $MatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GameTableTableReferences
@@ -5808,17 +5937,16 @@ class $$GameTableTableTableManager
                                 table,
                                 p0,
                               ).matchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                       if (statisticGameTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           GameTableData,
                           $GameTableTable,
-                          StatisticGameTableData
+                          StatisticGameTableData,
+                          $StatisticGameTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$GameTableTableReferences
@@ -5829,10 +5957,8 @@ class $$GameTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGameTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                     ];
@@ -6385,7 +6511,7 @@ class $$MatchTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MatchTableTable, MatchTableData>(table),
                   $$MatchTableTableReferences(db, table, e),
                 ),
               )
@@ -6447,10 +6573,11 @@ class $$MatchTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (playerMatchTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MatchTableData,
                           $MatchTableTable,
-                          PlayerMatchTableData
+                          PlayerMatchTableData,
+                          $PlayerMatchTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MatchTableTableReferences
@@ -6461,17 +6588,16 @@ class $$MatchTableTableTableManager
                                 table,
                                 p0,
                               ).playerMatchTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.matchId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'match_id',
                           typedResults: items,
                         ),
                       if (scoreEntryTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MatchTableData,
                           $MatchTableTable,
-                          ScoreEntryTableData
+                          ScoreEntryTableData,
+                          $ScoreEntryTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MatchTableTableReferences
@@ -6482,10 +6608,8 @@ class $$MatchTableTableTableManager
                                 table,
                                 p0,
                               ).scoreEntryTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.matchId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'match_id',
                           typedResults: items,
                         ),
                     ];
@@ -6795,7 +6919,9 @@ class $$PlayerGroupTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerGroupTableTable, PlayerGroupTableData>(
+                    table,
+                  ),
                   $$PlayerGroupTableTableReferences(db, table, e),
                 ),
               )
@@ -7117,7 +7243,7 @@ class $$TeamTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TeamTableTable, TeamTableData>(table),
                   $$TeamTableTableReferences(db, table, e),
                 ),
               )
@@ -7132,10 +7258,11 @@ class $$TeamTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (playerMatchTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       TeamTableData,
                       $TeamTableTable,
-                      PlayerMatchTableData
+                      PlayerMatchTableData,
+                      $PlayerMatchTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$TeamTableTableReferences
@@ -7146,8 +7273,8 @@ class $$TeamTableTableTableManager
                             table,
                             p0,
                           ).playerMatchTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.teamId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'team_id',
                       typedResults: items,
                     ),
                 ];
@@ -7544,7 +7671,9 @@ class $$PlayerMatchTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerMatchTableTable, PlayerMatchTableData>(
+                    table,
+                  ),
                   $$PlayerMatchTableTableReferences(db, table, e),
                 ),
               )
@@ -7634,7 +7763,7 @@ typedef $$ScoreEntryTableTableCreateCompanionBuilder =
       required String playerId,
       required String matchId,
       required int roundNumber,
-      required int score,
+      Value<int?> score,
       required int change,
       Value<int> rowid,
     });
@@ -7643,7 +7772,7 @@ typedef $$ScoreEntryTableTableUpdateCompanionBuilder =
       Value<String> playerId,
       Value<String> matchId,
       Value<int> roundNumber,
-      Value<int> score,
+      Value<int?> score,
       Value<int> change,
       Value<int> rowid,
     });
@@ -7938,7 +8067,7 @@ class $$ScoreEntryTableTableTableManager
                 Value<String> playerId = const Value.absent(),
                 Value<String> matchId = const Value.absent(),
                 Value<int> roundNumber = const Value.absent(),
-                Value<int> score = const Value.absent(),
+                Value<int?> score = const Value.absent(),
                 Value<int> change = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion(
@@ -7954,7 +8083,7 @@ class $$ScoreEntryTableTableTableManager
                 required String playerId,
                 required String matchId,
                 required int roundNumber,
-                required int score,
+                Value<int?> score = const Value.absent(),
                 required int change,
                 Value<int> rowid = const Value.absent(),
               }) => ScoreEntryTableCompanion.insert(
@@ -7968,7 +8097,9 @@ class $$ScoreEntryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ScoreEntryTableTable, ScoreEntryTableData>(
+                    table,
+                  ),
                   $$ScoreEntryTableTableReferences(db, table, e),
                 ),
               )
@@ -8053,6 +8184,7 @@ typedef $$StatisticTableTableCreateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
+      Value<SortDirection> sortDirection,
       Value<int> rowid,
     });
 typedef $$StatisticTableTableUpdateCompanionBuilder =
@@ -8067,6 +8199,7 @@ typedef $$StatisticTableTableUpdateCompanionBuilder =
       Value<int> displayCount,
       Value<bool> isFavourite,
       Value<int> position,
+      Value<SortDirection> sortDirection,
       Value<int> rowid,
     });
 
@@ -8218,6 +8351,12 @@ class $$StatisticTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<SortDirection, SortDirection, String>
+  get sortDirection => $composableBuilder(
+    column: $table.sortDirection,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   Expression<bool> statisticScopeTableRefs(
     Expression<bool> Function($$StatisticScopeTableTableFilterComposer f) f,
   ) {
@@ -8352,6 +8491,11 @@ class $$StatisticTableTableOrderingComposer
     column: $table.position,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get sortDirection => $composableBuilder(
+    column: $table.sortDirection,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$StatisticTableTableAnnotationComposer
@@ -8396,6 +8540,12 @@ class $$StatisticTableTableAnnotationComposer
 
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SortDirection, String> get sortDirection =>
+      $composableBuilder(
+        column: $table.sortDirection,
+        builder: (column) => column,
+      );
 
   Expression<T> statisticScopeTableRefs<T extends Object>(
     Expression<T> Function($$StatisticScopeTableTableAnnotationComposer a) f,
@@ -8520,6 +8670,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
+                Value<SortDirection> sortDirection = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion(
                 id: id,
@@ -8532,6 +8683,7 @@ class $$StatisticTableTableTableManager
                 displayCount: displayCount,
                 isFavourite: isFavourite,
                 position: position,
+                sortDirection: sortDirection,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -8546,6 +8698,7 @@ class $$StatisticTableTableTableManager
                 Value<int> displayCount = const Value.absent(),
                 Value<bool> isFavourite = const Value.absent(),
                 Value<int> position = const Value.absent(),
+                Value<SortDirection> sortDirection = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => StatisticTableCompanion.insert(
                 id: id,
@@ -8558,12 +8711,13 @@ class $$StatisticTableTableTableManager
                 displayCount: displayCount,
                 isFavourite: isFavourite,
                 position: position,
+                sortDirection: sortDirection,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$StatisticTableTable, StatisticTableData>(table),
                   $$StatisticTableTableReferences(db, table, e),
                 ),
               )
@@ -8585,10 +8739,11 @@ class $$StatisticTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (statisticScopeTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticScopeTableData
+                          StatisticScopeTableData,
+                          $StatisticScopeTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8599,17 +8754,16 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticScopeTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                       if (statisticGameTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticGameTableData
+                          StatisticGameTableData,
+                          $StatisticGameTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8620,17 +8774,16 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGameTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                       if (statisticGroupTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           StatisticTableData,
                           $StatisticTableTable,
-                          StatisticGroupTableData
+                          StatisticGroupTableData,
+                          $StatisticGroupTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$StatisticTableTableReferences
@@ -8641,10 +8794,8 @@ class $$StatisticTableTableTableManager
                                 table,
                                 p0,
                               ).statisticGroupTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.statisticId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'statistic_id',
                           typedResults: items,
                         ),
                     ];
@@ -8888,7 +9039,10 @@ class $$StatisticScopeTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $StatisticScopeTableTable,
+                    StatisticScopeTableData
+                  >(table),
                   $$StatisticScopeTableTableReferences(db, table, e),
                 ),
               )
@@ -9234,7 +9388,9 @@ class $$StatisticGameTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$StatisticGameTableTable, StatisticGameTableData>(
+                    table,
+                  ),
                   $$StatisticGameTableTableReferences(db, table, e),
                 ),
               )
@@ -9594,7 +9750,10 @@ class $$StatisticGroupTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $StatisticGroupTableTable,
+                    StatisticGroupTableData
+                  >(table),
                   $$StatisticGroupTableTableReferences(db, table, e),
                 ),
               )

@@ -1,9 +1,15 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/match_result_view.dart';
 import 'package:tallee/presentation/widgets/cards/team_card.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_checkbox_list_tile.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
 class SelectWinnerWidget extends StatefulWidget {
   /// A list widget for the [MatchResultView] that lets the user select multiple players or teams.
@@ -35,6 +41,12 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
   bool get isTeamMatch => widget.match.isTeamMatch;
   bool get useTeamLogic => widget.match.useTeamLogic;
 
+  final GlobalKey selectWinnerWidgetListviewKey = GlobalKey();
+  final String selectWinnerWidgetListviewIdentifier =
+      'select_winner_widget_listview_key';
+
+  late final ShowcaseProvider showcaseProvider;
+
   @override
   void initState() {
     if (useTeamLogic) {
@@ -45,30 +57,52 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
       selectedPlayers = widget.match.mvp;
     }
 
+    showcaseProvider = context.read<ShowcaseProvider>();
+
+    if (showcaseProvider.shouldShowShowcase(
+      selectWinnerWidgetListviewIdentifier,
+    )) {
+      handleShowcase(
+        widgetKeys: [selectWinnerWidgetListviewKey],
+        identifiers: [selectWinnerWidgetListviewIdentifier],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          showcaseProvider.completeTour();
+        }
+      });
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Expanded(
-      child: useTeamLogic
-          ? ListView.builder(
-              itemCount: allTeams.length,
-              itemBuilder: (context, index) {
-                return CustomCheckboxListTile(
+      child: CustomShowcaseWidget(
+        showcaseKey: selectWinnerWidgetListviewKey,
+        description: loc.showcase_select_winner,
+        tooltipPosition: TooltipPosition.top,
+        child: useTeamLogic
+            ? ListView.builder(
+                itemCount: allTeams.length,
+                itemBuilder: (context, index) => CustomCheckboxListTile(
                   content: isTeamMatch
                       ? TeamCard(
                           team: allTeams[index],
                           showTeamMembers: false,
                           compact: true,
                         )
-                      : buildUnitNameWidget(
-                          allTeams[index],
-                          isTeamMatch: false,
-                        ),
+                      : buildUnitNameWidget(context, allTeams[index]),
                   value: selectedTeams.contains(allTeams[index]),
                   onChanged: (bool value) {
-                    HapticFeedback.selectionClick();
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
                     setState(() {
                       if (value) {
                         selectedTeams.add(allTeams[index]);
@@ -78,14 +112,13 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                       widget.onTeamsSelected?.call(selectedTeams);
                     });
                   },
-                );
-              },
-            )
-          : ListView.builder(
-              itemCount: allPlayers.length,
-              itemBuilder: (context, index) {
-                return CustomCheckboxListTile(
+                ),
+              )
+            : ListView.builder(
+                itemCount: allPlayers.length,
+                itemBuilder: (context, index) => CustomCheckboxListTile(
                   content: buildUnitNameWidget(
+                    context,
                     allPlayers[index],
                     mainStyle: const TextStyle(
                       fontSize: 16,
@@ -94,7 +127,9 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                   ),
                   value: selectedPlayers.contains(allPlayers[index]),
                   onChanged: (bool value) {
-                    HapticFeedback.selectionClick();
+                    showcaseProvider.markAsSeen(
+                      selectWinnerWidgetListviewIdentifier,
+                    );
                     setState(() {
                       if (value) {
                         selectedPlayers.add(allPlayers[index]);
@@ -104,9 +139,9 @@ class _SelectWinnerWidgetState extends State<SelectWinnerWidget> {
                       widget.onPlayersSelected?.call(selectedPlayers);
                     });
                   },
-                );
-              },
-            ),
+                ),
+              ),
+      ),
     );
   }
 }

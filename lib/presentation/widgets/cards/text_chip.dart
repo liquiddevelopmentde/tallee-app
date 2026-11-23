@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class TextChip extends StatefulWidget {
   /// A tappable text chip that shows a label and an optional item count.
@@ -15,7 +17,7 @@ class TextChip extends StatefulWidget {
     required this.onTap,
     this.count = 0,
     this.activated = false,
-  });
+  }) : assert(count >= 0, 'count must not be negative');
 
   final String text;
   final VoidCallback onTap;
@@ -27,58 +29,36 @@ class TextChip extends StatefulWidget {
 }
 
 class _TextChipState extends State<TextChip> {
-  bool isPressed = false;
-  final int delay = 200;
+  String get countText => widget.count > 0 ? ' (${widget.count})' : '';
+
+  String get chipText => widget.text + countText;
 
   @override
-  Widget build(BuildContext context) {
-    final text = widget.text + (widget.count > 0 ? ' (${widget.count})' : '');
-    return GestureDetector(
-      onTapDown: (_) {
-        setState(() {
-          isPressed = true;
-        });
-      },
-      onTapUp: (_) {
-        Future.delayed(Duration(milliseconds: delay), () {
-          setState(() {
-            isPressed = false;
-          });
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          isPressed = false;
-        });
-      },
+  Widget build(BuildContext context) => Skeleton.unite(
+    child: GestureDetector(
       onTap: () {
-        HapticFeedback.selectionClick();
+        Haptics.selectionClick();
         widget.onTap();
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: AppSpacing.standardMargin,
         decoration: BoxDecoration(
-          color: CustomTheme.onBoxColor,
+          color: context.talleeColors.backgroundColor,
           border: Border.all(
             color: widget.activated
-                ? CustomTheme.textColor.withAlpha(150)
-                : CustomTheme.textColor.withAlpha(50),
-            width: 1,
-            strokeAlign: BorderSide.strokeAlignInside,
+                ? context.talleeColors.textColor.withAlpha(150)
+                : context.talleeColors.textColor.withAlpha(50),
           ),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: AnimatedDefaultTextStyle(
-          curve: Curves.easeInOut,
-          duration: Duration(milliseconds: delay),
+        child: Text(
+          chipText,
           style: TextStyle(
-            color: isPressed
-                ? CustomTheme.textColor.withAlpha(150)
-                : CustomTheme.textColor.withAlpha(255),
+            color: context.talleeColors.textColor.withAlpha(255),
           ),
-          child: Text(text),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

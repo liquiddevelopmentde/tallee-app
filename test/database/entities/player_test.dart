@@ -152,11 +152,11 @@ void main() {
         playerCount = await database.playerDao.getPlayerCount();
         expect(playerCount, 2);
 
-        await database.playerDao.deletePlayer(playerId: testPlayer1.id);
+        await database.playerDao.deletePlayer(player: testPlayer1);
         playerCount = await database.playerDao.getPlayerCount();
         expect(playerCount, 1);
 
-        await database.playerDao.deletePlayer(playerId: testPlayer2.id);
+        await database.playerDao.deletePlayer(player: testPlayer2);
         playerCount = await database.playerDao.getPlayerCount();
         expect(playerCount, 0);
       });
@@ -224,6 +224,23 @@ void main() {
       test('getPlayersByIds() returns empty list for empty input', () async {
         final result = await database.playerDao.getPlayersByIds(playerIds: []);
         expect(result, isEmpty);
+      });
+
+      test('getPlayersByName returns all players names correctly', () async {
+        await database.playerDao.addPlayer(player: testPlayer1);
+        final duplicate = Player(name: testPlayer1.name, description: '');
+        await database.playerDao.addPlayer(player: duplicate);
+        await database.playerDao.addPlayer(player: testPlayer2);
+
+        final players = await database.playerDao.getPlayersByName(
+          name: testPlayer1.name,
+        );
+        expect(players.length, 2);
+        expect(players.every((p) => p.name == testPlayer1.name), isTrue);
+        expect(
+          players.map((p) => p.id).toList(),
+          unorderedEquals([testPlayer1.id, duplicate.id]),
+        );
       });
     });
 
@@ -414,7 +431,7 @@ void main() {
       test('deletePlayer() works correctly', () async {
         await database.playerDao.addPlayer(player: testPlayer1);
         final playerDeleted = await database.playerDao.deletePlayer(
-          playerId: testPlayer1.id,
+          player: testPlayer1,
         );
         expect(playerDeleted, isTrue);
 
@@ -426,7 +443,7 @@ void main() {
 
       test('deletePlayer() returns false for non-existent player', () async {
         final deleted = await database.playerDao.deletePlayer(
-          playerId: 'non-existent-id',
+          player: Player(id: 'non-existent-id', name: 'Non-existent Player'),
         );
         expect(deleted, isFalse);
       });
@@ -450,7 +467,7 @@ void main() {
           expect(added, isTrue);
 
           var deleted = await database.playerDao.deletePlayer(
-            playerId: testPlayer1.id,
+            player: testPlayer1,
           );
           expect(deleted, isTrue);
           var exists = await database.playerDao.playerExists(
@@ -464,9 +481,7 @@ void main() {
           );
           expect(removed, isTrue);
 
-          deleted = await database.playerDao.deletePlayer(
-            playerId: testPlayer1.id,
-          );
+          deleted = await database.playerDao.deletePlayer(player: testPlayer1);
           expect(deleted, isTrue);
           exists = await database.playerDao.playerExists(
             playerId: testPlayer1.id,
@@ -514,7 +529,7 @@ void main() {
         final players = await database.playerDao.getAllPlayers();
 
         expect(players.length, 2);
-        for (Player p in players) {
+        for (final p in players) {
           expect(p.nameCount, 0);
         }
       });
@@ -576,6 +591,105 @@ void main() {
         },
       );
 
+      test('nameCount gets increased and resetted correctly', () async {
+        final players = [
+          testPlayer1,
+          Player(name: testPlayer1.name),
+          Player(name: testPlayer1.name),
+        ];
+
+        Future<void> checkNameCounts(List<int> counts) async {
+          final allPlayers = await database.playerDao.getAllPlayers();
+          expect(allPlayers.map((p) => p.nameCount), unorderedEquals(counts));
+        }
+
+        // Expected nameCounts after adding players
+        var nameCounts = [
+          [0],
+          [1, 2],
+          [1, 2, 3],
+        ];
+        for (var i = 0; i < players.length; i++) {
+          expect(
+            await database.playerDao.addPlayer(player: players[i]),
+            isTrue,
+          );
+          await checkNameCounts(nameCounts[i]);
+        }
+
+        // Expected nameCounts after deleting players
+        nameCounts = [
+          [2, 3],
+          [0],
+        ];
+        for (var i = 0; i < nameCounts.length; i++) {
+          expect(
+            await database.playerDao.deletePlayer(player: players[i]),
+            isTrue,
+          );
+          await checkNameCounts(nameCounts[i]);
+        }
+      });
+
+      test('nameCount for soft deleted players is reset correctly', () async {
+        final sameNamePlayer = Player(name: testPlayer1.name);
+        final otherPlayer = Player(name: 'other name');
+        var added = await database.playerDao.addPlayersAsList(
+          players: [testPlayer1, sameNamePlayer, otherPlayer],
+        );
+        expect(added, isTrue);
+
+        final game = Game(name: 'test-game', ruleset: Ruleset.winner);
+        await database.gameDao.addGame(game: game);
+
+        final match = Match(
+          name: 'test-match',
+          game: game,
+          players: [testPlayer1, otherPlayer],
+        );
+        added = await database.matchDao.addMatch(match: match);
+        expect(added, isTrue);
+
+        /// Check if the name counts are initially correct
+        final players = await database.playerDao.getPlayersByName(
+          name: testPlayer1.name,
+        );
+        expect(players.length, 2);
+        expect(
+          players.map((p) => p.nameCount).toList(),
+          unorderedEquals([1, 2]),
+        );
+
+        // Delete player who is in the match
+        var deleted = await database.playerDao.deletePlayer(
+          player: testPlayer1,
+        );
+        expect(deleted, isTrue);
+
+        // Player should be soft deleted
+        var player = await database.playerDao.getPlayerById(
+          playerId: testPlayer1.id,
+        );
+        expect(player, isNotNull);
+        expect(player.deleted, isTrue);
+
+        // Delete match
+        deleted = await database.matchDao.deleteMatch(matchId: match.id);
+        expect(deleted, isTrue);
+
+        // Player should be hard deleted
+        var exists = await database.playerDao.playerExists(
+          playerId: testPlayer1.id,
+        );
+        expect(exists, isFalse);
+
+        // Namecount of remaining player should be reset to 0
+        player = await database.playerDao.getPlayerById(
+          playerId: sameNamePlayer.id,
+        );
+        expect(player.nameCount, 0);
+      });
+
       test('getNameCount works correctly', () async {
         final player1 = Player(name: testPlayer1.name);
         final player2 = Player(name: testPlayer1.name);
@@ -621,7 +735,82 @@ void main() {
           name: testPlayer1.name,
         );
         expect(nameCount, 4);
+
+        // Case 4: Gap in the name counts (1, 3, 4). Should return the
+        // smallest missing name count
+        final player3 = Player(name: testPlayer1.name);
+        await database.playerDao.addPlayer(player: player3);
+        await database.playerDao.deletePlayer(player: player1);
+        nameCount = await database.playerDao.calculateNameCount(
+          name: testPlayer1.name,
+        );
+        expect(nameCount, 2);
       });
+
+      test('calculateNameCount fills the gap of a deleted player', () async {
+        final player2 = Player(name: testPlayer1.name);
+        final player3 = Player(name: testPlayer1.name);
+        await database.playerDao.addPlayer(player: testPlayer1);
+        await database.playerDao.addPlayer(player: player2);
+        await database.playerDao.addPlayer(player: player3);
+
+        // Deleting #2 leaves a gap: #1 and #3
+        await database.playerDao.deletePlayer(player: player2);
+        var allPlayers = await database.playerDao.getAllPlayers();
+        expect(
+          allPlayers.map((p) => p.nameCount).toList(),
+          unorderedEquals([1, 3]),
+        );
+
+        // The new player gets #2 instead of a duplicate #3
+        final player4 = Player(name: testPlayer1.name);
+        await database.playerDao.addPlayer(player: player4);
+        final newPlayer = await database.playerDao.getPlayerById(
+          playerId: player4.id,
+        );
+        expect(newPlayer.nameCount, 2);
+
+        // Without a gap the next player is appended at the end again
+        final player5 = Player(name: testPlayer1.name);
+        await database.playerDao.addPlayer(player: player5);
+        allPlayers = await database.playerDao.getAllPlayers();
+        expect(
+          allPlayers.map((p) => p.nameCount).toList(),
+          unorderedEquals([1, 2, 3, 4]),
+        );
+      });
+
+      test(
+        'addPlayersAsList calculates name count correct with gaps',
+        () async {
+          await database.playerDao.addPlayer(player: testPlayer1);
+          final player2 = Player(name: testPlayer1.name);
+          final player3 = Player(name: testPlayer1.name);
+          await database.playerDao.addPlayer(player: player2);
+          await database.playerDao.addPlayer(player: player3);
+
+          // Deleting #2 leaves a gap
+          await database.playerDao.deletePlayer(player: player2);
+          var allPlayers = await database.playerDao.getAllPlayers();
+          expect(
+            allPlayers.map((p) => p.nameCount).toList(),
+            unorderedEquals([1, 3]),
+          );
+
+          // Now adding 2 more players as list
+          final player4 = Player(name: testPlayer1.name);
+          await database.playerDao.addPlayersAsList(
+            players: [player4, player2],
+          );
+
+          // All players should have the correct nameCount
+          allPlayers = await database.playerDao.getAllPlayers();
+          expect(
+            allPlayers.map((p) => p.nameCount).toList(),
+            unorderedEquals([1, 2, 3, 4]),
+          );
+        },
+      );
 
       test('updateNameCount works correctly', () async {
         await database.playerDao.addPlayer(player: testPlayer1);
@@ -678,6 +867,33 @@ void main() {
           playerId: testPlayer1.id,
         );
         expect(player.nameCount, 1);
+      });
+
+      test('Deleting a player resets the name count to 0 correctly', () async {
+        final player1 = Player(name: testPlayer1.name, description: '');
+        final player2 = Player(name: testPlayer1.name, description: '');
+        await database.playerDao.addPlayersAsList(players: [player1, player2]);
+
+        var allPlayers = await database.playerDao.getAllPlayers();
+        expect(allPlayers.map((p) => p.nameCount), unorderedEquals([1, 2]));
+
+        await database.playerDao.deletePlayer(player: player1);
+        var playerLeft = await database.playerDao.getPlayerById(
+          playerId: player2.id,
+        );
+        expect(playerLeft.nameCount, 0);
+
+        final player3 = Player(name: testPlayer1.name, description: '');
+        await database.playerDao.addPlayer(player: player3);
+
+        allPlayers = await database.playerDao.getAllPlayers();
+        expect(allPlayers.map((p) => p.nameCount), unorderedEquals([1, 2]));
+
+        await database.playerDao.deletePlayer(player: player3);
+        playerLeft = await database.playerDao.getPlayerById(
+          playerId: player2.id,
+        );
+        expect(playerLeft.nameCount, 0);
       });
     });
   });

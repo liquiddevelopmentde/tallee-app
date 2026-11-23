@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,21 +7,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/constants.dart';
+import 'package:tallee/core/constants/configs.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
 import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/dto/share_create_response.dart';
 import 'package:tallee/data/models/models.dart';
+import 'package:tallee/services/shared.dart';
 import 'package:uuid/uuid.dart';
 
 class RemoteShareService {
   final http.Client httpClient;
 
   RemoteShareService({http.Client? httpClient})
-    : httpClient = httpClient ?? http.Client();
+    : httpClient = httpClient ?? SentryHttpClient();
 
-  Future<String> getShareToken(Match match) async {
+  Future<ShareCreateResponse> getShareToken(Match match) async {
     try {
       final response = await httpClient.post(
         Uri.parse('${getApiBaseUrl()}/v1/shares/'),
@@ -34,11 +39,7 @@ class RemoteShareService {
 
       final Map<String, dynamic> data = jsonDecode(response.body);
 
-      if (!data.containsKey('token')) {
-        throw ParsingException();
-      }
-
-      return data['token'] as String;
+      return ShareCreateResponse.fromJson(data);
     } on SocketException {
       // No internet connection or server down
       throw NetworkException();
@@ -48,7 +49,9 @@ class RemoteShareService {
     }
   }
 
-  Future<Match> getMatchByToken(String token) async {
+  Future<({ImportResult result, Match? match})> getMatchByToken(
+    String token,
+  ) async {
     try {
       final response = await httpClient.get(
         Uri.parse('${getApiBaseUrl()}/v1/shares/$token'),
@@ -64,26 +67,29 @@ class RemoteShareService {
         throw ParsingException();
       }
 
-      return Match.fromJson(data['payload']);
-    } on SocketException catch (e) {
-      print(e);
-      print(e.message);
+      final payload = data['payload'];
+      final jsonMap = jsonEncode(payload);
+      final result = await parseAndValidateMatch(jsonMap, '');
+
+      if (!result.result.isSuccess) {
+        return (result: result.result, match: null);
+      }
+
+      return (result: ImportResult.success, match: result.match!);
+    } on SocketException {
       throw NetworkException();
     } on FormatException {
       throw ParsingException();
-    } on NetworkException catch (e) {
-      print(e);
-      throw NetworkException();
     }
   }
 
   String getApiBaseUrl() {
-    if (kDebugMode) {
+    if (IS_DEV_ENV) {
       return Platform.isAndroid
-          ? dotenv.get('DEV_ANDROID_API_URL')
-          : dotenv.get('DEV_IOS_API_URL');
+          ? dotenv.get('API_URL_DEV_ANDROID')
+          : dotenv.get('API_URL_DEV_IOS');
     } else {
-      return dotenv.get('PROD_API_URL');
+      return dotenv.get('API_URL_PROD');
     }
   }
 
@@ -93,10 +99,10 @@ class RemoteShareService {
     required String title,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.tallee';
+    var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/$filename';
-    File(path).writeAsString(jsonEncode(match));
+    await File(path).writeAsString(jsonEncode(match));
     await SharePlus.instance.share(
       ShareParams(text: text, title: title, files: [XFile(path)]),
     );
@@ -107,7 +113,7 @@ class RemoteShareService {
     required String dialogTitle,
   }) async {
     String formattedMatchName = match.name.toSafeFilename();
-    var filename = '$formattedMatchName.tallee';
+    var filename = '$formattedMatchName.$MATCH_FILE_EXTENSION';
 
     String jsonString = jsonEncode(match.toJson());
     Uint8List fileBytes = utf8.encode(jsonString);
@@ -120,43 +126,92 @@ class RemoteShareService {
   }
 
   /// Parses and validates a match JSON string against schemas and content rules.
-  Future<(ImportResult, Match?, String)> parseAndValidateMatch(
-    String jsonString,
-    String fileName,
-  ) async {
+  Future<({ImportResult result, Match? match, String filePath})>
+  parseAndValidateMatch(String jsonString, String filePath) async {
     try {
-      final isValid = await validateJsonSchema(
-        jsonString,
-        'assets/match_schema.json',
-      );
-      if (!isValid) {
-        return (ImportResult.invalidSchema, null, fileName);
-      }
-
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
 
-      if (!validateContent(decoded)) {
-        return (ImportResult.invalidData, null, fileName);
+      final isValidSchema = await validateJsonSchema(
+        jsonString: jsonString,
+        schemaAssetPath: 'assets/schemas/match_schema.json',
+      );
+
+      if (!isValidSchema) {
+        return (
+          result: ImportResult.invalidSchema,
+          match: null,
+          filePath: filePath,
+        );
       }
 
-      return (ImportResult.success, Match.fromJson(decoded), fileName);
+      final isCorrectVersion = isSchemaVersionCorrect(
+        jsonMap: decoded,
+        schemaVersion: MATCH_DATA_SCHEMA_VERSION,
+      );
+
+      if (!isCorrectVersion) {
+        return (
+          result: ImportResult.incompatibleVersion,
+          match: null,
+          filePath: filePath,
+        );
+      }
+
+      if (!validateContent(decoded)) {
+        return (
+          result: ImportResult.invalidData,
+          match: null,
+          filePath: filePath,
+        );
+      }
+
+      return (
+        result: ImportResult.success,
+        match: Match.fromJson(decoded),
+        filePath: filePath,
+      );
     } on FormatException catch (e, stack) {
       print('[parseAndValidateMatch] FormatException');
       print('[parseAndValidateMatch] $e');
       print(stack);
-      return (ImportResult.formatException, null, fileName);
-    } on Exception catch (e, stack) {
+      return (
+        result: ImportResult.formatException,
+        match: null,
+        filePath: filePath,
+      );
+    } catch (e, stack) {
       print('[parseAndValidateMatch] Exception');
       print('[parseAndValidateMatch] $e');
       print(stack);
-      return (ImportResult.unknownException, null, fileName);
+      unawaited(
+        Sentry.captureException(
+          e,
+          stackTrace: stack,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
+      return (
+        result: ImportResult.unknownException,
+        match: null,
+        filePath: filePath,
+      );
     }
   }
 
   /// Loads a match from a given file path without opening a file picker.
-  Future<(ImportResult, Match?, String)> loadMatchFromFile(
-    String filePath,
-  ) async {
+  Future<({ImportResult result, Match? match, String filePath})>
+  loadMatchFromFile(String filePath) async {
+    if (!filePath.toLowerCase().endsWith('.$MATCH_FILE_EXTENSION')) {
+      return (
+        result: ImportResult.invalidExtension,
+        match: null,
+        filePath: filePath,
+      );
+    }
+
     final file = File(filePath);
 
     try {
@@ -166,7 +221,11 @@ class RemoteShareService {
       print('[loadMatchFromFile] Exception reading file');
       print('[loadMatchFromFile] $e');
       print(stack);
-      return (ImportResult.fileReadError, null, filePath);
+      return (
+        result: ImportResult.fileReadError,
+        match: null,
+        filePath: filePath,
+      );
     }
   }
 
@@ -247,32 +306,44 @@ class RemoteShareService {
     return localMatch;
   }
 
-  Future<(ImportResult, Match?, String)> chooseFileToImport() async {
-    final path = await FilePicker.pickFiles(
-      allowMultiple: false,
+  Future<({ImportResult result, Match? match, String filePath})>
+  chooseFileToImport() async {
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
-      allowedExtensions: ['tallee'],
+      allowedExtensions: [MATCH_FILE_EXTENSION],
     );
 
-    if (path == null || path.files.isEmpty) {
-      return (ImportResult.canceled, null, '');
+    if (file == null) {
+      return (result: ImportResult.canceled, match: null, filePath: '');
     }
 
-    final file = path.files.single;
-    final jsonString = await readFileContent(file);
     final filePath = file.path ?? file.name;
+
+    if (!filePath.toLowerCase().endsWith('.$MATCH_FILE_EXTENSION')) {
+      return (
+        result: ImportResult.invalidExtension,
+        match: null,
+        filePath: filePath,
+      );
+    }
+
+    final jsonString = await readFileContent(file: file);
     if (jsonString == null) {
-      return (ImportResult.fileReadError, null, filePath);
+      return (
+        result: ImportResult.fileReadError,
+        match: null,
+        filePath: filePath,
+      );
     }
 
     return await parseAndValidateMatch(jsonString, filePath);
   }
 
-  /// Validates field lengths against the defined constants.
+  /// Validates field lengths against the defined
   static bool validateContent(Map<String, dynamic> decoded) {
     // Validate match name
     final name = decoded['name'] as String?;
-    if (name != null && name.length > Constants.MAX_MATCH_NAME_LENGTH) {
+    if (name != null && name.length > MAX_MATCH_NAME_LENGTH) {
       return false;
     }
 
@@ -280,24 +351,22 @@ class RemoteShareService {
     final game = decoded['game'] as Map<String, dynamic>?;
     if (game != null) {
       final gameName = game['name'] as String?;
-      if (gameName != null &&
-          gameName.length > Constants.MAX_GAME_NAME_LENGTH) {
+      if (gameName != null && gameName.length > MAX_GAME_NAME_LENGTH) {
         return false;
       }
       final gameDesc = game['description'] as String?;
-      if (gameDesc != null &&
-          gameDesc.length > Constants.MAX_GAME_DESCRIPTION_LENGTH) {
+      if (gameDesc != null && gameDesc.length > MAX_GAME_DESCRIPTION_LENGTH) {
         return false;
       }
     }
 
     // Validate players
-    final players = decoded['players'] as List<dynamic>?;
+    final players = (decoded['players'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (players != null) {
       for (final p in players) {
         final playerName = p['name'] as String?;
-        if (playerName != null &&
-            playerName.length > Constants.MAX_PLAYER_NAME_LENGTH) {
+        if (playerName != null && playerName.length > MAX_PLAYER_NAME_LENGTH) {
           return false;
         }
       }
@@ -307,19 +376,18 @@ class RemoteShareService {
     final group = decoded['group'] as Map<String, dynamic>?;
     if (group != null) {
       final groupName = group['name'] as String?;
-      if (groupName != null &&
-          groupName.length > Constants.MAX_GROUP_NAME_LENGTH) {
+      if (groupName != null && groupName.length > MAX_GROUP_NAME_LENGTH) {
         return false;
       }
     }
 
     // Validate teams
-    final teams = decoded['teams'] as List<dynamic>?;
+    final teams = (decoded['teams'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     if (teams != null) {
       for (final t in teams) {
         final teamName = t['name'] as String?;
-        if (teamName != null &&
-            teamName.length > Constants.MAX_TEAM_NAME_LENGTH) {
+        if (teamName != null && teamName.length > MAX_TEAM_NAME_LENGTH) {
           return false;
         }
       }

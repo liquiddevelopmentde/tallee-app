@@ -1,0 +1,447 @@
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/colored_circle.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
+import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
+import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
+import 'package:tallee/state/showcase_provider.dart';
+
+class CreateGameView extends StatefulWidget {
+  /// A stateful widget for creating or editing a game.
+  /// - [gameToEdit] An optional game to prefill the fields
+  /// - [onGameChanged] Callback to invoke when the game is created or edited
+  /// - [gameCount]: The count of matches associated with this [gameToEdit]
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
+  const CreateGameView({
+    super.key,
+    required this.onGameChanged,
+    this.gameToEdit,
+    this.gameCount = 0,
+    this.requiredRuleset,
+  });
+
+  final VoidCallback onGameChanged;
+  final Game? gameToEdit;
+  final int gameCount;
+
+  final Ruleset? requiredRuleset;
+
+  @override
+  State<CreateGameView> createState() => _CreateGameViewState();
+}
+
+class _CreateGameViewState extends State<CreateGameView> {
+  late final AppDatabase db;
+
+  late List<(Ruleset, String)> rulesets;
+  late List<(AppColor, String)> colors;
+
+  final GlobalKey createGameViewGameNameKey = GlobalKey();
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+
+  final GlobalKey createGameViewGameRulesetKey = GlobalKey();
+  final String createGameViewGameRulesetIdentifier =
+      'create_game_view_game_ruleset';
+
+  final GlobalKey createGameViewCreateGameKey = GlobalKey();
+  final String createGameViewCreateGameIdentifier =
+      'create_game_view_create_game';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  late String selectedGroupId;
+  late final List<Group> filteredGroups;
+
+  final TextEditingController gameNameController = TextEditingController();
+  final TextEditingController gameDescriptionController =
+      TextEditingController();
+
+  int selectedLives = 3;
+  Ruleset? selectedRuleset = Ruleset.winner;
+
+  AppColor? selectedColor;
+  AppColor? lastSelectedColor;
+
+  bool get isEditMode => widget.gameToEdit != null;
+
+  @override
+  void initState() {
+    super.initState();
+    db = context.read<AppDatabase>();
+    showcaseProvider = context.read<ShowcaseProvider>();
+
+    if (widget.requiredRuleset != null) {
+      selectedRuleset = widget.requiredRuleset;
+    }
+
+    gameNameController.addListener(() => setState(() {}));
+    gameDescriptionController.addListener(() => setState(() {}));
+
+    if (isEditMode) {
+      gameNameController.text = widget.gameToEdit!.name;
+      gameDescriptionController.text = widget.gameToEdit!.description;
+      selectedRuleset = widget.gameToEdit!.ruleset;
+      selectedColor = widget.gameToEdit!.color;
+    } else {
+      handleShowcase(
+        widgetKeys: [
+          createGameViewGameNameKey,
+          createGameViewGameRulesetKey,
+          createGameViewCreateGameKey,
+        ],
+        identifiers: [
+          createGameViewGameNameIdentifier,
+          createGameViewGameRulesetIdentifier,
+          createGameViewCreateGameIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    rulesets = List.generate(
+      Ruleset.values.length,
+      (index) => (
+        Ruleset.values[index],
+        Ruleset.values[index].toLocalizedString(context),
+      ),
+    );
+    colors = List.generate(
+      AppColor.values.length,
+      (index) => (
+        AppColor.values[index],
+        AppColor.values[index].toLocalizedString(context),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    gameNameController.dispose();
+    gameDescriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var loc = AppLocalizations.of(context);
+
+    return PopScope(
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (didPop) {
+          try {
+            ShowcaseView.get().dismiss();
+          } catch (_) {}
+        }
+      },
+      child: ScaffoldMessenger(
+        child: Builder(
+          builder: (scaffoldContext) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text(isEditMode ? loc.edit_game : loc.create_game),
+              actions: [
+                if (isEditMode)
+                  HapticIconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async =>
+                        await showDeletePopup(scaffoldContext),
+                  ),
+              ],
+            ),
+            // Game name input field
+            body: SafeArea(
+              maintainBottomViewPadding: true,
+              minimum: AppSpacing.pagePadding,
+              child: Column(
+                spacing: 10,
+                children: [
+                  // Game name textfield
+                  CustomShowcaseWidget(
+                    showcaseKey: createGameViewGameNameKey,
+                    description: loc.showcase_create_game_name,
+                    child: TextInputField(
+                      controller: gameNameController,
+                      maxLength: MAX_MATCH_NAME_LENGTH,
+                      hintText: loc.game_name,
+                    ),
+                  ),
+
+                  // Choose ruleset tile
+                  if (!isEditMode)
+                    CustomShowcaseWidget(
+                      showcaseKey: createGameViewGameRulesetKey,
+                      description: loc.showcase_create_game_ruleset,
+                      child: ChooseTile(
+                        title: loc.ruleset,
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 8,
+                            children: [
+                              Icon(selectedRuleset!.icon, size: 16),
+                              Text(
+                                selectedRuleset!.toLocalizedString(context),
+                                textAlign: TextAlign.right,
+                              ),
+                            ],
+                          ),
+                        ),
+                        onPressed: () => showRulesetSheet(loc),
+                      ),
+                    ),
+
+                  // Choose color tile
+                  ChooseTile(
+                    title: loc.color,
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: [
+                          if (selectedColor == null) ...[
+                            const ColoredCircle(isRandomColor: true),
+                            Text(loc.random_color, textAlign: TextAlign.right),
+                          ] else ...[
+                            ColoredCircle(color: selectedColor),
+                            Text(
+                              selectedColor!.toLocalizedString(context),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    onPressed: () => showColorSheet(loc),
+                  ),
+
+                  // Description input field
+                  TextInputField(
+                    controller: gameDescriptionController,
+                    hintText: loc.description,
+                    minLines: 6,
+                    maxLines: 6,
+                    maxLength: MAX_GAME_DESCRIPTION_LENGTH,
+                    showCounterText: true,
+                    textInputAction: TextInputAction.done,
+                  ),
+
+                  const Spacer(),
+
+                  // Create / Edit game button
+                  CustomShowcaseWidget(
+                    showcaseKey: createGameViewCreateGameKey,
+                    description: loc.showcase_create_game_button,
+                    child: BottomAnimatedButton(
+                      text: isEditMode ? loc.edit_game : loc.create_game,
+                      onPressed:
+                          gameNameController.text.trim().isNotEmpty &&
+                              selectedRuleset != null
+                          ? () async {
+                              if (!isEditMode &&
+                                  showcaseProvider.shouldShowShowcase(
+                                    createGameViewGameNameIdentifier,
+                                  )) {
+                                showcaseProvider.markAsSeen(
+                                  createGameViewGameNameIdentifier,
+                                );
+                                showcaseProvider.markAsSeen(
+                                  createGameViewGameRulesetIdentifier,
+                                );
+                                showcaseProvider.markAsSeen(
+                                  createGameViewCreateGameIdentifier,
+                                );
+                              }
+
+                              Game newGame = Game(
+                                name: gameNameController.text.trim(),
+                                description: gameDescriptionController.text
+                                    .trim(),
+                                ruleset: selectedRuleset!,
+                                color:
+                                    selectedColor ??
+                                    AppColor.randomColor(
+                                      exclude: [
+                                        lastSelectedColor,
+                                        if (isEditMode)
+                                          widget.gameToEdit!.color,
+                                      ],
+                                    ),
+                              );
+                              if (isEditMode) {
+                                await handleGameUpdate(newGame);
+                              } else {
+                                await handleGameCreation(newGame);
+                              }
+                              widget.onGameChanged.call();
+                              if (context.mounted) {
+                                Navigator.of(context)
+                                    .pop((game: newGame, delete: false));
+                              }
+                            }
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Handles updating an existing game in the database.
+  ///
+  /// [newGame] The updated game object.
+  Future<void> handleGameUpdate(Game newGame) async {
+    final oldGame = widget.gameToEdit!;
+
+    if (oldGame.name != newGame.name) {
+      await db.gameDao.updateGameName(gameId: oldGame.id, name: newGame.name);
+    }
+
+    if (oldGame.description != newGame.description) {
+      await db.gameDao.updateGameDescription(
+        gameId: oldGame.id,
+        description: newGame.description,
+      );
+    }
+
+    if (oldGame.ruleset != newGame.ruleset) {
+      await db.gameDao.updateGameRuleset(
+        gameId: oldGame.id,
+        ruleset: newGame.ruleset,
+      );
+    }
+
+    if (oldGame.color != newGame.color) {
+      await db.gameDao.updateGameColor(
+        gameId: oldGame.id,
+        color: newGame.color,
+      );
+    }
+  }
+
+  /// Handles creating a new game in the database.
+  ///
+  /// [newGame] The game object to be created.
+  Future<void> handleGameCreation(Game newGame) async {
+    await db.gameDao.addGame(game: newGame);
+  }
+
+  /// Shows a bottom sheet to choose a ruleset
+  void showRulesetSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext ctx) => SelectionSheet<Ruleset>(
+        title: loc.ruleset,
+        description: loc.choose_ruleset_description,
+        values: Ruleset.values,
+        selectedValue: selectedRuleset,
+        leadingBuilder: (Ruleset rs) => Icon(rs.icon, size: 22),
+        labelBuilder: (BuildContext ctx, Ruleset rs) =>
+            rs.toLocalizedString(ctx),
+        onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
+      ),
+    );
+  }
+
+  /// Shows a bottom sheet to choose a color
+  void showColorSheet(AppLocalizations loc) {
+    SelectionSheet.show(
+      context: context,
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
+        title: loc.color,
+        description: loc.choose_color_description,
+        values: const [null, ...AppColor.values],
+        selectedValue: selectedColor,
+        leadingBuilder: (AppColor? clr) => clr == null
+            ? const ColoredCircle(isRandomColor: true)
+            : ColoredCircle(color: clr),
+        labelBuilder: (BuildContext ctx, AppColor? clr) =>
+            clr == null ? loc.random_color : clr.toLocalizedString(ctx),
+        onValueUpdated: (AppColor? clr) {
+          if (clr == selectedColor) return;
+          setState(() {
+            lastSelectedColor = selectedColor;
+            selectedColor = clr;
+          });
+        },
+      ),
+    );
+  }
+
+  /// Shows a delete popup with information about how many matches containing
+  /// this game will also be deleted.
+  Future<void> showDeletePopup(BuildContext context) async {
+    if (!context.mounted) return;
+    final loc = AppLocalizations.of(context);
+
+    // Build the dialog content based on match count
+    final String dialogContent = widget.gameCount > 0
+        ? loc.delete_game_with_matches_warning(widget.gameCount)
+        : loc.this_cannot_be_undone;
+
+    await showDialog<bool>(
+      context: context,
+      builder: (BuildContext ctx) => CustomAlertDialog(
+        title: loc.delete_game,
+        content: Text(
+          dialogContent,
+          overflow: TextOverflow.visible,
+          style: const TextStyle(fontSize: 15),
+        ),
+        actions: [
+          CustomDialogAction(
+            accent: ButtonAccent.destructive,
+            onPressed: () => Navigator.of(ctx).pop(true),
+            text: loc.delete,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    ).then((confirmed) async {
+      if (confirmed == true && context.mounted) {
+        // Delete associated matches
+        if (widget.gameCount > 0) {
+          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
+        }
+
+        // Delete the targetted game
+        bool success = await db.gameDao.deleteGame(
+          gameId: widget.gameToEdit!.id,
+        );
+
+        if (!context.mounted) return;
+        if (success) {
+          widget.onGameChanged.call();
+          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
+        } else {
+          context.showSnackBar(message: loc.error_deleting_game);
+        }
+      }
+    });
+  }
+}

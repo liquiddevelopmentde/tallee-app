@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/shared.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 
 void main() {
@@ -28,9 +28,9 @@ void main() {
   final fixedDate = DateTime(2025, 11, 19, 0, 11, 23);
   final fakeClock = Clock(() => fixedDate);
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    SharedPreferencesService.init();
+    await SharedPreferencesService.init();
     database = AppDatabase(
       DatabaseConnection(
         NativeDatabase.memory(),
@@ -79,7 +79,7 @@ void main() {
         type: StatisticType.totalScore,
         scopes: [StatisticScope.selectedGames, StatisticScope.selectedGroups],
         timeframe: Timeframe.custom,
-        startDate: DateTime(2025, 1, 1),
+        startDate: DateTime(2025),
         endDate: DateTime(2025, 1, 31),
         color: AppColor.yellow,
         selectedGames: [testGame],
@@ -99,21 +99,16 @@ void main() {
     await tester.pumpWidget(
       Provider<AppDatabase>.value(
         value: database,
-        child: MaterialApp(
-          home: Builder(
-            builder: (context) {
-              return Container();
-            },
-          ),
-        ),
+        child: MaterialApp(home: Builder(builder: (context) => Container())),
       ),
     );
     final BuildContext context = tester.element(find.byType(Container));
     return context;
   }
 
-  // Builds a schema-valid .tallee json string from the test entities.
+  // Builds a schema-valid json string from the test entities.
   String buildJson() => json.encode({
+    'version': APP_DATA_SCHEMA_VERSION,
     'players': [
       {
         'id': testPlayer1.id,
@@ -145,6 +140,7 @@ void main() {
         'id': testGroup.id,
         'name': testGroup.name,
         'description': testGroup.description,
+        'color': testGroup.color.name,
         'memberIds': [testPlayer1.id, testPlayer2.id],
         'createdAt': testGroup.createdAt.toIso8601String(),
       },
@@ -375,6 +371,7 @@ void main() {
           expect(statData['timeframe'], testStatistic.timeframe.name);
           expect(statData['color'], testStatistic.color.name);
           expect(statData['displayCount'], testStatistic.displayCount);
+          expect(statData['sortDirection'], testStatistic.sortDirection.name);
           expect(
             statData['selectedGames'],
             containsAll(testStatistic.selectedGames!.map((g) => g.id)),
@@ -439,7 +436,6 @@ void main() {
           final matchWithoutGroup = Match(
             name: 'No Group Match',
             game: testGame,
-            group: null,
             players: [testPlayer1],
             notes: 'No group',
           );
@@ -458,7 +454,7 @@ void main() {
         });
 
         testWidgets('Match with endedAt is handled correctly', (tester) async {
-          final endedDate = DateTime(2025, 12, 1, 10, 0, 0);
+          final endedDate = DateTime(2025, 12, 1, 10);
           final endedMatch = Match(
             name: 'Ended Match',
             game: testGame,
@@ -496,7 +492,6 @@ void main() {
             name: 'Empty Notes Match',
             game: testGame,
             players: [testPlayer1],
-            notes: '',
           );
 
           await database.playerDao.addPlayer(player: testPlayer1);
@@ -566,7 +561,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(
@@ -599,7 +595,8 @@ void main() {
           final ctx = await getContext(tester);
           final jsonString = await LocalShareService.getAppDataAsJson(ctx);
           final decoded = json.decode(jsonString) as Map<String, dynamic>;
-          final gamesJson = decoded['games'] as List<dynamic>;
+          final gamesJson = (decoded['games'] as List<dynamic>)
+              .cast<Map<String, dynamic>>();
 
           expect(gamesJson.length, 3);
           expect(
@@ -698,6 +695,7 @@ void main() {
               'id': testGroup.id,
               'name': testGroup.name,
               'description': testGroup.description,
+              'color': testGroup.color.name,
               'memberIds': [testPlayer1.id, testPlayer2.id],
               'createdAt': testGroup.createdAt.toIso8601String(),
             },
@@ -938,7 +936,7 @@ void main() {
         final playerById = {testPlayer1.id: testPlayer1};
         final gameById = {testGame.id: testGame};
         final groupById = <String, Group>{};
-        final endedDate = DateTime(2025, 12, 1, 10, 0, 0);
+        final endedDate = DateTime(2025, 12, 1, 10);
 
         final jsonMap = {
           'matches': [
@@ -987,6 +985,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         };
@@ -1003,6 +1002,7 @@ void main() {
         expect(stats[0].timeframe, testStatistic.timeframe);
         expect(stats[0].color, testStatistic.color);
         expect(stats[0].displayCount, testStatistic.displayCount);
+        expect(stats[0].sortDirection, testStatistic.sortDirection);
         expect(stats[0].startDate, testStatistic.startDate);
         expect(stats[0].endDate, testStatistic.endDate);
         expect(stats[0].selectedGames, isNotNull);
@@ -1047,6 +1047,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         };
@@ -1060,6 +1061,7 @@ void main() {
 
       test('validateJsonSchema() works correctly', () async {
         final validJson = json.encode({
+          'version': APP_DATA_SCHEMA_VERSION,
           'players': [
             {
               'id': testPlayer1.id,
@@ -1084,6 +1086,7 @@ void main() {
               'id': testGroup.id,
               'name': testGroup.name,
               'description': testGroup.description,
+              'color': testGroup.color.name,
               'memberIds': [testPlayer1.id, testPlayer2.id],
               'createdAt': testGroup.createdAt.toIso8601String(),
             },
@@ -1138,6 +1141,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
             {
               'id': testStatistic.id,
@@ -1153,6 +1157,7 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
             {
               'id': testStatistic.id,
@@ -1168,13 +1173,14 @@ void main() {
               'displayCount': testStatistic.displayCount,
               'isFavourite': testStatistic.isFavourite,
               'position': testStatistic.position,
+              'sortDirection': testStatistic.sortDirection.name,
             },
           ],
         });
 
         final isValidRoot = await validateJsonSchema(
-          validJson,
-          'assets/app_schema.json',
+          jsonString: validJson,
+          schemaAssetPath: 'assets/schemas/app_schema.json',
         );
         expect(isValidRoot, true);
       });
@@ -1182,6 +1188,7 @@ void main() {
       group('Schema Validation', () {
         test('validateJsonSchema() returns true for valid data', () async {
           final validJson = json.encode({
+            'version': MATCH_DATA_SCHEMA_VERSION,
             'players': [
               {
                 'id': testPlayer1.id,
@@ -1213,6 +1220,7 @@ void main() {
                 'id': testGroup.id,
                 'name': testGroup.name,
                 'description': testGroup.description,
+                'color': testGroup.color.name,
                 'memberIds': [testPlayer1.id, testPlayer2.id],
                 'createdAt': testGroup.createdAt.toIso8601String(),
               },
@@ -1248,6 +1256,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
               {
                 'id': testStatistic.id,
@@ -1261,6 +1270,7 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
               {
                 'id': testStatistic.id,
@@ -1274,13 +1284,14 @@ void main() {
                 'displayCount': testStatistic.displayCount,
                 'isFavourite': testStatistic.isFavourite,
                 'position': testStatistic.position,
+                'sortDirection': testStatistic.sortDirection.name,
               },
             ],
           });
 
           final isValid = await validateJsonSchema(
-            validJson,
-            'assets/app_schema.json',
+            jsonString: validJson,
+            schemaAssetPath: 'assets/schemas/app_schema.json',
           );
           expect(isValid, true);
         });
@@ -1324,8 +1335,8 @@ void main() {
             });
 
             final isValid = await validateJsonSchema(
-              invalidJson,
-              'assets/app_schema.json',
+              jsonString: invalidJson,
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1368,8 +1379,8 @@ void main() {
             });
 
             final isValid = await validateJsonSchema(
-              invalidJson,
-              'assets/app_schema.json',
+              jsonString: invalidJson,
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1433,8 +1444,8 @@ void main() {
             });
 
             final isValid = await validateJsonSchema(
-              invalidJson,
-              'assets/app_schema.json',
+              jsonString: invalidJson,
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1490,8 +1501,8 @@ void main() {
             });
 
             final isValid = await validateJsonSchema(
-              invalidJson,
-              'assets/app_schema.json',
+              jsonString: invalidJson,
+              schemaAssetPath: 'assets/schemas/app_schema.json',
             );
             expect(isValid, false);
           },
@@ -1513,7 +1524,10 @@ void main() {
         expect(jsonString, isNotEmpty);
 
         final isValid = await tester.runAsync(
-          () => validateJsonSchema(jsonString, 'assets/app_schema.json'),
+          () => validateJsonSchema(
+            jsonString: jsonString,
+            schemaAssetPath: 'assets/schemas/app_schema.json',
+          ),
         );
         expect(isValid, true);
       });
@@ -1606,50 +1620,6 @@ void main() {
       });
     });
 
-    group('readFileContent()', () {
-      test('returns decoded string when bytes are present', () async {
-        const content = '{"players": []}';
-        final file = PlatformFile(
-          name: 'data.tallee',
-          size: content.length,
-          bytes: Uint8List.fromList(utf8.encode(content)),
-        );
-
-        final result = await readFileContent(file);
-
-        expect(result, content);
-      });
-
-      test('reads from path when bytes are null', () async {
-        const content = '{"games": []}';
-        final tempFile = File(
-          '${Directory.systemTemp.path}/read_file_content_test.tallee',
-        );
-        await tempFile.writeAsString(content);
-        addTearDown(() async {
-          if (tempFile.existsSync()) await tempFile.delete();
-        });
-
-        final file = PlatformFile(
-          name: 'data.tallee',
-          size: content.length,
-          path: tempFile.path,
-        );
-
-        final result = await readFileContent(file);
-
-        expect(result, content);
-      });
-
-      test('returns null when both bytes and path are null', () async {
-        final file = PlatformFile(name: 'data.tallee', size: 0);
-
-        final result = await readFileContent(file);
-
-        expect(result, isNull);
-      });
-    });
-
     group('commitImport()', () {
       test('returns success and writes data for valid json', () async {
         final result = await LocalShareService.commitImport(
@@ -1669,7 +1639,7 @@ void main() {
         () async {
           final result = await LocalShareService.commitImport(
             database,
-            '{"players": "not a list"}',
+            '{"version": $APP_DATA_SCHEMA_VERSION, "players": "not a list"}',
           );
 
           expect(result, ImportResult.invalidSchema);
@@ -1689,8 +1659,15 @@ void main() {
     });
 
     group('getDataFromPath()', () {
+      test('returns invalidExtension when file has wrong extension', () async {
+        final result = await LocalShareService.getDataFromPath('test.txt');
+        expect(result.$1, ImportResult.invalidExtension);
+        expect(result.$2, isNull);
+      });
+
       test('returns fileNotFound when the file does not exist', () async {
-        final missingPath = '${Directory.systemTemp.path}/missing.tallee';
+        final missingPath =
+            '${Directory.systemTemp.path}/missing.$APP_DATA_FILE_EXTENSION';
 
         final result = await LocalShareService.getDataFromPath(missingPath);
 
@@ -1700,7 +1677,9 @@ void main() {
 
       test('returns success and json for a valid file', () async {
         final validJson = buildJson();
-        final file = File('${Directory.systemTemp.path}/data.tallee');
+        final file = File(
+          '${Directory.systemTemp.path}/data.$APP_DATA_FILE_EXTENSION',
+        );
         await file.writeAsString(validJson);
         addTearDown(() async {
           if (file.existsSync()) await file.delete();
@@ -1713,7 +1692,9 @@ void main() {
       });
 
       test('returns invalidSchema and null json for an invalid file', () async {
-        final file = File('${Directory.systemTemp.path}/invalid.tallee');
+        final file = File(
+          '${Directory.systemTemp.path}/invalid.$APP_DATA_FILE_EXTENSION',
+        );
         await file.writeAsString('{"players": "not a list"}');
         addTearDown(() async {
           if (file.existsSync()) await file.delete();
@@ -1723,6 +1704,77 @@ void main() {
 
         expect(result.$1, ImportResult.invalidSchema);
         expect(result.$2, isNull);
+      });
+    });
+
+    group('isSchemaVersionCorrect()', () {
+      test('returns true for the current schema version', () {
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
+        final decoded = <String, dynamic>{'version': schemaVersion};
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: schemaVersion,
+        );
+
+        expect(isVersionCorrect, isTrue);
+      });
+
+      test('returns false when the version field is missing', () {
+        final decoded = <String, dynamic>{};
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
+        );
+
+        expect(isVersionCorrect, isFalse);
+      });
+
+      test('returns false for an outdated schema version', () {
+        final decoded = <String, dynamic>{
+          'version': APP_DATA_SCHEMA_VERSION - 1,
+        };
+
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
+        );
+
+        expect(isVersionCorrect, isFalse);
+      });
+
+      test('returns false for a newer schema version', () {
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
+        final decoded = <String, dynamic>{'version': schemaVersion + 1};
+
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: schemaVersion,
+        );
+
+        expect(isVersionCorrect, isFalse);
+      });
+
+      test('returns false when the version is not an integer', () {
+        const schemaVersion = APP_DATA_SCHEMA_VERSION;
+        final decoded = <String, dynamic>{'version': '$schemaVersion'};
+
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: schemaVersion,
+        );
+
+        expect(isVersionCorrect, isFalse);
+      });
+
+      test('returns false when the version is null', () {
+        final decoded = <String, dynamic>{'version': null};
+
+        final isVersionCorrect = isSchemaVersionCorrect(
+          jsonMap: decoded,
+          schemaVersion: APP_DATA_SCHEMA_VERSION,
+        );
+
+        expect(isVersionCorrect, isFalse);
       });
     });
   });

@@ -1,0 +1,322 @@
+import 'dart:async';
+
+import 'package:material_ui/material_ui.dart';
+import 'package:new_version_plus/model/version_status.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/enums.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/preview_import_data_view.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
+import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
+import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/shared_preferences_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class DataManagementView extends StatefulWidget {
+  const DataManagementView({super.key});
+
+  @override
+  State<DataManagementView> createState() => _DataManagementViewState();
+}
+
+class _DataManagementViewState extends State<DataManagementView> {
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    return ScaffoldMessenger(
+      child: Builder(
+        builder: (scaffoldMessengerContext) => Scaffold(
+          appBar: AppBar(title: Text(loc.data_backup)),
+          backgroundColor: context.talleeColors.backgroundColor,
+          body: SingleChildScrollView(
+            child: Column(
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4,
+                    children: [
+                      Text(
+                        textAlign: TextAlign.start,
+                        loc.data_transfer,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        textAlign: TextAlign.start,
+                        loc.data_transfer_description,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.talleeColors.hintColor,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SettingsListTile(
+                  title: loc.export_data,
+                  icon: Icons.upload,
+                  //description: loc.export_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () => handleExport(scaffoldMessengerContext),
+                ),
+                SettingsListTile(
+                  title: loc.import_data,
+                  icon: Icons.download,
+                  //description: loc.import_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () => handleImport(scaffoldMessengerContext),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
+                  child: Text(
+                    textAlign: TextAlign.start,
+                    loc.danger_zone,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SettingsListTile(
+                  title: loc.delete_all_data,
+                  icon: Icons.delete,
+                  description: loc.delete_app_data_description,
+                  suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () =>
+                      showDeleteDialog(scaffoldMessengerContext, loc),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> showVersionDialog({bool isExport = false}) async {
+    final loc = AppLocalizations.of(context);
+
+    VersionStatus? status;
+
+    try {
+      status = await newVersionPlus.getVersionStatus();
+    } catch (error, stacktrace) {
+      // ignore network errors, that come from a users network conditions
+      if (error.isNetworkError) return;
+      // send other errors to sentry
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
+      return;
+    }
+
+    if (status != null && status.canUpdate && mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => CustomAlertDialog(
+          title: loc.update_available,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                isExport
+                    ? loc.update_app_export_desc
+                    : loc.update_app_import_desc,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            CustomDialogAction(
+              text: loc.update_now,
+              onPressed: () async {
+                final Uri url = Uri.parse(status!.appStoreLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+            ),
+            CustomDialogAction(
+              text: loc.dont_update,
+              buttonType: ButtonType.secondary,
+              accent: ButtonAccent.destructive,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> handleExport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog(isExport: true);
+
+    if (!scaffoldMessengerContext.mounted) return;
+
+    final String json = await LocalShareService.getAppDataAsJson(
+      scaffoldMessengerContext,
+    );
+
+    ExportResult result;
+
+    if (json.isEmpty) {
+      result = ExportResult.noData;
+    } else {
+      result = await LocalShareService.exportData(json, 'data');
+    }
+    if (!scaffoldMessengerContext.mounted) return;
+    showExportSnackBar(context: scaffoldMessengerContext, result: result);
+  }
+
+  Future<void> handleImport(BuildContext scaffoldMessengerContext) async {
+    await showVersionDialog();
+
+    final path = await LocalShareService.pickImportFilePath();
+
+    if (path == null) {
+      if (!scaffoldMessengerContext.mounted) return;
+      showImportSnackBar(
+        context: scaffoldMessengerContext,
+        result: ImportResult.canceled,
+      );
+      return;
+    }
+
+    if (!scaffoldMessengerContext.mounted) return;
+
+    // Pre-check the file type to avoid showing PreviewImportDataView for single matches
+    final (_) = await LocalShareService.getDataFromPath(path);
+
+    if (!scaffoldMessengerContext.mounted) return;
+    final result = await Navigator.of(scaffoldMessengerContext)
+        .push<ImportResult>(
+          adaptivePageRoute<ImportResult>(
+            settings: const RouteSettings(name: RouteNames.importFile),
+            fullscreenDialog: true,
+            builder: (_) => PreviewImportDataView(filePath: path),
+          ),
+        );
+
+    if (result == null) return;
+    if (!scaffoldMessengerContext.mounted) return;
+    showImportSnackBar(context: scaffoldMessengerContext, result: result);
+  }
+
+  Future<void> showDeleteDialog(
+    BuildContext scaffoldMessengerContext,
+    AppLocalizations loc,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: '${loc.delete_all_data}?',
+        content: Text(
+          loc.delete_app_data_description,
+          overflow: TextOverflow.visible,
+        ),
+        actions: [
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(true),
+            accent: ButtonAccent.destructive,
+            text: loc.delete,
+          ),
+          CustomDialogAction(
+            onPressed: () => Navigator.of(context).pop(false),
+            buttonType: ButtonType.secondary,
+            text: loc.cancel,
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await LocalShareService.deleteAllData(context);
+      SharedPreferencesService.deleteAllPreferences();
+    } catch (error, stacktrace) {
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+        ),
+      );
+      if (scaffoldMessengerContext.mounted) {
+        scaffoldMessengerContext.showSnackBar(message: loc.error_deleting_data);
+      }
+      return;
+    }
+
+    if (!scaffoldMessengerContext.mounted) return;
+    scaffoldMessengerContext.showSnackBar(
+      message: loc.data_successfully_deleted,
+    );
+  }
+
+  void showImportSnackBar({
+    required BuildContext context,
+    required ImportResult result,
+  }) {
+    final loc = AppLocalizations.of(context);
+    switch (result) {
+      case ImportResult.success:
+        Haptics.successNotification();
+        if (context.mounted) {
+          context.showSnackBar(message: loc.data_successfully_imported);
+        }
+      default:
+        Haptics.errorNotification();
+        if (context.mounted) {
+          context.showSnackBar(message: result.toLocalizedString(context));
+        }
+    }
+  }
+
+  void showExportSnackBar({
+    required BuildContext context,
+    required ExportResult result,
+  }) {
+    final loc = AppLocalizations.of(context);
+    switch (result) {
+      case ExportResult.success:
+        Haptics.successNotification();
+        if (context.mounted) {
+          context.showSnackBar(message: loc.data_successfully_exported);
+        }
+      case ExportResult.canceled:
+      case ExportResult.unknownException:
+      case ExportResult.noData:
+        Haptics.errorNotification();
+        if (context.mounted) {
+          context.showSnackBar(message: result.toLocalizedString(context));
+        }
+    }
+  }
+}

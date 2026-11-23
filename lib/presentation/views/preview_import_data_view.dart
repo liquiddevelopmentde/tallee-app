@@ -1,18 +1,15 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/translations.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
-import 'package:tallee/presentation/widgets/custom_snack_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/settings_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
 import 'package:tallee/presentation/widgets/tiles/text_icon_tile/text_icon_tile.dart';
@@ -53,9 +50,9 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     const style = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
 
     return Scaffold(
-      backgroundColor: CustomTheme.backgroundColor,
+      backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         title: Text(loc.import_data),
         automaticallyImplyLeading: false,
       ),
@@ -73,9 +70,9 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                     padding: const EdgeInsets.only(bottom: 16, left: 4),
                     child: Text(
                       '${loc.import_preview_description}:',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
-                        color: CustomTheme.hintColor,
+                        color: context.talleeColors.hintColor,
                       ),
                     ),
                   ),
@@ -86,7 +83,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                       children: [
                         // Players
                         SettingsListTile(
-                          icon: Icons.person_rounded,
+                          icon: PLAYER_ICON,
                           title: loc.players,
                           suffixWidget: Text(
                             '${countOf('players')}',
@@ -107,7 +104,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Groups
                         SettingsListTile(
-                          icon: Icons.group_rounded,
+                          icon: GROUP_ICON,
                           title: loc.groups,
                           suffixWidget: Text(
                             '${countOf('groups')}',
@@ -134,7 +131,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Games
                         SettingsListTile(
-                          icon: Icons.casino_rounded,
+                          icon: GAME_ICON,
                           title: loc.games,
                           suffixWidget: Text(
                             '${countOf('games')}',
@@ -150,10 +147,8 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                                   .map(
                                     (game) => TextIconListTile(
                                       text: game.name,
-                                      description: translateRulesetToString(
-                                        game.ruleset,
-                                        context,
-                                      ),
+                                      description: game.ruleset
+                                          .toLocalizedString(context),
                                     ),
                                   )
                                   .toList(),
@@ -163,7 +158,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Matches
                         SettingsListTile(
-                          icon: Icons.gamepad_rounded,
+                          icon: MATCH_ICON,
                           title: loc.matches,
                           suffixWidget: Text(
                             '${countOf('matches')}',
@@ -189,7 +184,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
                         // Statistics
                         SettingsListTile(
-                          icon: Icons.bar_chart_rounded,
+                          icon: STATISTIC_ICON,
                           title: loc.statistics,
                           suffixWidget: Text(
                             '${countOf('statistics')}',
@@ -204,14 +199,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
                               children: getStatisticsFromData
                                   .map(
                                     (statistic) => TextIconListTile(
-                                      text: translateStatisticTypeToString(
-                                        statistic.type,
+                                      text: statistic.type.toLocalizedString(
                                         context,
                                       ),
                                       description: statistic.scopes
                                           .map(
-                                            (scope) => translateScopeToString(
-                                              scope,
+                                            (scope) => scope.toLocalizedString(
                                               context,
                                             ),
                                           )
@@ -232,14 +225,12 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 BottomAnimatedButton(
-                  buttonText: loc.confirm,
-                  sizeRelativeToWidth: 0.95,
+                  text: loc.confirm,
                   onPressed: jsonString == null ? null : confirmImport,
                 ),
                 BottomAnimatedButton(
-                  buttonText: loc.cancel,
-                  buttonType: ButtonType.secondary,
-                  sizeRelativeToWidth: 0.95,
+                  text: loc.cancel,
+                  type: ButtonType.secondary,
                   onPressed: cancelImport,
                 ),
               ],
@@ -309,7 +300,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
 
     if (!mounted) return;
 
-    if (result.$1 != ImportResult.success) {
+    if (!result.$1.isSuccess) {
       finishImport(importResult: result.$1);
       return;
     }
@@ -325,45 +316,40 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     final jsonString = this.jsonString;
     if (jsonString == null) return;
 
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final db = context.read<AppDatabase>();
     final result = await LocalShareService.commitImport(db, jsonString);
 
     if (!mounted) return;
     finishImport(importResult: result);
   }
 
-  Future<void> cancelImport() async {
-    finishImport(importResult: ImportResult.canceled);
-  }
+  void cancelImport() => finishImport(importResult: ImportResult.canceled);
 
   /// Pops the page and reports the [importResult] to the caller.
   /// When a messengerKey was provided, the result snackbar is shown.
   /// Else the result is returned via pop()
-  Future<void> finishImport({required ImportResult importResult}) async {
+  void finishImport({required ImportResult importResult}) {
     if (!mounted) return;
 
-    if (importResult == ImportResult.success) {
+    if (importResult.isSuccess) {
       // Refresh on success
-      Provider.of<DataRefreshProvider>(context, listen: false).refresh();
+      context.read<DataRefreshProvider>().refresh();
     }
 
     Navigator.of(context).maybePop(importResult);
 
     final messengerKey = widget.messengerKey;
-    final message = translateImportResultToString(importResult, context);
+    final message = importResult.toLocalizedString(context);
 
     // Show snackbar with haptic feedback
     if (messengerKey != null) {
-      if (importResult == ImportResult.success) {
+      if (importResult.isSuccess) {
         HapticFeedback.successNotification();
-      } else if (importResult != ImportResult.canceled &&
-          importResult != ImportResult.matchSchemaDetected) {
+      } else {
         HapticFeedback.errorNotification();
       }
 
-      messengerKey.currentState
-        ?..hideCurrentSnackBar()
-        ..showSnackBar(CustomSnackBar(message: message));
+      messengerKey.showSnackBar(message: message);
     }
   }
 }

@@ -1,19 +1,37 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'dart:async';
+
+import 'package:material_ui/material_ui.dart';
+import 'package:new_version_plus/model/version_status.dart';
+import 'package:once/once.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_sheet_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/game_view.dart';
 import 'package:tallee/presentation/views/main_menu/group_view/group_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/settings_view.dart';
 import 'package:tallee/presentation/views/main_menu/statistic_view/statistic_view.dart';
+import 'package:tallee/presentation/views/news/news_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
+import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/navbar_item.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
-import 'package:tallee/state/group_search_provider.dart';
-import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   /// A custom navigation bar widget that provides tabbed navigation
@@ -25,19 +43,97 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar>
-    with SingleTickerProviderStateMixin {
-  /// Currently selected tab index
+    with SingleTickerProviderStateMixin, RouteAware {
   int currentIndex = 0;
 
   /// Key count to force rebuild of tab views
   int tabKeyCount = 0;
 
+  /// View types of the tabs, in the order of the navigation bar.
+  static const List<Type> tabViews = [
+    MatchView,
+    GroupView,
+    GameView,
+    StatisticsView,
+  ];
+
+  final List<ScrollController> tabScrollControllers = List.generate(
+    tabViews.length,
+    (_) => ScrollController(),
+  );
+
+  final GlobalKey navbarGameViewKey = GlobalKey();
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  final GlobalKey navbarMatchViewKey = GlobalKey();
+  final String navbarMatchViewIdentifier = 'navbar_match_view';
+
+  final String createGameViewGameNameIdentifier = 'create_game_view_game_name';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
+  @override
+  void initState() {
+    super.initState();
+    addExampleStats();
+    showcaseProvider = context.read<ShowcaseProvider>();
+    showcaseProvider.addListener(onShowcaseChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await checkVersionAndUpdate(context);
+      await openNewsDialog();
+      if (!mounted) return;
+      showTabShowcase();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    if (showcaseProvider.isTourActive) {
+      showTabShowcase();
+    }
+  }
+
+  @override
+  void dispose() {
+    showcaseProvider.removeListener(onShowcaseChanged);
+    routeObserver.unsubscribe(this);
+    for (final controller in tabScrollControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void onShowcaseChanged() {
+    if (showcaseProvider.isTourActive) {
+      showTabShowcase();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final matchSearchProvider = Provider.of<MatchSearchProvider>(context);
-    final groupSearchProvider = Provider.of<GroupSearchProvider>(context);
+
+    final searchProvider = context.read<SearchProvider>();
+    final isSearching = context.select<SearchProvider, bool>(
+      (provider) => provider.isSearching(tabViews[currentIndex]),
+    );
+
     final refreshRevision = context.watch<DataRefreshProvider>().revision;
+
     // Pretty ugly but works
     final List<Widget> tabs = [
       KeyedSubtree(
@@ -49,26 +145,36 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         child: const GroupView(),
       ),
       KeyedSubtree(
+        key: ValueKey('games_${tabKeyCount}_$refreshRevision'),
+        child: const GameView(),
+      ),
+      KeyedSubtree(
         key: ValueKey('stats_${tabKeyCount}_$refreshRevision'),
         child: const StatisticsView(),
       ),
     ];
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          _currentTabTitle(context),
+          currentTabTitle(context),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: CustomTheme.backgroundColor,
+        backgroundColor: context.talleeColors.backgroundColor,
         scrolledUnderElevation: 0,
         leading: currentIndex == 0
-            ? IconButton(
+            ? HapticIconButton(
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    adaptivePageRoute(builder: (_) => const MatchReceiveView()),
+                    adaptivePageRoute(
+                      settings: const RouteSettings(
+                        name: RouteNames.matchReceiveView,
+                      ),
+                      builder: (_) => const MatchReceiveView(),
+                    ),
                   );
                   if (mounted) {
                     setState(() {
@@ -80,39 +186,30 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
               )
             : null,
         actions: [
-          if (currentIndex == 0) // Only in MatchView
+          if (tabViews[currentIndex] != StatisticsView)
+            // Search Button
             HapticIconButton(
-              key: ValueKey(
-                matchSearchProvider.isSearching
-                    ? 'match_search_close_button'
-                    : 'match_search_open_button',
-              ),
-              icon: matchSearchProvider.isSearching
-                  ? const Icon(Icons.close)
-                  : const Icon(Icons.search),
-              onPressed: () => matchSearchProvider.toggleSearch(),
-            ),
-
-          if (currentIndex == 1) // Only in GroupView
-            HapticIconButton(
-              key: ValueKey(
-                groupSearchProvider.isSearching
-                    ? 'group_search_close_button'
-                    : 'group_search_open_button',
-              ),
+              key: ValueKey('search_button_${tabViews[currentIndex]}'),
               icon: Icon(
-                groupSearchProvider.isSearching ? Icons.close : Icons.search,
+                Icons.search,
+                color: isSearching ? AppColors.primaryColor : null,
               ),
-              onPressed: () => groupSearchProvider.toggleSearch(),
+              onPressed: () =>
+                  searchProvider.toggleSearch(tabViews[currentIndex]),
             ),
 
+          // Settings Button
           HapticIconButton(
             onPressed: () async {
               final navigator = Navigator.of(context);
-              await navigator.push(
-                adaptivePageRoute(builder: (_) => const SettingsView()),
+              final tab = await navigator.push(
+                adaptivePageRoute(
+                  settings: const RouteSettings(name: RouteNames.settingsView),
+                  builder: (_) => const SettingsView(),
+                ),
               );
               setState(() {
+                if (tab is int) currentIndex = tab;
                 tabKeyCount++;
               });
             },
@@ -121,16 +218,19 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
         ],
         elevation: 0,
       ),
-      backgroundColor: CustomTheme.backgroundColor,
-      body: tabs[currentIndex],
+      backgroundColor: context.talleeColors.backgroundColor,
+      body: PrimaryScrollController(
+        controller: tabScrollControllers[currentIndex],
+        child: tabs[currentIndex],
+      ),
       extendBody: true,
       bottomNavigationBar: Container(
         height: 115,
         decoration: BoxDecoration(
-          color: CustomTheme.navBarBackgroundColor,
+          color: context.talleeColors.navBarBackgroundColor,
           border: Border.all(
             strokeAlign: BorderSide.strokeAlignOutside,
-            color: CustomTheme.boxBorderColor,
+            color: context.talleeColors.boxBorderColor,
             width: 2,
           ),
           borderRadius: const BorderRadius.only(
@@ -149,23 +249,51 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              NavbarItem(
-                index: 0,
-                isSelected: currentIndex == 0,
-                icon: Icons.gamepad_rounded,
-                label: loc.matches,
-                onTabTapped: onTabTapped,
+              CustomShowcaseWidget(
+                showcaseKey: navbarMatchViewKey,
+                description: loc.showcase_nav_match,
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(0);
+                  showcaseProvider.markAsSeen(navbarMatchViewIdentifier);
+                },
+                tooltipPosition: TooltipPosition.top,
+                child: NavbarItem(
+                  index: 0,
+                  isSelected: currentIndex == 0,
+                  icon: MATCH_ICON,
+                  label: loc.matches,
+                  onTabTapped: onTabTapped,
+                ),
               ),
               NavbarItem(
                 index: 1,
                 isSelected: currentIndex == 1,
-                icon: Icons.group_rounded,
+                icon: GROUP_ICON,
                 label: loc.groups,
                 onTabTapped: onTabTapped,
               ),
+              CustomShowcaseWidget(
+                showcaseKey: navbarGameViewKey,
+                description: loc.showcase_nav_game,
+                disableBarrierInteraction: true,
+                disposeOnTap: true,
+                onTargetClick: () {
+                  onTabTapped(2);
+                },
+                tooltipPosition: TooltipPosition.top,
+                child: NavbarItem(
+                  index: 2,
+                  isSelected: currentIndex == 2,
+                  icon: GAME_ICON,
+                  label: loc.games,
+                  onTabTapped: onTabTapped,
+                ),
+              ),
               NavbarItem(
-                index: 2,
-                isSelected: currentIndex == 2,
+                index: 3,
+                isSelected: currentIndex == 3,
                 icon: Icons.bar_chart_rounded,
                 label: loc.statistics,
                 onTabTapped: onTabTapped,
@@ -177,16 +305,58 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
     );
   }
 
-  /// Handles tab tap events. Updates the current [index] state.
-  void onTabTapped(int index) {
-    HapticFeedback.selectionClick();
-    setState(() {
-      currentIndex = index;
+  void showTabShowcase() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!showcaseProvider.isTourCompleted) {
+        showcaseProvider.startTour();
+      }
+      bool createGameShowcaseDone = showcaseProvider.hasSeen(
+        createGameViewGameNameIdentifier,
+      );
+
+      bool matchTabShowcaseDone = showcaseProvider.hasSeen(
+        navbarMatchViewIdentifier,
+      );
+
+      if (matchTabShowcaseDone) return;
+
+      handleShowcase(
+        widgetKeys: [
+          createGameShowcaseDone ? navbarMatchViewKey : navbarGameViewKey,
+        ],
+        identifiers: [
+          createGameShowcaseDone
+              ? navbarMatchViewIdentifier
+              : navbarGameViewIdentifier,
+        ],
+        showcaseProvider: showcaseProvider,
+        context: context,
+      );
     });
   }
 
+  /// Handles tab tap events. Updates the current [index] state.
+  /// Tapping on already active tab scrolls it back to top.
+  void onTabTapped(int index) {
+    Haptics.selectionClick();
+    if (index == currentIndex) {
+      context.read<SearchProvider>().setSearchBarVisible(view: tabViews[index]);
+
+      final scrollController = tabScrollControllers[index];
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    } else {
+      setState(() => currentIndex = index);
+    }
+  }
+
   /// Returns the title of the current tab based on [currentIndex].
-  String _currentTabTitle(BuildContext context) {
+  String currentTabTitle(BuildContext context) {
     final loc = AppLocalizations.of(context);
     switch (currentIndex) {
       case 0:
@@ -194,9 +364,126 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
       case 1:
         return loc.groups;
       case 2:
+        return loc.games;
+      case 3:
         return loc.statistics;
       default:
         return '';
     }
+  }
+
+  /// Opens the [NewsView] when the user installs a new version.
+  /// Completes once the dialog has been closed (or immediately if it is not shown).
+  Future<void> openNewsDialog() async {
+    final dialogFinished = await Once.runOnEveryNewVersion<Future<void>>(
+      key: 'whats-new-screen',
+      callback: () async {
+        await Future.delayed(OPEN_WITH_NAVIGATION_DELAY);
+        if (!mounted) return;
+        await Navigator.of(
+          context,
+          rootNavigator: true,
+        ).push(adaptiveSheetRoute(builder: (context) => const NewsView()));
+      },
+    );
+    await dialogFinished;
+  }
+
+  /// Checks for a new version and shows an update dialog if available.
+  Future<void> checkVersionAndUpdate(BuildContext context) async {
+    final loc = AppLocalizations.of(context);
+
+    VersionStatus? status;
+
+    try {
+      status = await newVersionPlus.getVersionStatus();
+    } catch (error, stacktrace) {
+      if (error.isNetworkError) return;
+      unawaited(
+        Sentry.captureException(
+          error,
+          stackTrace: stacktrace,
+          hint: Hint.withMap({'skipSnackBar': true}),
+          withScope: (scope) {
+            scope.level = SentryLevel.error;
+          },
+        ),
+      );
+    }
+
+    if (status != null && status.canUpdate) {
+      if (!context.mounted) return;
+
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => CustomAlertDialog(
+          title: loc.update_available,
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                loc.update_available_content,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                loc.update_features_fixes_desc,
+                style: TextStyle(
+                  color: context.talleeColors.textColor,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            CustomDialogAction(
+              text: loc.update_now,
+              onPressed: () async {
+                final Uri url = Uri.parse(status!.appStoreLink);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+            ),
+            CustomDialogAction(
+              text: loc.later,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  /// Adds example statistics to the database the first time the user opens the app
+  void addExampleStats() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Once.runOnce(
+        'example-stats',
+        callback: () async {
+          final db = context.read<AppDatabase>();
+          final stat1 = Statistic(
+            type: StatisticType.totalWins,
+            displayCount: 3,
+            scopes: [StatisticScope.allPlayers],
+          );
+          final stat2 = Statistic(
+            type: StatisticType.totalMatches,
+            displayCount: 3,
+            scopes: [StatisticScope.allPlayers],
+          );
+
+          await db.statisticDao.addStatisticsAsList(statistics: [stat1, stat2]);
+        },
+      );
+    });
   }
 }

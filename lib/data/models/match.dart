@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/enums.dart';
 import 'package:tallee/data/models/game.dart';
 import 'package:tallee/data/models/group.dart';
@@ -21,7 +24,7 @@ class Match {
   final bool isTeamMatch;
   final List<Team>? teams;
   final String notes;
-  final Map<String, ScoreEntry?> scores;
+  final Map<String, List<ScoreEntry>> scoresByRound;
 
   Match({
     required this.name,
@@ -34,15 +37,53 @@ class Match {
     this.notes = '',
     String? id,
     DateTime? createdAt,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
+    @Deprecated('Use scoresByRound instead') Map<String, ScoreEntry?>? scores,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? clock.now(),
-       scores = scores ?? {for (Player p in players) p.id: null};
+       scoresByRound =
+           scoresByRound ??
+           (scores?.map(
+                 (k, v) => MapEntry(k, v != null ? [v] : <ScoreEntry>[]),
+               ) ??
+               {});
+
+  @Deprecated('Use totalScore(playerId) instead')
+  Map<String, ScoreEntry?> get scores => {
+    for (final e in scoresByRound.entries) e.key: e.value.lastOrNull,
+  };
+
+  int getTotalScore(String playerId) {
+    final entries = scoresByRound[playerId];
+    if (entries == null || entries.isEmpty) return 0;
+    return entries.fold<int>(0, (sum, entry) => sum + entry.change);
+  }
+
+  int? _getScoreForPlayer(String playerId) {
+    final entries = scoresByRound[playerId];
+    if (entries == null || entries.isEmpty) return null;
+    return entries.fold<int>(0, (sum, entry) => sum + entry.change);
+  }
+
+  Iterable<int> get _allRounds => scoresByRound.values
+      .expand((entries) => entries)
+      .map((e) => e.roundNumber);
+
+  int get roundCount {
+    final rounds = _allRounds;
+    if (rounds.isEmpty) return 0;
+    return rounds.toSet().length;
+  }
+
+  int get currentRound {
+    final rounds = _allRounds;
+    if (rounds.isEmpty) return 0;
+    return rounds.reduce(max) + 1;
+  }
 
   @override
-  String toString() {
-    return 'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scores: $scores, mvp: $mvp}';
-  }
+  String toString() =>
+      'Match{id: $id, createdAt: $createdAt, endedAt: $endedAt, name: $name, game: $game, group: $group, players: $players, isTeamMatch: $isTeamMatch, teams: $teams, notes: $notes, scoresByRound: $scoresByRound, mvp: $mvp}';
 
   Match copyWith({
     String? id,
@@ -55,8 +96,14 @@ class Match {
     bool? isTeamMatch,
     List<Team>? teams,
     String? notes,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
+    @Deprecated('Use scoresByRound instead') Map<String, ScoreEntry?>? scores,
   }) {
+    final resolvedScoresByRound =
+        scoresByRound ??
+        (scores?.map((k, v) => MapEntry(k, v != null ? [v] : <ScoreEntry>[])) ??
+            this.scoresByRound);
+
     return Match(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
@@ -68,7 +115,7 @@ class Match {
       isTeamMatch: isTeamMatch ?? this.isTeamMatch,
       teams: teams ?? this.teams,
       notes: notes ?? this.notes,
-      scores: scores ?? this.scores,
+      scoresByRound: resolvedScoresByRound,
     );
   }
 
@@ -87,7 +134,10 @@ class Match {
           isTeamMatch == other.isTeamMatch &&
           const DeepCollectionEquality().equals(teams, other.teams) &&
           notes == other.notes &&
-          const DeepCollectionEquality().equals(scores, other.scores);
+          const DeepCollectionEquality().equals(
+            scoresByRound,
+            other.scoresByRound,
+          );
 
   @override
   int get hashCode => Object.hash(
@@ -101,7 +151,7 @@ class Match {
     isTeamMatch,
     const DeepCollectionEquality().hash(teams),
     notes,
-    const DeepCollectionEquality().hash(scores),
+    const DeepCollectionEquality().hash(scoresByRound),
   );
 
   Match.fromJson(Map<String, dynamic> json)
@@ -124,19 +174,32 @@ class Match {
                 .map((e) => Team.fromJson(e as Map<String, dynamic>))
                 .toList()
           : [],
-      scores = json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(
-                key,
-                value != null
-                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
-                    : null,
-              ),
-            )
+      scoresByRound = json['scores'] != null
+          ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+              switch (value) {
+                case null:
+                  return MapEntry(key, <ScoreEntry>[]);
+                case List list:
+                  return MapEntry(
+                    key,
+                    list
+                        .map(
+                          (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                        )
+                        .toList(),
+                  );
+                default:
+                  //TODO: Backward compatibility for single ScoreEntry
+                  return MapEntry(key, [
+                    ScoreEntry.fromJson(value as Map<String, dynamic>),
+                  ]);
+              }
+            })
           : {},
       notes = json['notes'] ?? '';
 
   Map<String, dynamic> toJson() => {
+    'version': MATCH_DATA_SCHEMA_VERSION,
     'id': id,
     'createdAt': createdAt.toIso8601String(),
     'endedAt': endedAt?.toIso8601String(),
@@ -170,36 +233,85 @@ class Match {
     Group? group,
     required List<Player> players,
     List<Team>? teams,
-  }) {
-    return Match(
-      id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
-      endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-      name: json['name'],
-      game: game,
-      group: group,
-      players: players,
-      isTeamMatch: json['isTeamMatch'],
-      teams: teams,
-      scores: json['scores'] != null
-          ? (json['scores'] as Map<String, dynamic>).map(
-              (key, value) => MapEntry(
-                key,
-                value != null
-                    ? ScoreEntry.fromJson(value as Map<String, dynamic>)
-                    : null,
-              ),
-            )
-          : {},
-      notes: json['notes'] ?? '',
-    );
-  }
+  }) => Match(
+    id: json['id'],
+    createdAt: DateTime.parse(json['createdAt']),
+    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+    name: json['name'],
+    game: game,
+    group: group,
+    players: players,
+    isTeamMatch: json['isTeamMatch'],
+    teams: teams,
+    scoresByRound: json['scores'] != null
+        ? (json['scores'] as Map<String, dynamic>).map((key, value) {
+            switch (value) {
+              case null:
+                return MapEntry(key, <ScoreEntry>[]);
+              case List list:
+                return MapEntry(
+                  key,
+                  list
+                      .map(
+                        (e) => ScoreEntry.fromJson(e as Map<String, dynamic>),
+                      )
+                      .toList(),
+                );
+              default:
+                //TODO: Backward compatibility for single ScoreEntry
+                return MapEntry(key, [
+                  ScoreEntry.fromJson(value as Map<String, dynamic>),
+                ]);
+            }
+          })
+        : {},
+    notes: json['notes'] ?? '',
+  );
 
-  bool get useTeamLogic => isTeamMatch || (teams?.isNotEmpty ?? false);
+  bool get hasTeams => teams?.isNotEmpty ?? false;
+
+  bool get useTeamLogic => isTeamMatch || hasTeams;
+
+  bool get isPairMatch => !isTeamMatch && hasTeams;
+
+  List<Team> get pairs =>
+      isPairMatch ? teams!.where((t) => t.isPair).toList() : const [];
+
+  bool get hasResult => mvp.isNotEmpty || mvt.isNotEmpty;
+
+  bool get hasEnded => endedAt != null;
+
+  /// Counts how many players in the `match` are not part of the group
+  ///
+  /// Returns the text you append after the group name, e.g. " + 5" or an empty
+  /// string if there are no extra players
+  String get extraPlayerCount {
+    int count = 0;
+
+    if (group == null) {
+      return '';
+    }
+
+    final groupMembers = group!.members;
+
+    for (final player in players) {
+      if (!groupMembers.any((member) => member.id == player.id)) {
+        count++;
+      }
+    }
+
+    if (count == 0) {
+      return '';
+    }
+    return ' + ${count.toString()}';
+  }
 
   // Most Valuable Player(s) based on the match's ruleset
   List<Player> get mvp {
-    if (players.isEmpty || scores.isEmpty) return [];
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
+      return [];
+    }
 
     switch (game.ruleset) {
       case Ruleset.highestScore:
@@ -223,54 +335,69 @@ class Match {
   }
 
   List<Player> _getPlayersWithHighestScore() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
-    final int highestScore = players
-        .map((player) => scores[player.id]?.score)
+    final scoresList = players
+        .map((player) => _getScoreForPlayer(player.id))
         .whereType<int>()
-        .reduce((max, score) => score > max ? score : max);
+        .toList();
+
+    if (scoresList.isEmpty) return [];
+
+    final int highestScore = scoresList.reduce(
+      (max, score) => score > max ? score : max,
+    );
 
     return players.where((player) {
-      final playerScores = scores[player.id];
-      if (playerScores == null) return false;
-      return playerScores.score == highestScore;
+      final score = _getScoreForPlayer(player.id);
+      if (score == null) return false;
+      return score == highestScore;
     }).toList();
   }
 
   List<Player> _getPlayersWithLowestScore() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
-    final int lowestScore = players
-        .map((player) => scores[player.id]?.score)
+    final scoresList = players
+        .map((player) => _getScoreForPlayer(player.id))
         .whereType<int>()
-        .reduce((min, score) => score < min ? score : min);
+        .toList();
+
+    if (scoresList.isEmpty) return [];
+
+    final int lowestScore = scoresList.reduce(
+      (min, score) => score < min ? score : min,
+    );
 
     return players.where((player) {
-      final playerScore = scores[player.id];
-      if (playerScore == null) return false;
-      return playerScore.score == lowestScore;
+      final score = _getScoreForPlayer(player.id);
+      if (score == null) return false;
+      return score == lowestScore;
     }).toList();
   }
 
   List<Player> _getPlayersWithLivesRemaining() {
-    if (players.isEmpty || scores.values.every((score) => score == null)) {
+    if (players.isEmpty ||
+        scoresByRound.values.every((entries) => entries.isEmpty)) {
       return [];
     }
 
     return players.where((player) {
-      final playerScore = scores[player.id];
-      if (playerScore == null) return false;
-      return playerScore.score > 0;
+      final entries = scoresByRound[player.id];
+      if (entries == null || entries.isEmpty) return false;
+      return entries.last.score > 0;
     }).toList();
   }
 
   // MVP for team-based matches (Most Valuable Team)
   List<Team> get mvt {
-    if (teams == null || teams!.isEmpty) return [];
+    if (!hasTeams) return [];
 
     switch (game.ruleset) {
       case Ruleset.highestScore:
@@ -303,9 +430,7 @@ class Match {
         .whereType<int>()
         .reduce((max, score) => score > max ? score : max);
 
-    return teams!.where((team) {
-      return team.score == highestScore;
-    }).toList();
+    return teams!.where((team) => team.score == highestScore).toList();
   }
 
   List<Team> _getLowestScoreTeam() {
@@ -318,9 +443,7 @@ class Match {
         .whereType<int>()
         .reduce((min, score) => score < min ? score : min);
 
-    return teams!.where((team) {
-      return team.score == lowestScore;
-    }).toList();
+    return teams!.where((team) => team.score == lowestScore).toList();
   }
 
   List<Team> _getTeamsWithLivesRemaining() {
@@ -329,5 +452,16 @@ class Match {
     }
 
     return teams!.where((team) => (team.score ?? 0) > 0).toList();
+  }
+
+  /// True when a lives match ended with all players/teams at 0 lives.
+  /// False when ruleset is not lives or match hasnt ended yet
+  bool get isTie {
+    if (!game.ruleset.isLives) return false;
+    if (!hasEnded) return false;
+    if (useTeamLogic) {
+      return mvt.isEmpty;
+    }
+    return mvp.isEmpty;
   }
 }

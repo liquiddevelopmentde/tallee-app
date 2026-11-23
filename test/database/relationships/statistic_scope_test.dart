@@ -3,7 +3,7 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 void main() {
   late AppDatabase database;
@@ -23,7 +23,6 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalWins,
         scopes: [StatisticScope.allPlayers],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
     });
@@ -63,7 +62,6 @@ void main() {
             StatisticScope.selectedGames,
             StatisticScope.selectedGroups,
           ],
-          timeframe: Timeframe.allTime,
           color: AppColor.red,
         );
         await database.statisticDao.addStatistic(statistic: multi);
@@ -132,24 +130,21 @@ void main() {
         expect(scopes.toSet().contains(StatisticScope.selectedGroups), isTrue);
       });
 
-      test(
-        'addStatisticScopes() with duplicate scope does not create duplicate entries',
-        () async {
-          await database.statisticScopeDao.addStatisticScopes(
-            statisticId: testStatistic.id,
-            scopes: [StatisticScope.allPlayers],
-          );
-          await database.statisticScopeDao.addStatisticScopes(
-            statisticId: testStatistic.id,
-            scopes: [StatisticScope.allPlayers],
-          );
+      test('addStatisticScopes() with duplicate scope does not create duplicate entries', () async {
+        await database.statisticScopeDao.addStatisticScopes(
+          statisticId: testStatistic.id,
+          scopes: [StatisticScope.allPlayers],
+        );
+        await database.statisticScopeDao.addStatisticScopes(
+          statisticId: testStatistic.id,
+          scopes: [StatisticScope.allPlayers],
+        );
 
-          final scopes = await database.statisticScopeDao.getScopeForStatistic(
-            testStatistic.id,
-          );
-          expect(scopes.where((s) => s == StatisticScope.allPlayers).length, 1);
-        },
-      );
+        final scopes = await database.statisticScopeDao.getScopeForStatistic(
+          testStatistic.id,
+        );
+        expect(scopes.where((s) => s == StatisticScope.allPlayers).length, 1);
+      });
     });
   });
 }

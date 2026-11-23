@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 
 class NavbarItem extends StatefulWidget {
   /// A navigation bar item widget that represents a single tab in a navigation bar.
@@ -17,19 +18,10 @@ class NavbarItem extends StatefulWidget {
     required this.onTabTapped,
   });
 
-  /// The index of the tab.
   final int index;
-
-  /// A boolean indicating whether the tab is currently selected.
   final bool isSelected;
-
-  /// The icon to display for the tab.
   final IconData icon;
-
-  /// The label to display for the tab.
   final String label;
-
-  /// The callback to be invoked when the tab is tapped.
   final Function(int) onTabTapped;
 
   @override
@@ -38,55 +30,56 @@ class NavbarItem extends StatefulWidget {
 
 class _NavbarItemState extends State<NavbarItem>
     with SingleTickerProviderStateMixin {
-  /// Animation controller for the scale animation
-  late AnimationController _animationController;
+  late AnimationController animationController;
+  late Animation<double> scaleAnimation;
+  late Animation<double> curvedAnimation;
 
-  /// Scale animation for the icon when selected
-  late Animation<double> _scaleAnimation;
-
-  /// Color animation for the icon
-  late Animation<Color?> _iconColorAnimation;
-
-  /// Background color animation for the icon container
-  late Animation<Color?> _bgColorAnimation;
-
-  /// Font size animation for the label
-  late Animation<double> _fontSizeAnimation;
-
-  /// A simple double tween used to lerp between two font weights
-  late Animation<double> _fontWeightT;
+  late Animation<Color?> iconColorAnimation;
+  late Animation<Color?> bgColorAnimation;
+  late Animation<double> fontSizeAnimation;
+  late Animation<double> fontWeight;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
       // Set initial value directly so the visual state matches widget.isSelected
       value: widget.isSelected ? 1.0 : 0.0,
     );
 
-    final curved = CurvedAnimation(
-      parent: _animationController,
+    curvedAnimation = CurvedAnimation(
+      parent: animationController,
       curve: Curves.easeOut,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(curved);
-
-    _iconColorAnimation = ColorTween(
-      begin: CustomTheme.navBarItemUnselectedColor,
-      end: CustomTheme.navBarItemSelectedColor,
-    ).animate(curved);
-
-    _bgColorAnimation = ColorTween(
-      begin: Colors.transparent,
-      end: CustomTheme.primaryColor.withAlpha(50),
-    ).animate(curved);
-
-    _fontSizeAnimation = Tween<double>(begin: 11.0, end: 12.0).animate(curved);
+    scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(curvedAnimation);
 
     // drives font weight interpolation
-    _fontWeightT = Tween<double>(begin: 0.0, end: 1.0).animate(curved);
+    fontSizeAnimation = Tween<double>(
+      begin: 11.0,
+      end: 12.0,
+    ).animate(curvedAnimation);
+    fontWeight = Tween<double>(begin: 0.0, end: 1.0).animate(curvedAnimation);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final colors = context.talleeColors;
+    iconColorAnimation = ColorTween(
+      begin: colors.navBarItemUnselectedColor,
+      end: colors.navBarItemSelectedColor,
+    ).animate(curvedAnimation);
+    bgColorAnimation = ColorTween(
+      begin: Colors.transparent,
+      end: AppColors.primaryColor.withAlpha(50),
+    ).animate(curvedAnimation);
   }
 
   // Retrigger animation on selection change
@@ -94,67 +87,65 @@ class _NavbarItemState extends State<NavbarItem>
   void didUpdateWidget(NavbarItem oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isSelected && !oldWidget.isSelected) {
-      _animationController.forward();
+      animationController.forward();
     } else if (!widget.isSelected && oldWidget.isSelected) {
-      _animationController.reverse();
+      animationController.reverse();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => widget.onTabTapped(widget.index),
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              final iconColor = _iconColorAnimation.value!;
-              final bgColor = _bgColorAnimation.value!;
-              final fontSize = _fontSizeAnimation.value;
-              final fontWeight = FontWeight.lerp(
-                FontWeight.w500,
-                FontWeight.bold,
-                _fontWeightT.value,
-              );
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: bgColor,
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    ),
-                    child: ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: Icon(widget.icon, color: iconColor, size: 32),
-                    ),
+  Widget build(BuildContext context) => Expanded(
+    child: GestureDetector(
+      onTap: () => widget.onTabTapped(widget.index),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: AnimatedBuilder(
+          animation: animationController,
+          builder: (context, child) {
+            final iconColor = iconColorAnimation.value!;
+            final bgColor = bgColorAnimation.value!;
+            final fontSize = fontSizeAnimation.value;
+            final fontWeight = FontWeight.lerp(
+              FontWeight.w500,
+              FontWeight.bold,
+              this.fontWeight.value,
+            );
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
                   ),
-                  Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: iconColor,
-                      fontSize: fontSize,
-                      fontWeight: fontWeight,
-                    ),
+                  child: ScaleTransition(
+                    scale: scaleAnimation,
+                    child: Icon(widget.icon, color: iconColor, size: 32),
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+                Text(
+                  widget.label,
+                  style: TextStyle(
+                    color: iconColor,
+                    fontSize: fontSize,
+                    fontWeight: fontWeight,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
-    );
-  }
+    ),
+  );
 
   @override
   void dispose() {
-    _animationController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 }

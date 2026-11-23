@@ -1,0 +1,379 @@
+import 'dart:math';
+
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/common.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/utils/search_bar_scroll_listener.dart';
+import 'package:tallee/presentation/views/main_menu/game_view/create_game_view.dart';
+import 'package:tallee/presentation/widgets/app_skeleton.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
+import 'package:tallee/presentation/widgets/empty_message.dart';
+import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/game_tile.dart';
+import 'package:tallee/state/search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
+
+class GameView extends StatefulWidget {
+  const GameView({super.key});
+
+  @override
+  State<GameView> createState() => _GameViewState();
+}
+
+class _GameViewState extends State<GameView> with RouteAware {
+  late final AppDatabase db;
+  late final SearchProvider searchProvider;
+
+  final GlobalKey gameViewCreateButtonKey = GlobalKey();
+  final String gameViewCreateButtonIdentifier = 'game_view_create_game_button';
+
+  final String navbarGameViewIdentifier = 'navbar_game_view';
+
+  late final ShowcaseProvider showcaseProvider;
+
+  bool isLoading = true;
+  late List<(Game, int)> gameCounts = [];
+
+  final TextEditingController searchBarController = TextEditingController();
+
+  /// Loaded games from the database, initially filled with skeleton games
+  List<Game> allGames = List.generate(
+    10,
+    (_) => Game(
+      name: 'Skeleton game name',
+      ruleset: Ruleset.winner,
+      color: AppColor.randomColor(),
+      description: 'Skeleton description for the game tile',
+    ),
+  );
+
+  late List<Game> displayedGames = [...allGames];
+
+  /// Last known search mode, used to detect toggles in [handleSearchToggle]
+  bool wasSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    db = context.read<AppDatabase>();
+    searchProvider = context.read<SearchProvider>();
+    wasSearching = searchProvider.isSearching(GameView);
+    searchProvider.addListener(handleSearchToggle);
+
+    showcaseProvider = context.read<ShowcaseProvider>();
+
+    loadGames();
+
+    handleShowcase(
+      widgetKeys: [gameViewCreateButtonKey],
+      identifiers: [gameViewCreateButtonIdentifier],
+      showcaseProvider: showcaseProvider,
+      context: context,
+    );
+  }
+
+  @override
+  void dispose() {
+    searchProvider.removeListener(handleSearchToggle);
+    searchBarController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final searchProvider = context.read<SearchProvider>();
+
+    // Reset filtered matches when search is disabled
+    if (!searchProvider.isSearching(GameView)) {
+      displayedGames = [...allGames];
+    }
+
+    return Scaffold(
+      backgroundColor: context.talleeColors.backgroundColor,
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Column(
+            children: [
+              // Searchbar
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeInCubic,
+                transitionBuilder: (child, animation) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                    reverseCurve: Curves.easeInCubic,
+                  );
+
+                  return ClipRect(
+                    child: SizeTransition(
+                      sizeFactor: curvedAnimation,
+                      alignment: Alignment.topCenter,
+                      child: FadeTransition(
+                        opacity: curvedAnimation,
+                        child: child,
+                      ),
+                    ),
+                  );
+                },
+                child:
+                    searchProvider.isSearching(GameView) &&
+                        searchProvider.isSearchBarVisible(GameView)
+                    ? Padding(
+                        key: const ValueKey('match-searchbar-visible'),
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          bottom: 10,
+                        ),
+                        child: CustomSearchBar(
+                          controller: searchBarController,
+                          hintText: '',
+                          trailingButtonShown:
+                              searchBarController.text.isNotEmpty,
+                          onTrailingButtonPressed: () {
+                            searchBarController.clear();
+                            setState(() {
+                              applySearch('');
+                            });
+                          },
+
+                          onChanged: (value) {
+                            setState(() {
+                              applySearch(value);
+                            });
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(
+                        key: ValueKey('match-searchbar-hidden'),
+                      ),
+              ),
+
+              // Content
+              Expanded(
+                child: AppSkeleton(
+                  enabled: isLoading,
+                  child: Center(
+                    child:
+                        // Games
+                        allGames.isNotEmpty
+                        ? displayedGames.isEmpty
+                              ?
+                                // No filtered games
+                                SizedBox.expand(
+                                  child: EmptyViewMessage(
+                                    icon: Icons.search,
+                                    title: loc.no_results,
+                                    message: loc
+                                        .there_is_no_game_matching_your_search,
+                                  ),
+                                )
+                              // Games list
+                              : SizedBox.expand(
+                                  child: SearchBarScrollListener(
+                                    isSearchBarVisible: searchProvider
+                                        .isSearchBarVisible(GameView),
+                                    onVisibilityChanged: (visible) =>
+                                        searchProvider.setSearchBarVisible(
+                                          view: GameView,
+                                          visible: visible,
+                                        ),
+                                    child: ListView.builder(
+                                      padding: AppSpacing.listViewPadding(
+                                        context,
+                                      ),
+                                      itemCount: displayedGames.length,
+
+                                      itemBuilder:
+                                          (
+                                            BuildContext context,
+                                            int index,
+                                          ) => GameTile(
+                                            gameCount: getGameCount(
+                                              displayedGames[index],
+                                            ),
+                                            onTap: () async {
+                                              await Navigator.push(
+                                                context,
+                                                adaptivePageRoute(
+                                                  settings: const RouteSettings(
+                                                    name: RouteNames
+                                                        .createGameView,
+                                                  ),
+                                                  builder: (context) =>
+                                                      CreateGameView(
+                                                        gameToEdit:
+                                                            displayedGames[index],
+                                                        onGameChanged:
+                                                            loadGames,
+                                                        gameCount: getGameCount(
+                                                          displayedGames[index],
+                                                        ),
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                            game: displayedGames[index],
+                                          ),
+                                    ),
+                                  ),
+                                )
+                        // No games in db
+                        : !isLoading
+                        ? EmptyViewMessage(
+                            icon: GAME_ICON,
+                            title: loc.no_games,
+                            message: loc.no_games_created_yet,
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Outside the skeleton so it is not cross-faded on loading changes
+          Positioned(
+            bottom: AppSpacing.floatingButtonBottom(context),
+            child: CustomShowcaseWidget(
+              showcaseKey: gameViewCreateButtonKey,
+              description: loc.showcase_game_view_create,
+              tooltipPosition: TooltipPosition.top,
+              disableBarrierInteraction: true,
+              disposeOnTap: true,
+              onTargetClick: () {
+                showcaseProvider.markAsSeen(navbarGameViewIdentifier);
+                showcaseProvider.markAsSeen(gameViewCreateButtonIdentifier);
+                navigateToCreateGameView();
+              },
+              targetBorderRadius: BorderRadius.circular(30),
+              child: FloatingAnimatedButton(
+                text: loc.create_game,
+                icon: Icons.add,
+                onPressed: navigateToCreateGameView,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void navigateToCreateGameView() {
+    Navigator.push(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.createGameView),
+        builder: (context) => CreateGameView(onGameChanged: loadGames),
+      ),
+    );
+  }
+
+  void applySearch(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        displayedGames = [...allGames];
+      } else {
+        final List<({Game game, int score})> scoredGames = [];
+
+        for (final game in allGames) {
+          int maxScore = 0;
+
+          // Check game name
+          maxScore = max(maxScore, weightedRatio(game.name, query));
+
+          // Check game description
+          maxScore = max(maxScore, weightedRatio(game.description, query));
+
+          // Check ruleset name
+          maxScore = max(
+            maxScore,
+            weightedRatio(game.ruleset.toLocalizedString(context), query),
+          );
+
+          if (maxScore >= FUZZY_SEARCH_THRESHOLD) {
+            scoredGames.add((game: game, score: maxScore));
+          }
+        }
+
+        // Sort by score descending
+        scoredGames.sort((a, b) => b.score.compareTo(a.score));
+        displayedGames = scoredGames.map((e) => e.game).toList();
+      }
+    });
+  }
+
+  void handleSearchToggle() {
+    if (!mounted) return;
+
+    // Only the search bar visibility changed (scrolling or tab tap)
+    if (searchProvider.isSearching(GameView) == wasSearching) {
+      setState(() {});
+      return;
+    }
+    wasSearching = searchProvider.isSearching(GameView);
+
+    setState(() {
+      if (!searchProvider.isSearching(GameView)) {
+        searchBarController.clear();
+      } else {
+        final scrollController = PrimaryScrollController.of(context);
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+          );
+        }
+      }
+    });
+  }
+
+  /// Loads the games from the database and sorts them by creation date.
+  void loadGames() {
+    if (!mounted) return;
+
+    setState(() => isLoading = true);
+
+    Future.wait([
+      db.gameDao.getAllGames(),
+      db.gameDao.getAllGameCounts(),
+      Future.delayed(MINIMUM_SKELETON_DURATION),
+    ]).then((results) {
+      if (!mounted) return;
+
+      final loadedGames = results[0] as List<Game>;
+      gameCounts = results[1] as List<(Game, int)>;
+
+      setState(() {
+        allGames = [...loadedGames]
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+        searchBarController.text.isEmpty
+            ? displayedGames = [...allGames]
+            : applySearch(searchBarController.text);
+        isLoading = false;
+      });
+    });
+  }
+
+  /// Returns the number of matches that use the given [game].
+  int getGameCount(Game game) => gameCounts
+      .firstWhere((gc) => gc.$1.id == game.id, orElse: () => (game, 0))
+      .$2;
+}

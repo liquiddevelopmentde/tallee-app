@@ -35,7 +35,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
       );
 
       // Add teams
-      if (match.teams != null && match.teams!.isNotEmpty) {
+      if (match.hasTeams) {
         await db.teamDao.addTeamsAsList(teams: match.teams!, matchId: match.id);
       }
 
@@ -59,14 +59,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       }
 
-      for (final pid in match.scores.keys) {
-        final playerScores = match.scores[pid];
+      for (final pid in match.scoresByRound.keys) {
+        final playerScores = match.scoresByRound[pid];
         if (playerScores != null) {
-          await db.scoreEntryDao.addScore(
-            entry: playerScores,
-            playerId: pid,
-            matchId: match.id,
-          );
+          for (final entry in playerScores) {
+            await db.scoreEntryDao.addScore(
+              entry: entry,
+              playerId: pid,
+              matchId: match.id,
+            );
+          }
         }
       }
     });
@@ -120,6 +122,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
                   name: match.group!.name,
                   description: match.group!.description,
                   createdAt: match.group!.createdAt,
+                  color: match.group!.color,
                 ),
               )
               .toList(),
@@ -184,16 +187,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       await db.batch((b) {
         for (final match in matches) {
-          for (final entry in match.scores.entries) {
-            if (entry.value != null) {
+          for (final entry in match.scoresByRound.entries) {
+            for (final scoreEntry in entry.value) {
               b.insert(
                 db.scoreEntryTable,
                 ScoreEntryTableCompanion.insert(
                   matchId: match.id,
                   playerId: entry.key,
-                  score: entry.value!.score,
-                  roundNumber: entry.value!.roundNumber,
-                  change: entry.value!.change,
+                  score: Value(scoreEntry.change),
+                  roundNumber: scoreEntry.roundNumber,
+                  change: scoreEntry.change,
                 ),
                 mode: InsertMode.insertOrReplace,
               );
@@ -202,10 +205,16 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         }
       });
 
-      // Add player-match associations
+      // Add player-match associations for players that are not in teams.
+      // Team members are associated via addTeamsAsList below.
       await db.batch((b) {
         for (final match in matches) {
+          final playersInTeams = <String>{
+            for (final team in match.teams ?? <Team>[])
+              for (final member in team.members) member.id,
+          };
           for (final p in match.players) {
+            if (playersInTeams.contains(p.id)) continue;
             b.insert(
               db.playerMatchTable,
               PlayerMatchTableCompanion.insert(
@@ -238,7 +247,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
 
       // Add teams for matches
       for (final match in matches) {
-        if (match.teams != null && match.teams!.isNotEmpty) {
+        if (match.hasTeams) {
           await db.teamDao.addTeamsAsList(
             teams: match.teams!,
             matchId: match.id,
@@ -377,7 +386,7 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
         game: game!,
         players: playersMap[row.id] ?? [],
         group: row.groupId != null ? groupsMap[row.groupId] : null,
-        scores: scoresMap[row.id] ?? {},
+        scoresByRound: scoresMap[row.id] ?? {},
         teams: teamsMap[row.id],
       );
     }).toList();
@@ -480,18 +489,18 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
   /// Deletes the match with the given [matchId] from the database and purges
   /// lone players.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
-  Future<bool> deleteMatch({required String matchId}) async {
-    return db.transaction(() async {
-      final query = delete(matchTable)..where((tbl) => tbl.id.equals(matchId));
-      final rowsAffected = await query.go();
+  Future<bool> deleteMatch({required String matchId}) async =>
+      db.transaction(() async {
+        final query = delete(matchTable)
+          ..where((tbl) => tbl.id.equals(matchId));
+        final rowsAffected = await query.go();
 
-      if (rowsAffected > 0) {
-        await db.playerDao.purgeSoftDeletedPlayer();
-      }
+        if (rowsAffected > 0) {
+          await db.playerDao.purgeSoftDeletedPlayer();
+        }
 
-      return rowsAffected > 0;
-    });
-  }
+        return rowsAffected > 0;
+      });
 
   /// Deletes all matches from the database.
   /// Returns `true` if more than 0 rows were affected, otherwise `false`.
@@ -516,21 +525,19 @@ class MatchDao extends DatabaseAccessor<AppDatabase> with _$MatchDaoMixin {
     required Game game,
     required List<Player> players,
     Group? group,
-    Map<String, ScoreEntry?>? scores,
+    Map<String, List<ScoreEntry>>? scoresByRound,
     List<Team>? teams,
-  }) {
-    return Match(
-      id: row.id,
-      name: row.name,
-      game: game,
-      group: group,
-      players: players,
-      scores: scores,
-      teams: teams,
-      isTeamMatch: row.isTeamMatch,
-      notes: row.notes,
-      createdAt: row.createdAt,
-      endedAt: row.endedAt,
-    );
-  }
+  }) => Match(
+    id: row.id,
+    name: row.name,
+    game: game,
+    group: group,
+    players: players,
+    scoresByRound: scoresByRound,
+    teams: teams,
+    isTeamMatch: row.isTeamMatch,
+    notes: row.notes,
+    createdAt: row.createdAt,
+    endedAt: row.endedAt,
+  );
 }

@@ -1,90 +1,38 @@
-import 'dart:convert';
-import 'dart:io';
+import 'package:material_ui/material_ui.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/state/showcase_provider.dart';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
-import 'package:json_schema/json_schema.dart';
-import 'package:tallee/data/models/models.dart';
+/// Returns the correct singular or plural form of "point(s)" based on the [amount] value.
+String getPointLabel(AppLocalizations loc, int amount) {
+  if (amount == 1) return '$amount ${loc.point}';
+  return '$amount ${loc.points}';
+}
 
-export 'app_color_utils.dart';
-export 'icon_utils.dart';
-export 'translations.dart';
+String getLifeLabel(AppLocalizations loc, int amount) =>
+    '$amount ${loc.lives(amount)}';
 
-/// Counts how many players in the [match] are not part of the group
-///
-/// Returns the text you append after the group name, e.g. " + 5" or an empty
-/// string if there are no extra players
-String getExtraPlayerCount(Match match) {
-  int count = 0;
+void handleShowcase({
+  required List<GlobalKey> widgetKeys,
+  required List<String> identifiers,
+  required BuildContext context,
+  required ShowcaseProvider showcaseProvider,
+  bool isStart = false,
+}) {
+  assert(
+    widgetKeys.length == identifiers.length,
+    'widgetKeys and identifiers have to have the same length',
+  );
+  if (identifiers.isEmpty) return;
 
-  if (match.group == null) {
-    return '';
-  }
+  final String firstIdentifier = identifiers.first;
 
-  final groupMembers = match.group!.members;
-  final players = match.players;
-
-  for (var player in players) {
-    if (!groupMembers.any((member) => member.id == player.id)) {
-      count++;
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (showcaseProvider.shouldShowShowcase(firstIdentifier)) {
+      ShowcaseView.get().startShowCase(
+        widgetKeys,
+        delay: const Duration(milliseconds: 400),
+      );
     }
-  }
-
-  if (count == 0) {
-    return '';
-  }
-  return ' + ${count.toString()}';
-}
-
-extension Comparison on String {
-  /// Compares this string with [other] ignoring upper-/lowercase.
-  int compareIgnoringCaseTo(String other) =>
-      toLowerCase().compareTo(other.toLowerCase());
-}
-
-extension FilenameSanitization on String {
-  /// Sanitizes a string to be used as a filename.
-  ///
-  /// Replaces spaces with underscores, normalizes German umlauts,
-  /// and removes any characters that are not alphanumeric, dots, underscores, or hyphens.
-  /// If the resulting string is empty, returns the [fallback].
-  String toSafeFilename({String fallback = 'match'}) {
-    final sanitized = replaceAll(' ', '_')
-        .replaceAll('ä', 'ae')
-        .replaceAll('ö', 'oe')
-        .replaceAll('ü', 'ue')
-        .replaceAll('Ä', 'Ae')
-        .replaceAll('Ö', 'Oe')
-        .replaceAll('Ü', 'Ue')
-        .replaceAll('ß', 'ss')
-        .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '');
-
-    return sanitized.isEmpty ? fallback : sanitized;
-  }
-}
-
-/// Helper method to read file content from either bytes or path
-Future<String?> readFileContent(PlatformFile file) async {
-  if (file.bytes != null) return utf8.decode(file.bytes!);
-  if (file.path != null) return await File(file.path!).readAsString();
-  return null;
-}
-
-/// Validates the given JSON string against the schema.
-Future<bool> validateJsonSchema(
-  String jsonString,
-  String schemaAssetPath,
-) async {
-  try {
-    final schemaString = await rootBundle.loadString(schemaAssetPath);
-    final schema = JsonSchema.create(json.decode(schemaString));
-    final jsonData = json.decode(jsonString);
-    final result = schema.validate(jsonData);
-
-    return result.isValid;
-  } catch (e, stack) {
-    print('[validateJsonSchema] $e');
-    print(stack);
-    return false;
-  }
+  });
 }

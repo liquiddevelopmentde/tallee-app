@@ -1,0 +1,262 @@
+import 'package:material_ui/material_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/db/database.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/create_match/choose_group_view.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/presentation/widgets/tiles/object_tiles/group_tile.dart';
+import 'package:tallee/services/remote_share_service.dart';
+import 'package:tallee/state/data_refresh_provider.dart';
+
+class AssociateGroupView extends StatefulWidget {
+  const AssociateGroupView({
+    required this.match,
+    required this.associations,
+    this.associatedGame,
+    super.key,
+  });
+
+  final Match match;
+
+  final Map<String, Player?> associations;
+
+  final Game? associatedGame;
+
+  @override
+  State<AssociateGroupView> createState() => _AssociateGroupViewState();
+}
+
+class _AssociateGroupViewState extends State<AssociateGroupView> {
+  Group? associatedGroup;
+
+  @override
+  void initState() {
+    super.initState();
+    autoAssociateGroup();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(loc.associate_group)),
+        body: Column(
+          children: [
+            Align(
+              child: Container(
+                margin: AppSpacing.standardMargin,
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                decoration: BoxDecoration(
+                  color: associatedGroup == null
+                      ? context.talleeColors.warningColor
+                      : context.talleeColors.successColor,
+                  borderRadius: AppColors.standardBorderRadiusAll,
+                ),
+                child: Text(
+                  associatedGroup != null
+                      ? loc.group_associated
+                      : loc.new_group_will_be_created,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            GroupTile(group: widget.match.group!),
+            const Icon(Icons.arrow_downward, size: 30),
+            const SizedBox(height: 10),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              layoutBuilder:
+                  (Widget? currentChild, List<Widget> previousChildren) =>
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[...previousChildren, ?currentChild],
+                      ),
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: associatedGroup == null
+                  ? GestureDetector(
+                      onTap: navigateToGroupSelection,
+                      child: Container(
+                        key: const ValueKey('no_association'),
+                        margin: AppSpacing.tileMargin,
+                        height: 150,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: context.standardBoxDecoration.copyWith(
+                          border: Border.all(
+                            color: context.talleeColors.warningColor.withAlpha(
+                              150,
+                            ),
+                          ),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.group_add,
+                                size: 35,
+                                color: context.talleeColors.warningColor,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                loc.no_matching_local_group_found,
+                                style: TextStyle(
+                                  color: context.talleeColors.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.visible,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                loc.tap_to_choose_existing,
+                                style: TextStyle(
+                                  color: context.talleeColors.hintColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : GroupTile(
+                      key: ValueKey(associatedGroup!.id),
+                      group: associatedGroup!,
+                      onTap: navigateToGroupSelection,
+                      borderColor: context.talleeColors.successColor.withAlpha(
+                        150,
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 2),
+            if (associatedGroup != null)
+              Text(
+                loc.tap_to_choose_different_group,
+                style: TextStyle(
+                  color: context.talleeColors.hintColor,
+                  fontSize: 14,
+                  overflow: TextOverflow.visible,
+                ),
+                softWrap: true,
+              ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BottomAnimatedButton(
+                text: loc.save_match,
+                onPressed: saveMatch,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> saveMatch() async {
+    final db = context.read<AppDatabase>();
+    final loc = AppLocalizations.of(context);
+
+    // Filter null values and cast to Map<String, Player>
+    final playerAssociations = <String, Player>{};
+    for (final entry in widget.associations.entries) {
+      if (entry.value != null) {
+        playerAssociations[entry.key] = entry.value!;
+      }
+    }
+
+    try {
+      await RemoteShareService().saveImportedMatch(
+        db: db,
+        importedMatch: widget.match,
+        playerAssociations: playerAssociations,
+        associatedGame: widget.associatedGame,
+        associatedGroup: associatedGroup,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      context.showSnackBar(message: loc.unexpected_error);
+      return;
+    }
+
+    if (!mounted) return;
+    context.read<DataRefreshProvider>().refresh();
+    context.showSnackBar(message: loc.data_successfully_imported);
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  Future<void> navigateToGroupSelection() async {
+    final db = context.read<AppDatabase>();
+    final allGroups = await db.groupDao.getAllGroups();
+
+    final importedGroup = widget.match.group!;
+    final mappedLocalPlayerIds = importedGroup.members
+        .map((m) => widget.associations[m.id]?.id)
+        .whereType<String>()
+        .toSet();
+
+    final validGroups = allGroups.where((localGroup) {
+      final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+      return localMemberIds.length == mappedLocalPlayerIds.length &&
+          localMemberIds.containsAll(mappedLocalPlayerIds);
+    }).toList();
+
+    if (!mounted) return;
+
+    final selected = await Navigator.push<Group>(
+      context,
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.chooseGroupView),
+        builder: (context) => ChooseGroupView(
+          groups: validGroups,
+          initialGroups: [?associatedGroup],
+        ),
+      ),
+    );
+
+    setState(() {
+      associatedGroup = selected;
+    });
+  }
+
+  Future<void> autoAssociateGroup() async {
+    final db = context.read<AppDatabase>();
+    final allGroups = await db.groupDao.getAllGroups();
+
+    if (!mounted) return;
+
+    final importedGroup = widget.match.group;
+    if (importedGroup != null) {
+      final mappedLocalPlayerIds = importedGroup.members
+          .map((m) => widget.associations[m.id]?.id)
+          .whereType<String>()
+          .toSet();
+
+      if (mappedLocalPlayerIds.length != importedGroup.members.length) return;
+
+      final match = allGroups.where((localGroup) {
+        final localMemberIds = localGroup.members.map((m) => m.id).toSet();
+        return localMemberIds.length == mappedLocalPlayerIds.length &&
+            localMemberIds.containsAll(mappedLocalPlayerIds);
+      }).firstOrNull;
+
+      if (match != null) {
+        setState(() {
+          associatedGroup = match;
+        });
+      }
+    }
+  }
+}

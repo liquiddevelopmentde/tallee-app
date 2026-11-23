@@ -1,16 +1,29 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:tallee/core/common.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 
-class FileTile extends StatelessWidget {
-  const FileTile({required this.match, this.margin, super.key});
+class MatchFileTile extends StatelessWidget {
+  /// Displays a match as file whith its filename, attributes and file size
+  /// - [match]: The match to display
+  /// - [fileName]: Optional filename to display instead of the match name
+  /// - [margin]: Optional margin to apply to the tile
+  const MatchFileTile({
+    required this.match,
+    this.fileName,
+    this.margin,
+    this.showDetails = true,
+    super.key,
+  });
 
   final Match match;
+  final String? fileName;
   final EdgeInsets? margin;
+  final bool showDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +33,18 @@ class FileTile extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: CustomTheme.onBoxColor,
-        border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-        borderRadius: CustomTheme.standardBorderRadiusAll,
+        color: context.talleeColors.onBoxColor,
+        border: Border.all(
+          color: context.talleeColors.boxBorderColor,
+          width: 2,
+        ),
+        borderRadius: AppColors.standardBorderRadiusAll,
       ),
       margin:
           margin ?? const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       padding: const EdgeInsets.all(12),
       child: Row(
         spacing: 12,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.file_present, size: 36),
           Expanded(
@@ -39,18 +54,24 @@ class FileTile extends StatelessWidget {
               children: [
                 Row(
                   spacing: 4,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Filename
                     Expanded(
-                      child: Text(
-                        '${match.name.toSafeFilename()}.tallee',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: CustomTheme.textColor,
+                      child: SizedBox(
+                        height: 24,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            fileName ??
+                                '${match.name.toSafeFilename()}.$MATCH_FILE_EXTENSION',
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: context.talleeColors.textColor,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -58,26 +79,29 @@ class FileTile extends StatelessWidget {
                     // Filesize
                     Text(
                       '${fileSize.toStringAsFixed(1)} KB',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: CustomTheme.textColor,
+                        color: context.talleeColors.textColor,
                       ),
                     ),
                   ],
                 ),
 
                 // Content
-                Wrap(
-                  spacing: 4,
-                  children: getContentAsStrings(loc)
-                      .map(
-                        (item) => Text(
-                          item,
-                          style: const TextStyle(color: CustomTheme.hintColor),
-                        ),
-                      )
-                      .toList(),
-                ),
+                if (showDetails)
+                  Wrap(
+                    spacing: 4,
+                    children: getContentAsStrings(loc)
+                        .map(
+                          (item) => Text(
+                            item,
+                            style: TextStyle(
+                              color: context.talleeColors.hintColor,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
               ],
             ),
           ),
@@ -98,12 +122,10 @@ class FileTile extends StatelessWidget {
     items.add(loc.player_count(match.players.length));
 
     // Teams & Pairs
-    final isTeamMatch = match.isTeamMatch;
-    final teams = match.teams ?? [];
-    if (isTeamMatch) {
-      items.add('${teams.length} ${loc.teams}');
-    } else if (teams.isNotEmpty) {
-      final pairAmount = teams.where((t) => t.members.length > 1).length;
+    if (match.isTeamMatch) {
+      items.add('${match.teams?.length ?? 0} ${loc.teams}');
+    } else {
+      final pairAmount = match.pairs.length;
       if (pairAmount > 0) items.add('$pairAmount ${loc.pair(pairAmount)}');
     }
 

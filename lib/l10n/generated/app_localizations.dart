@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -98,11 +99,23 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  /// No description provided for @active_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Matches'**
+  String get active_matches;
+
   /// No description provided for @add_team.
   ///
   /// In en, this message translates to:
   /// **'Add Team'**
   String get add_team;
+
+  /// No description provided for @add_to_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get add_to_favourites;
 
   /// No description provided for @all.
   ///
@@ -140,6 +153,12 @@ abstract class AppLocalizations {
   /// **'Tallee'**
   String get app_name;
 
+  /// No description provided for @ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get ascending;
+
   /// No description provided for @associate_game.
   ///
   /// In en, this message translates to:
@@ -176,11 +195,35 @@ abstract class AppLocalizations {
   /// **'Best score'**
   String get best_score;
 
+  /// No description provided for @camera_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while accessing the camera.'**
+  String get camera_error;
+
+  /// No description provided for @camera_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR codes. Please allow camera access in your device settings.'**
+  String get camera_permission_denied;
+
+  /// No description provided for @camera_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning QR codes is not supported on this device.'**
+  String get camera_unsupported;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @choose_color_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the color for your game.'**
+  String get choose_color_description;
 
   /// No description provided for @choose_date_range.
   ///
@@ -212,6 +255,12 @@ abstract class AppLocalizations {
   /// **'Please choose another file.'**
   String get choose_other_file;
 
+  /// No description provided for @choose_ruleset_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the ruleset you want to play with.'**
+  String get choose_ruleset_description;
+
   /// No description provided for @choose_scopes.
   ///
   /// In en, this message translates to:
@@ -236,23 +285,11 @@ abstract class AppLocalizations {
   /// **'Choose where to save your match:'**
   String get choose_where_to_save;
 
-  /// No description provided for @classifier.
+  /// No description provided for @close.
   ///
   /// In en, this message translates to:
-  /// **'Classifier'**
-  String get classifier;
-
-  /// No description provided for @classifier_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which metric is calculated and shown in this statistic.'**
-  String get classifier_description;
-
-  /// No description provided for @click_another_player_to_create_a_pair.
-  ///
-  /// In en, this message translates to:
-  /// **'Click another player to create a pair'**
-  String get click_another_player_to_create_a_pair;
+  /// **'Close'**
+  String get close;
 
   /// No description provided for @code_copied.
   ///
@@ -325,6 +362,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirm;
+
+  /// No description provided for @contact_us_through_mail.
+  ///
+  /// In en, this message translates to:
+  /// **'Feel free to contact us via email directly so we can solve your problem!'**
+  String get contact_us_through_mail;
+
+  /// No description provided for @continue_.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get continue_;
 
   /// No description provided for @copy_code.
   ///
@@ -404,11 +453,17 @@ abstract class AppLocalizations {
   /// **'Custom'**
   String get custom;
 
-  /// No description provided for @data.
+  /// No description provided for @danger_zone.
   ///
   /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
+  /// **'Danger Zone'**
+  String get danger_zone;
+
+  /// No description provided for @data_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Backup'**
+  String get data_backup;
 
   /// No description provided for @data_successfully_deleted.
   ///
@@ -428,6 +483,18 @@ abstract class AppLocalizations {
   /// **'Data successfully imported'**
   String get data_successfully_imported;
 
+  /// No description provided for @data_transfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Transfer'**
+  String get data_transfer;
+
+  /// No description provided for @data_transfer_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Export and import all your games, players, groups, game templates, and statistics into a file. This serves as a backup or to transfer data to a new device. To share your games with friends, open a game and select \"Share\".'**
+  String get data_transfer_description;
+
   /// No description provided for @days_ago.
   ///
   /// In en, this message translates to:
@@ -446,6 +513,12 @@ abstract class AppLocalizations {
   /// **'Delete all data'**
   String get delete_all_data;
 
+  /// No description provided for @delete_app_data_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete all app data. This action is irreversible.'**
+  String get delete_app_data_description;
+
   /// No description provided for @delete_game.
   ///
   /// In en, this message translates to:
@@ -455,7 +528,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_game_with_matches_warning.
   ///
   /// In en, this message translates to:
-  /// **'If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.'**
+  /// **'If you delete this game, {count, plural, =1{1 match} other{{count} matches}} using this game will also be deleted.'**
   String delete_game_with_matches_warning(int count);
 
   /// No description provided for @delete_group.
@@ -500,23 +573,41 @@ abstract class AppLocalizations {
   /// **'Deleted'**
   String get deleted;
 
+  /// No description provided for @descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get descending;
+
   /// No description provided for @description.
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
 
-  /// No description provided for @displayed_entries.
+  /// No description provided for @do_you_like_the_app.
   ///
   /// In en, this message translates to:
-  /// **'Displayed entries'**
-  String get displayed_entries;
+  /// **'Do you like the app?'**
+  String get do_you_like_the_app;
+
+  /// No description provided for @dont_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t update'**
+  String get dont_update;
 
   /// No description provided for @drag_to_set_placement.
   ///
   /// In en, this message translates to:
   /// **'Drag to set placement'**
   String get drag_to_set_placement;
+
+  /// No description provided for @duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicate;
 
   /// No description provided for @edit_game.
   ///
@@ -536,23 +627,29 @@ abstract class AppLocalizations {
   /// **'Edit Match'**
   String get edit_match;
 
-  /// No description provided for @edit_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit name'**
-  String get edit_name;
-
   /// No description provided for @edit_player.
   ///
   /// In en, this message translates to:
   /// **'Edit player'**
   String get edit_player;
 
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get email;
+
   /// No description provided for @enable.
   ///
   /// In en, this message translates to:
   /// **'Enable'**
   String get enable;
+
+  /// No description provided for @end_match.
+  ///
+  /// In en, this message translates to:
+  /// **'End Match'**
+  String get end_match;
 
   /// No description provided for @enter_results.
   ///
@@ -566,11 +663,29 @@ abstract class AppLocalizations {
   /// **'Error while creating group, please try again'**
   String get error_creating_group;
 
+  /// No description provided for @error_deleting_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting data, please try again'**
+  String get error_deleting_data;
+
   /// No description provided for @error_deleting_game.
   ///
   /// In en, this message translates to:
   /// **'Error while deleting game, please try again'**
   String get error_deleting_game;
+
+  /// No description provided for @error_deleting_group.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting group, please try again'**
+  String get error_deleting_group;
+
+  /// No description provided for @error_deleting_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while deleting match, please try again'**
+  String get error_deleting_match;
 
   /// No description provided for @error_editing_group.
   ///
@@ -590,17 +705,35 @@ abstract class AppLocalizations {
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
 
-  /// No description provided for @error_loading_privacy_policy.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading privacy policy'**
-  String get error_loading_privacy_policy;
-
   /// No description provided for @error_reading_file.
   ///
   /// In en, this message translates to:
   /// **'Error reading file'**
   String get error_reading_file;
+
+  /// No description provided for @error_report_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please describe the steps leading up to the error and how it appeared'**
+  String get error_report_hint;
+
+  /// No description provided for @error_report_info_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting an error helps us identify and fix problems in Tallee!'**
+  String get error_report_info_text;
+
+  /// No description provided for @error_saving_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving results, please try again.'**
+  String get error_saving_results;
+
+  /// No description provided for @error_sending_feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Feedback could not be sent. Please try again.'**
+  String get error_sending_feedback;
 
   /// No description provided for @error_while_processing_file_try_again.
   ///
@@ -632,6 +765,18 @@ abstract class AppLocalizations {
   /// **'Favourites'**
   String get favourites;
 
+  /// No description provided for @feedback_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message or feedback'**
+  String get feedback_hint;
+
+  /// No description provided for @feedback_info_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Your feedback helps us continuously improve Tallee!'**
+  String get feedback_info_text;
+
   /// No description provided for @file_couldnt_be_accessed.
   ///
   /// In en, this message translates to:
@@ -649,6 +794,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filter'**
   String get filter;
+
+  /// No description provided for @finished_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished Matches'**
+  String get finished_matches;
 
   /// No description provided for @format_exception.
   ///
@@ -668,6 +819,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected game templates.'**
+  String get game_filter_description;
+
   /// No description provided for @game_name.
   ///
   /// In en, this message translates to:
@@ -679,6 +836,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Games'**
   String get games;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// No description provided for @get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get get_started;
 
   /// No description provided for @group.
   ///
@@ -692,17 +861,29 @@ abstract class AppLocalizations {
   /// **'Group successfully associated'**
   String get group_associated;
 
+  /// No description provided for @group_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Group deleted'**
+  String get group_deleted;
+
+  /// No description provided for @group_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics will be displayed that relate to one of the selected groups.'**
+  String get group_filter_description;
+
+  /// No description provided for @group_members.
+  ///
+  /// In en, this message translates to:
+  /// **'Group Members'**
+  String get group_members;
+
   /// No description provided for @group_name.
   ///
   /// In en, this message translates to:
   /// **'Group name'**
   String get group_name;
-
-  /// No description provided for @group_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Group Profile'**
-  String get group_profile;
 
   /// No description provided for @groups.
   ///
@@ -734,6 +915,12 @@ abstract class AppLocalizations {
   /// **'Import data'**
   String get import_data;
 
+  /// No description provided for @import_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.'**
+  String get import_description;
+
   /// No description provided for @import_file_instruction.
   ///
   /// In en, this message translates to:
@@ -752,6 +939,12 @@ abstract class AppLocalizations {
   /// **'The following data will be imported'**
   String get import_preview_description;
 
+  /// No description provided for @incompatible_version.
+  ///
+  /// In en, this message translates to:
+  /// **'This file was created with a different version of Tallee and can\'t be imported. Please update your app and try again.'**
+  String get incompatible_version;
+
   /// No description provided for @info.
   ///
   /// In en, this message translates to:
@@ -763,6 +956,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Input a match share token another person created using Tallee to import the match.'**
   String get input_token_instruction;
+
+  /// No description provided for @invalid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get invalid_email;
+
+  /// No description provided for @invalid_extension.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file extension.'**
+  String get invalid_extension;
 
   /// No description provided for @invalid_file.
   ///
@@ -818,6 +1023,12 @@ abstract class AppLocalizations {
   /// **'Last year'**
   String get last_year;
 
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
   /// No description provided for @legal.
   ///
   /// In en, this message translates to:
@@ -872,6 +1083,18 @@ abstract class AppLocalizations {
   /// **'Manage Members'**
   String get manage_members;
 
+  /// No description provided for @match.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get match;
+
+  /// No description provided for @match_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Match deleted'**
+  String get match_deleted;
+
   /// No description provided for @match_in_progress.
   ///
   /// In en, this message translates to:
@@ -889,12 +1112,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matches can only be shared once they have ended.'**
   String get match_not_ended_share_warning;
-
-  /// No description provided for @match_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Match Profile'**
-  String get match_profile;
 
   /// No description provided for @match_receive.
   ///
@@ -938,6 +1155,12 @@ abstract class AppLocalizations {
   /// **'Members'**
   String get members;
 
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
   /// No description provided for @names_or_descriptions_too_long.
   ///
   /// In en, this message translates to:
@@ -968,11 +1191,17 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 new player will be created} other{{count} new players will be created}}'**
   String new_players_will_be_created(int count);
 
-  /// No description provided for @no_data_available.
+  /// No description provided for @next.
   ///
   /// In en, this message translates to:
-  /// **'No data available'**
-  String get no_data_available;
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
 
   /// No description provided for @no_data_to_export.
   ///
@@ -980,16 +1209,28 @@ abstract class AppLocalizations {
   /// **'No data to export'**
   String get no_data_to_export;
 
+  /// No description provided for @no_games.
+  ///
+  /// In en, this message translates to:
+  /// **'No Games'**
+  String get no_games;
+
   /// No description provided for @no_games_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No games created yet'**
+  /// **'You haven\'t created any games yet. Create a new game so it will appear here.'**
   String get no_games_created_yet;
+
+  /// No description provided for @no_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'No Groups'**
+  String get no_groups;
 
   /// No description provided for @no_groups_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No groups created yet'**
+  /// **'You haven\'t created any groups yet. Create a new group so it will appear here.'**
   String get no_groups_created_yet;
 
   /// No description provided for @no_license_text_available.
@@ -998,10 +1239,16 @@ abstract class AppLocalizations {
   /// **'No license text available'**
   String get no_license_text_available;
 
+  /// No description provided for @no_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'No Matches'**
+  String get no_matches;
+
   /// No description provided for @no_matches_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No matches created yet'**
+  /// **'You haven\'t created any matches yet. Create a new match so it will appear here.'**
   String get no_matches_created_yet;
 
   /// No description provided for @no_matches_played_yet.
@@ -1022,6 +1269,12 @@ abstract class AppLocalizations {
   /// **'No matching local group found.\nA new group will be created.'**
   String get no_matching_local_group_found;
 
+  /// No description provided for @no_players.
+  ///
+  /// In en, this message translates to:
+  /// **'No Players'**
+  String get no_players;
+
   /// No description provided for @no_players_available.
   ///
   /// In en, this message translates to:
@@ -1031,7 +1284,7 @@ abstract class AppLocalizations {
   /// No description provided for @no_players_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No players created yet'**
+  /// **'You haven\'t created any players yet'**
   String get no_players_created_yet;
 
   /// No description provided for @no_players_found_with_that_name.
@@ -1046,16 +1299,28 @@ abstract class AppLocalizations {
   /// **'No players selected'**
   String get no_players_selected;
 
+  /// No description provided for @no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No Results'**
+  String get no_results;
+
   /// No description provided for @no_results_entered_yet.
   ///
   /// In en, this message translates to:
   /// **'No results entered yet'**
   String get no_results_entered_yet;
 
+  /// No description provided for @no_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'No Statistics'**
+  String get no_statistics;
+
   /// No description provided for @no_statistics_created_yet.
   ///
   /// In en, this message translates to:
-  /// **'No statistics created yet'**
+  /// **'You haven\'t created any statistics yet. Create a new statistic so it will appear here.'**
   String get no_statistics_created_yet;
 
   /// No description provided for @no_statistics_with_filter.
@@ -1063,6 +1328,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No statistics with the selected filter'**
   String get no_statistics_with_filter;
+
+  /// No description provided for @no_suitable_matches_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No suitable matches yet'**
+  String get no_suitable_matches_yet;
 
   /// No description provided for @no_teams_available.
   ///
@@ -1088,6 +1359,66 @@ abstract class AppLocalizations {
   /// **'Not part of any group yet'**
   String get not_part_of_any_group;
 
+  /// No description provided for @onboarding_groups_teams_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize your gaming circle into groups and split players into teams for any match.'**
+  String get onboarding_groups_teams_desc;
+
+  /// No description provided for @onboarding_groups_teams_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups & Teams'**
+  String get onboarding_groups_teams_title;
+
+  /// No description provided for @onboarding_privacy_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Share matches easily via QR-codes or export specific matches and full backups as local files.'**
+  String get onboarding_privacy_desc;
+
+  /// No description provided for @onboarding_privacy_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing & Backup'**
+  String get onboarding_privacy_title;
+
+  /// No description provided for @onboarding_rulesets_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom games and pick the ruleset that fits: highest score, lives, placement, and more.'**
+  String get onboarding_rulesets_desc;
+
+  /// No description provided for @onboarding_rulesets_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible Rulesets'**
+  String get onboarding_rulesets_title;
+
+  /// No description provided for @onboarding_statistics_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get insights into your games with custom statistics scoped to your needs.'**
+  String get onboarding_statistics_desc;
+
+  /// No description provided for @onboarding_statistics_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Game Statistics'**
+  String get onboarding_statistics_title;
+
+  /// No description provided for @onboarding_welcome_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your companion for game nights. Record matches, track winners, and manage your play history.'**
+  String get onboarding_welcome_desc;
+
+  /// No description provided for @onboarding_welcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Tallee'**
+  String get onboarding_welcome_title;
+
   /// No description provided for @online_sharing_consent_text.
   ///
   /// In en, this message translates to:
@@ -1103,7 +1434,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_sharing_info_text.
   ///
   /// In en, this message translates to:
-  /// **'To share matches online, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.'**
+  /// **'To share matches via qr code or token, the app connects to external servers. To protect your privacy, this feature is disabled by default. All transmitted data is automatically deleted after 10 minutes. You can also share games locally as files.'**
   String get online_sharing_info_text;
 
   /// No description provided for @online_sharing_title.
@@ -1117,6 +1448,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get open_settings;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'optional'**
+  String get optional;
 
   /// No description provided for @pair.
   ///
@@ -1184,6 +1521,18 @@ abstract class AppLocalizations {
   /// **'Points'**
   String get points;
 
+  /// No description provided for @preview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
+  /// No description provided for @preview_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview match'**
+  String get preview_match;
+
   /// No description provided for @privacy_policy.
   ///
   /// In en, this message translates to:
@@ -1213,6 +1562,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'remaining'**
   String get remaining;
+
+  /// No description provided for @remove_from_favourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get remove_from_favourites;
+
+  /// No description provided for @report_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Error'**
+  String get report_error;
+
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'required'**
+  String get required;
 
   /// No description provided for @results.
   ///
@@ -1247,13 +1614,13 @@ abstract class AppLocalizations {
   /// No description provided for @scan_qr_code_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the qr code with another Tallee instance to share the match.'**
+  /// **'Scan the qr code with another Tallee app to share the match.'**
   String get scan_qr_code_instruction;
 
   /// No description provided for @scan_qr_receive_instruction.
   ///
   /// In en, this message translates to:
-  /// **'Scan the QR code of another Tallee instance to receive the match.'**
+  /// **'Scan the QR code of another Tallee app to receive the match.'**
   String get scan_qr_receive_instruction;
 
   /// No description provided for @scope.
@@ -1261,12 +1628,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scope'**
   String get scope;
-
-  /// No description provided for @scope_description.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose which games or players are included in the calculation.'**
-  String get scope_description;
 
   /// No description provided for @search_for_games.
   ///
@@ -1304,17 +1665,17 @@ abstract class AppLocalizations {
   /// **'Search for types'**
   String get search_for_types;
 
-  /// No description provided for @select_a_classifier.
+  /// No description provided for @select_a_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a classifier'**
-  String get select_a_classifier;
+  /// **'Select the display color for your statistic.'**
+  String get select_a_color_description;
 
-  /// No description provided for @select_a_display_color.
+  /// No description provided for @select_a_group_color_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a display color.'**
-  String get select_a_display_color;
+  /// **'Select the display color for your group.'**
+  String get select_a_group_color_description;
 
   /// No description provided for @select_a_scope.
   ///
@@ -1322,23 +1683,53 @@ abstract class AppLocalizations {
   /// **'Select a scope'**
   String get select_a_scope;
 
-  /// No description provided for @select_a_timeframe.
+  /// No description provided for @select_a_scope_description.
   ///
   /// In en, this message translates to:
-  /// **'Select a timeframe'**
-  String get select_a_timeframe;
+  /// **'Select the groups or game templates to limit your statistic to.'**
+  String get select_a_scope_description;
+
+  /// No description provided for @select_a_theme_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the app\'s displayed theme.'**
+  String get select_a_theme_description;
+
+  /// No description provided for @select_a_timeframe_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the time period for your statistic.'**
+  String get select_a_timeframe_description;
+
+  /// No description provided for @select_a_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type'**
+  String get select_a_type;
+
+  /// No description provided for @select_a_type_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a type for your statistic.'**
+  String get select_a_type_description;
+
+  /// No description provided for @select_games.
+  ///
+  /// In en, this message translates to:
+  /// **'Select games'**
+  String get select_games;
+
+  /// No description provided for @select_groups.
+  ///
+  /// In en, this message translates to:
+  /// **'Select groups'**
+  String get select_groups;
 
   /// No description provided for @select_loser.
   ///
   /// In en, this message translates to:
   /// **'Select Loser'**
   String get select_loser;
-
-  /// No description provided for @select_the_filtered_timeframe.
-  ///
-  /// In en, this message translates to:
-  /// **'Select the timeframe you want to filter by.'**
-  String get select_the_filtered_timeframe;
 
   /// No description provided for @select_winners.
   ///
@@ -1370,23 +1761,35 @@ abstract class AppLocalizations {
   /// **'Send this code to a person who also has Tallee to share the current match.'**
   String get send_code_instruction;
 
+  /// No description provided for @send_feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get send_feedback;
+
+  /// No description provided for @sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get sending;
+
   /// No description provided for @server_error.
   ///
   /// In en, this message translates to:
-  /// **'Server error: {statusCode}'**
-  String server_error(int statusCode);
-
-  /// No description provided for @set_name.
-  ///
-  /// In en, this message translates to:
-  /// **'Set name'**
-  String get set_name;
+  /// **'Internal server error'**
+  String get server_error;
 
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// No description provided for @share_as_qr_code_info.
   ///
@@ -1409,7 +1812,7 @@ abstract class AppLocalizations {
   /// No description provided for @share_match_title.
   ///
   /// In en, this message translates to:
-  /// **'Tallee Match Share'**
+  /// **'Match Share'**
   String get share_match_title;
 
   /// No description provided for @share_token_format_info.
@@ -1417,6 +1820,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share tokens consist of 6 alphanumeric characters.'**
   String get share_token_format_info;
+
+  /// No description provided for @showcase_create_game_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Create Game\" once you\'re ready.'**
+  String get showcase_create_game_button;
+
+  /// No description provided for @showcase_create_game_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a name for the game here.'**
+  String get showcase_create_game_name;
+
+  /// No description provided for @showcase_create_game_ruleset.
+  ///
+  /// In en, this message translates to:
+  /// **'By default, the \"Winner\" ruleset is selected, which we\'ll use for this example. For other rulesets, tap the tile.'**
+  String get showcase_create_game_ruleset;
+
+  /// No description provided for @showcase_create_match_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you\'ve configured all the settings, tap here to create the match.'**
+  String get showcase_create_match_button;
+
+  /// No description provided for @showcase_create_match_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the game you created earlier by tapping here.'**
+  String get showcase_create_match_game;
+
+  /// No description provided for @showcase_create_match_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your match a name.'**
+  String get showcase_create_match_name;
+
+  /// No description provided for @showcase_create_match_players.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the participating players here. To create new ones, tap the plus icon next to the search bar after entering a name.'**
+  String get showcase_create_match_players;
+
+  /// No description provided for @showcase_game_view_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button below to create a new game template.'**
+  String get showcase_game_view_create;
+
+  /// No description provided for @showcase_match_view_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s track your first match. Tap the \"Create Match\" button to get started.'**
+  String get showcase_match_view_create;
+
+  /// No description provided for @showcase_nav_game.
+  ///
+  /// In en, this message translates to:
+  /// **'To create a match, you first need to create a game. Let\'s start by switching to the Games tab.'**
+  String get showcase_nav_game;
+
+  /// No description provided for @showcase_nav_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Now that we\'ve created a game, we can switch to the Matches tab.'**
+  String get showcase_nav_match;
+
+  /// No description provided for @showcase_select_winner.
+  ///
+  /// In en, this message translates to:
+  /// **'To set your winners, simply select them here and tap the Save button below.'**
+  String get showcase_select_winner;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sort;
+
+  /// No description provided for @start_onboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Onboarding'**
+  String get start_onboarding;
 
   /// No description provided for @statistic.
   ///
@@ -1441,6 +1934,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Successfully processed file'**
   String get successfully_processed_file;
+
+  /// No description provided for @tap_another_player_to_create_a_pair.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap another player to create a pair'**
+  String get tap_another_player_to_create_a_pair;
 
   /// No description provided for @tap_import_to_continue.
   ///
@@ -1484,28 +1983,82 @@ abstract class AppLocalizations {
   /// **'Team Match'**
   String get team_match;
 
+  /// No description provided for @team_matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Matches'**
+  String get team_matches;
+
   /// No description provided for @teams.
   ///
   /// In en, this message translates to:
   /// **'Teams'**
   String get teams;
 
+  /// No description provided for @thank_you_for_feedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your feedback!'**
+  String get thank_you_for_feedback;
+
+  /// No description provided for @thank_you_for_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for your error report!'**
+  String get thank_you_for_report;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get theme_dark;
+
+  /// No description provided for @theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get theme_light;
+
+  /// No description provided for @theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get theme_system;
+
   /// No description provided for @there_are_no_games_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There are no games matching your search'**
+  /// **'There are no games matching your search.'**
   String get there_are_no_games_matching_your_search;
+
+  /// No description provided for @there_is_no_game_matching_your_search.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no game matching your search.'**
+  String get there_is_no_game_matching_your_search;
 
   /// No description provided for @there_is_no_group_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no group matching your search'**
+  /// **'There is no group matching your search.'**
   String get there_is_no_group_matching_your_search;
+
+  /// No description provided for @there_is_no_match_matching_your_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no match matching your filter.'**
+  String get there_is_no_match_matching_your_filter;
 
   /// No description provided for @there_is_no_match_matching_your_search.
   ///
   /// In en, this message translates to:
-  /// **'There is no match matching your search'**
+  /// **'There is no match matching your search.'**
   String get there_is_no_match_matching_your_search;
 
   /// No description provided for @this_cannot_be_undone.
@@ -1526,6 +2079,12 @@ abstract class AppLocalizations {
   /// **'Timeframe'**
   String get timeframe;
 
+  /// No description provided for @timeframe_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics related to any of the selected time periods are displayed.'**
+  String get timeframe_filter_description;
+
   /// No description provided for @today.
   ///
   /// In en, this message translates to:
@@ -1543,6 +2102,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Token expired'**
   String get token_expired;
+
+  /// No description provided for @top_n.
+  ///
+  /// In en, this message translates to:
+  /// **'Top {count}'**
+  String top_n(int count);
 
   /// No description provided for @total_losses.
   ///
@@ -1574,6 +2139,12 @@ abstract class AppLocalizations {
   /// **'Type'**
   String get type;
 
+  /// No description provided for @type_filter_description.
+  ///
+  /// In en, this message translates to:
+  /// **'All statistics matching any of the selected types are displayed.'**
+  String get type_filter_description;
+
   /// No description provided for @unexpected_error.
   ///
   /// In en, this message translates to:
@@ -1583,14 +2154,80 @@ abstract class AppLocalizations {
   /// No description provided for @unknown_exception.
   ///
   /// In en, this message translates to:
-  /// **'Unknown Exception (see console)'**
+  /// **'Unknown Exception'**
   String get unknown_exception;
 
-  /// No description provided for @winners.
+  /// No description provided for @unsatisfied.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsatisfied?'**
+  String get unsatisfied;
+
+  /// No description provided for @update_app_export_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data into another Tallee app.'**
+  String get update_app_export_desc;
+
+  /// No description provided for @update_app_import_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have the newest App-Version, this can lead to problems when trying to import your data.'**
+  String get update_app_import_desc;
+
+  /// No description provided for @update_app_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update your apps to the newest version and try it again.'**
+  String get update_app_version;
+
+  /// No description provided for @update_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get update_available;
+
+  /// No description provided for @update_available_content.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available.'**
+  String get update_available_content;
+
+  /// No description provided for @update_features_fixes_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please update the app to access the latest features and improvements.'**
+  String get update_features_fixes_desc;
+
+  /// No description provided for @update_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get update_now;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @version_copied_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Version copied to clipboard'**
+  String get version_copied_to_clipboard;
+
+  /// No description provided for @whats_new.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new?'**
+  String get whats_new;
+
+  /// No description provided for @winner.
   ///
   /// In en, this message translates to:
   /// **'Winner'**
-  String get winners;
+  String get winner;
 
   /// No description provided for @winrate.
   ///
@@ -1604,11 +2241,29 @@ abstract class AppLocalizations {
   /// **'Worst score'**
   String get worst_score;
 
+  /// No description provided for @write_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an email'**
+  String get write_email;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
   /// No description provided for @yesterday_at.
   ///
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
+
+  /// No description provided for @your_statistic_will_be_shown_here.
+  ///
+  /// In en, this message translates to:
+  /// **'Your statistic will be shown here'**
+  String get your_statistic_will_be_shown_here;
 }
 
 class _AppLocalizationsDelegate

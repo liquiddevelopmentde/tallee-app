@@ -1,32 +1,66 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "onboarding": false,
   "requireConfig": "optional",
-  "baseBranches": ["development"],
-  "prHourlyLimit": 2,
-  "prConcurrentLimit": 3,
-  "enabledManagers": ["pub"],
+  "baseBranchPatterns": [
+    "development"
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "labels": [
+    "Type/Dependencies"
+  ],
+  "enabledManagers": [
+    "pub"
+  ],
   "pub": {
     "enabled": true,
-    "fileMatch": ["(^|/)pubspec\\.yaml$"]
+    "managerFilePatterns": [
+      "/(^|/)pubspec\\.yaml$/"
+    ]
   },
   "packageRules": [
     {
-      "matchManagers": ["pub"],
+      "matchManagers": [
+        "pub"
+      ],
       "rangeStrategy": "bump"
     },
     {
-      "matchManagers": ["pub"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "dart"
+      ],
+      "enabled": false
+    },
+    {
+      "matchManagers": [
+        "pub"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "dart dependencies (minor)",
       "groupSlug": "dart-minor"
     },
     {
-      "matchManagers": ["pub"],
-      "matchUpdateTypes": ["major"],
-      "groupName": "dart dependencies (major)",
-      "groupSlug": "dart-major"
+      "matchManagers": [
+        "pub"
+      ],
+      "matchDepNames": [
+        "build_runner",
+        "drift",
+        "drift_dev",
+        "drift_flutter"
+      ],
+      "groupName": "codegen",
+      "groupSlug": "codegen"
     }
   ]
 }

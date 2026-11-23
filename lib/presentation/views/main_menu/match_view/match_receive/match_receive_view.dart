@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/enter_token_component.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file_component.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/import_file_component.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_receive/qr_scan_component.dart';
 
 class MatchReceiveView extends StatefulWidget {
@@ -17,16 +18,16 @@ class MatchReceiveView extends StatefulWidget {
 
 class _MatchReceiveViewViewState extends State<MatchReceiveView>
     with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+  late final TabController tabController;
 
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     if (widget.initialFilePath != null) {
-      _tabController.index = 2;
+      tabController.index = 2;
     }
     super.initState();
   }
@@ -46,30 +47,30 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               child: Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  color: CustomTheme.onBoxColor,
+                  color: context.talleeColors.onBoxColor,
                   borderRadius: BorderRadius.circular(25),
                   border: Border.all(
-                    color: CustomTheme.boxBorderColor,
+                    color: context.talleeColors.boxBorderColor,
                     width: 2,
                   ),
                 ),
                 child: TabBar(
-                  controller: _tabController,
+                  controller: tabController,
                   splashFactory: NoSplash.splashFactory,
                   dividerColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
                   enableFeedback: false,
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
-                    color: CustomTheme.primaryColor,
+                    color: AppColors.primaryColor,
                   ),
                   labelColor: Colors.black,
                   overlayColor: const WidgetStatePropertyAll(
                     Colors.transparent,
                   ),
-                  unselectedLabelColor: CustomTheme.textColor,
+                  unselectedLabelColor: context.talleeColors.textColor,
                   onTap: (_) {
-                    HapticFeedback.selectionClick();
+                    Haptics.selectionClick();
                   },
                   tabs: const [
                     Tab(icon: Icon(Icons.qr_code_scanner)),
@@ -83,13 +84,11 @@ class _MatchReceiveViewViewState extends State<MatchReceiveView>
               child: SafeArea(
                 maintainBottomViewPadding: true,
                 child: TabBarView(
-                  controller: _tabController,
+                  controller: tabController,
                   children: [
-                    const QrScanComponent(),
+                    QrScanComponent(tabController: tabController),
                     const EnterTokenComponent(),
-                    ImportFileComponent(
-                      initialFilePath: widget.initialFilePath,
-                    ),
+                    ImportFileCard(initialFilePath: widget.initialFilePath),
                   ],
                 ),
               ),

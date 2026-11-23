@@ -1,0 +1,57 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/tiles/file_tile.dart';
+
+class DisplaySelectedFileWidget extends StatelessWidget {
+  const DisplaySelectedFileWidget({
+    required this.match,
+    this.fileName,
+    this.showDetails = true,
+    super.key,
+  });
+
+  final Match match;
+  final String? fileName;
+  final bool showDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
+    return Column(
+      key: const ValueKey('display_selected_file'),
+      children: [
+        MatchFileTile(
+          match: match,
+          fileName: fileName,
+          showDetails: showDetails,
+          margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          loc.successfully_processed_file,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            overflow: TextOverflow.visible,
+          ),
+          softWrap: true,
+        ),
+        const SizedBox(height: 5),
+        Text(
+          loc.tap_import_to_continue,
+          style: TextStyle(
+            color: context.talleeColors.textColor.withAlpha(180),
+            fontSize: 14,
+            overflow: TextOverflow.visible,
+          ),
+          textAlign: TextAlign.center,
+          softWrap: true,
+        ),
+      ],
+    );
+  }
+}

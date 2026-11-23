@@ -3,9 +3,7 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 void main() {
   late AppDatabase database;
@@ -51,7 +49,6 @@ void main() {
       testStatistic = Statistic(
         type: StatisticType.totalMatches,
         scopes: [StatisticScope.selectedGroups],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
     });
@@ -162,24 +159,21 @@ void main() {
         expect(groups!.length, 2);
       });
 
-      test(
-        'addStatisticGroups() with duplicate groups does not create duplicate entries',
-        () async {
-          await database.statisticGroupDao.addStatisticGroups(
-            statisticId: testStatistic.id,
-            groups: [testGroup1],
-          );
-          await database.statisticGroupDao.addStatisticGroups(
-            statisticId: testStatistic.id,
-            groups: [testGroup1],
-          );
+      test('addStatisticGroups() with duplicate groups does not create duplicate entries', () async {
+        await database.statisticGroupDao.addStatisticGroups(
+          statisticId: testStatistic.id,
+          groups: [testGroup1],
+        );
+        await database.statisticGroupDao.addStatisticGroups(
+          statisticId: testStatistic.id,
+          groups: [testGroup1],
+        );
 
-          final groups = await database.statisticGroupDao.getGroupsForStatistic(
-            testStatistic.id,
-          );
-          expect(groups!.length, 1);
-        },
-      );
+        final groups = await database.statisticGroupDao.getGroupsForStatistic(
+          testStatistic.id,
+        );
+        expect(groups!.length, 1);
+      });
     });
   });
 }

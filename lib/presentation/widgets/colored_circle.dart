@@ -1,0 +1,71 @@
+import 'dart:math' as math;
+
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:tallee/core/enums.dart';
+
+class ColoredCircle extends StatelessWidget {
+  const ColoredCircle({
+    super.key,
+    this.color,
+    this.isRandomColor = false,
+    this.size = 16.0,
+    this.border,
+    this.child,
+  }) : assert(
+         color != null || isRandomColor,
+         'ColoredCircle needs a color or should be random.',
+       );
+
+  final AppColor? color;
+  final bool isRandomColor;
+  final double size;
+  final Border? border;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final segmentColors = [
+      AppColor.red,
+      AppColor.purple,
+      AppColor.blue,
+      AppColor.green,
+      AppColor.yellow,
+      AppColor.orange,
+    ].map((clr) => clr.colorValue(context)).toList();
+
+    // Repeat first color at the end so the seam does not swallow red.
+    final colors = [...segmentColors, segmentColors.first];
+    final stops = List<double>.generate(
+      colors.length,
+      (i) => i / (colors.length - 1),
+    );
+
+    if (isRandomColor) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: SweepGradient(
+            startAngle: -math.pi / 2,
+            endAngle: 3 * math.pi / 2,
+            colors: colors,
+            stops: stops,
+          ),
+        ),
+      );
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color!.colorValue(context),
+        shape: BoxShape.circle,
+        border: border,
+      ),
+      child: child,
+    );
+  }
+}

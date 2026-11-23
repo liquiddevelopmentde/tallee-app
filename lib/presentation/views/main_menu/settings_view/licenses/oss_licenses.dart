@@ -14,6 +14,8 @@ const thisPackage = _tallee;
 const allDependencies = <Package>[
   __fe_analyzer_shared,
   _analyzer,
+  _android_file_picker,
+  _ansicolor,
   _arb_utils,
   _archive,
   _args,
@@ -42,6 +44,7 @@ const allDependencies = <Package>[
   _csslib,
   _csv,
   _cupertino_icons,
+  _cupertino_ui,
   _dart_console,
   _dart_pubspec_licenses,
   _dart_style,
@@ -50,8 +53,8 @@ const allDependencies = <Package>[
   _dcli_common,
   _dcli_core,
   _dcli_terminal,
-  _dio,
-  _dio_web_adapter,
+  _device_info_plus,
+  _device_info_plus_platform_interface,
   _dotted_border,
   _drift,
   _drift_dev,
@@ -60,9 +63,13 @@ const allDependencies = <Package>[
   _equatable,
   _fake_async,
   _ffi,
+  _ffi_leak_tracker,
   _file,
   _file_picker,
-  _file_saver,
+  _file_picker_darwin,
+  _file_picker_linux,
+  _file_picker_platform_interface,
+  _file_picker_web,
   _fixnum,
   _flutter,
   _flutter_dotenv,
@@ -70,8 +77,7 @@ const allDependencies = <Package>[
   _flutter_localizations,
   _flutter_markdown_plus,
   _flutter_numeric_text,
-  _flutter_plugin_android_lifecycle,
-  _flutter_popup,
+  _flutter_rating_bar,
   _flutter_test,
   _flutter_web_plugins,
   _fluttericon,
@@ -88,6 +94,7 @@ const allDependencies = <Package>[
   _http_multi_server,
   _http_parser,
   _ini,
+  _injector,
   _intl,
   _intl_utils,
   _io,
@@ -101,17 +108,20 @@ const allDependencies = <Package>[
   _leak_tracker_flutter_testing,
   _leak_tracker_testing,
   _lints,
+  _listen,
   _logging,
   _lottie,
   _markdown,
   _matcher,
   _material_color_utilities,
+  _material_ui,
   _meta,
   _mime,
   _mobile_scanner,
   _native_synchronization_temp,
   _native_toolchain_c,
   _nested,
+  _new_version_plus,
   _node_preamble,
   _objective_c,
   _once,
@@ -127,6 +137,12 @@ const allDependencies = <Package>[
   _path_provider_linux,
   _path_provider_platform_interface,
   _path_provider_windows,
+  _permission_handler,
+  _permission_handler_android,
+  _permission_handler_apple,
+  _permission_handler_html,
+  _permission_handler_platform_interface,
+  _permission_handler_windows,
   _petitparser,
   _pinput,
   _platform,
@@ -135,6 +151,7 @@ const allDependencies = <Package>[
   _posix,
   _pretty_qr_code,
   _process,
+  _properties,
   _provider,
   _pub_semver,
   _pubspec_lock,
@@ -142,6 +159,7 @@ const allDependencies = <Package>[
   _pubspec_parse,
   _qr,
   _quiver,
+  _rate_my_app,
   _recase,
   _record_use,
   _remove_unused_localizations,
@@ -149,6 +167,9 @@ const allDependencies = <Package>[
   _rfc_6901,
   _safe_url_check,
   _scope,
+  _sentry,
+  _sentry_dart_plugin,
+  _sentry_flutter,
   _settings_yaml,
   _share_plus,
   _share_plus_platform_interface,
@@ -163,6 +184,7 @@ const allDependencies = <Package>[
   _shelf_packages_handler,
   _shelf_static,
   _shelf_web_socket,
+  _showcaseview,
   _simple_sparse_list,
   _skeletonizer,
   _sky_engine,
@@ -181,8 +203,6 @@ const allDependencies = <Package>[
   _string_scanner,
   _strings,
   _sum_types,
-  _syncfusion_flutter_core,
-  _syncfusion_flutter_datepicker,
   _system_info2,
   _term_glyph,
   _test,
@@ -209,9 +229,12 @@ const allDependencies = <Package>[
   _web_socket_channel,
   _webkit_inspection_protocol,
   _win32,
+  _win32_registry,
+  _windows_file_picker,
   _xdg_directories,
   _xml,
-  _yaml
+  _yaml,
+  _yaml_edit
 ];
 
 /// Direct `dependencies`.
@@ -219,18 +242,17 @@ const dependencies = <Package>[
   _clock,
   _collection,
   _cupertino_icons,
+  _cupertino_ui,
   _dotted_border,
   _drift,
   _drift_flutter,
   _dropdown_button2,
   _file_picker,
-  _file_saver,
   _flutter,
   _flutter_dotenv,
   _flutter_localizations,
   _flutter_markdown_plus,
   _flutter_numeric_text,
-  _flutter_popup,
   _fluttericon,
   _font_awesome_flutter,
   _fuzzywuzzy,
@@ -238,19 +260,23 @@ const dependencies = <Package>[
   _intl,
   _json_schema,
   _lottie,
+  _material_ui,
   _mobile_scanner,
+  _new_version_plus,
   _once,
   _open_with_app,
   _package_info_plus,
   _path_provider,
+  _permission_handler,
   _pinput,
   _pretty_qr_code,
   _provider,
-  _remove_unused_localizations,
+  _rate_my_app,
+  _sentry_flutter,
   _share_plus,
   _shared_preferences,
+  _showcaseview,
   _skeletonizer,
-  _syncfusion_flutter_datepicker,
   _url_launcher,
   _uuid
 ];
@@ -263,6 +289,8 @@ const devDependencies = <Package>[
   _drift_dev,
   _flutter_lints,
   _flutter_test,
+  _remove_unused_localizations,
+  _sentry_dart_plugin,
   _sort_pubspec_dependencies
 ];
 
@@ -317,13 +345,13 @@ class PackageRef {
   Package resolve() => allDependencies.firstWhere((d) => d.name == name);
 }
 
-/// _fe_analyzer_shared 103.0.0
+/// _fe_analyzer_shared 111.0.0
 const __fe_analyzer_shared = Package(
     name: '_fe_analyzer_shared',
     description: 'Logic that is shared between the front_end and analyzer packages.',
     repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/_fe_analyzer_shared',
     authors: [],
-    version: '103.0.0',
+    version: '111.0.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -358,18 +386,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// analyzer 13.3.0
+/// analyzer 14.7.0
 const _analyzer = Package(
     name: 'analyzer',
     description: 'This package provides a library that performs static analysis of Dart code.',
     repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/analyzer',
     authors: [],
-    version: '13.3.0',
+    version: '14.7.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('_fe_analyzer_shared'), PackageRef('collection'), PackageRef('convert'), PackageRef('crypto'), PackageRef('glob'), PackageRef('meta'), PackageRef('package_config'), PackageRef('path'), PackageRef('pub_semver'), PackageRef('source_span'), PackageRef('watcher'), PackageRef('yaml')],
-    devDependencies: [PackageRef('args'), PackageRef('async'), PackageRef('lints'), PackageRef('matcher'), PackageRef('test'), PackageRef('vm_service')],
+    devDependencies: [PackageRef('args'), PackageRef('async'), PackageRef('dart_style'), PackageRef('lints'), PackageRef('matcher'), PackageRef('test'), PackageRef('vm_service')],
     license: '''Copyright 2013, the Dart project authors.
 
 Redistribution and use in source and binary forms, with or without
@@ -399,6 +427,257 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// android_file_picker 2.1.6
+const _android_file_picker = Package(
+    name: 'android_file_picker',
+    description: 'Android implementation of the file_picker plugin, supporting file picking, saving, and Storage Access Framework (SAF) URI grants.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_android',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_android',
+    authors: [],
+    version: '2.1.6',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// ansicolor 2.0.3
+const _ansicolor = Package(
+    name: 'ansicolor',
+    description: 'Looking to add some color to your terminal logs? `ansicolor` is an xterm-256 color support library that lets you change the foreground and background color of your text.',
+    repository: 'https://github.com/google/ansicolor-dart',
+    authors: [],
+    version: '2.0.3',
+    spdxIdentifiers: ['Apache-2.0'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
+    license: '''Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.''',
+  );
+
 /// arb_utils 0.11.1
 const _arb_utils = Package(
     name: 'arb_utils',
@@ -425,13 +704,13 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// archive 4.2.0
+/// archive 4.5.2
 const _archive = Package(
     name: 'archive',
-    description: 'Provides encoders and decoders for various archive and compression formats such as zip, tar, bzip2, gzip, and zlib.',
+    description: 'Provides encoders and decoders for various archive and compression formats such as zip, tar, bzip2, gzip, zlib, xz and zstd.',
     repository: 'https://github.com/brendan-duncan/archive',
     authors: [],
-    version: '4.2.0',
+    version: '4.5.2',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -584,13 +863,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// build 4.0.10
+/// build 5.0.0
 const _build = Package(
     name: 'build',
     description: 'A package for authoring build_runner compatible code generators.',
     repository: 'https://github.com/dart-lang/build/tree/master/build',
     authors: [],
-    version: '4.0.10',
+    version: '5.0.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -625,13 +904,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// build_config 1.3.2
+/// build_config 1.4.0
 const _build_config = Package(
     name: 'build_config',
     description: 'Format definition and support for parsing `build.yaml` configuration.',
     repository: 'https://github.com/dart-lang/build/tree/master/build_config',
     authors: [],
-    version: '1.3.2',
+    version: '1.4.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -666,13 +945,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// build_daemon 4.1.5
+/// build_daemon 4.1.7
 const _build_daemon = Package(
     name: 'build_daemon',
     description: 'A daemon for running Dart builds.',
     repository: 'https://github.com/dart-lang/build/tree/master/build_daemon',
     authors: [],
-    version: '4.1.5',
+    version: '4.1.7',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -707,13 +986,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// build_runner 2.16.0
+/// build_runner 2.17.1
 const _build_runner = Package(
     name: 'build_runner',
     description: 'A build system for Dart code generation and modular compilation.',
     repository: 'https://github.com/dart-lang/build/tree/master/build_runner',
     authors: [],
-    version: '2.16.0',
+    version: '2.17.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -748,14 +1027,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// built_collection 5.1.1
+/// built_collection 5.1.2
 const _built_collection = Package(
     name: 'built_collection',
     description: '''Immutable collections based on the SDK collections. Each SDK collection class is split into a new immutable collection class and a corresponding mutable builder class.
 ''',
-    homepage: 'https://github.com/google/built_collection.dart',
+    repository: 'https://github.com/dart-lang/build/tree/master/built_types/built_collection',
     authors: [],
-    version: '5.1.1',
+    version: '5.1.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -791,14 +1070,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// built_value 8.12.7
+/// built_value 8.13.0
 const _built_value = Package(
     name: 'built_value',
     description: '''Value types with builders, Dart classes as enums, and serialization. This library is the runtime dependency.
 ''',
     repository: 'https://github.com/google/built_value.dart/tree/master/built_value',
     authors: [],
-    version: '8.12.7',
+    version: '8.13.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -1173,14 +1452,14 @@ often given as a stream of byte chunks with type `Stream<List<int>>`.
    limitations under the License.''',
   );
 
-/// circular_buffer 0.12.0
+/// circular_buffer 0.13.0
 const _circular_buffer = Package(
     name: 'circular_buffer',
     description: '''A Dart Circular Buffer container based on List with a fixed capacity.
 ''',
     homepage: 'https://www.github.com/kranfix/dart-circularbuffer',
     authors: [],
-    version: '0.12.0',
+    version: '0.13.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -1506,13 +1785,13 @@ const _clock = Package(
    limitations under the License.''',
   );
 
-/// code_assets 2.0.0
+/// code_assets 2.1.0
 const _code_assets = Package(
     name: 'code_assets',
     description: 'This library contains the hook protocol specification for bundling native code with Dart packages.',
     repository: 'https://github.com/dart-lang/native/tree/main/pkgs/code_assets',
     authors: [],
-    version: '2.0.0',
+    version: '2.1.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -1709,17 +1988,17 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// crypto 3.0.7
+/// crypto 3.0.8
 const _crypto = Package(
     name: 'crypto',
     description: 'Implementations of SHA, MD5, and HMAC cryptographic functions.',
     repository: 'https://github.com/dart-lang/core/tree/main/pkgs/crypto',
     authors: [],
-    version: '3.0.7',
+    version: '3.0.8',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('typed_data')],
+    dependencies: [],
     devDependencies: [PackageRef('convert'), PackageRef('test')],
     license: '''Copyright 2015, the Dart project authors.
 
@@ -1791,20 +2070,21 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// csv 6.0.0
+/// csv 8.0.0
 const _csv = Package(
     name: 'csv',
-    description: '''A codec to transform between a string and a list of values.
+    description: '''A high-quality CSV library. Encode and decode CSV strings, with
+stream support (one row per event), auto-detection, and Excel compatibility.
 
 The string must be comma (configurable) separated values.''',
     homepage: 'https://github.com/close2/csv',
     authors: [],
-    version: '6.0.0',
+    version: '8.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [],
-    devDependencies: [PackageRef('test')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''The MIT License (MIT)
 
 Copyright (c) 2014 Christian Loitsch
@@ -1828,18 +2108,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// cupertino_icons 1.0.9
+/// cupertino_icons 2.0.0
 const _cupertino_icons = Package(
     name: 'cupertino_icons',
     description: 'Default icons asset for Cupertino widgets based on Apple styled icons',
     repository: 'https://github.com/flutter/packages/tree/main/third_party/packages/cupertino_icons',
     authors: [],
-    version: '1.0.9',
+    version: '2.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [],
-    devDependencies: [PackageRef('collection'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
+    devDependencies: [PackageRef('collection'), PackageRef('cupertino_ui'), PackageRef('flutter'), PackageRef('flutter_test'), PackageRef('path')],
     license: '''The MIT License (MIT)
 
 Copyright (c) 2016 Vladimir Kharlampidi
@@ -1862,13 +2142,52 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// dart_console 4.1.4
+/// cupertino_ui 1.1.6
+const _cupertino_ui = Package(
+    name: 'cupertino_ui',
+    description: 'The official Flutter Cupertino Design Library, implementing the iOS design system.',
+    repository: 'https://github.com/flutter/packages/tree/main/packages/cupertino_ui',
+    authors: [],
+    version: '1.1.6',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('collection'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('intl')],
+    devDependencies: [PackageRef('clock'), PackageRef('flutter_test'), PackageRef('leak_tracker_flutter_testing'), PackageRef('material_ui'), PackageRef('path')],
+    license: '''Copyright 2013 The Flutter Authors
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of Google Inc. nor the names of its
+      contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// dart_console 5.1.2
 const _dart_console = Package(
     name: 'dart_console',
     description: 'A helper library for command-line applications that need more control over input/output than the standard library provides.',
     homepage: 'https://github.com/onepub-dev/dart_console',
     authors: [],
-    version: '4.1.4',
+    version: '5.1.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -1938,13 +2257,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dart_style 3.1.13
+/// dart_style 3.1.14
 const _dart_style = Package(
     name: 'dart_style',
     description: 'Opinionated, automatic Dart source code formatter. Provides an API and a CLI tool.',
     repository: 'https://github.com/dart-lang/dart_style',
     authors: [],
-    version: '3.1.13',
+    version: '3.1.14',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -1979,13 +2298,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// dbus 0.7.15
+/// dbus 0.8.0
 const _dbus = Package(
     name: 'dbus',
     description: 'A native Dart implementation of the D-Bus message bus client. This package allows Dart applications to directly access services on the Linux desktop.',
     homepage: 'https://github.com/canonical/dbus.dart',
     authors: [],
-    version: '0.7.15',
+    version: '0.8.0',
     spdxIdentifiers: ['MPL-2.0'],
     isMarkdown: false,
     isSdk: false,
@@ -2366,14 +2685,14 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   defined by the Mozilla Public License, v. 2.0.''',
   );
 
-/// dcli 8.4.2
+/// dcli 10.0.0
 const _dcli = Package(
     name: 'dcli',
     description: 'Dart console SDK - write console (cli) apps/scripts using dart.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2397,13 +2716,13 @@ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// dcli_common 8.4.2
+/// dcli_common 10.4.0
 const _dcli_common = Package(
     name: 'dcli_common',
     description: 'Common code used by multiple dcli packages.',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.4.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2432,14 +2751,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dcli_core 8.4.2
+/// dcli_core 10.4.0
 const _dcli_core = Package(
     name: 'dcli_core',
     description: 'A collection of functions that allow you to interact with the file system and OS environment from any platform that supports dart:io.  Copy, move, delete files and directory trees, search for files, create temp files and directories.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.4.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2468,14 +2787,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// dcli_terminal 8.4.2
+/// dcli_terminal 10.4.0
 const _dcli_terminal = Package(
     name: 'dcli_terminal',
     description: 'Provides Terminal/Ansi functions used by DCli the Dart Console SDK but is also intended to be used directly.',
     homepage: 'https://dcli.onepub.dev',
     repository: 'https://github.com/onepub-dev/dcli',
     authors: [],
-    version: '8.4.2',
+    version: '10.4.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2499,82 +2818,88 @@ ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// dio 5.11.0
-const _dio = Package(
-    name: 'dio',
-    description: '''A powerful HTTP networking package,
-supports Interceptors,
-Aborting and canceling a request,
-Custom adapters, Transformers, etc.
-''',
-    homepage: 'https://github.com/cfug/dio',
-    repository: 'https://github.com/cfug/dio/blob/main/dio',
+/// device_info_plus 13.3.0
+const _device_info_plus = Package(
+    name: 'device_info_plus',
+    description: 'Flutter plugin providing detailed information about the device (make, model, etc.), and Android or iOS version the app is running on.',
+    homepage: 'https://github.com/fluttercommunity/plus_plugins',
+    repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus/device_info_plus',
     authors: [],
-    version: '5.11.0',
-    spdxIdentifiers: ['MIT'],
+    version: '13.3.0',
+    spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('async'), PackageRef('collection'), PackageRef('http_parser'), PackageRef('meta'), PackageRef('mime'), PackageRef('path'), PackageRef('dio_web_adapter')],
-    devDependencies: [PackageRef('lints'), PackageRef('test'), PackageRef('build_runner'), PackageRef('coverage'), PackageRef('crypto')],
-    license: '''MIT License
+    dependencies: [PackageRef('device_info_plus_platform_interface'), PackageRef('ffi'), PackageRef('file'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('meta'), PackageRef('web'), PackageRef('win32'), PackageRef('win32_registry')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
-Copyright (c) 2018 Wen Du (wendux)
-Copyright (c) 2022 The CFUG Team
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.''',
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// dio_web_adapter 2.2.1
-const _dio_web_adapter = Package(
-    name: 'dio_web_adapter',
-    description: 'An adapter that supports Dio on Web.',
-    homepage: 'https://github.com/cfug/dio',
-    repository: 'https://github.com/cfug/dio/blob/main/plugins/web_adapter',
+/// device_info_plus_platform_interface 8.1.0
+const _device_info_plus_platform_interface = Package(
+    name: 'device_info_plus_platform_interface',
+    description: 'A common platform interface for the device_info_plus plugin.',
+    homepage: 'https://github.com/fluttercommunity/plus_plugins',
+    repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '2.2.1',
-    spdxIdentifiers: ['MIT'],
+    version: '8.1.0',
+    spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('dio'), PackageRef('http_parser'), PackageRef('meta'), PackageRef('web')],
-    devDependencies: [PackageRef('lints'), PackageRef('test')],
-    license: '''MIT License
+    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('plugin_platform_interface')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
-Copyright (c) 2018 Wen Du (wendux)
-Copyright (c) 2022 The CFUG Team
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.''',
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
 /// dotted_border 3.1.0
@@ -2639,14 +2964,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift 2.34.3
+/// drift 2.35.4
 const _drift = Package(
     name: 'drift',
     description: 'Drift is a reactive library to store relational data in Dart and Flutter applications.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.34.3',
+    version: '2.35.4',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -2675,18 +3000,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// drift_dev 2.34.5
+/// drift_dev 2.35.3
 const _drift_dev = Package(
     name: 'drift_dev',
     description: 'Dev-dependency for users of drift. Contains the generator and development tools.',
     homepage: 'https://drift.simonbinder.eu/',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '2.34.5',
+    version: '2.35.3',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('charcode'), PackageRef('collection'), PackageRef('recase'), PackageRef('meta'), PackageRef('path'), PackageRef('json_annotation'), PackageRef('stream_transform'), PackageRef('args'), PackageRef('logging'), PackageRef('cli_util'), PackageRef('yaml'), PackageRef('io'), PackageRef('drift'), PackageRef('sqlite3'), PackageRef('sqlparser'), PackageRef('analyzer'), PackageRef('source_span'), PackageRef('package_config'), PackageRef('pub_semver'), PackageRef('build'), PackageRef('build_config'), PackageRef('dart_style'), PackageRef('source_gen'), PackageRef('string_scanner')],
+    dependencies: [PackageRef('charcode'), PackageRef('collection'), PackageRef('recase'), PackageRef('meta'), PackageRef('path'), PackageRef('json_annotation'), PackageRef('stream_transform'), PackageRef('args'), PackageRef('logging'), PackageRef('cli_util'), PackageRef('yaml'), PackageRef('yaml_edit'), PackageRef('io'), PackageRef('drift'), PackageRef('sqlite3'), PackageRef('sqlparser'), PackageRef('analyzer'), PackageRef('source_span'), PackageRef('package_config'), PackageRef('pub_semver'), PackageRef('build'), PackageRef('build_config'), PackageRef('dart_style'), PackageRef('source_gen'), PackageRef('string_scanner')],
     devDependencies: [PackageRef('lints'), PackageRef('checked_yaml'), PackageRef('test'), PackageRef('build_runner'), PackageRef('crypto'), PackageRef('glob')],
     license: '''MIT License
 
@@ -3074,6 +3399,48 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// ffi_leak_tracker 0.1.2
+const _ffi_leak_tracker = Package(
+    name: 'ffi_leak_tracker',
+    description: 'Allocation tracking and leak detection for Dart FFI code.',
+    repository: 'https://github.com/halildurmus/win32/tree/main/packages/ffi_leak_tracker',
+    authors: [],
+    version: '0.1.2',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('ffi')],
+    devDependencies: [PackageRef('test')],
+    license: '''BSD 3-Clause License
+
+Copyright (c) 2026, Halil Durmus
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// file 7.0.1
 const _file = Package(
     name: 'file',
@@ -3114,19 +3481,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// file_picker 11.0.3
+/// file_picker 13.3.3
 const _file_picker = Package(
     name: 'file_picker',
     description: 'A package that allows you to use a native file explorer to pick single or multiple absolute file paths, with extension filtering support.',
-    homepage: 'https://github.com/miguelpruivo/plugins_flutter_file_picker',
-    repository: 'https://github.com/miguelpruivo/flutter_file_picker',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker',
     authors: [],
-    version: '11.0.3',
+    version: '13.3.3',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('flutter_plugin_android_lifecycle'), PackageRef('plugin_platform_interface'), PackageRef('ffi'), PackageRef('path'), PackageRef('win32'), PackageRef('cross_file'), PackageRef('web'), PackageRef('dbus')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('android_file_picker'), PackageRef('file_picker_darwin'), PackageRef('file_picker_linux'), PackageRef('windows_file_picker'), PackageRef('file_picker_web'), PackageRef('cross_file')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('plugin_platform_interface')],
     license: '''MIT License
 
 Copyright (c) 2018 Miguel Ruivo
@@ -3150,48 +3517,148 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// file_saver 0.4.0
-const _file_saver = Package(
-    name: 'file_saver',
-    description: 'Save files from bytes, paths, streams, and URLs across Android, iOS, Web, Windows, macOS, and Linux.',
-    homepage: 'https://hassanansari.dev',
-    repository: 'https://github.com/incrediblezayed/file_saver',
+/// file_picker_darwin 2.4.2
+const _file_picker_darwin = Package(
+    name: 'file_picker_darwin',
+    description: 'Darwin (iOS and macOS) implementation of the file_picker plugin, supporting native file picking, saving, and directory selection.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_darwin',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_darwin',
     authors: [],
-    version: '0.4.0',
-    spdxIdentifiers: ['BSD-3-Clause'],
+    version: '2.4.2',
+    spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('collection'), PackageRef('dio'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('path_provider'), PackageRef('web')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
-    license: '''BSD 3-Clause License
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
 
-Copyright (c) 2021, Hassan Ansari
-All rights reserved.
+Copyright (c) 2018 Miguel Ruivo
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
 
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
+/// file_picker_linux 2.0.4
+const _file_picker_linux = Package(
+    name: 'file_picker_linux',
+    description: 'Linux implementation of the file_picker plugin using GTK3 and XDG Desktop Portals for native file and directory picking.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_linux',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_linux',
+    authors: [],
+    version: '2.0.4',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('dbus'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_platform_interface 4.2.0
+const _file_picker_platform_interface = Package(
+    name: 'file_picker_platform_interface',
+    description: 'A common platform interface for the file_picker plugin, defining the shared API surface and data contracts across platforms.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_platform_interface',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_platform_interface',
+    authors: [],
+    version: '4.2.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('plugin_platform_interface'), PackageRef('cross_file'), PackageRef('path')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// file_picker_web 4.2.1
+const _file_picker_web = Package(
+    name: 'file_picker_web',
+    description: 'Web platform implementation of the file_picker plugin, providing browser file selection, file streaming, and file loading.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_web',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_web',
+    authors: [],
+    version: '4.2.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('meta'), PackageRef('path'), PackageRef('web')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// fixnum 1.1.1
@@ -3235,17 +3702,17 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// flutter 3.47.2
+/// flutter 3.50.1
 const _flutter = Package(
     name: 'flutter',
     description: 'A framework for writing Flutter applications',
     homepage: 'https://flutter.dev',
     authors: [],
-    version: '3.47.2',
+    version: '3.50.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: true,
-    dependencies: [PackageRef('characters'), PackageRef('collection'), PackageRef('material_color_utilities'), PackageRef('meta'), PackageRef('vector_math'), PackageRef('sky_engine')],
+    dependencies: [PackageRef('characters'), PackageRef('collection'), PackageRef('listen'), PackageRef('material_color_utilities'), PackageRef('meta'), PackageRef('vector_math'), PackageRef('sky_engine')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_localizations'), PackageRef('fake_async'), PackageRef('leak_tracker_flutter_testing'), PackageRef('leak_tracker_testing'), PackageRef('leak_tracker'), PackageRef('web'), PackageRef('clock'), PackageRef('file'), PackageRef('path'), PackageRef('platform')],
     license: '''Copyright 2014 The Flutter Authors. All rights reserved.
 
@@ -3435,60 +3902,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// flutter_plugin_android_lifecycle 2.0.35
-const _flutter_plugin_android_lifecycle = Package(
-    name: 'flutter_plugin_android_lifecycle',
-    description: 'Flutter plugin for accessing an Android Lifecycle within other plugins.',
-    repository: 'https://github.com/flutter/packages/tree/main/packages/flutter_plugin_android_lifecycle',
+/// flutter_rating_bar 4.0.1
+const _flutter_rating_bar = Package(
+    name: 'flutter_rating_bar',
+    description: 'A simple yet fully customizable ratingbar for flutter which also include a rating bar indicator, supporting any fraction of rating.',
+    homepage: 'https://sarbagyastha.com.np',
+    repository: 'https://github.com/sarbagyastha/flutter_rating_bar',
     authors: [],
-    version: '2.0.35',
-    spdxIdentifiers: ['BSD-3-Clause'],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_test')],
-    license: '''Copyright 2013 The Flutter Authors
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of Google Inc. nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
-  );
-
-/// flutter_popup 3.3.9
-const _flutter_popup = Package(
-    name: 'flutter_popup',
-    description: 'The flutter_popup package is a versatile tool for creating customizable popups in Flutter apps. Its highlight feature effectively guides user attention to specific areas',
-    homepage: 'https://github.com/herowws/flutter_popup',
-    authors: [],
-    version: '3.3.9',
+    version: '4.0.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
-    license: '''MIT License
+    devDependencies: [PackageRef('flutter_test')],
+    license: '''The MIT License (MIT)
 
-Copyright (c) 2023 mopriestt
+Copyright (c) 2021 Sarbagya Dhaubanjar
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -3583,7 +4012,7 @@ const _font_awesome_flutter = Package(
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('recase'), PackageRef('args'), PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('pub_semver')],
+    devDependencies: [PackageRef('recase'), PackageRef('args'), PackageRef('flutter_test'), PackageRef('ansicolor'), PackageRef('flutter_lints'), PackageRef('pub_semver')],
     license: '''MIT License
 
 Copyright (c) 2017 Brian Egan
@@ -3610,24 +4039,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// frontend_server_client 4.0.0
+/// frontend_server_client 4.2.0
 const _frontend_server_client = Package(
     name: 'frontend_server_client',
     description: 'Client code to start and interact with the frontend_server compiler from the Dart SDK.',
-    repository: 'https://github.com/dart-lang/webdev/tree/master/frontend_server_client',
+    repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/frontend_server_client',
     authors: [],
-    version: '4.0.0',
+    version: '4.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('async'), PackageRef('path')],
-    devDependencies: [PackageRef('package_config'), PackageRef('shelf'), PackageRef('shelf_packages_handler'), PackageRef('shelf_static'), PackageRef('test'), PackageRef('vm_service')],
-    license: '''Copyright 2020, the Dart project authors.
+    dependencies: [PackageRef('async'), PackageRef('package_config'), PackageRef('path')],
+    devDependencies: [PackageRef('shelf'), PackageRef('shelf_packages_handler'), PackageRef('shelf_static'), PackageRef('test'), PackageRef('vm_service')],
+    license: '''Copyright 2012, the Dart project authors.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
-
     * Redistributions of source code must retain the above copyright
       notice, this list of conditions and the following disclaimer.
     * Redistributions in binary form must reproduce the above
@@ -4282,13 +4710,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// http_multi_server 3.2.2
+/// http_multi_server 3.2.3
 const _http_multi_server = Package(
     name: 'http_multi_server',
     description: 'A dart:io HttpServer wrapper that handles requests from multiple servers.',
     repository: 'https://github.com/dart-lang/http/tree/master/pkgs/http_multi_server',
     authors: [],
-    version: '3.2.2',
+    version: '3.2.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -4543,6 +4971,221 @@ permanent authorization for you to choose that version for the
 Library.''',
   );
 
+/// injector 3.0.0
+const _injector = Package(
+    name: 'injector',
+    description: 'injector is a simple to use and lightweight dependency injection library for dart',
+    homepage: 'https://github.com/tappeddev/injector',
+    authors: [],
+    version: '3.0.0',
+    spdxIdentifiers: ['Apache-2.0'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [],
+    devDependencies: [PackageRef('test')],
+    license: '''Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.''',
+  );
+
 /// intl 0.20.3
 const _intl = Package(
     name: 'intl',
@@ -4584,13 +5227,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// intl_utils 2.8.16
+/// intl_utils 2.8.17
 const _intl_utils = Package(
     name: 'intl_utils',
     description: 'intl_utils is a dart library that generates Dart localization code from ARB file. Generated code relies on Intl library.',
     homepage: 'https://github.com/localizely/intl_utils',
     authors: [],
-    version: '2.8.16',
+    version: '2.8.17',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -4664,13 +5307,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// jni 1.0.3
+/// jni 1.1.1
 const _jni = Package(
     name: 'jni',
     description: 'A library to access JNI from Dart and Flutter that acts as a support library for package:jnigen.',
     repository: 'https://github.com/dart-lang/native/tree/main/pkgs/jni',
     authors: [],
-    version: '1.0.3',
+    version: '1.1.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -4705,13 +5348,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// jni_flutter 1.0.3
+/// jni_flutter 1.0.4+1
 const _jni_flutter = Package(
     name: 'jni_flutter',
     description: 'A library to access Flutter Android specific APIs from Dart.',
     repository: 'https://github.com/dart-lang/native/tree/main/pkgs/jni_flutter',
     authors: [],
-    version: '1.0.3',
+    version: '1.0.4+1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -5079,6 +5722,45 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// listen 1.0.1
+const _listen = Package(
+    name: 'listen',
+    description: 'A package to notify state changes to interested listeners in pure Dart.',
+    repository: 'https://github.com/flutter/core-packages/tree/main/packages/listen',
+    authors: [],
+    version: '1.0.1',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('meta')],
+    devDependencies: [PackageRef('test')],
+    license: '''Copyright 2013 The Flutter Authors
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of Google Inc. nor the names of its
+      contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// logging 1.3.0
 const _logging = Package(
     name: 'logging',
@@ -5120,18 +5802,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// lottie 3.5.1
+/// lottie 3.8.2
 const _lottie = Package(
     name: 'lottie',
     description: 'Render After Effects animations natively on Flutter. This package is a pure Dart implementation of a Lottie player.',
     repository: 'https://github.com/xvrh/lottie-flutter',
     authors: [],
-    version: '3.5.1',
+    version: '3.8.2',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('archive'), PackageRef('flutter'), PackageRef('http'), PackageRef('path'), PackageRef('vector_math')],
-    devDependencies: [PackageRef('analyzer'), PackageRef('dart_style'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('pub_semver'), PackageRef('yaml')],
+    devDependencies: [PackageRef('analyzer'), PackageRef('dart_style'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('material_ui'), PackageRef('pub_semver'), PackageRef('yaml')],
     license: '''MIT License
 
 Copyright (c) [year] [fullname]
@@ -5452,6 +6134,45 @@ const _material_color_utilities = Package(
    limitations under the License.''',
   );
 
+/// material_ui 1.11.0
+const _material_ui = Package(
+    name: 'material_ui',
+    description: "The official Flutter Material UI Library, implementing Google's Material Design design system.",
+    repository: 'https://github.com/flutter/packages/tree/main/packages/material_ui',
+    authors: [],
+    version: '1.11.0',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('collection'), PackageRef('cupertino_ui'), PackageRef('flutter'), PackageRef('flutter_localizations'), PackageRef('intl'), PackageRef('material_color_utilities'), PackageRef('vector_math')],
+    devDependencies: [PackageRef('args'), PackageRef('file'), PackageRef('flutter_test'), PackageRef('leak_tracker_flutter_testing'), PackageRef('meta'), PackageRef('path'), PackageRef('platform')],
+    license: '''Copyright 2013 The Flutter Authors
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of Google Inc. nor the names of its
+      contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// meta 1.19.0
 const _meta = Package(
     name: 'meta',
@@ -5534,13 +6255,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// mobile_scanner 7.4.0
+/// mobile_scanner 7.5.0
 const _mobile_scanner = Package(
     name: 'mobile_scanner',
     description: 'A universal Flutter barcode and QR code scanner using CameraX/ML Kit for Android, AVFoundation/Apple Vision for iOS & macOS, and ZXing for web.',
     repository: 'https://github.com/juliansteenbakker/mobile_scanner',
     authors: [],
-    version: '7.4.0',
+    version: '7.5.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -5577,13 +6298,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// native_synchronization_temp 0.8.0
+/// native_synchronization_temp 0.8.1
 const _native_synchronization_temp = Package(
     name: 'native_synchronization_temp',
     description: 'Low level synchronization primitives built on dart:ffi.',
-    repository: 'https://github.com/dart-lang/native_synchronization',
+    repository: 'https://github.com/onepub-dev/native_synchronization',
     authors: [],
-    version: '0.8.0',
+    version: '0.8.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -5618,17 +6339,17 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// native_toolchain_c 0.19.4
+/// native_toolchain_c 0.19.5
 const _native_toolchain_c = Package(
     name: 'native_toolchain_c',
     description: 'A library to invoke the native C compiler installed on the host machine.',
     repository: 'https://github.com/dart-lang/native/tree/main/pkgs/native_toolchain_c',
     authors: [],
-    version: '0.19.4',
+    version: '0.19.5',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('code_assets'), PackageRef('glob'), PackageRef('hooks'), PackageRef('logging'), PackageRef('meta'), PackageRef('process'), PackageRef('pub_semver')],
+    dependencies: [PackageRef('code_assets'), PackageRef('file'), PackageRef('glob'), PackageRef('hooks'), PackageRef('logging'), PackageRef('meta'), PackageRef('process'), PackageRef('pub_semver')],
     devDependencies: [PackageRef('collection'), PackageRef('test')],
     license: '''Copyright 2023, the Dart project authors.
 
@@ -5694,6 +6415,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
+/// new_version_plus 1.0.1
+const _new_version_plus = Package(
+    name: 'new_version_plus',
+    description: 'Check if your user has the most recent version of your Flutter app.',
+    homepage: 'https://github.com/CodesFirst/new_version_plus',
+    authors: [],
+    version: '1.0.1',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('package_info_plus'), PackageRef('http'), PackageRef('url_launcher'), PackageRef('device_info_plus')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''Copyright 2018, Tim Traversy
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
 /// node_preamble 2.0.2
 const _node_preamble = Package(
     name: 'node_preamble',
@@ -5756,13 +6502,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// objective_c 9.6.0
+/// objective_c 9.6.2
 const _objective_c = Package(
     name: 'objective_c',
     description: 'A library to access Objective C from Flutter that acts as a support library for package:ffigen.',
     repository: 'https://github.com/dart-lang/native/tree/main/pkgs/objective_c',
     authors: [],
-    version: '9.6.0',
+    version: '9.6.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -5797,13 +6543,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// once 1.8.0
+/// once 1.8.1
 const _once = Package(
     name: 'once',
     description: 'Want to run a piece of code once periodically (Once - Daily - Weekly - Monthly - On new build - On new version - Any period)? We cover your back.',
     repository: 'https://github.com/MostafaSolimanMO/once',
     authors: [],
-    version: '1.8.0',
+    version: '1.8.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -5914,19 +6660,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// package_info_plus 9.0.1
+/// package_info_plus 10.2.2
 const _package_info_plus = Package(
     name: 'package_info_plus',
     description: 'Flutter plugin for querying information about the application package, such as CFBundleVersion on iOS or versionCode on Android.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus/package_info_plus',
     authors: [],
-    version: '9.0.1',
+    version: '10.2.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('ffi'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('http'), PackageRef('meta'), PackageRef('path'), PackageRef('package_info_plus_platform_interface'), PackageRef('web'), PackageRef('win32'), PackageRef('clock')],
-    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('test')],
+    dependencies: [PackageRef('clock'), PackageRef('ffi'), PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('http'), PackageRef('meta'), PackageRef('package_info_plus_platform_interface'), PackageRef('path'), PackageRef('web'), PackageRef('win32')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test')],
     license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -5956,14 +6702,14 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// package_info_plus_platform_interface 3.2.1
+/// package_info_plus_platform_interface 4.1.0
 const _package_info_plus_platform_interface = Package(
     name: 'package_info_plus_platform_interface',
     description: 'A common platform interface for the package_info_plus plugin.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '3.2.1',
+    version: '4.1.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -5998,13 +6744,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// pana 0.23.18
+/// pana 0.23.19
 const _pana = Package(
     name: 'pana',
     description: 'PAckage aNAlyzer - produce a report summarizing the health and quality of a Dart package.',
     repository: 'https://github.com/dart-lang/pana',
     authors: [],
-    version: '0.23.18',
+    version: '0.23.19',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -6314,14 +7060,224 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// petitparser 7.0.2
+/// permission_handler 12.0.3
+const _permission_handler = Package(
+    name: 'permission_handler',
+    description: 'Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.',
+    repository: 'https://github.com/baseflow/flutter-permission-handler',
+    authors: [],
+    version: '12.0.3',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('permission_handler_android'), PackageRef('permission_handler_apple'), PackageRef('permission_handler_html'), PackageRef('permission_handler_windows'), PackageRef('permission_handler_platform_interface')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('plugin_platform_interface')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// permission_handler_android 13.0.1
+const _permission_handler_android = Package(
+    name: 'permission_handler_android',
+    description: 'Permission plugin for Flutter. This plugin provides the Android API to request and check permissions.',
+    homepage: 'https://github.com/baseflow/flutter-permission-handler',
+    authors: [],
+    version: '13.0.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('permission_handler_platform_interface')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('plugin_platform_interface')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// permission_handler_apple 9.6.5
+const _permission_handler_apple = Package(
+    name: 'permission_handler_apple',
+    description: 'Permission plugin for Flutter. This plugin provides the iOS API to request and check permissions.',
+    repository: 'https://github.com/baseflow/flutter-permission-handler',
+    authors: [],
+    version: '9.6.5',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('permission_handler_platform_interface'), PackageRef('yaml')],
+    devDependencies: [PackageRef('flutter_lints'), PackageRef('plugin_platform_interface')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// permission_handler_html 0.1.4+1
+const _permission_handler_html = Package(
+    name: 'permission_handler_html',
+    description: 'Permission plugin for Flutter. This plugin provides the web API to request and check permissions.',
+    homepage: 'https://github.com/baseflow/flutter-permission-handler',
+    authors: [],
+    version: '0.1.4+1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('permission_handler_platform_interface'), PackageRef('web')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('build_runner'), PackageRef('test')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// permission_handler_platform_interface 4.4.1
+const _permission_handler_platform_interface = Package(
+    name: 'permission_handler_platform_interface',
+    description: 'A common platform interface for the permission_handler plugin.',
+    homepage: 'https://github.com/baseflow/flutter-permission-handler/tree/master/permission_handler_platform_interface',
+    authors: [],
+    version: '4.4.1',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('plugin_platform_interface')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// permission_handler_windows 0.2.4
+const _permission_handler_windows = Package(
+    name: 'permission_handler_windows',
+    description: 'Permission plugin for Flutter. This plugin provides the Windows API to request and check permissions.',
+    homepage: 'https://github.com/baseflow/flutter-permission-handler',
+    authors: [],
+    version: '0.2.4',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('permission_handler_platform_interface')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('plugin_platform_interface')],
+    license: '''MIT License
+
+Copyright (c) 2018 Baseflow
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// petitparser 7.1.0
 const _petitparser = Package(
     name: 'petitparser',
-    description: 'A dynamic parser framework to build efficient grammars and parsers quickly.',
+    description: 'Build fast, composable, and type-safe grammars and parsers in Dart.',
     homepage: 'https://petitparser.github.io',
     repository: 'https://github.com/petitparser/dart-petitparser',
     authors: [],
-    version: '7.0.2',
+    version: '7.1.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -6329,7 +7285,7 @@ const _petitparser = Package(
     devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''The MIT License
 
-Copyright (c) 2006-2024 Lukas Renggli.
+Copyright (c) 2006-2026 Lukas Renggli.
 All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -6351,18 +7307,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.''',
   );
 
-/// pinput 6.0.2
+/// pinput 7.0.0
 const _pinput = Package(
     name: 'pinput',
     description: 'Pin code input (OTP) text field, iOS SMS autofill, Android SMS autofill One Time Code, Password, Passcode, Captcha, Security, Coupon, Wowcher, 2FA, Two step verification',
     homepage: 'https://github.com/Tkko/Flutter_PinPut',
     repository: 'https://github.com/Tkko/Flutter_PinPut',
     authors: [],
-    version: '6.0.2',
+    version: '7.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter')],
+    dependencies: [PackageRef('flutter'), PackageRef('cupertino_ui'), PackageRef('material_ui')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''The MIT License (MIT)
 Copyright (c) 2022 Tornike Kurdadze
@@ -6387,18 +7343,18 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// platform 3.1.6
+/// platform 3.2.0
 const _platform = Package(
     name: 'platform',
     description: 'A pluggable, mockable platform information abstraction for Dart.',
     repository: 'https://github.com/dart-lang/core/tree/main/pkgs/platform',
     authors: [],
-    version: '3.1.6',
+    version: '3.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [],
-    devDependencies: [PackageRef('test')],
+    dependencies: [PackageRef('meta')],
+    devDependencies: [PackageRef('path'), PackageRef('test')],
     license: '''Copyright 2017, the Dart project authors. All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -6507,13 +7463,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// posix 6.5.2
+/// posix 6.5.4
 const _posix = Package(
     name: 'posix',
-    description: 'Exposes the POSIX api on OSx and Linux',
+    description: 'Exposes the POSIX api on OSx and Linux via an idomatic Dart API.',
     homepage: 'https://github.com/onepub-dev/dart_posix',
     authors: [],
-    version: '6.5.2',
+    version: '6.5.4',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -6615,6 +7571,48 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// properties 2.1.1
+const _properties = Package(
+    name: 'properties',
+    description: 'A simple library to manage properties file (and something more) in Dart',
+    repository: 'https://github.com/vaind/properties.dart',
+    authors: [],
+    version: '2.1.1',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('meta')],
+    devDependencies: [PackageRef('test')],
+    license: '''BSD 3-Clause License
+
+Copyright (c) 2021, properties.dart package authors
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
@@ -6764,13 +7762,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// pubspec_parse 1.6.0
+/// pubspec_parse 1.7.0
 const _pubspec_parse = Package(
     name: 'pubspec_parse',
     description: 'Simple package for parsing pubspec.yaml files with a type-safe API and rich error reporting.',
     repository: 'https://github.com/dart-lang/tools/tree/main/pkgs/pubspec_parse',
     authors: [],
-    version: '1.6.0',
+    version: '1.7.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -6805,13 +7803,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// qr 3.0.2
+/// qr 3.0.3
 const _qr = Package(
     name: 'qr',
     description: 'A QR code generation library for Dart and Flutter. Supports QR code version 1 through 40, error correction and redundancy.',
     repository: 'https://github.com/kevmoo/qr.dart',
     authors: [],
-    version: '3.0.2',
+    version: '3.0.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -7058,6 +8056,41 @@ const _quiver = Package(
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.''',
+  );
+
+/// rate_my_app 2.4.2
+const _rate_my_app = Package(
+    name: 'rate_my_app',
+    description: 'Allows to kindly ask users to rate your app if custom conditions are met (eg. install time, number of launches, etc...).',
+    homepage: 'https://github.com/Skyost/RateMyApp',
+    authors: [],
+    version: '2.4.2',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('shared_preferences'), PackageRef('flutter_rating_bar'), PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2019 Hugo DELAUNAY "Skyost"
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// recase 4.1.0
@@ -7664,17 +8697,132 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// settings_yaml 8.3.1
-const _settings_yaml = Package(
-    name: 'settings_yaml',
-    description: 'Provides a simple means of saving/loading settings from a yaml file without the yaml fuss.',
-    homepage: 'https://github.com/bsutton/settings_yaml',
+/// sentry 10.3.0
+const _sentry = Package(
+    name: 'sentry',
+    description: '''A crash reporting library for Dart that sends crash reports to Sentry.io. This library supports Dart VM and Web. For Flutter consider sentry_flutter instead.
+''',
+    homepage: 'https://docs.sentry.io/platforms/dart/',
+    repository: 'https://github.com/getsentry/sentry-dart',
     authors: [],
-    version: '8.3.1',
+    version: '10.3.0',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('ffi'), PackageRef('http'), PackageRef('meta'), PackageRef('stack_trace'), PackageRef('uuid'), PackageRef('web')],
+    devDependencies: [PackageRef('build_runner'), PackageRef('collection'), PackageRef('lints'), PackageRef('test'), PackageRef('yaml'), PackageRef('coverage'), PackageRef('intl'), PackageRef('fake_async')],
+    license: '''// Copyright 2014 The Chromium Authors. All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//    * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//    * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//    * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// sentry_dart_plugin 3.4.0
+const _sentry_dart_plugin = Package(
+    name: 'sentry_dart_plugin',
+    description: 'Uploads debug symbols to Sentry for server-side symbolication.',
+    homepage: 'https://docs.sentry.io/platforms/dart/',
+    repository: 'https://github.com/getsentry/sentry-dart-plugin',
+    authors: [],
+    version: '3.4.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('collection'), PackageRef('meta'), PackageRef('path'), PackageRef('uuid'), PackageRef('yaml')],
+    dependencies: [PackageRef('yaml'), PackageRef('injector'), PackageRef('ansicolor'), PackageRef('system_info2'), PackageRef('file'), PackageRef('http'), PackageRef('crypto'), PackageRef('convert'), PackageRef('process'), PackageRef('properties'), PackageRef('glob')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
+    license: '''MIT License
+
+Copyright (c) 2019 Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// sentry_flutter 10.3.0
+const _sentry_flutter = Package(
+    name: 'sentry_flutter',
+    description: 'Sentry SDK for Flutter. This package aims to support different Flutter targets by relying on the many platforms supported by Sentry with native SDKs.',
+    homepage: 'https://docs.sentry.io/platforms/flutter/',
+    repository: 'https://github.com/getsentry/sentry-dart',
+    authors: [],
+    version: '10.3.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('flutter_web_plugins'), PackageRef('sentry'), PackageRef('package_info_plus'), PackageRef('meta'), PackageRef('ffi'), PackageRef('web'), PackageRef('jni'), PackageRef('http')],
+    devDependencies: [PackageRef('build_runner'), PackageRef('collection'), PackageRef('fake_async'), PackageRef('flutter_test'), PackageRef('yaml'), PackageRef('flutter_lints'), PackageRef('flutter_localizations'), PackageRef('material_ui'), PackageRef('cupertino_ui'), PackageRef('platform')],
+    license: '''MIT License
+
+Copyright (c) 2019 Sentry
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
+/// settings_yaml 8.3.2
+const _settings_yaml = Package(
+    name: 'settings_yaml',
+    description: 'Provides a simple means of saving/loading settings from a yaml file without the yaml fuss.',
+    repository: 'https://github.com/onepub-dev/settings_yaml',
+    authors: [],
+    version: '8.3.2',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('collection'), PackageRef('ffi'), PackageRef('meta'), PackageRef('path'), PackageRef('uuid'), PackageRef('yaml')],
     devDependencies: [PackageRef('test')],
     license: '''MIT License
 
@@ -7699,14 +8847,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// share_plus 12.0.2
+/// share_plus 13.3.1
 const _share_plus = Package(
     name: 'share_plus',
     description: 'Flutter plugin for sharing content via the platform share UI, using the ACTION_SEND intent on Android and UIActivityViewController on iOS.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/share_plus/share_plus',
     authors: [],
-    version: '12.0.2',
+    version: '13.3.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -7741,19 +8889,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// share_plus_platform_interface 6.1.0
+/// share_plus_platform_interface 7.2.0
 const _share_plus_platform_interface = Package(
     name: 'share_plus_platform_interface',
     description: 'A common platform interface for the share_plus plugin.',
     homepage: 'https://github.com/fluttercommunity/plus_plugins',
     repository: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/',
     authors: [],
-    version: '6.1.0',
+    version: '7.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('cross_file'), PackageRef('flutter'), PackageRef('meta'), PackageRef('mime'), PackageRef('plugin_platform_interface'), PackageRef('path_provider'), PackageRef('uuid')],
-    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('test')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
     license: '''Copyright 2017 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -7783,13 +8931,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// shared_preferences 2.5.5
+/// shared_preferences 2.5.6
 const _shared_preferences = Package(
     name: 'shared_preferences',
     description: 'Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.',
     repository: 'https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences',
     authors: [],
-    version: '2.5.5',
+    version: '2.5.6',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -7822,18 +8970,18 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// shared_preferences_android 2.4.28
+/// shared_preferences_android 2.5.4
 const _shared_preferences_android = Package(
     name: 'shared_preferences_android',
     description: 'Android implementation of the shared_preferences plugin',
     repository: 'https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences_android',
     authors: [],
-    version: '2.4.28',
+    version: '2.5.4',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('shared_preferences_platform_interface')],
-    devDependencies: [PackageRef('flutter_test')],
+    dependencies: [PackageRef('flutter'), PackageRef('jni'), PackageRef('meta'), PackageRef('shared_preferences_platform_interface')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('logging'), PackageRef('path')],
     license: '''Copyright 2013 The Flutter Authors
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -7861,18 +9009,18 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// shared_preferences_foundation 2.5.7
+/// shared_preferences_foundation 2.6.1
 const _shared_preferences_foundation = Package(
     name: 'shared_preferences_foundation',
     description: 'iOS and macOS implementation of the shared_preferences plugin.',
     repository: 'https://github.com/flutter/packages/tree/main/packages/shared_preferences/shared_preferences_foundation',
     authors: [],
-    version: '2.5.7',
+    version: '2.6.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('meta'), PackageRef('shared_preferences_platform_interface')],
-    devDependencies: [PackageRef('flutter_test')],
+    dependencies: [PackageRef('ffi'), PackageRef('flutter'), PackageRef('meta'), PackageRef('objective_c'), PackageRef('shared_preferences_platform_interface')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('path'), PackageRef('pub_semver')],
     license: '''Copyright 2013 The Flutter Authors
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -8056,14 +9204,14 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// shelf 1.4.2
+/// shelf 1.4.3
 const _shelf = Package(
     name: 'shelf',
     description: '''A model for web server middleware that encourages composition and easy reuse.
 ''',
     repository: 'https://github.com/dart-lang/shelf/tree/master/pkgs/shelf',
     authors: [],
-    version: '1.4.2',
+    version: '1.4.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -8139,13 +9287,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// shelf_static 1.1.3
+/// shelf_static 1.2.0
 const _shelf_static = Package(
     name: 'shelf_static',
     description: 'Static file server support for the shelf package and ecosystem.',
     repository: 'https://github.com/dart-lang/shelf/tree/master/pkgs/shelf_static',
     authors: [],
-    version: '1.1.3',
+    version: '1.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -8221,6 +9369,41 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
+/// showcaseview 5.1.0
+const _showcaseview = Package(
+    name: 'showcaseview',
+    description: 'A Flutter package to Showcase/Highlight widgets step by step.',
+    repository: 'https://github.com/SimformSolutionsPvtLtd/showcaseview',
+    authors: [],
+    version: '5.1.0',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2021 Simform Solutions
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
+  );
+
 /// simple_sparse_list 0.1.4
 const _simple_sparse_list = Package(
     name: 'simple_sparse_list',
@@ -8262,18 +9445,18 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// skeletonizer 2.1.3
+/// skeletonizer 3.0.0
 const _skeletonizer = Package(
     name: 'skeletonizer',
     description: 'Converts already built widgets into skeleton loaders with no extra effort.',
     homepage: 'https://github.com/Milad-Akarie/skeletonizer',
     authors: [],
-    version: '2.1.3',
+    version: '3.0.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('flutter')],
-    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('coverage')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints'), PackageRef('coverage'), PackageRef('material_ui')],
     license: '''MIT License
 
 Copyright (c) 2023 Milad Akarie
@@ -8949,6 +10132,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------
+glslang
+vulkan-validation-layers
+
+
+
+Copyright (c) <year> <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+--------------------------------------------------------------------------------
 spring_animation
 
 
@@ -9127,7 +10332,6 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --------------------------------------------------------------------------------
-angle
 benchmark
 boringssl
 cpu_features
@@ -9554,68 +10758,7 @@ vulkan-validation-layers
 Copyright (c) 2015-2025 The Khronos Group Inc.
 Copyright (c) 2015-2025 Valve Corporation
 Copyright (c) 2015-2025 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (c) 2015-2024 Google Inc.
-Copyright (c) 2023-2024 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
 Copyright (c) 2015-2025 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (c) 2015-2025 Google Inc.
-Copyright (c) 2015-2025 RasterGrid Kft.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9653,8 +10796,9 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9671,8 +10815,132 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2016-2025 Google Inc.
-Copyright (c) 2016-2025 LunarG, Inc.
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2015-2024 Google Inc.
+Copyright (c) 2023-2024 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2015-2026 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2015-2026 Google Inc.
+Copyright (c) 2015-2025 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2015-2026 Google Inc.
+Copyright (c) 2023-2024 RasterGrid Kft.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2016-2026 Google Inc.
+Copyright (c) 2016-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9868,9 +11136,9 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9887,8 +11155,8 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9905,8 +11173,8 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2023-2025 Google Inc.
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 Google Inc.
+Copyright (c) 2023-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9923,8 +11191,8 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2023-2025 The Khronos Group Inc.
-Copyright (c) 2023-2025 Valve Corporation
+Copyright (c) 2023-2026 The Khronos Group Inc.
+Copyright (c) 2023-2026 Valve Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9941,9 +11209,9 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2023-2025 The Khronos Group Inc.
-Copyright (c) 2023-2025 Valve Corporation
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 The Khronos Group Inc.
+Copyright (c) 2023-2026 Valve Corporation
+Copyright (c) 2023-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9960,8 +11228,8 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2023-2025 Valve Corporation
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 Valve Corporation
+Copyright (c) 2023-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9978,7 +11246,7 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2024-2025 LunarG, Inc.
+Copyright (c) 2024-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10014,8 +11282,45 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright (c) 2025 Valve Corporation
-Copyright (c) 2025 LunarG, Inc.
+Copyright (c) 2025-2026 The Khronos Group Inc.
+Copyright (c) 2025-2026 Valve Corporation
+Copyright (c) 2025-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2025-2026 Valve Corporation
+Copyright (c) 2025-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+
+Copyright (c) 2026 Valve Corporation
+Copyright (c) 2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -10049,9 +11354,9 @@ limitations under the License.
 vulkan-validation-layers
 
 
-Copyright 2014-2024 Valve Software
-Copyright 2015-2024 Google Inc.
-Copyright 2019-2024 LunarG, Inc.
+Copyright 2014-2026 Valve Software
+Copyright 2015-2026 Google Inc.
+Copyright 2019-2026 LunarG, Inc.
 All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -10479,6 +11784,180 @@ yapf_diff
       of your accepting any such warranty or additional liability.
 
     END OF TERMS AND CONDITIONS
+
+
+--------------------------------------------------------------------------------
+glslang
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship made available under
+      the License, as indicated by a copyright notice that is included in
+      or attached to the work (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean, as submitted to the Licensor for inclusion
+      in the Work by the copyright owner or by an individual or Legal Entity
+      authorized to submit on behalf of the copyright owner. For the purposes
+      of this definition, "submitted" means any form of electronic, verbal,
+      or written communication sent to the Licensor or its representatives,
+      including but not limited to communication on electronic mailing lists,
+      source code control systems, and issue tracking systems that are managed
+      by, or on behalf of, the Licensor for the purpose of discussing and
+      improving the Work, but excluding communication that is conspicuously
+      marked or designated in writing by the copyright owner as "Not a
+      Contribution."
+
+      "Contributor" shall mean Licensor and any Legal Entity on behalf of
+      whom a Contribution has been received by the Licensor and included
+      within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or Derivative
+          Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, You must include a readable copy of the
+          attribution notices contained within such NOTICE file, in
+          at least one of the following places: within a NOTICE text
+          file distributed as part of the Derivative Works; within
+          the Source form or documentation, if provided along with the
+          Derivative Works; or, within a display generated by the
+          Derivative Works, if and wherever such third-party notices
+          normally appear. The contents of the NOTICE file are for
+          informational purposes only and do not modify the License.
+          You may add Your own attribution notices within Derivative
+          Works that You distribute, alongside or in addition to the
+          NOTICE text from the Work, provided that such additional
+          attribution notices cannot be construed as modifying the
+          License.
+
+      You may add Your own license statement for Your modifications and
+      may provide additional grant of rights to use, reproduce, modify,
+      and distribute those modifications and derivative works.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or reproducing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or exemplary damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or all other
+      commercial damages or losses), even if such Contributor has been
+      advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
 
 
 --------------------------------------------------------------------------------
@@ -11944,6 +13423,7 @@ skia
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
+skia
 vulkan
 
 // Copyright (c) 2018 Google Inc. All rights reserved.
@@ -13250,6 +14730,8 @@ the License, but only in their entirety and only with respect to the Combined
 Software.
 --------------------------------------------------------------------------------
 json
+vulkan-tools
+vulkan-validation-layers
 
 Apache License
 Version 2.0, January 2004
@@ -14759,67 +16241,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
-xxhash
-
-Copyright (C) 2012-2016, Yann Collet
-
- BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are
- met:
-
- * Redistributions of source code must retain the above copyright
- notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above
- copyright notice, this list of conditions and the following disclaimer
- in the documentation and/or other materials provided with the
- distribution.
-
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---------------------------------------------------------------------------------
-xxhash
-
-Copyright (C) 2012-2016, Yann Collet.
-
-BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-Redistributions in binary form must reproduce the above
-copyright notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the
-distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---------------------------------------------------------------------------------
 vulkan-validation-layers
+xxhash
 
-Copyright (C) 2012-2021 Yann Collet
+Copyright (C) 2012-2023 Yann Collet
 
 BSD 2-Clause License (https://www.opensource.org/licenses/bsd-license.php)
 
@@ -17040,6 +18465,76 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 Author(s): Behdad Esfahbod
 
 --------------------------------------------------------------------------------
+glslang
+
+Copyright (C) 2026 NVIDIA Corporation.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+   Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+   Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+   Neither the name of 3Dlabs Inc. Ltd. nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+--------------------------------------------------------------------------------
+glslang
+
+Copyright (C) 2026 The Khronos Group Inc.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+   Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+   Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+   Neither the name of The Khronos Group Inc. nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+--------------------------------------------------------------------------------
 libjpeg-turbo
 
 Copyright (C)2009-2014 D. R. Commander.  All Rights Reserved.
@@ -17982,8 +19477,35 @@ Copyright (c) 2012, the Dart project authors.  Please see the AUTHORS file
 for details. All rights reserved. Use of this source code is governed by a
 BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
+xxhash
+
+Copyright (c) 2012-2021 Yann Collet
+All rights reserved.
+
+BSD 2-Clause License (https://www.opensource.org/licenses/bsd-license.php)
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--------------------------------------------------------------------------------
 accessibility
-angle
 dart
 skia
 
@@ -18134,7 +19656,6 @@ BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 glslang
 skia
-spirv-tools
 
 Copyright (c) 2014-2016 The Khronos Group Inc.
 
@@ -18186,6 +19707,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM,OUT OF OR IN CONNECTION WITH THE MATERIALS OR THE USE OR OTHER DEALINGS
 IN THE MATERIALS.
 --------------------------------------------------------------------------------
+glslang
 spirv-cross
 
 Copyright (c) 2014-2020 The Khronos Group Inc.
@@ -18381,6 +19903,7 @@ spirv-tools
 Copyright (c) 2015-2016 The Khronos Group Inc.
 Modifications Copyright (C) 2024 Advanced Micro Devices, Inc. All rights
 reserved.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18396,9 +19919,9 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2015-2016, 2020-2025 The Khronos Group Inc.
-Copyright (c) 2015-2016, 2020-2025 Valve Corporation
-Copyright (c) 2015-2016, 2020-2025 LunarG, Inc.
+Copyright (c) 2015-2016, 2020-2026 The Khronos Group Inc.
+Copyright (c) 2015-2016, 2020-2026 Valve Corporation
+Copyright (c) 2015-2016, 2020-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18449,10 +19972,29 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2015-2017, 2019-2025 The Khronos Group Inc.
-Copyright (c) 2015-2017, 2019-2025 Valve Corporation
-Copyright (c) 2015-2017, 2019-2025 LunarG, Inc.
+Copyright (c) 2015-2017, 2019-2026 The Khronos Group Inc.
+Copyright (c) 2015-2017, 2019-2026 Valve Corporation
+Copyright (c) 2015-2017, 2019-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2017, 2019-2026 The Khronos Group Inc.
+Copyright (c) 2015-2017, 2019-2026 Valve Corporation
+Copyright (c) 2015-2017, 2019-2026 LunarG, Inc.
 Modifications Copyright (C) 2022 RasterGrid Kft.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18522,8 +20064,8 @@ limitations under the License.
 vulkan-validation-layers
 
 Copyright (c) 2015-2020 The Khronos Group Inc.
-Copyright (c) 2015-2023 Valve Corporation
-Copyright (c) 2015-2023 LunarG, Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18579,25 +20121,6 @@ Copyright (c) 2015-2021 The Khronos Group Inc.
 Copyright (c) 2015-2021 Valve Corporation
 Copyright (c) 2015-2021 LunarG, Inc.
 Copyright (c) 2015-2021 Google, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-tools
-
-Copyright (c) 2015-2021 The Khronos Group Inc.
-Copyright (c) 2015-2021 Valve Corporation
-Copyright (c) 2015-2021 LunarG, Inc.
-Copyright (c) 2023-2024 RasterGrid Kft.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18688,25 +20211,6 @@ vulkan-validation-layers
 Copyright (c) 2015-2024 The Khronos Group Inc.
 Copyright (c) 2015-2024 Valve Corporation
 Copyright (c) 2015-2024 LunarG, Inc.
-Copyright (C) 2015-2023 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2024 The Khronos Group Inc.
-Copyright (c) 2015-2024 Valve Corporation
-Copyright (c) 2015-2024 LunarG, Inc.
 Copyright (C) 2015-2024 Google Inc.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 
@@ -18738,26 +20242,6 @@ Copyright (c) 2015-2024 Valve Corporation
 Copyright (c) 2015-2024 LunarG, Inc.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2024 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18810,86 +20294,6 @@ vulkan-validation-layers
 Copyright (c) 2015-2025 The Khronos Group Inc.
 Copyright (c) 2015-2025 Valve Corporation
 Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2023 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2023 Google Inc.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-Copyright (c) 2025 Arm Limited.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
 Copyright (C) 2015-2024 Google Inc.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 
@@ -18910,380 +20314,7 @@ vulkan-validation-layers
 Copyright (c) 2015-2025 The Khronos Group Inc.
 Copyright (c) 2015-2025 Valve Corporation
 Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2024 Google Inc.
-Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
 Copyright (C) 2015-2025 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (C) 2025 Arm Limited.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (C) 2025 Arm Limited.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (C) 2025 Arm Limited.
-Modifications Copyright (C) 2020-2025 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022-2025 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (c) 2025 Arm Limited.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (c) 2025 Arm Limited.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (c) 2025 Arm Limited.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (c) 2025 Arm Limited.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Copyright (c) 2025 Arm Limited.
-Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-Copyright (c) 2025 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (C) 2015-2025 Google Inc.
-Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
-Modifications Copyright (C) 2022-2024 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
-Copyright (c) 2015-2024 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19328,9 +20359,1032 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2015-2025 The Khronos Group Inc.
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+lunarg-vulkantools
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2016 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2023 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2023 Google Inc.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2023 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2024 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2024 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2024 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2024 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2024 Google Inc.
+Modifications Copyright (C) 2020-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Copyright (C) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Copyright (C) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Modifications Copyright (C) 2020-2022,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2025 Google Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020-2025 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022-2025 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+Modifications Copyright (C) 2020,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020-2022,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2020-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+Copyright (c) 2025 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Copyright (c) 2025 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2022,2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2020-2026 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022-2024 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2015-2026 Google Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2015-2024 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-tools
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2023-2024 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Copyright (c) 2026 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
+Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2015-2026 The Khronos Group Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
 Modifications Copyright (C) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
 Modifications Copyright (C) 2022 RasterGrid Kft.
 
@@ -19348,8 +21402,8 @@ limitations under the License.
 --------------------------------------------------------------------------------
 lunarg-vulkantools
 
-Copyright (c) 2015-2025 Valve Corporation
-Copyright (c) 2015-2025 LunarG, Inc.
+Copyright (c) 2015-2026 Valve Corporation
+Copyright (c) 2015-2026 LunarG, Inc.
 Copyright (c) 2015-2017, 2019, 2021 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19812,6 +21866,23 @@ limitations under the License.
 spirv-tools
 
 Copyright (c) 2018 Google LLC.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2018 Google LLC.
 Copyright (c) 2019 NVIDIA Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19831,6 +21902,7 @@ spirv-tools
 Copyright (c) 2018 Google LLC.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights
 reserved.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19849,6 +21921,7 @@ spirv-tools
 Copyright (c) 2018 Google LLC.
 Modifications Copyright (C) 2020-2024 Advanced Micro Devices, Inc. All
 rights reserved.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19867,6 +21940,25 @@ spirv-tools
 Copyright (c) 2018 Google LLC.
 Modifications Copyright (C) 2024 Advanced Micro Devices, Inc. All rights
 reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2018 Google LLC.
+Modifications Copyright (C) 2024 Advanced Micro Devices, Inc. All rights
+reserved.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20037,7 +22129,7 @@ SOFTWARE.
 vulkan-headers
 
 Copyright (c) 2018-2019 Collabora, Ltd.
-Copyright 2013-2025 The Khronos Group Inc.
+Copyright 2013-2026 The Khronos Group Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
@@ -20096,7 +22188,7 @@ limitations under the License.
 --------------------------------------------------------------------------------
 volk
 
-Copyright (c) 2018-2024 Arseny Kapoulkine
+Copyright (c) 2018-2025 Arseny Kapoulkine
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20118,24 +22210,6 @@ SOFTWARE.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2018-2024 The Khronos Group Inc.
-Copyright (c) 2018-2024 Valve Corporation
-Copyright (c) 2018-2024 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
 Copyright (c) 2018-2025 The Khronos Group Inc.
 Copyright (c) 2018-2025 Valve Corporation
 Copyright (c) 2018-2025 LunarG, Inc.
@@ -20154,10 +22228,47 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2018-2025 The Khronos Group Inc.
-Copyright (c) 2018-2025 Valve Corporation
-Copyright (c) 2018-2025 LunarG, Inc.
+Copyright (c) 2018-2026 The Khronos Group Inc.
+Copyright (c) 2018-2026 Valve Corporation
+Copyright (c) 2018-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2018-2026 The Khronos Group Inc.
+Copyright (c) 2018-2026 Valve Corporation
+Copyright (c) 2018-2026 LunarG, Inc.
 Copyright (c) 2025 Arm Limited.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2018-2026 The Khronos Group Inc.
+Copyright (c) 2018-2026 Valve Corporation
+Copyright (c) 2018-2026 LunarG, Inc.
+Copyright (c) 2026 Arm Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20387,25 +22498,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
-vulkan-tools
-
-Copyright (c) 2019-2022 The Khronos Group Inc.
-Copyright (c) 2019-2022 Valve Corporation
-Copyright (c) 2019-2022 LunarG, Inc.
-Copyright (c) 2023-2024 RasterGrid Kft.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
 vulkan-validation-layers
 
 Copyright (c) 2019-2024 The Khronos Group Inc.
@@ -20438,62 +22530,6 @@ vulkan-validation-layers
 Copyright (c) 2019-2025 The Khronos Group Inc.
 Copyright (c) 2019-2025 Valve Corporation
 Copyright (c) 2019-2025 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2019-2025 The Khronos Group Inc.
-Copyright (c) 2019-2025 Valve Corporation
-Copyright (c) 2019-2025 LunarG, Inc.
-Copyright (C) 2019-2025 Google Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2019-2025 The Khronos Group Inc.
-Copyright (c) 2019-2025 Valve Corporation
-Copyright (c) 2019-2025 LunarG, Inc.
-Copyright (C) 2025 Arm Limited.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2019-2025 The Khronos Group Inc.
-Copyright (c) 2019-2025 Valve Corporation
-Copyright (c) 2019-2025 LunarG, Inc.
 Modifications Copyright (C) 2022 RasterGrid Kft.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -20510,8 +22546,141 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2019-2025 Valve Corporation
-Copyright (c) 2019-2025 LunarG, Inc.
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Copyright (C) 2019-2025 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Copyright (C) 2019-2026 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Copyright (C) 2025 Arm Limited.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-tools
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Copyright (c) 2023-2024 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 The Khronos Group Inc.
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
+Modifications Copyright (C) 2022 RasterGrid Kft.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2019-2026 Valve Corporation
+Copyright (c) 2019-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20750,23 +22919,6 @@ Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
 for details. All rights reserved. Use of this source code is governed by a
 BSD-style license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
-lunarg-vulkantools
-
-Copyright (c) 2020-2021 Valve Corporation
-Copyright (c) 2020-2021 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
 spirv-tools
 
 Copyright (c) 2020-2022 Google LLC
@@ -20844,9 +22996,28 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2020-2025 The Khronos Group Inc.
-Copyright (c) 2020-2025 Valve Corporation
-Copyright (c) 2020-2025 LunarG, Inc.
+Copyright (c) 2020-2026 The Khronos Group Inc.
+Copyright (c) 2020-2026 Valve Corporation
+Copyright (c) 2020-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2020-2026 The Khronos Group Inc.
+Copyright (c) 2020-2026 Valve Corporation
+Copyright (c) 2020-2026 LunarG, Inc.
+Copyright (c) 2026 RasterGrid Kft.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -20863,8 +23034,8 @@ limitations under the License.
 --------------------------------------------------------------------------------
 lunarg-vulkantools
 
-Copyright (c) 2020-2025 Valve Corporation
-Copyright (c) 2020-2025 LunarG, Inc.
+Copyright (c) 2020-2026 Valve Corporation
+Copyright (c) 2020-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21085,6 +23256,7 @@ vulkan-validation-layers
 Copyright (c) 2021-2025 The Khronos Group Inc.
 Copyright (c) 2021-2025 Valve Corporation
 Copyright (c) 2021-2025 LunarG, Inc.
+Copyright (C) 2021-2025 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21100,9 +23272,27 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
 Copyright (C) 2021-2022 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21119,10 +23309,10 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
-Copyright (C) 2021-2025 Google Inc.
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
+Copyright (C) 2021-2026 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21138,11 +23328,11 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
-Copyright (C) 2021-2025 Google Inc.
-Modifications Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
+Copyright (C) 2021-2026 Google Inc.
+Modifications Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21158,9 +23348,9 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
-Copyright (c) 2021-2025 Valve Corporation
-Copyright (c) 2021-2025 LunarG, Inc.
+Copyright (c) 2021-2026 The Khronos Group Inc.
+Copyright (c) 2021-2026 Valve Corporation
+Copyright (c) 2021-2026 LunarG, Inc.
 Copyright (c) 2025 Arm Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21177,8 +23367,9 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2021-2025 The Khronos Group Inc.
+Copyright (c) 2021-2026 The Khronos Group Inc.
 Copyright (c) 2025 Arm Limited.
+Copyright (C) 2026 Qualcomm Technologies, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21378,11 +23569,45 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2022-2025 Arm Ltd.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2022-2025 The Khronos Group Inc.
-Copyright (c) 2022-2025 Valve Corporation
-Copyright (c) 2022-2025 LunarG, Inc.
+Copyright (c) 2022-2026 The Khronos Group Inc.
+Copyright (c) 2022-2026 RasterGrid Kft.
+Modifications Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2022-2026 The Khronos Group Inc.
+Copyright (c) 2022-2026 Valve Corporation
+Copyright (c) 2022-2026 LunarG, Inc.
 Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21399,8 +23624,8 @@ limitations under the License.
 --------------------------------------------------------------------------------
 lunarg-vulkantools
 
-Copyright (c) 2022-2025 Valve Corporation
-Copyright (c) 2022-2025 LunarG, Inc.
+Copyright (c) 2022-2026 Valve Corporation
+Copyright (c) 2022-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21529,7 +23754,8 @@ limitations under the License.
 vulkan-validation-layers
 
 Copyright (c) 2023-2024 Nintendo
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 LunarG, Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21561,9 +23787,8 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2023-2025 LunarG, Inc.
-Copyright (c) 2023-2025 Valve Corporation
-Copyright (c) 2025 Arm Limited.
+Copyright (c) 2023-2025 Nintendo
+Copyright (c) 2023-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21580,7 +23805,8 @@ limitations under the License.
 vulkan-validation-layers
 
 Copyright (c) 2023-2025 Nintendo
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 LunarG, Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21614,9 +23840,25 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2023-2025 The Khronos Group Inc.
 Copyright (c) 2023-2025 Valve Corporation
 Copyright (c) 2023-2025 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2023-2026 LunarG, Inc.
+Copyright (c) 2023-2026 Valve Corporation
 Copyright (c) 2025 Arm Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21633,8 +23875,28 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2023-2025 Valve Corporation
-Copyright (c) 2023-2025 LunarG, Inc.
+Copyright (c) 2023-2026 The Khronos Group Inc.
+Copyright (c) 2023-2026 Valve Corporation
+Copyright (c) 2023-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2023-2026 The Khronos Group Inc.
+Copyright (c) 2023-2026 Valve Corporation
+Copyright (c) 2023-2026 LunarG, Inc.
+Copyright (c) 2025 Arm Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21712,63 +23974,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2024 The Khronos Group Inc.
-Copyright (c) 2024 LunarG, Inc.
-Copyright (c) 2024 Advanced Micro Devices, Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
 vulkan-tools
 vulkan-validation-layers
 
 Copyright (c) 2024 The Khronos Group Inc.
-Copyright (c) 2024 Valve Corporation
-Copyright (c) 2024 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
-Copyright (c) 2024 The Khronos Group Inc.
-Copyright (c) 2025 Valve Corporation
-Copyright (c) 2025 LunarG, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-vulkan-validation-layers
-
 Copyright (c) 2024 Valve Corporation
 Copyright (c) 2024 LunarG, Inc.
 
@@ -21832,10 +24041,117 @@ limitations under the License.
 --------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2024-2025 The Khronos Group Inc.
-Copyright (c) 2024-2025 Valve Corporation
-Copyright (c) 2024-2025 LunarG, Inc.
+Copyright (c) 2024-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 LunarG, Inc.
+Copyright (c) 2020-2026 Valve Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 The Khronos Group Inc.
+Copyright (c) 2024-2026 LunarG, Inc.
+Copyright (c) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 The Khronos Group Inc.
+Copyright (c) 2024-2026 Valve Corporation
+Copyright (c) 2024-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 The Khronos Group Inc.
+Copyright (c) 2024-2026 Valve Corporation
+Copyright (c) 2024-2026 LunarG, Inc.
 Copyright (c) 2025 Arm Limited.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 The Khronos Group Inc.
+Copyright (c) 2024-2026 Valve Corporation
+Copyright (c) 2024-2026 LunarG, Inc.
+Modifications Copyright (C) 2025-2026 Advanced Micro Devices, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2024-2026 The Khronos Group Inc.
+Copyright (c) 2025-2026 Valve Corporation
+Copyright (c) 2025-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21868,6 +24184,22 @@ limitations under the License.
 spirv-tools
 
 Copyright (c) 2025 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2025 Google LLC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21979,6 +24311,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2025 The Khronos Group Inc.
+Copyright (c) 2025 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
 vulkan-tools
 vulkan-validation-layers
 
@@ -22014,10 +24363,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
+ai
+dart
+
+Copyright (c) 2025, the Dart project authors.  Please see the AUTHORS file
+for details. All rights reserved. Use of this source code is governed by a
+BSD-style license that can be found in the LICENSE file.
+--------------------------------------------------------------------------------
+perfetto
+
+Copyright (c) 2025, the Dart project authors. Please see the AUTHORS file
+for details. All rights reserved. Use of this source code is governed by a
+BSD-style license that can be found in the LICENSE file.
+--------------------------------------------------------------------------------
 vulkan-validation-layers
 
-Copyright (c) 2025 Valve Corporation
-Copyright (c) 2025 LunarG, Inc.
+Copyright (c) 2025-2026 LunarG, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22031,18 +24392,174 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 --------------------------------------------------------------------------------
-ai
-dart
+vulkan-validation-layers
 
-Copyright (c) 2025, the Dart project authors.  Please see the AUTHORS file
-for details. All rights reserved. Use of this source code is governed by a
-BSD-style license that can be found in the LICENSE file.
+Copyright (c) 2025-2026 The Khronos Group Inc.
+Copyright (c) 2025-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 --------------------------------------------------------------------------------
-perfetto
+vulkan-tools
+vulkan-validation-layers
 
-Copyright (c) 2025, the Dart project authors. Please see the AUTHORS file
-for details. All rights reserved. Use of this source code is governed by a
-BSD-style license that can be found in the LICENSE file.
+Copyright (c) 2025-2026 The Khronos Group Inc.
+Copyright (c) 2025-2026 Valve Corporation
+Copyright (c) 2025-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2025-2026 Valve Corporation
+Copyright (c) 2025-2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2026 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+spirv-tools
+
+Copyright (c) 2026 LunarG Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2026 LunarG, Inc.
+Copyright (C) 2026 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2026 The Khronos Group Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2026 The Khronos Group Inc.
+Copyright (c) 2026 Valve Corporation
+Copyright (c) 2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright (c) 2026 Valve Corporation
+Copyright (c) 2026 LunarG, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 --------------------------------------------------------------------------------
 ai
 dart
@@ -22097,6 +24614,13 @@ freely, subject to the following restrictions:
 
 3. This notice may not be removed or altered from any source
    distribution.
+--------------------------------------------------------------------------------
+libjxl
+
+Copyright (c) the JPEG XL Project Authors. All rights reserved.
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 freetype2
 
@@ -22772,8 +25296,13 @@ SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 vulkan-headers
 
-Copyright 2013-2025 The Khronos Group Inc.
+Copyright 2013-2026 The Khronos Group Inc.
 
+SPDX-License-Identifier: Apache-2.0
+--------------------------------------------------------------------------------
+vulkan-headers
+
+Copyright 2013-2026 The Khronos Group Inc.
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 skia
@@ -22901,14 +25430,8 @@ Copyright 2014-2022 The Khronos Group Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
-swiftshader
-vulkan-headers
-
-Copyright 2014-2025 The Khronos Group Inc.
-
-SPDX-License-Identifier: Apache-2.0
---------------------------------------------------------------------------------
 vulkan
+vulkan-headers
 
 Copyright 2014-2026 The Khronos Group Inc.
 
@@ -23047,13 +25570,13 @@ Copyright 2015-2023 LunarG, Inc.
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 swiftshader
-vulkan-headers
 
 Copyright 2015-2025 The Khronos Group Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 vulkan
+vulkan-headers
 
 Copyright 2015-2026 The Khronos Group Inc.
 
@@ -23107,6 +25630,13 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+--------------------------------------------------------------------------------
+skia
+
+Copyright 2016 Google LLC
+
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
 --------------------------------------------------------------------------------
 benchmark
 
@@ -23447,8 +25977,8 @@ limitations under the License.
 vulkan-validation-layers
 
 Copyright 2017 The Glslang Authors. All rights reserved.
-Copyright (c) 2018-2025 Valve Corporation
-Copyright (c) 2018-2025 LunarG, Inc.
+Copyright (c) 2018-2026 Valve Corporation
+Copyright (c) 2018-2026 LunarG, Inc.
 Copyright (c) 2023-2023 RasterGrid Kft.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -23843,22 +26373,6 @@ DEALINGS IN THE SOFTWARE.
 flatbuffers
 
 Copyright 2019 Google Inc. All rights reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
---------------------------------------------------------------------------------
-spirv-tools
-
-Copyright 2019 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24467,7 +26981,7 @@ found in the LICENSE file.
 --------------------------------------------------------------------------------
 vulkan-headers
 
-Copyright 2021-2025 The Khronos Group Inc.
+Copyright 2021-2026 The Khronos Group Inc.
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 yapf
@@ -24820,18 +27334,10 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 --------------------------------------------------------------------------------
 lunarg-vulkantools
-vulkan-validation-layers
 
 Copyright 2023-2024 The Khronos Group Inc.
 Copyright 2023-2024 Valve Corporation
 Copyright 2023-2024 LunarG, Inc.
-
-SPDX-License-Identifier: Apache-2.0
---------------------------------------------------------------------------------
-lunarg-vulkantools
-vulkan-headers
-
-Copyright 2023-2025 The Khronos Group Inc.
 
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
@@ -24846,7 +27352,21 @@ SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 vulkan-headers
 
-Copyright 2023-2025 The Khronos Group Inc.
+Copyright 2023-2026 The Khronos Group Inc.
+
+SPDX-License-Identifier: Apache-2.0
+--------------------------------------------------------------------------------
+vulkan-validation-layers
+
+Copyright 2023-2026 The Khronos Group Inc.
+Copyright 2023-2026 Valve Corporation
+Copyright 2023-2026 LunarG, Inc.
+
+SPDX-License-Identifier: Apache-2.0
+--------------------------------------------------------------------------------
+vulkan-headers
+
+Copyright 2023-2026 The Khronos Group Inc.
 SPDX-License-Identifier: Apache-2.0
 --------------------------------------------------------------------------------
 angle
@@ -24979,8 +27499,21 @@ found in the LICENSE file.
 --------------------------------------------------------------------------------
 skia
 
+Copyright 2025 Google LLC.
+
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+skia
+
 Copyright 2025 Google, LLC
 
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2025 The ANGLE Project Authors
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
@@ -25071,17 +27604,107 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 skia
 
+Copyright 2026 Apple Inc.
+
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+glslang
+
+Copyright 2026 Google LLC
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+   Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+   Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+   Neither the name of 3Dlabs Inc. Ltd. nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+--------------------------------------------------------------------------------
+skia
+
 Copyright 2026 Google LLC
 
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 --------------------------------------------------------------------------------
+glslang
+
+Copyright 2026 Google LLC.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+   Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+   Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+   Neither the name of Google Inc. nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+--------------------------------------------------------------------------------
 skia
 
-Copyright 2026 The Android Open Source Project
+Copyright 2026 Google LLC.
 
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2026 The ANGLE Project Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+--------------------------------------------------------------------------------
+angle
+
+Copyright 2026 The ANGLE project authors. All Rights Reserved.
+
+Use of this source code is governed by a BSD-style license
+that can be found in the LICENSE file
 --------------------------------------------------------------------------------
 angle
 
@@ -32605,33 +35228,6 @@ appreciated but is not required.
 misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 --------------------------------------------------------------------------------
-xxhash
-
-xxHash Library
-Copyright (c) 2012-2014, Yann Collet
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice, this
-  list of conditions and the following disclaimer in the documentation and/or
-  other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---------------------------------------------------------------------------------
 icu
 
 © 2016 and later: Unicode, Inc. and others.
@@ -38186,13 +40782,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// source_gen 4.2.4
+/// source_gen 4.3.1
 const _source_gen = Package(
     name: 'source_gen',
     description: 'Source code generation builders and utilities for the Dart build system',
     repository: 'https://github.com/dart-lang/source_gen/tree/master/source_gen',
     authors: [],
-    version: '4.2.4',
+    version: '4.3.1',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -38596,13 +41192,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// sqlite3 3.5.2
+/// sqlite3 3.8.0
 const _sqlite3 = Package(
     name: 'sqlite3',
     description: 'Provides lightweight yet convenient bindings to SQLite by using dart:ffi',
     homepage: 'https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3',
     authors: [],
-    version: '3.5.2',
+    version: '3.8.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -38666,14 +41262,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// sqlparser 0.45.0
+/// sqlparser 0.45.1
 const _sqlparser = Package(
     name: 'sqlparser',
     description: 'Parses sqlite statements and performs static analysis on them',
     homepage: 'https://github.com/simolus3/drift/tree/develop/sqlparser',
     repository: 'https://github.com/simolus3/drift',
     authors: [],
-    version: '0.45.0',
+    version: '0.45.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -38866,13 +41462,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// strings 4.0.1
+/// strings 4.2.0
 const _strings = Package(
     name: 'strings',
     description: 'Large collection of String functions aimed at extending the String class whilst providing safer methods for working with nullable Strings.',
     repository: 'https://github.com/onepub-dev/strings',
     authors: [],
-    version: '4.0.1',
+    version: '4.2.0',
     spdxIdentifiers: ['BSD-3-Clause', 'MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -38966,71 +41562,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// syncfusion_flutter_core 34.2.5
-const _syncfusion_flutter_core = Package(
-    name: 'syncfusion_flutter_core',
-    description: 'Syncfusion Flutter Core is a dependent package for all the Syncfusion Flutter widgets.',
-    homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_core',
-    authors: [],
-    version: '34.2.5',
-    spdxIdentifiers: [],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('vector_math')],
-    devDependencies: [],
-    license: '''Syncfusion<sup>&reg;</sup> License
-
-Syncfusion<sup>&reg;</sup> Flutter Core package is available under the Syncfusion Essential Studio<sup>&reg;</sup> program, and can be licensed either under the Syncfusion<sup>&reg;</sup> Community License Program or the Syncfusion<sup>&reg;</sup> commercial license.
-
-To be qualified for the Syncfusion<sup>&reg;</sup> Community License Program you must have a gross revenue of less than one (1) million U.S. dollars (\$1,000,000.00 USD) per year and have less than five (5) developers in your organization, and agree to be bound by Syncfusion<sup>&reg;</sup> terms and conditions.
-
-Customers who do not qualify for the community license can contact sales@syncfusion.com for commercial licensing options.
-
-Under no circumstances can you use this product without (1) either a Community License or a commercial license and (2) without agreeing and abiding by Syncfusion<sup>&reg;</sup> license containing all terms and conditions.
-
-The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions can be found at
-https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
-  );
-
-/// syncfusion_flutter_datepicker 34.2.5
-const _syncfusion_flutter_datepicker = Package(
-    name: 'syncfusion_flutter_datepicker',
-    description: 'The Flutter Date Range Picker widget allows users to easily select dates or a range of dates. It has four built-in views that allow quick navigation to the desired date.',
-    homepage: 'https://github.com/syncfusion/flutter-widgets/tree/master/packages/syncfusion_flutter_datepicker',
-    authors: [],
-    version: '34.2.5',
-    spdxIdentifiers: [],
-    isMarkdown: false,
-    isSdk: false,
-    dependencies: [PackageRef('flutter'), PackageRef('intl'), PackageRef('syncfusion_flutter_core')],
-    devDependencies: [],
-    license: '''Syncfusion<sup>&reg;</sup> License
-
-Syncfusion<sup>&reg;</sup> Flutter Date Picker package is available under the Syncfusion Essential Studio<sup>&reg;</sup> program, and can be licensed either under the Syncfusion<sup>&reg;</sup> Community License Program or the Syncfusion<sup>&reg;</sup> commercial license.
-
-To be qualified for the Syncfusion<sup>&reg;</sup> Community License Program you must have a gross revenue of less than one (1) million U.S. dollars (\$1,000,000.00 USD) per year and have less than five (5) developers in your organization, and agree to be bound by Syncfusion<sup>&reg;</sup> terms and conditions.
-
-Customers who do not qualify for the community license can contact sales@syncfusion.com for commercial licensing options.
-
-Under no circumstances can you use this product without (1) either a Community License or a commercial license and (2) without agreeing and abiding by Syncfusion<sup>&reg;</sup> license containing all terms and conditions.
-
-The Syncfusion<sup>&reg;</sup> license that contains the terms and conditions can be found at
-https://www.syncfusion.com/content/downloads/syncfusion_license.pdf''',
-  );
-
-/// system_info2 4.1.0
+/// system_info2 4.2.0
 const _system_info2 = Package(
     name: 'system_info2',
     description: 'Provides easy access to useful information about the system (architecture, bitness, kernel, memory, operating system, CPU, user).',
     homepage: 'https://sysinfo.onepub.dev',
     repository: 'https://github.com/onepub-dev/system_info',
     authors: [],
-    version: '4.1.0',
+    version: '4.2.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('globbing'), PackageRef('path')],
-    devDependencies: [],
+    devDependencies: [PackageRef('test')],
     license: '''Copyright (c) 2014, Andrew Mezoni, S. Brett Sutton
 All rights reserved.
 
@@ -39101,18 +41645,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test 1.31.1
+/// test 1.32.0
 const _test = Package(
     name: 'test',
     description: 'A full featured library for writing and running Dart tests across platforms.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test',
     authors: [],
-    version: '1.31.1',
+    version: '1.32.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('analyzer'), PackageRef('async'), PackageRef('boolean_selector'), PackageRef('collection'), PackageRef('coverage'), PackageRef('http_multi_server'), PackageRef('io'), PackageRef('matcher'), PackageRef('node_preamble'), PackageRef('package_config'), PackageRef('path'), PackageRef('pool'), PackageRef('shelf'), PackageRef('shelf_packages_handler'), PackageRef('shelf_static'), PackageRef('shelf_web_socket'), PackageRef('source_span'), PackageRef('stack_trace'), PackageRef('stream_channel'), PackageRef('test_api'), PackageRef('test_core'), PackageRef('typed_data'), PackageRef('web_socket_channel'), PackageRef('webkit_inspection_protocol'), PackageRef('yaml')],
-    devDependencies: [PackageRef('fake_async'), PackageRef('glob')],
+    devDependencies: [PackageRef('fake_async'), PackageRef('glob'), PackageRef('pub_semver')],
     license: '''Copyright 2014, the Dart project authors.
 
 Redistribution and use in source and binary forms, with or without
@@ -39142,13 +41686,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test_api 0.7.12
+/// test_api 0.7.14
 const _test_api = Package(
     name: 'test_api',
     description: 'The user facing API for structuring Dart tests and checking expectations.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test_api',
     authors: [],
-    version: '0.7.12',
+    version: '0.7.14',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39183,13 +41727,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// test_core 0.6.18
+/// test_core 0.6.20
 const _test_core = Package(
     name: 'test_core',
     description: 'A basic library for writing tests and running them on the VM.',
     repository: 'https://github.com/dart-lang/test/tree/master/pkgs/test_core',
     authors: [],
-    version: '0.6.18',
+    version: '0.6.20',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39344,19 +41888,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// url_launcher 6.3.2
+/// url_launcher 6.3.3
 const _url_launcher = Package(
     name: 'url_launcher',
     description: 'Flutter plugin for launching a URL. Supports web, phone, SMS, and email schemes.',
     repository: 'https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher',
     authors: [],
-    version: '6.3.2',
+    version: '6.3.3',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
     dependencies: [PackageRef('flutter'), PackageRef('url_launcher_android'), PackageRef('url_launcher_ios'), PackageRef('url_launcher_linux'), PackageRef('url_launcher_macos'), PackageRef('url_launcher_platform_interface'), PackageRef('url_launcher_web'), PackageRef('url_launcher_windows')],
     devDependencies: [PackageRef('flutter_test'), PackageRef('plugin_platform_interface'), PackageRef('test')],
-    license: '''Copyright 2013 The Flutter Authors. All rights reserved.
+    license: '''Copyright 2013 The Flutter Authors
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -39678,14 +42222,14 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.''',
   );
 
-/// validators2 5.1.0
+/// validators2 5.1.1
 const _validators2 = Package(
     name: 'validators2',
     description: 'String validation and sanitization for Dart.',
     homepage: 'https://github.com/onepub-dev/validators2',
     repository: 'https://github.com/onepub-dev/validators2',
     authors: [],
-    version: '5.1.0',
+    version: '5.1.1',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
@@ -39714,13 +42258,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// vector_math 2.4.2
+/// vector_math 2.4.4
 const _vector_math = Package(
     name: 'vector_math',
     description: 'A vector math library for 2D and 3D applications, supporting 2D, 3D, and 4D matrices.',
     repository: 'https://github.com/flutter/core-packages/tree/main/packages/vector_math',
     authors: [],
-    version: '2.4.2',
+    version: '2.4.4',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39753,13 +42297,13 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// vm_service 15.3.0
+/// vm_service 15.4.0
 const _vm_service = Package(
     name: 'vm_service',
     description: 'A library to communicate with a service implementing the Dart VM service protocol.',
     repository: 'https://github.com/dart-lang/sdk/tree/main/pkg/vm_service',
     authors: [],
-    version: '15.3.0',
+    version: '15.4.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -39835,13 +42379,13 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// web 1.1.1
+/// web 1.1.2
 const _web = Package(
     name: 'web',
     description: 'Lightweight browser API bindings built around JS interop.',
     repository: 'https://github.com/dart-lang/web',
     authors: [],
-    version: '1.1.1',
+    version: '1.1.2',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
@@ -40000,20 +42544,19 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// win32 5.15.0
+/// win32 6.4.0
 const _win32 = Package(
     name: 'win32',
-    description: '''Access common Win32 APIs directly from Dart using FFI — no C required!
-''',
+    description: 'Call common Windows APIs directly from Dart using FFI.',
     homepage: 'https://win32.pub',
     repository: 'https://github.com/halildurmus/win32',
     authors: [],
-    version: '5.15.0',
+    version: '6.4.0',
     spdxIdentifiers: ['BSD-3-Clause'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('ffi')],
-    devDependencies: [PackageRef('args'), PackageRef('hooks'), PackageRef('path'), PackageRef('test')],
+    dependencies: [PackageRef('ffi'), PackageRef('ffi_leak_tracker'), PackageRef('meta')],
+    devDependencies: [PackageRef('args'), PackageRef('path'), PackageRef('test')],
     license: '''BSD 3-Clause License
 
 Copyright (c) 2024, Halil Durmus
@@ -40042,6 +42585,85 @@ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// win32_registry 3.0.3
+const _win32_registry = Package(
+    name: 'win32_registry',
+    description: '''A modern, type-safe Dart API for accessing and managing the Windows Registry.
+''',
+    repository: 'https://github.com/halildurmus/win32/tree/main/packages/win32_registry',
+    authors: [],
+    version: '3.0.3',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('collection'), PackageRef('ffi'), PackageRef('ffi_leak_tracker'), PackageRef('meta'), PackageRef('win32')],
+    devDependencies: [PackageRef('test')],
+    license: '''BSD 3-Clause License
+
+Copyright (c) 2023, Halil Durmus
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// windows_file_picker 2.0.2
+const _windows_file_picker = Package(
+    name: 'windows_file_picker',
+    description: 'Windows implementation of the file_picker plugin using Win32 COM APIs for native file and directory picking.',
+    homepage: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_windows',
+    repository: 'https://github.com/vicajilau/flutter_file_picker/tree/main/packages/file_picker_windows',
+    authors: [],
+    version: '2.0.2',
+    spdxIdentifiers: ['MIT'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('flutter'), PackageRef('file_picker_platform_interface'), PackageRef('cross_file'), PackageRef('ffi'), PackageRef('meta'), PackageRef('path'), PackageRef('win32')],
+    devDependencies: [PackageRef('flutter_test'), PackageRef('flutter_lints')],
+    license: '''MIT License
+
+Copyright (c) 2018 Miguel Ruivo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.''',
   );
 
 /// xdg_directories 1.1.0
@@ -40083,18 +42705,18 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
   );
 
-/// xml 7.0.1
+/// xml 7.1.0
 const _xml = Package(
     name: 'xml',
     description: 'Full-featured XML for Dart — DOM parsing, SAX streaming, XPath 3 querying, and a fluent builder API.',
     repository: 'https://github.com/renggli/dart-xml',
     authors: [],
-    version: '7.0.1',
+    version: '7.1.0',
     spdxIdentifiers: ['MIT'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('collection'), PackageRef('meta'), PackageRef('petitparser')],
-    devDependencies: [PackageRef('args'), PackageRef('lints'), PackageRef('test')],
+    dependencies: [PackageRef('args'), PackageRef('collection'), PackageRef('meta'), PackageRef('petitparser')],
+    devDependencies: [PackageRef('lints'), PackageRef('test')],
     license: '''The MIT License
 
 Copyright (c) 2006-2026 Lukas Renggli.
@@ -40153,17 +42775,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.''',
   );
 
-/// tallee 0.1.0+586
+/// yaml_edit 2.2.4
+const _yaml_edit = Package(
+    name: 'yaml_edit',
+    description: 'A library for YAML manipulation with comment and whitespace preservation.',
+    repository: 'https://github.com/dart-lang/tools/tree/main/pkgs/yaml_edit',
+    authors: [],
+    version: '2.2.4',
+    spdxIdentifiers: ['BSD-3-Clause'],
+    isMarkdown: false,
+    isSdk: false,
+    dependencies: [PackageRef('collection'), PackageRef('meta'), PackageRef('source_span'), PackageRef('yaml')],
+    devDependencies: [PackageRef('coverage'), PackageRef('path'), PackageRef('test')],
+    license: '''Copyright 2020, the Dart project authors.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+    * Neither the name of Google LLC nor the names of its
+      contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.''',
+  );
+
+/// tallee 0.2.0+755
 const _tallee = Package(
     name: 'tallee',
     description: 'Tracking App for Card Games',
     authors: [],
-    version: '0.1.0+586',
+    version: '0.2.0+755',
     spdxIdentifiers: ['LGPL-3.0'],
     isMarkdown: false,
     isSdk: false,
-    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('file_saver'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('flutter_popup'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('mobile_scanner'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('remove_unused_localizations'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('skeletonizer'), PackageRef('syncfusion_flutter_datepicker'), PackageRef('url_launcher'), PackageRef('uuid')],
-    devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('sort_pubspec_dependencies')],
+    dependencies: [PackageRef('clock'), PackageRef('collection'), PackageRef('cupertino_icons'), PackageRef('cupertino_ui'), PackageRef('dotted_border'), PackageRef('drift'), PackageRef('drift_flutter'), PackageRef('dropdown_button2'), PackageRef('file_picker'), PackageRef('flutter'), PackageRef('flutter_dotenv'), PackageRef('flutter_localizations'), PackageRef('flutter_markdown_plus'), PackageRef('flutter_numeric_text'), PackageRef('fluttericon'), PackageRef('font_awesome_flutter'), PackageRef('fuzzywuzzy'), PackageRef('http'), PackageRef('intl'), PackageRef('json_schema'), PackageRef('lottie'), PackageRef('material_ui'), PackageRef('mobile_scanner'), PackageRef('new_version_plus'), PackageRef('once'), PackageRef('open_with_app'), PackageRef('package_info_plus'), PackageRef('path_provider'), PackageRef('permission_handler'), PackageRef('pinput'), PackageRef('pretty_qr_code'), PackageRef('provider'), PackageRef('rate_my_app'), PackageRef('sentry_flutter'), PackageRef('share_plus'), PackageRef('shared_preferences'), PackageRef('showcaseview'), PackageRef('skeletonizer'), PackageRef('url_launcher'), PackageRef('uuid')],
+    devDependencies: [PackageRef('arb_utils'), PackageRef('build_runner'), PackageRef('dart_pubspec_licenses'), PackageRef('drift_dev'), PackageRef('flutter_lints'), PackageRef('flutter_test'), PackageRef('remove_unused_localizations'), PackageRef('sentry_dart_plugin'), PackageRef('sort_pubspec_dependencies')],
     license: '''GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 

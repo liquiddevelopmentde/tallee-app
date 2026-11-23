@@ -1,31 +1,30 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
 
 class FloatingAnimatedButton extends StatefulWidget {
   /// A button for the main menu with an optional icon and a press animation.
   /// - [onPressed]: The callback to be invoked when the button is pressed.
   /// - [icon]: The icon of the button.
   /// - [text]: The text of the button.
+  /// - [onLongPressed]: The callback to be invoked when the button is pressed longer
+  /// - [compact]: Whether to use reduced padding and content sizing.
   const FloatingAnimatedButton({
     super.key,
     required this.onPressed,
     required this.icon,
     this.text,
     this.onLongPressed,
+    this.compact = false,
   });
 
-  /// The callback to be invoked when the button is pressed.
   final void Function()? onPressed;
-
-  /// The icon of the button.
   final IconData icon;
-
-  /// The text of the button.
   final String? text;
-
   final void Function()? onLongPressed;
+  final bool compact;
 
   @override
   State<FloatingAnimatedButton> createState() => _FloatingAnimatedButtonState();
@@ -91,6 +90,19 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = widget.onPressed == null;
+    final textColor = context.talleeColors.textColor;
+
+    final bgColor = isDisabled
+        ? Color.lerp(textColor, textColor.contrastTextColor, 0.6)
+        : textColor;
+
+    final fgColor = textColor.contrastTextColor;
+    final iconSize = widget.compact ? 20.0 : 26.0;
+    final horizontalPadding = widget.compact ? 14.0 : 20.0;
+    final verticalPadding = widget.compact ? 10.0 : 14.0;
+    final textSize = widget.compact ? 16.0 : 18.0;
+
     return ScaleTransition(
       scale: widget.onPressed == null ? disabledScaleAnimation : scaleAnimation,
       child: GestureDetector(
@@ -101,13 +113,13 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             animationController.forward();
             if (widget.onLongPressed != null) {
               longPressTimer = Timer(const Duration(milliseconds: 400), () {
-                HapticFeedback.heavyImpact();
+                Haptics.heavyImpact();
                 isLongPressing = true;
                 widget.onLongPressed?.call();
                 repeatTimer = Timer.periodic(
                   const Duration(milliseconds: 250),
                   (_) {
-                    HapticFeedback.heavyImpact();
+                    Haptics.heavyImpact();
                     widget.onLongPressed?.call();
                   },
                 );
@@ -121,7 +133,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             disabledAnimationController.reverse();
           } else {
             if (mounted && !isLongPressing) {
-              HapticFeedback.selectionClick();
+              Haptics.selectionClick();
               widget.onPressed?.call();
             }
             isLongPressing = false;
@@ -136,23 +148,26 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: widget.onPressed == null ? Colors.grey : Colors.white,
+            color: bgColor,
             borderRadius: BorderRadius.circular(30),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, size: 26, color: Colors.black),
+              Icon(widget.icon, size: iconSize, color: fgColor),
               if (widget.text != null) ...[
                 const SizedBox(width: 7),
                 Text(
                   widget.text!,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: textSize,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: fgColor,
                   ),
                 ),
               ],

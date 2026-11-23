@@ -1,47 +1,130 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:open_with_app/open_with_app.dart';
 import 'package:provider/provider.dart';
-import 'package:tallee/core/custom_theme.dart';
-import 'package:tallee/core/enums.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:tallee/core/constants/configs.dart';
+import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/self_signed_cert_http_overrides.dart';
+import 'package:tallee/core/theme/app_theme.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/app_scroll_behavior.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/custom_navigation_bar.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/match_receive_view.dart';
+import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
+import 'package:tallee/presentation/views/onboarding_view.dart';
 import 'package:tallee/presentation/views/preview_import_data_view.dart';
 import 'package:tallee/presentation/views/splash_screen.dart';
+import 'package:tallee/presentation/widgets/global_snack_bar.dart';
 import 'package:tallee/services/local_share_service.dart';
+import 'package:tallee/services/package_info_service.dart';
 import 'package:tallee/services/shared_preferences_service.dart';
 import 'package:tallee/state/data_refresh_provider.dart';
-import 'package:tallee/state/group_search_provider.dart';
-import 'package:tallee/state/match_search_provider.dart';
+import 'package:tallee/state/rate_dialog_provider.dart';
+import 'package:tallee/state/search_provider.dart';
+import 'package:tallee/state/showcase_provider.dart';
+import 'package:tallee/state/theme_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  SentryWidgetsFlutterBinding.ensureInitialized();
 
-  if (kDebugMode) HttpOverrides.global = SelfSignedCertHttpOverrides();
+  /* Initializing Services */
+
+  // Only init in prod or dev
+  if (!IS_TEST_ENV) await RATE_MY_APP.init();
 
   await dotenv.load();
+  if (IS_DEV_ENV) HttpOverrides.global = SelfSignedCertHttpOverrides();
   await SharedPreferencesService.init();
-  runApp(
-    MultiProvider(
-      providers: [
-        Provider<AppDatabase>(
-          create: (context) => AppDatabase(),
-          dispose: (context, db) => db.close(),
+  await PackageInfoService.init();
+  ShowcaseView.register(blurValue: 0.4);
+  await SentryFlutter.init(
+    (options) {
+      // error reporting & feedback is disabled in development
+      options.dsn = IS_DEV_ENV ? '' : dotenv.get('SENTRY_DSN', fallback: '');
+      // Disable sending personal identfiable information
+      options.sendDefaultPii = false;
+      // Decrease sampleRate in stable to avoid sending too many events
+      options.tracesSampleRate = 1.0;
+      options.environment = IS_PROD_ENV
+          ? 'production'
+          : IS_TEST_ENV
+          ? 'testing'
+          : 'development';
+
+      // disabled because not supported by glitchtip
+      options.enableAutoSessionTracking = false;
+
+      options.beforeSend = (event, hint) {
+        final skipSnackBar = hint.get('skipSnackBar') == true;
+
+        if (!skipSnackBar &&
+            (event.level == SentryLevel.error ||
+                event.level == SentryLevel.fatal)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final context = Tallee.navigatorKey.currentContext;
+            final overlay = Tallee.navigatorKey.currentState?.overlay;
+            if (context == null || overlay == null) return;
+
+            final loc = AppLocalizations.of(context);
+            GlobalSnackBar.show(
+              overlay,
+              message: loc.unexpected_error,
+              actionLabel: loc.report_error,
+              onActionTap: () async {
+                final result = await Tallee.navigatorKey.currentState
+                    ?.push<bool>(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            FeedbackFormView(associatedEventId: event.eventId),
+                      ),
+                    );
+                if (result == true) {
+                  final currentOverlay =
+                      Tallee.navigatorKey.currentState?.overlay;
+                  if (currentOverlay != null) {
+                    GlobalSnackBar.show(
+                      currentOverlay,
+                      message: loc.thank_you_for_report,
+                    );
+                  }
+                }
+              },
+            );
+          });
+          // Post-frame callbacks only run with a frame; an idle app schedules none.
+          WidgetsBinding.instance.ensureVisualUpdate();
+        }
+        return event;
+      };
+    },
+    appRunner: () => runApp(
+      SentryWidget(
+        child: MultiProvider(
+          providers: [
+            Provider<AppDatabase>(
+              create: (context) => AppDatabase(),
+              dispose: (context, db) => db.close(),
+            ),
+            ChangeNotifierProvider(create: (context) => SearchProvider()),
+            ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
+            ChangeNotifierProvider(create: (context) => ShowcaseProvider()),
+            ChangeNotifierProvider(create: (context) => RateDialogProvider()),
+            ChangeNotifierProvider(create: (context) => ThemeProvider()),
+          ],
+          child: DefaultAssetBundle(
+            bundle: SentryAssetBundle(),
+            child: const Tallee(),
+          ),
         ),
-        ChangeNotifierProvider(create: (context) => MatchSearchProvider()),
-        ChangeNotifierProvider(create: (context) => GroupSearchProvider()),
-        ChangeNotifierProvider(create: (context) => DataRefreshProvider()),
-      ],
-      child: const Tallee(),
+      ),
     ),
   );
 }
@@ -49,15 +132,16 @@ void main() async {
 class Tallee extends StatefulWidget {
   const Tallee({super.key});
 
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   @override
   State<Tallee> createState() => _TalleeState();
 }
 
 class _TalleeState extends State<Tallee> {
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
   /// Receives .tallee files opened via the system.
   final OpenWithApp openWithApp = OpenWithApp();
   StreamSubscription<String>? fileSubscription;
@@ -73,77 +157,80 @@ class _TalleeState extends State<Tallee> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (final supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode) {
-            return supportedLocale;
-          }
-        }
-        return supportedLocales.firstWhere(
-          (locale) => locale.languageCode == 'en',
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
-      themeMode: ThemeMode.dark,
-      theme: ThemeData(
-        // main colors
-        primaryColor: CustomTheme.primaryColor,
-        scaffoldBackgroundColor: CustomTheme.backgroundColor,
-        // themes
-        appBarTheme: CustomTheme.appBarTheme,
-        textTheme: CustomTheme.textTheme,
-        actionIconTheme: CustomTheme.actionIconTheme,
-        inputDecorationTheme: CustomTheme.inputDecorationTheme,
-        searchBarTheme: CustomTheme.searchBarTheme,
-        radioTheme: CustomTheme.radioTheme,
-        // deactivate splash effects
-        splashFactory: NoSplash.splashFactory,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        // color scheme
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: CustomTheme.textColor,
-          brightness: Brightness.dark,
-          primary: CustomTheme.primaryColor,
-          onPrimary: CustomTheme.textColor,
-          surface: CustomTheme.backgroundColor,
-          onSurface: CustomTheme.textColor,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
-      ),
-      home: SplashScreen(onFinished: handleSplashFinished),
-    );
+  void dispose() {
+    fileSubscription?.cancel();
+    super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+    navigatorKey: Tallee.navigatorKey,
+    scaffoldMessengerKey: Tallee.scaffoldMessengerKey,
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      ...GlobalMaterialLocalizations.delegates,
+      ...GlobalCupertinoLocalizations.delegates,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    localeResolutionCallback: (locale, supportedLocales) {
+      for (final supportedLocale in supportedLocales) {
+        if (supportedLocale.languageCode == locale?.languageCode) {
+          return supportedLocale;
+        }
+      }
+      return supportedLocales.firstWhere(
+        (locale) => locale.languageCode == 'en',
+      );
+    },
+    debugShowCheckedModeBanner: false,
+    scrollBehavior: const AppScrollBehavior(),
+    onGenerateTitle: (context) => AppLocalizations.of(context).app_name,
+    themeMode: context.watch<ThemeProvider>().themeMode,
+    navigatorObservers: [SentryNavigatorObserver()],
+    theme: lightTheme,
+    darkTheme: darkTheme,
+    home: SplashScreen(onFinished: handleSplashFinished),
+  );
+
   void handleSplashFinished() {
-    final navigator = navigatorKey.currentState;
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
     final path = pendingImportPath;
     pendingImportPath = null;
 
+    bool isOnboardingCompleted = SharedPreferencesService.onboardingCompleted;
+
+    final targetWidget = !isOnboardingCompleted
+        ? OnboardingView(onCompleted: () => navigateToHomeAndHandleImport(path))
+        : const CustomNavigationBar();
+
     navigator.pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const CustomNavigationBar(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 300),
+        settings: RouteSettings(
+          name: !isOnboardingCompleted
+              ? RouteNames.onboarding
+              : RouteNames.groupView,
+        ),
+        pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    );
+
+    if (isOnboardingCompleted && path != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => openImport(path));
+    }
+  }
+
+  void navigateToHomeAndHandleImport(String? path) {
+    final navigator = Tallee.navigatorKey.currentState;
+    if (navigator == null) return;
+
+    navigator.pushReplacement(
+      adaptivePageRoute(
+        settings: const RouteSettings(name: RouteNames.mainNavigation),
+        builder: (_) => const CustomNavigationBar(),
       ),
     );
 
@@ -161,31 +248,23 @@ class _TalleeState extends State<Tallee> {
   }
 
   /// Pushes the import view for the .tallee file at [path].
-  void openImport(String path) async {
-    final navigator = navigatorKey.currentState;
+  Future<void> openImport(String path) async {
+    final navigator = Tallee.navigatorKey.currentState;
     if (navigator == null) return;
 
-    final (status, _) = await LocalShareService.getDataFromPath(path);
+    final (_) = await LocalShareService.getDataFromPath(path);
 
-    final route = status == ImportResult.matchSchemaDetected
-        ? MatchReceiveView(initialFilePath: path)
-        : PreviewImportDataView(
+    Future.delayed(OPEN_WITH_NAVIGATION_DELAY, () {
+      navigator.push(
+        adaptivePageRoute(
+          settings: const RouteSettings(name: RouteNames.importFile),
+          fullscreenDialog: true,
+          builder: (_) => PreviewImportDataView(
             filePath: path,
-            messengerKey: scaffoldMessengerKey,
-          );
-
-    navigator.push(
-      adaptivePageRoute(
-        settings: RouteSettings(name: path),
-        fullscreenDialog: true,
-        builder: (_) => route,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    fileSubscription?.cancel();
-    super.dispose();
+            messengerKey: Tallee.scaffoldMessengerKey,
+          ),
+        ),
+      );
+    });
   }
 }

@@ -5,10 +5,7 @@ import 'package:drift/drift.dart' hide isNotNull, isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tallee/data/db/database.dart';
-import 'package:tallee/data/models/game.dart';
-import 'package:tallee/data/models/group.dart';
-import 'package:tallee/data/models/player.dart';
-import 'package:tallee/data/models/statistic.dart';
+import 'package:tallee/data/models/models.dart';
 
 void main() {
   late AppDatabase database;
@@ -67,7 +64,6 @@ void main() {
       testStatistic1 = Statistic(
         type: StatisticType.totalWins,
         scopes: [StatisticScope.allPlayers],
-        timeframe: Timeframe.allTime,
         color: AppColor.blue,
       );
       testStatistic2 = Statistic(
@@ -124,6 +120,7 @@ void main() {
         expect(fetched.displayCount, testStatistic1.displayCount);
         expect(fetched.isFavourite, testStatistic1.isFavourite);
         expect(fetched.position, testStatistic1.position);
+        expect(fetched.sortDirection, testStatistic1.sortDirection);
       });
 
       test('Adding and fetching multiple statistics works correctly', () async {
@@ -154,6 +151,7 @@ void main() {
           expect(stat.displayCount, testStat.displayCount);
           expect(stat.isFavourite, testStat.isFavourite);
           expect(stat.position, testStat.position);
+          expect(stat.sortDirection, testStat.sortDirection);
         }
       });
 
@@ -274,6 +272,35 @@ void main() {
           final updated = await database.statisticDao.updateIsFavourite(
             'non-existent-id',
             true,
+          );
+          expect(updated, isFalse);
+
+          final allStats = await database.statisticDao.getAllStatistics();
+          expect(allStats, isEmpty);
+        },
+      );
+
+      test('updatesortDirection() works correctly', () async {
+        await database.statisticDao.addStatistic(statistic: testStatistic1);
+
+        final updated = await database.statisticDao.updatesortDirection(
+          testStatistic1.id,
+          SortDirection.ascending,
+        );
+        expect(updated, isTrue);
+
+        final fetched = await database.statisticDao.getStatisticById(
+          statisticId: testStatistic1.id,
+        );
+        expect(fetched!.sortDirection, SortDirection.ascending);
+      });
+
+      test(
+        'updatesortDirection() does nothing for non-existent statistic',
+        () async {
+          final updated = await database.statisticDao.updatesortDirection(
+            'non-existent-id',
+            SortDirection.ascending,
           );
           expect(updated, isFalse);
 

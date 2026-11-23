@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QrScannerOverlayShape extends ShapeBorder {
   final Color borderColor;
@@ -13,7 +13,14 @@ class QrScannerOverlayShape extends ShapeBorder {
     this.borderRadius = 0,
     this.borderLength = 40,
     this.cutOutSize = 250,
-  });
+  }) : assert(
+         borderLength <= cutOutSize / 2,
+         'borderLength must be less than or equal to half of cutOutSize',
+       ),
+       assert(
+         borderRadius <= borderLength,
+         'borderRadius must be less than or equal to borderLength',
+       );
 
   @override
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;

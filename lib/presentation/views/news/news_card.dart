@@ -1,0 +1,71 @@
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_theme.dart';
+import 'package:tallee/data/dto/news_item.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/widgets/colored_icon_container.dart';
+
+class NewsCard extends StatelessWidget {
+  const NewsCard({super.key, required this.newsItem});
+
+  final NewsItem newsItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context).localeName;
+    final heading =
+        newsItem.localizedHeading[locale] ?? newsItem.localizedHeading['en']!;
+    final text =
+        newsItem.localizedText[locale] ?? newsItem.localizedText['en']!;
+
+    final iconColor = newsItem.iconColor.colorValue(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        spacing: 2,
+        children: [
+          ColoredIconContainer(icon: newsItem.icon, color: iconColor),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  heading,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                DefaultTextStyle.merge(
+                  style: const TextStyle(overflow: TextOverflow.visible),
+                  softWrap: true,
+                  child: MarkdownBody(
+                    data: text,
+                    styleSheet: buildMarkdownSheet(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  MarkdownStyleSheet buildMarkdownSheet(BuildContext context) =>
+      MarkdownStyleSheet.fromTheme(Theme.of(context).toFlutterThemeData())
+          .copyWith(
+            p: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: context.talleeColors.textColor,
+              overflow: TextOverflow.visible,
+            ),
+            strong: TextStyle(
+              color: context.talleeColors.textColor,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.visible,
+            ),
+          );
+}

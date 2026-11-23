@@ -1,6 +1,6 @@
 name: Feature
 about: Erstelle ein Feature-Ticket
-labels: 'Task/Feature'
+labels: 'Type/Feature'
 title: ''
 body:
   - type: textarea

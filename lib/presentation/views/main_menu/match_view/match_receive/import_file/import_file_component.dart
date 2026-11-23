@@ -1,0 +1,189 @@
+import 'dart:core' hide Match;
+
+import 'package:dotted_border/dotted_border.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
+import 'package:tallee/data/models/models.dart';
+import 'package:tallee/l10n/generated/app_localizations.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/choose_match_file_widget.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/import_file/display_selected_file_widget.dart';
+import 'package:tallee/presentation/widgets/buttons/buttons.dart';
+import 'package:tallee/services/remote_share_service.dart';
+
+class ImportFileCard extends StatefulWidget {
+  const ImportFileCard({super.key, this.initialFilePath});
+
+  final String? initialFilePath;
+
+  @override
+  State<ImportFileCard> createState() => _ImportFileCardState();
+}
+
+class _ImportFileCardState extends State<ImportFileCard> {
+  bool successfulImport = false;
+  ImportResult? lastResult;
+  String? fileName;
+
+  late Color dottedBorderColor;
+
+  late ({ImportResult result, Match? match, String filePath}) data;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialFilePath != null) {
+      loadInitialFile();
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        dottedBorderColor = context.talleeColors.boxBorderColor;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    return Column(
+      children: [
+        const SizedBox(height: 50),
+        Padding(
+          padding: AppSpacing.standardMargin.copyWith(left: 25, right: 25),
+          child: GestureDetector(
+            onTap: () async {
+              Haptics.selectionClick();
+              data = await RemoteShareService().chooseFileToImport();
+              processFile(data);
+            },
+            child: DottedBorder(
+              options: RoundedRectDottedBorderOptions(
+                radius: const Radius.circular(12),
+                dashPattern: [10, 5],
+                strokeWidth: 3,
+                color: dottedBorderColor,
+              ),
+              child: Container(
+                width: MediaQuery.widthOf(context) * 0.9,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 40,
+                ),
+                decoration: BoxDecoration(
+                  color: context.talleeColors.boxColor,
+                  borderRadius: AppColors.standardBorderRadiusAll,
+                ),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 150),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) =>
+                          FadeTransition(
+                            opacity: animation,
+                            child: ScaleTransition(
+                              scale: animation.drive(
+                                Tween<double>(
+                                  begin: 0.95,
+                                  end: 1.0,
+                                ).chain(CurveTween(curve: Curves.easeOut)),
+                              ),
+                              child: child,
+                            ),
+                          ),
+                  child: !successfulImport
+                      ? ChooseMatchFileWidget(loc: loc, lastResult: lastResult)
+                      : DisplaySelectedFileWidget(
+                          match: data.match!,
+                          fileName: fileName,
+                          showDetails: false,
+                        ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Text(
+            loc.import_file_instruction,
+            overflow: TextOverflow.visible,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: context.talleeColors.textColor.withAlpha(225),
+              fontSize: 14,
+            ),
+            softWrap: true,
+          ),
+        ),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: BottomAnimatedButton(
+                text: loc.import_match,
+                sizeRelativeToWidth: 0.9,
+                onPressed: successfulImport
+                    ? () {
+                        Navigator.push(
+                          context,
+                          adaptivePageRoute(
+                            settings: const RouteSettings(
+                              name: RouteNames.previewMatchView,
+                            ),
+                            builder: (_) =>
+                                PreviewMatchView(match: data.match!),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Loads a file if initialFilePath was provided
+  Future<void> loadInitialFile() async {
+    final data = await RemoteShareService().loadMatchFromFile(
+      widget.initialFilePath!,
+    );
+    processFile(data);
+  }
+
+  void processFile(
+    ({ImportResult result, Match? match, String filePath}) data,
+  ) {
+    lastResult = data.result;
+    if (data.result.isSuccess) {
+      Haptics.successNotification();
+      setState(() {
+        successfulImport = true;
+        dottedBorderColor = Colors.green;
+      });
+    } else {
+      Haptics.errorNotification();
+      successfulImport = false;
+
+      setState(() {
+        if (!data.result.isCanceled) {
+          dottedBorderColor = Colors.red;
+        } else {
+          dottedBorderColor = context.talleeColors.boxBorderColor;
+        }
+      });
+    }
+    final path = data.filePath;
+    fileName = path.split('/').last;
+  }
+}

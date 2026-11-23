@@ -1,48 +1,85 @@
 import 'dart:core' hide Match;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:tallee/core/constants.dart';
-import 'package:tallee/core/custom_theme.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:tallee/core/constants/constants.dart';
+import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/share_exceptions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/adaptive_page_route.dart';
-import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/associate_games_view.dart';
+import 'package:tallee/presentation/utils/navigation/adaptive_page_route.dart';
+import 'package:tallee/presentation/utils/navigation/route_names.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/data_association/preview_match_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/scanner_error_view.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_receive/status_error_overlay.dart';
 import 'package:tallee/presentation/widgets/qr_scanner_overlay_shape.dart';
 import 'package:tallee/services/remote_share_service.dart';
 
 class QrScanComponent extends StatefulWidget {
-  const QrScanComponent({super.key});
+  const QrScanComponent({super.key, this.tabController});
+
+  final TabController? tabController;
 
   @override
   State<QrScanComponent> createState() => _QrScanComponentState();
 }
 
-class _QrScanComponentState extends State<QrScanComponent> {
-  final MobileScannerController controller = MobileScannerController(
-    formats: [BarcodeFormat.qrCode],
-  );
+class _QrScanComponentState extends State<QrScanComponent>
+    with AutomaticKeepAliveClientMixin {
+  static const _fadeDuration = Duration(milliseconds: 300);
 
-  bool isProcessing = false;
-  String? errorMessage;
+  late final MobileScannerController _controller;
+  late final AppLifecycleListener _lifecycleListener;
+
+  bool _isProcessing = false;
+  String? _errorMessage;
+  bool _isStarting = false;
+  bool _retryAfterSettings = false;
+  bool _cameraPermissionDenied = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  bool get _isVisible =>
+      widget.tabController == null || widget.tabController!.index == 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MobileScannerController(
+      formats: [BarcodeFormat.qrCode],
+      autoStart: false,
+    );
+
+    _lifecycleListener = AppLifecycleListener(
+      onResume: handleAppResume,
+      onPause: _controller.stop,
+    );
+
+    if (_isVisible) {
+      startScanner();
+    }
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    _lifecycleListener.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final loc = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Column(
         children: [
-          Container(
+          DecoratedBox(
             decoration: BoxDecoration(
-              borderRadius: CustomTheme.standardBorderRadiusAll,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 3),
+              borderRadius: AppColors.standardBorderRadiusAll,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
@@ -51,45 +88,96 @@ class _QrScanComponentState extends State<QrScanComponent> {
                 ),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                CustomTheme.standardBorderRadius - 3,
+            child: DecoratedBox(
+              position: DecorationPosition.foreground,
+              decoration: BoxDecoration(
+                borderRadius: AppColors.standardBorderRadiusAll,
+                border: Border.all(
+                  color: context.talleeColors.boxBorderColor,
+                  width: 3,
+                ),
               ),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final scanAreaSize = constraints.maxWidth * 0.65;
+              child: ClipRRect(
+                borderRadius: AppColors.standardBorderRadiusAll,
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final scanAreaSize = constraints.maxWidth * 0.65;
 
-                    return Stack(
-                      children: [
-                        MobileScanner(
-                          tapToFocus: true,
-                          controller: controller,
-                          fit: BoxFit.cover,
-                          onDetect: isProcessing ? null : handleQrCodeDetection,
-                        ),
-                        // Scanner Overlay
-                        Positioned.fill(
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              shape: QrScannerOverlayShape(
-                                borderColor: CustomTheme.primaryColor,
-                                borderRadius: 20,
-                                borderLength: 40,
-                                borderWidth: 6,
-                                cutOutSize: scanAreaSize,
+                      return ValueListenableBuilder<MobileScannerState>(
+                        valueListenable: _controller,
+                        builder: (context, state, scanner) {
+                          final errorCode = _cameraPermissionDenied
+                              ? MobileScannerErrorCode.permissionDenied
+                              : state.error?.errorCode;
+                          final showError = errorCode != null;
+
+                          return Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              const ColoredBox(color: Colors.black),
+                              AnimatedOpacity(
+                                opacity:
+                                    errorCode == null && state.isInitialized
+                                    ? 1.0
+                                    : 0.0,
+                                duration: _fadeDuration,
+                                curve: Curves.easeInOut,
+                                child: scanner,
                               ),
-                            ),
-                          ),
+                              AnimatedOpacity(
+                                opacity: showError ? 0.0 : 1.0,
+                                duration: _fadeDuration,
+                                curve: Curves.easeInOut,
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: QrScannerOverlayShape(
+                                      borderColor: AppColors.primaryColor,
+                                      borderRadius: 20,
+                                      borderWidth: 6,
+                                      cutOutSize: scanAreaSize,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              AnimatedSwitcher(
+                                duration: _fadeDuration,
+                                switchInCurve: Curves.easeInOut,
+                                switchOutCurve: Curves.easeInOut,
+                                layoutBuilder: (child, previousChildren) =>
+                                    Stack(
+                                      fit: StackFit.expand,
+                                      children: [...previousChildren, ?child],
+                                    ),
+                                child: showError
+                                    ? ScannerErrorView(
+                                        key: const ValueKey('scannerError'),
+                                        errorCode: errorCode,
+                                        onOpenSettingsPressed:
+                                            handleSettingsButtonPress,
+                                      )
+                                    : const SizedBox.expand(
+                                        key: ValueKey('scannerRunning'),
+                                      ),
+                              ),
+                              StatusErrorOverlay(
+                                isProcessing: _isProcessing,
+                                errorMessage: _errorMessage,
+                              ),
+                            ],
+                          );
+                        },
+                        child: MobileScanner(
+                          tapToFocus: true,
+                          controller: _controller,
+                          onDetect: handleQrCodeDetection,
+                          errorBuilder: (context, error) =>
+                              const SizedBox.shrink(),
                         ),
-                        StatusErrorOverlay(
-                          isProcessing: isProcessing,
-                          errorMessage: errorMessage,
-                        ),
-                      ],
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -97,16 +185,19 @@ class _QrScanComponentState extends State<QrScanComponent> {
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-              color: CustomTheme.onBoxColor,
-              border: Border.all(color: CustomTheme.boxBorderColor, width: 2),
-              borderRadius: CustomTheme.standardBorderRadiusAll,
+              color: context.talleeColors.onBoxColor,
+              border: Border.all(
+                color: context.talleeColors.boxBorderColor,
+                width: 2,
+              ),
+              borderRadius: AppColors.standardBorderRadiusAll,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Text(
               loc.scan_qr_receive_instruction,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: CustomTheme.textColor,
+              style: TextStyle(
+                color: context.talleeColors.textColor,
                 fontSize: 14,
                 overflow: TextOverflow.visible,
               ),
@@ -118,30 +209,97 @@ class _QrScanComponentState extends State<QrScanComponent> {
     );
   }
 
+  Future<void> startScanner() async {
+    if (_isStarting || _controller.value.isRunning) return;
+    _isStarting = true;
+    try {
+      var permissionStatus = await Permission.camera.status;
+      if (!permissionStatus.isGranted) {
+        if (permissionStatus.isDenied) {
+          permissionStatus = await Permission.camera.request();
+        }
+
+        if (!permissionStatus.isGranted) {
+          await _controller.stop();
+          if (mounted) {
+            setState(() => _cameraPermissionDenied = true);
+          }
+          return;
+        }
+      }
+
+      if (mounted && _cameraPermissionDenied) {
+        setState(() => _cameraPermissionDenied = false);
+      }
+
+      if (!_controller.value.isRunning) {
+        await _controller.start();
+      }
+    } on MobileScannerException {
+      // The scanner widget renders the error through its errorBuilder.
+    } finally {
+      _isStarting = false;
+    }
+  }
+
+  /// Restarts the scanner when the app returns to the foreground.
+  Future<void> handleAppResume() async {
+    if (!_isVisible) return;
+    if (_controller.value.error != null &&
+        !_retryAfterSettings &&
+        !_cameraPermissionDenied) {
+      return;
+    }
+
+    _retryAfterSettings = false;
+    await startScanner();
+  }
+
+  Future<void> handleSettingsButtonPress() async {
+    _retryAfterSettings = true;
+    await openAppSettings();
+  }
+
   Future<void> handleQrCodeDetection(BarcodeCapture result) async {
-    final token = result.barcodes.first.rawValue;
-    if (token == null || isProcessing) return;
+    final barcodes = result.barcodes;
+    if (barcodes.isEmpty || _isProcessing || !mounted) return;
+
+    final token = barcodes.first.rawValue;
+    if (token == null) return;
 
     setState(() {
-      isProcessing = true;
-      errorMessage = null;
+      _isProcessing = true;
+      _errorMessage = null;
     });
 
-    await Future.delayed(Constants.MINIMUM_SKELETON_DURATION);
+    await _controller.stop();
+
+    await Future.delayed(MINIMUM_SKELETON_DURATION);
 
     try {
-      final loadedMatch = await RemoteShareService().getMatchByToken(token);
-      if (!mounted) return;
+      final response = await RemoteShareService().getMatchByToken(token);
 
-      await Navigator.of(context).push(
-        adaptivePageRoute(
-          builder: (_) => AssociateGamesView(match: loadedMatch),
-        ),
-      );
+      // If an import error occured
+      if (!response.result.isSuccess && mounted) {
+        final message = response.result.toLocalizedMatchImportString(context);
+        await displayErrorMessage(message);
+      } else {
+        final loadedMatch = response.match!;
+        if (!mounted) return;
+
+        await Navigator.of(context).push(
+          adaptivePageRoute(
+            settings: const RouteSettings(name: RouteNames.previewMatchView),
+            builder: (_) => PreviewMatchView(match: loadedMatch),
+            fullscreenDialog: true,
+          ),
+        );
+      }
 
       if (mounted) {
+        await startScanner();
         setState(() {
-          isProcessing = false;
+          _isProcessing = false;
         });
       }
     } catch (error) {
@@ -155,91 +313,30 @@ class _QrScanComponentState extends State<QrScanComponent> {
       } else if (error is ServerException) {
         message = (error.statusCode == 404 || error.statusCode == 410)
             ? loc.invalid_qr_code
-            : loc.server_error(error.statusCode);
+            : loc.server_error;
       } else if (error is ParsingException) {
         message = loc.qr_code_parsing_error;
       } else {
         message = loc.error_loading_match(error.toString());
       }
-      setState(() => errorMessage = message);
 
-      await Future.delayed(const Duration(seconds: 4));
-
-      if (mounted) {
-        setState(() {
-          isProcessing = false;
-          errorMessage = null;
-        });
-      }
+      await displayErrorMessage(message);
     }
   }
-}
 
-class StatusErrorOverlay extends StatelessWidget {
-  final bool isProcessing;
-  final String? errorMessage;
+  /// Displays the [message] for 4 seconds and then resets the state.
+  Future<void> displayErrorMessage(String message) async {
+    setState(() => _errorMessage = message);
 
-  const StatusErrorOverlay({
-    super.key,
-    required this.isProcessing,
-    this.errorMessage,
-  });
+    await Future.delayed(const Duration(seconds: 4));
 
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context);
-    return Positioned.fill(
-      child: AnimatedOpacity(
-        opacity: isProcessing ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        child: IgnorePointer(
-          ignoring: !isProcessing,
-          child: Container(
-            color: Colors.black.withValues(alpha: 0.7),
-            padding: const EdgeInsets.all(20),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (errorMessage == null) ...[
-                    const CircularProgressIndicator(
-                      color: CustomTheme.primaryColor,
-                      strokeWidth: 4,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      loc.loading_match,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ] else ...[
-                    const Icon(
-                      Icons.error_outline,
-                      color: Colors.redAccent,
-                      size: 40,
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        overflow: TextOverflow.visible,
-                      ),
-                      softWrap: true,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+    if (mounted) {
+      await startScanner();
+
+      setState(() {
+        _isProcessing = false;
+        _errorMessage = null;
+      });
+    }
   }
 }
