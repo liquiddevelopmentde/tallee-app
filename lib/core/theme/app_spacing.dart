@@ -21,6 +21,9 @@ abstract final class AppSpacing {
     bottom: 10,
   );
 
+  /// Padding inside tiles from tile edge to content.
+  static const EdgeInsets tilePadding = EdgeInsets.all(12);
+
   /// Bottom padding for scrollable lists so the last item isn't covered by
   /// floating buttons or the navigation bar.
   static EdgeInsets listViewPadding(BuildContext context) =>

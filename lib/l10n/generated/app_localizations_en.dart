@@ -60,9 +60,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get best_score => 'Best score';
 
   @override
-  String get cancel => 'Cancel';
-
-  @override
   String get camera_error => 'An error occurred while accessing the camera.';
 
   @override
@@ -72,6 +69,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get camera_unsupported =>
       'Scanning QR codes is not supported on this device.';
+
+  @override
+  String get cancel => 'Cancel';
 
   @override
   String get choose_color_description => 'Choose the color for your game.';
@@ -196,9 +196,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get danger_zone => 'Danger Zone';
-
-  @override
-  String get data => 'Data';
 
   @override
   String get data_backup => 'Data & Backup';
@@ -345,9 +342,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String error_loading_match(String error) {
     return 'Error loading match: $error';
   }
-
-  @override
-  String get error_loading_privacy_policy => 'Error loading privacy policy';
 
   @override
   String get error_reading_file => 'Error reading file';
@@ -857,9 +851,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get random_color => 'Random color';
-
-  @override
-  String get remaining => 'remaining';
 
   @override
   String get remove_from_favourites => 'Remove from favourites';
