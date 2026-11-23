@@ -102,22 +102,9 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                 final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => CustomAlertDialog(
-                    title: groupsToDelete.isEmpty
-                        ? loc.delete_player
-                        : loc.delete_player_and_groups_title(
-                            groupsToDelete.length,
-                          ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        Text(
-                          loc.delete_player_warning_details,
-                          overflow: TextOverflow.visible,
-                        ),
-                        if (groupsToDelete.isNotEmpty)
-                          Text(
+                    title: loc.delete_player,
+                    content: groupsToDelete.isNotEmpty
+                        ? Text(
                             loc.delete_player_warning_groups_deleted(
                               groupsToDelete.length,
                               groupsToDelete
@@ -125,9 +112,11 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
                                   .join(', '),
                             ),
                             overflow: TextOverflow.visible,
+                          )
+                        : Text(
+                            loc.delete_player_warning_details,
+                            overflow: TextOverflow.visible,
                           ),
-                      ],
-                    ),
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
