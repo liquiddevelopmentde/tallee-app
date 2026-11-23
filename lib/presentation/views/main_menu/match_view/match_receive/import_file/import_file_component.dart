@@ -30,8 +30,6 @@ class _ImportFileCardState extends State<ImportFileCard> {
   ImportResult? lastResult;
   String? fileName;
 
-  late Color dottedBorderColor;
-
   late ({ImportResult result, Match? match, String filePath}) data;
 
   @override
@@ -40,12 +38,15 @@ class _ImportFileCardState extends State<ImportFileCard> {
     if (widget.initialFilePath != null) {
       loadInitialFile();
     }
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        dottedBorderColor = context.talleeColors.boxBorderColor;
-      });
-    });
+  Color borderColor(BuildContext context) {
+    final colors = context.talleeColors;
+    if (successfulImport) return colors.successColor;
+    if (lastResult == null || lastResult!.isCanceled) {
+      return colors.boxBorderColor;
+    }
+    return colors.errorColor;
   }
 
   @override
@@ -67,7 +68,7 @@ class _ImportFileCardState extends State<ImportFileCard> {
                 radius: const Radius.circular(12),
                 dashPattern: [10, 5],
                 strokeWidth: 3,
-                color: dottedBorderColor,
+                color: borderColor(context),
               ),
               child: Container(
                 width: MediaQuery.widthOf(context) * 0.9,
@@ -164,26 +165,16 @@ class _ImportFileCardState extends State<ImportFileCard> {
   void processFile(
     ({ImportResult result, Match? match, String filePath}) data,
   ) {
-    lastResult = data.result;
-    if (data.result.isSuccess) {
+    final success = data.result.isSuccess;
+    if (success) {
       Haptics.successNotification();
-      setState(() {
-        successfulImport = true;
-        dottedBorderColor = Colors.green;
-      });
     } else {
       Haptics.errorNotification();
-      successfulImport = false;
-
-      setState(() {
-        if (!data.result.isCanceled) {
-          dottedBorderColor = Colors.red;
-        } else {
-          dottedBorderColor = context.talleeColors.boxBorderColor;
-        }
-      });
     }
-    final path = data.filePath;
-    fileName = path.split('/').last;
+    setState(() {
+      lastResult = data.result;
+      successfulImport = success;
+      fileName = data.filePath.split('/').last;
+    });
   }
 }
