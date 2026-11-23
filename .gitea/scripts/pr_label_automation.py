@@ -114,6 +114,26 @@ def sync_wip(pr: int, action: str, title: str) -> None:
             add_label(pr, IN_PROGRESS)
 
 
+def has_reviewers(pr: int, author: str) -> bool:
+    """
+    Check whether a pull request still has any reviewer: either an open review request
+    or a reviewer who already submitted a (non-dismissed) verdict.
+
+    :param pr: The pull request number.
+    :param author: The login of the pull request author, whose own reviews are ignored.
+    :returns: True if at least one reviewer remains.
+    """
+    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+    if pull.get("requested_reviewers") or pull.get("requested_reviewers_teams"):
+        return True
+    return any(
+        review.get("state") in ("APPROVED", "REQUEST_CHANGES", "REQUEST_REVIEW")
+        and not review.get("dismissed")
+        and (review.get("user") or {}).get("login") != author
+        for review in get_all(f"/repos/{REPO}/pulls/{pr}/reviews")
+    )
+
+
 def target_label(event: str, action: str, payload: Dict[str, Any]) -> Optional[str]:
     """
     Map the incoming event to the single workflow label the pull request should have.
@@ -168,6 +188,12 @@ def main() -> None:
         sync_wip(pr, action, title)
 
     target: Optional[str] = target_label(event, action, payload)
+
+    # A reviewer stepping out only sends the PR back to "In Progress" if nobody is left
+    # to review it; otherwise the current state (e.g. "Revision") stays as it is.
+    if target == IN_PROGRESS and action == "review_request_removed" and has_reviewers(pr, pull["user"]["login"]):
+        target = None
+
     if target is None:
         print(f"no state change for {event}/{action}")
         return
