@@ -416,6 +416,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_deleted => 'Spielvorlage gelöscht';
+
+  @override
   String get game_filter_description =>
       'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
 
@@ -525,6 +528,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get last_90_days => 'Letzte 90 Tage';
+
+  @override
+  String get last_played => 'Zuletzt gespielt';
 
   @override
   String get last_year => 'Letztes Jahr';

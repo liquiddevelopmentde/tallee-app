@@ -409,6 +409,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_associated => 'Game successfully associated';
 
   @override
+  String get game_deleted => 'Game deleted';
+
+  @override
   String get game_filter_description =>
       'All statistics will be displayed that relate to one of the selected game templates.';
 
@@ -518,6 +521,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get last_90_days => 'Last 90 days';
+
+  @override
+  String get last_played => 'Last played';
 
   @override
   String get last_year => 'Last year';
