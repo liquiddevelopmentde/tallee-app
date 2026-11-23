@@ -5,10 +5,6 @@ on:
   pull_request_review:
     types: [ submitted ]
 
-concurrency:
-  group: pr-label-automation-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
-
 jobs:
   sync-workflow-label:
     name: "Sync workflow label"
