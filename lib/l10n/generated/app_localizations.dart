@@ -918,7 +918,7 @@ abstract class AppLocalizations {
   /// No description provided for @highest_score_description.
   ///
   /// In en, this message translates to:
-  /// **'Count points – highest score wins.'**
+  /// **'The highest score wins.'**
   String get highest_score_description;
 
   /// No description provided for @import_canceled.
@@ -1074,7 +1074,7 @@ abstract class AppLocalizations {
   /// No description provided for @lives_description.
   ///
   /// In en, this message translates to:
-  /// **'Track lives – players with lives left win.'**
+  /// **'Whoever has at least one life left at the end wins.'**
   String get lives_description;
 
   /// No description provided for @loading.
@@ -1098,7 +1098,7 @@ abstract class AppLocalizations {
   /// No description provided for @loser_description.
   ///
   /// In en, this message translates to:
-  /// **'Choose the loser after the match.'**
+  /// **'Choose a loser.'**
   String get loser_description;
 
   /// No description provided for @lowest_score.
@@ -1110,7 +1110,7 @@ abstract class AppLocalizations {
   /// No description provided for @lowest_score_description.
   ///
   /// In en, this message translates to:
-  /// **'Count points – lowest score wins.'**
+  /// **'The lowest score wins.'**
   String get lowest_score_description;
 
   /// No description provided for @manage_members.
@@ -2274,7 +2274,7 @@ abstract class AppLocalizations {
   /// No description provided for @winner_description.
   ///
   /// In en, this message translates to:
-  /// **'Choose the winner(s) after the match.'**
+  /// **'Choose one or more winners.'**
   String get winner_description;
 
   /// No description provided for @winrate.
