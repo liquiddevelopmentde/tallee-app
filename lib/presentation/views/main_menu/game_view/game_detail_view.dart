@@ -134,7 +134,10 @@ class _GameDetailViewState extends State<GameDetailView> {
                 const SizedBox(height: 20),
 
                 // Statistics
-                DetailTile.rich(rows: statisticRows(context)),
+                DetailTile.rich(
+                  rows: statisticRows(context),
+                  isLoading: isLoading,
+                ),
 
                 const SizedBox(height: 15),
 
@@ -180,22 +183,15 @@ class _GameDetailViewState extends State<GameDetailView> {
   }
 
   /// The rows shown in the statistics tile, derived from [matches].
-  List<({String label, InlineSpan value, bool isLoading})> statisticRows(
-    BuildContext context,
-  ) {
+  List<({String label, InlineSpan value})> statisticRows(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
     return [
       (
         label: loc.played_matches,
         value: TextSpan(text: matches.length.toString()),
-        isLoading: isLoading,
       ),
-      (
-        label: loc.best_player,
-        value: bestPlayerSpan(context),
-        isLoading: isLoading,
-      ),
+      (label: loc.best_player, value: bestPlayerSpan(context)),
       (
         label: loc.last_played,
         value: TextSpan(
@@ -203,7 +199,6 @@ class _GameDetailViewState extends State<GameDetailView> {
               ? '-'
               : matches.first.createdAt.toMediumDate(context),
         ),
-        isLoading: isLoading,
       ),
     ];
   }
@@ -211,9 +206,7 @@ class _GameDetailViewState extends State<GameDetailView> {
   /// The players with the most MVP titles across [matches], or `-` if none.
   InlineSpan bestPlayerSpan(BuildContext context) {
     final names = bestPlayerNames();
-    if (names.isEmpty) {
-      return TextSpan(text: isLoading ? 'Skeleton Player' : '-');
-    }
+    if (names.isEmpty) return const TextSpan(text: '-');
 
     return WidgetSpan(
       alignment: PlaceholderAlignment.middle,

@@ -41,7 +41,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   int totalMatches = 0;
 
   /// The best player in this group
-  String bestPlayer = 'Skeleton Player';
+  String bestPlayer = 'Skeleton';
 
   @override
   void initState() {
@@ -153,22 +153,14 @@ class _GroupDetailViewState extends State<GroupDetailView> {
 
                 // Statistics
                 DetailTile(
+                  isLoading: isLoading,
                   rows: [
                     (
                       label: loc.members,
                       value: group.members.length.toString(),
-                      isLoading: false,
                     ),
-                    (
-                      label: loc.played_matches,
-                      value: totalMatches.toString(),
-                      isLoading: isLoading,
-                    ),
-                    (
-                      label: loc.best_player,
-                      value: bestPlayer,
-                      isLoading: isLoading,
-                    ),
+                    (label: loc.played_matches, value: totalMatches.toString()),
+                    (label: loc.best_player, value: bestPlayer),
                   ],
                 ),
 

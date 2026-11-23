@@ -7,23 +7,30 @@ import 'package:tallee/presentation/widgets/tiles/info_tile/info_tile.dart';
 class DetailTile extends StatelessWidget {
   /// Creates a detail tile with plain text values.
   ///
-  /// Each row is a `({label, value, isLoading})` record; `isLoading` shows the
-  /// value as a skeleton while it is still being loaded.
+  /// Each row is a `({label, value})` record. While [isLoading] is true, all
+  /// values are shown as skeletons.
   DetailTile({
     super.key,
-    required List<({String label, String value, bool isLoading})> rows,
+    required List<({String label, String value})> rows,
+    this.isLoading = false,
   }) : rows = [
-         for (final (:label, :value, :isLoading) in rows)
-           (label: label, value: TextSpan(text: value), isLoading: isLoading),
+         for (final (:label, :value) in rows)
+           (label: label, value: TextSpan(text: value)),
        ];
 
   /// Creates a detail tile whose values can be styled individually.
   ///
-  /// Each row is a `({label, value, isLoading})` record; `isLoading` shows the
-  /// value as a skeleton while it is still being loaded.
-  const DetailTile.rich({super.key, required this.rows});
+  /// Each row is a `({label, value})` record. While [isLoading] is true, all
+  /// values are shown as skeletons.
+  const DetailTile.rich({
+    super.key,
+    required this.rows,
+    this.isLoading = false,
+  });
 
-  final List<({String label, InlineSpan value, bool isLoading})> rows;
+  final List<({String label, InlineSpan value})> rows;
+
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -31,26 +38,25 @@ class DetailTile extends StatelessWidget {
     return InfoTile(
       title: loc.statistics,
       leadingWidget: const Icon(Icons.bar_chart),
-      content: Column(
-        children: [
-          for (final (:label, :value, :isLoading) in rows)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Row(
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.talleeColors.textColor,
+      content: AppSkeleton(
+        enabled: isLoading,
+        fixLayoutBuilder: true,
+        child: Column(
+          children: [
+            for (final (:label, :value) in rows)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  children: [
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: context.talleeColors.textColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: AppSkeleton(
-                      enabled: isLoading,
-                      fixLayoutBuilder: true,
-                      alignment: Alignment.centerRight,
+                    const SizedBox(width: 16),
+                    Expanded(
                       child: Text.rich(
                         value,
                         maxLines: 1,
@@ -62,11 +68,11 @@ class DetailTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
