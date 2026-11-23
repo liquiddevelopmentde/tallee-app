@@ -10,6 +10,23 @@ String getNameCountText(Player player) {
   return '';
 }
 
+/// Joins [names] into a single line, replacing the overflow with a `+N`
+/// suffix as soon as adding another name would exceed [maxChars].
+String formatNameList(List<String> names, {int maxChars = 40}) {
+  var result = '';
+  for (var i = 0; i < names.length; i++) {
+    final separator = i == 0 ? '' : ', ';
+    final candidate = '$result$separator${names[i]}';
+    final remaining = names.length - i - 1;
+    final suffix = remaining > 0 ? ' +$remaining' : '';
+    if (candidate.length + suffix.length > maxChars && i > 0) {
+      return '$result +${names.length - i}';
+    }
+    result = candidate;
+  }
+  return result;
+}
+
 /// Builds a text span that renders a player's name together with the
 /// `#nameCount` suffix.
 InlineSpan buildPlayerNameCountSpan(

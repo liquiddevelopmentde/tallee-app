@@ -195,6 +195,24 @@ abstract class AppLocalizations {
   /// **'Best score'**
   String get best_score;
 
+  /// No description provided for @camera_error.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while accessing the camera.'**
+  String get camera_error;
+
+  /// No description provided for @camera_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission is required to scan QR codes. Please allow camera access in your device settings.'**
+  String get camera_permission_denied;
+
+  /// No description provided for @camera_unsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning QR codes is not supported on this device.'**
+  String get camera_unsupported;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -440,12 +458,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Danger Zone'**
   String get danger_zone;
-
-  /// No description provided for @data.
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
 
   /// No description provided for @data_backup.
   ///
@@ -693,12 +705,6 @@ abstract class AppLocalizations {
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
 
-  /// No description provided for @error_loading_privacy_policy.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading privacy policy'**
-  String get error_loading_privacy_policy;
-
   /// No description provided for @error_reading_file.
   ///
   /// In en, this message translates to:
@@ -813,6 +819,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game deleted'**
+  String get game_deleted;
+
   /// No description provided for @game_filter_description.
   ///
   /// In en, this message translates to:
@@ -879,12 +891,6 @@ abstract class AppLocalizations {
   /// **'Group name'**
   String get group_name;
 
-  /// No description provided for @group_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Group Profile'**
-  String get group_profile;
-
   /// No description provided for @groups.
   ///
   /// In en, this message translates to:
@@ -902,6 +908,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highest Score'**
   String get highest_score;
+
+  /// No description provided for @highest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The highest score wins.'**
+  String get highest_score_description;
 
   /// No description provided for @import_canceled.
   ///
@@ -1017,6 +1029,12 @@ abstract class AppLocalizations {
   /// **'Last 90 days'**
   String get last_90_days;
 
+  /// No description provided for @last_played.
+  ///
+  /// In en, this message translates to:
+  /// **'Last played'**
+  String get last_played;
+
   /// No description provided for @last_year.
   ///
   /// In en, this message translates to:
@@ -1053,6 +1071,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{Life} other{Lives}}'**
   String lives(int count);
 
+  /// No description provided for @lives_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Whoever has at least one life left at the end wins.'**
+  String get lives_description;
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:
@@ -1071,17 +1095,35 @@ abstract class AppLocalizations {
   /// **'Loser'**
   String get loser;
 
+  /// No description provided for @loser_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a loser.'**
+  String get loser_description;
+
   /// No description provided for @lowest_score.
   ///
   /// In en, this message translates to:
   /// **'Lowest Score'**
   String get lowest_score;
 
+  /// No description provided for @lowest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The lowest score wins.'**
+  String get lowest_score_description;
+
   /// No description provided for @manage_members.
   ///
   /// In en, this message translates to:
   /// **'Manage Members'**
   String get manage_members;
+
+  /// No description provided for @match.
+  ///
+  /// In en, this message translates to:
+  /// **'Match'**
+  String get match;
 
   /// No description provided for @match_deleted.
   ///
@@ -1106,12 +1148,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matches can only be shared once they have ended.'**
   String get match_not_ended_share_warning;
-
-  /// No description provided for @match_profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Match Profile'**
-  String get match_profile;
 
   /// No description provided for @match_receive.
   ///
@@ -1479,6 +1515,12 @@ abstract class AppLocalizations {
   /// **'Placement'**
   String get placement;
 
+  /// No description provided for @placement_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank all players from first to last.'**
+  String get placement_description;
+
   /// No description provided for @played_matches.
   ///
   /// In en, this message translates to:
@@ -1556,12 +1598,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Random color'**
   String get random_color;
-
-  /// No description provided for @remaining.
-  ///
-  /// In en, this message translates to:
-  /// **'remaining'**
-  String get remaining;
 
   /// No description provided for @remove_from_favourites.
   ///
@@ -2228,6 +2264,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Winner'**
   String get winner;
+
+  /// No description provided for @winner_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more winners.'**
+  String get winner_description;
 
   /// No description provided for @winrate.
   ///

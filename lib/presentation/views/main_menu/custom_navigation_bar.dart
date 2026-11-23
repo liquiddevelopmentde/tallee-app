@@ -472,13 +472,11 @@ class _CustomNavigationBarState extends State<CustomNavigationBar>
           final db = context.read<AppDatabase>();
           final stat1 = Statistic(
             type: StatisticType.totalWins,
-            color: AppColor.orange,
             displayCount: 3,
             scopes: [StatisticScope.allPlayers],
           );
           final stat2 = Statistic(
             type: StatisticType.totalMatches,
-            color: AppColor.orange,
             displayCount: 3,
             scopes: [StatisticScope.allPlayers],
           );

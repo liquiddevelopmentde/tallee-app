@@ -44,10 +44,7 @@ class MatchProfileBody extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     final content = ListView(
-      padding: EdgeInsets.only(
-        left: 12,
-        right: 12,
-        top: 20,
+      padding: AppSpacing.detailViewPadding.copyWith(
         bottom: isPreview ? 20 : 100,
       ),
       children: [
@@ -79,40 +76,18 @@ class MatchProfileBody extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: context.talleeColors.textColor),
           textAlign: TextAlign.center,
         ),
-        /*      const SizedBox(height: 10),
 
-        // Game and Group Info
-        Column(
-          spacing: 2,
-          children: [
-            Row(
-              spacing: 8,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(GAME_ICON, size: 22),
-                Text(
-                  match.game.name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
+        const SizedBox(height: 15),
 
-            // Group Name
-            if (match.group != null) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 8,
-                children: [
-                  const Icon(GROUP_ICON),
-                  Text(
-                    '${match.group!.name}${match.extraPlayerCount}',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),*/
+        // Results
+        InfoTile(
+          title: loc.results,
+          leadingWidget: const Icon(Icons.emoji_events),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: getResultWidget(context, loc),
+          ),
+        ),
 
         const SizedBox(height: 15),
 
@@ -193,16 +168,6 @@ class MatchProfileBody extends StatelessWidget {
         ],
 
         const SizedBox(height: 15),
-
-        // Results
-        InfoTile(
-          title: loc.results,
-          leadingWidget: const Icon(Icons.emoji_events),
-          content: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            child: getResultWidget(context, loc),
-          ),
-        ),
 
         if (isPreview) ...[
           const SizedBox(height: 15),

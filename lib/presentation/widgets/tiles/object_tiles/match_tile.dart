@@ -60,7 +60,7 @@ class _MatchTileState extends State<MatchTile> {
       child: Container(
         margin: AppSpacing.tileMargin,
         width: widget.width,
-        padding: const EdgeInsets.all(12),
+        padding: AppSpacing.tilePadding,
         decoration: context.standardBoxDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

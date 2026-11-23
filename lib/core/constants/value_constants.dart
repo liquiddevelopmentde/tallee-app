@@ -6,6 +6,10 @@ const String LIQUID_WEBSITE_URL = 'https://liquid-dev.de/';
 /// URL to the legal section on the LIQUID website
 const String LIQUID_WEBSITE_LEGAL_URL = 'https://liquid-dev.de/legal';
 
+/// URL to the Tallee privacy policy on the LIQUID website
+const String LIQUID_WEBSITE_TALLEE_PRIVACY_POLICY_URL =
+    'https://liquid-dev.de/tallee/privacy';
+
 /// URL to the LIQUID github organization profile
 const String LIQUID_GITHUB_URL = 'https://github.com/liquiddevelopmentde';
 

@@ -44,7 +44,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   /// List of initially selected players (when editing a group)
   List<Player> initialSelectedPlayers = [];
 
-  AppColor? selectedColor = AppColor.orange;
+  AppColor? selectedColor;
 
   AppColor? lastSelectedColor;
 
@@ -263,7 +263,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         newPlayers: selectedPlayers,
       );
       await deleteObsoleteMatchGroupRelations();
-      widget.onMembersChanged?.call();
     }
 
     return (success, updatedGroup);

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -11,7 +10,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -69,7 +67,9 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   int selectedLives = 3;
   Ruleset? selectedRuleset = Ruleset.winner;
-  AppColor? selectedColor = AppColor.orange;
+
+  AppColor? selectedColor;
+  AppColor? lastSelectedColor;
 
   bool get isEditMode => widget.gameToEdit != null;
 
@@ -153,14 +153,6 @@ class _CreateGameViewState extends State<CreateGameView> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(isEditMode ? loc.edit_game : loc.create_game),
-              actions: [
-                if (isEditMode)
-                  HapticIconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async =>
-                        await showDeletePopup(scaffoldContext),
-                  ),
-              ],
             ),
             // Game name input field
             body: SafeArea(
@@ -214,11 +206,16 @@ class _CreateGameViewState extends State<CreateGameView> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8,
                         children: [
-                          ColoredCircle(color: selectedColor),
-                          Text(
-                            selectedColor!.toLocalizedString(context),
-                            textAlign: TextAlign.right,
-                          ),
+                          if (selectedColor == null) ...[
+                            const ColoredCircle(isRandomColor: true),
+                            Text(loc.random_color, textAlign: TextAlign.right),
+                          ] else ...[
+                            ColoredCircle(color: selectedColor),
+                            Text(
+                              selectedColor!.toLocalizedString(context),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -246,8 +243,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                       text: isEditMode ? loc.edit_game : loc.create_game,
                       onPressed:
                           gameNameController.text.trim().isNotEmpty &&
-                              selectedRuleset != null &&
-                              selectedColor != null
+                              selectedRuleset != null
                           ? () async {
                               if (!isEditMode &&
                                   showcaseProvider.shouldShowShowcase(
@@ -269,7 +265,15 @@ class _CreateGameViewState extends State<CreateGameView> {
                                 description: gameDescriptionController.text
                                     .trim(),
                                 ruleset: selectedRuleset!,
-                                color: selectedColor!,
+                                color:
+                                    selectedColor ??
+                                    AppColor.randomColor(
+                                      exclude: [
+                                        lastSelectedColor,
+                                        if (isEditMode)
+                                          widget.gameToEdit!.color,
+                                      ],
+                                    ),
                               );
                               if (isEditMode) {
                                 await handleGameUpdate(newGame);
@@ -279,7 +283,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                               widget.onGameChanged.call();
                               if (context.mounted) {
                                 Navigator.of(context)
-                                    .pop((game: newGame, delete: false));
+                                    .pop((updatedGame: newGame));
                               }
                             }
                           : null,
@@ -345,6 +349,8 @@ class _CreateGameViewState extends State<CreateGameView> {
         leadingBuilder: (Ruleset rs) => Icon(rs.icon, size: 22),
         labelBuilder: (BuildContext ctx, Ruleset rs) =>
             rs.toLocalizedString(ctx),
+        subtitleBuilder: (BuildContext ctx, Ruleset rs) =>
+            rs.toLocalizedDescription(ctx),
         onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
       ),
     );
@@ -354,75 +360,24 @@ class _CreateGameViewState extends State<CreateGameView> {
   void showColorSheet(AppLocalizations loc) {
     SelectionSheet.show(
       context: context,
-      builder: (BuildContext context) => SelectionSheet<AppColor>(
+      builder: (BuildContext context) => SelectionSheet<AppColor?>(
         title: loc.color,
         description: loc.choose_color_description,
-        values: AppColor.values,
+        values: const [null, ...AppColor.values],
         selectedValue: selectedColor,
-        leadingBuilder: (AppColor clr) => ColoredCircle(color: clr),
-        labelBuilder: (BuildContext ctx, AppColor clr) =>
-            clr.toLocalizedString(ctx),
+        leadingBuilder: (AppColor? clr) => clr == null
+            ? const ColoredCircle(isRandomColor: true)
+            : ColoredCircle(color: clr),
+        labelBuilder: (BuildContext ctx, AppColor? clr) =>
+            clr == null ? loc.random_color : clr.toLocalizedString(ctx),
         onValueUpdated: (AppColor? clr) {
           if (clr == selectedColor) return;
-          setState(() => selectedColor = clr);
+          setState(() {
+            lastSelectedColor = selectedColor;
+            selectedColor = clr;
+          });
         },
       ),
     );
-  }
-
-  /// Shows a delete popup with information about how many matches containing
-  /// this game will also be deleted.
-  Future<void> showDeletePopup(BuildContext context) async {
-    if (!context.mounted) return;
-    final loc = AppLocalizations.of(context);
-
-    // Build the dialog content based on match count
-    final String dialogContent = widget.gameCount > 0
-        ? loc.delete_game_with_matches_warning(widget.gameCount)
-        : loc.this_cannot_be_undone;
-
-    await showDialog<bool>(
-      context: context,
-      builder: (BuildContext ctx) => CustomAlertDialog(
-        title: loc.delete_game,
-        content: Text(
-          dialogContent,
-          overflow: TextOverflow.visible,
-          style: const TextStyle(fontSize: 15),
-        ),
-        actions: [
-          CustomDialogAction(
-            accent: ButtonAccent.destructive,
-            onPressed: () => Navigator.of(ctx).pop(true),
-            text: loc.delete,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            buttonType: ButtonType.secondary,
-            text: loc.cancel,
-          ),
-        ],
-      ),
-    ).then((confirmed) async {
-      if (confirmed == true && context.mounted) {
-        // Delete associated matches
-        if (widget.gameCount > 0) {
-          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
-        }
-
-        // Delete the targetted game
-        bool success = await db.gameDao.deleteGame(
-          gameId: widget.gameToEdit!.id,
-        );
-
-        if (!context.mounted) return;
-        if (success) {
-          widget.onGameChanged.call();
-          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
-        } else {
-          context.showSnackBar(message: loc.error_deleting_game);
-        }
-      }
-    });
   }
 }

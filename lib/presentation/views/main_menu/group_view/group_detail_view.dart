@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -40,7 +41,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
   int totalMatches = 0;
 
   /// The best player in this group
-  String bestPlayer = '';
+  String bestPlayer = 'Skeleton';
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
     return Scaffold(
       backgroundColor: context.talleeColors.backgroundColor,
       appBar: AppBar(
-        title: Text(loc.group_profile),
+        title: Text(loc.group),
         actions: [
           HapticIconButton(
             icon: const Icon(Icons.delete),
@@ -106,12 +107,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
           alignment: Alignment.center,
           children: [
             ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
-              ),
+              padding: AppSpacing.detailViewPadding,
               children: [
                 Center(
                   child: ColoredIconContainer(
@@ -152,7 +148,24 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   ),
                   textAlign: TextAlign.center,
                 ),
+
                 const SizedBox(height: 20),
+
+                // Statistics
+                DetailTile(
+                  isLoading: isLoading,
+                  rows: [
+                    (
+                      label: loc.members,
+                      value: group.members.length.toString(),
+                    ),
+                    (label: loc.played_matches, value: totalMatches.toString()),
+                    (label: loc.best_player, value: bestPlayer),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
                 InfoTile(
                   title: loc.members,
                   leadingWidget: const Icon(Icons.people),
@@ -182,16 +195,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                         .toList(),
                   ),
                 ),
-                const SizedBox(height: 15),
-
-                // Statistics
-                DetailTile(
-                  rows: [
-                    (loc.members, group.members.length.toString()),
-                    (loc.played_matches, totalMatches.toString()),
-                    (loc.best_player, bestPlayer),
-                  ],
-                ),
               ],
             ),
             Positioned(
@@ -204,7 +207,7 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                     context,
                     adaptivePageRoute<({Group? updatedGroup})>(
                       settings: const RouteSettings(
-                        name: RouteNames.createGroupView,
+                        name: RouteNames.editGroupView,
                       ),
                       builder: (context) => CreateGroupView(
                         groupToEdit: group,
@@ -215,7 +218,6 @@ class _GroupDetailViewState extends State<GroupDetailView> {
                   final updatedGroup = result?.updatedGroup;
                   if (updatedGroup != null && mounted) {
                     setState(() => group = updatedGroup);
-                    unawaited(loadStatistics());
                     widget.onGroupUpdated?.call();
                   }
                 },
