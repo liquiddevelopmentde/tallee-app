@@ -179,6 +179,22 @@ def target_label(event: str, action: str, payload: Dict[str, Any]) -> Optional[s
     return None
 
 
+def final_label(pr: int) -> Optional[str]:
+    """
+    Determine the terminal workflow label from the live pull request state.
+
+    Event payloads can be stale: an approval run may still be in flight when the PR
+    gets merged, so the live state has to win over the event.
+
+    :param pr: The pull request number.
+    :returns: MERGED or ABANDONED if the pull request is closed, otherwise None.
+    """
+    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+    if pull.get("state") != "closed":
+        return None
+    return MERGED if pull.get("merged") else ABANDONED
+
+
 def main() -> None:
     with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
         payload: Dict[str, Any] = json.load(event_file)
@@ -222,8 +238,21 @@ def main() -> None:
         if new_title != title:
             set_title(pr, new_title)
 
+    # A closed PR always keeps its terminal label, even if this run was triggered
+    # by an earlier event (e.g. an approval right before a fast merge).
+    if target not in (MERGED, ABANDONED):
+        target = final_label(pr) or target
+
     if target not in pr_labels(pr):
         add_label(pr, target)
+
+    # Runs may still overlap (or arrive out of order): the PR may have been closed and
+    # labelled between our state check and our label write. Re-check and restore the
+    # terminal label if we just overwrote it.
+    if target not in (MERGED, ABANDONED):
+        final: Optional[str] = final_label(pr)
+        if final is not None and final not in pr_labels(pr):
+            add_label(pr, final)
 
 
 if __name__ == "__main__":
