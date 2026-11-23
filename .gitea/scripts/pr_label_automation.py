@@ -1,7 +1,7 @@
 """
 Keep the workflow label of a pull request in sync with its state.
 
-- New PRs and their linked issues get the PR author as assignee.
+- New PRs get their author as assignee.
 - The "Workflow/In Progress" label and the "WIP:" title prefix are kept in sync.
 - Every PR carries the workflow label matching its current state.
 
@@ -23,8 +23,6 @@ from typing import Set
 from gitea_api import REPO
 from gitea_api import api
 from gitea_api import get_all
-from gitea_api import is_issue
-from gitea_api import issue_numbers_for_pr
 
 import json
 import os
@@ -95,21 +93,6 @@ def assign_author(number: int, author: str) -> None:
     if author in assignees:
         return
     api("PATCH", f"/repos/{REPO}/issues/{number}", {"assignees": assignees + [author]})
-
-
-def assign_author_to_issues(pull: Dict[str, Any], author: str) -> None:
-    """
-    Add the pull request author to the assignees of every issue the PR belongs to.
-
-    :param pull: The pull request object.
-    :param author: The login of the pull request author.
-    """
-    for number in sorted(issue_numbers_for_pr(pull)):
-        issue: Optional[Dict[str, Any]] = api("GET", f"/repos/{REPO}/issues/{number}")
-        if not is_issue(issue):
-            print(f"#{number} referenced by PR #{pull['number']} is not an issue; skipping")
-            continue
-        assign_author(number, author)
 
 
 def sync_wip(pr: int, action: str, title: str) -> None:
@@ -206,7 +189,6 @@ def main() -> None:
 
     if event == "pull_request" and action == "opened":
         assign_author(pr, pull["user"]["login"])
-        assign_author_to_issues(pull, pull["user"]["login"])
         # Reviewers selected on creation fire a separate "review_requested" event that may
         # be processed before this one. Use the live state so a stale "WIP:" title in the
         # payload does not demote the PR back to "In Progress".

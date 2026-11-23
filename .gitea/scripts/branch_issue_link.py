@@ -2,7 +2,8 @@
 Link a newly created branch to its best matching issue.
 
 Reads the branch name from the environment, assigns the branch reference
-to the matching issue via the API, and exposes it as the "issue" output.
+to the matching issue via the API, adds the branch creator as assignee,
+and exposes the issue as the "issue" output.
 
 Usage:
 - branch_issue_link.py
@@ -12,6 +13,7 @@ Environment:
 - TOKEN
 - REPO
 - BRANCH
+- ACTOR
 - DEFAULT_BRANCH
 - MIN_SCORE
 - GITHUB_OUTPUT
@@ -37,6 +39,7 @@ import sys
 API: str = os.environ["API"]
 REPO: str = os.environ["REPO"]
 BRANCH: str = os.environ["BRANCH"]
+ACTOR: str = os.environ.get("ACTOR", "")
 DEFAULT_BRANCH: str = os.environ["DEFAULT_BRANCH"]
 MIN_SCORE: float = float(os.environ["MIN_SCORE"])
 AUTH: Dict[str, str] = {"Authorization": "token " + os.environ["TOKEN"]}
@@ -142,6 +145,30 @@ def score_issue(branch_tokens: Set[str], branch_norm: str,
     return result
 
 
+def assign_actor(number: Any) -> None:
+    """
+    Add the user who created the branch to the issue's assignees, keeping existing ones.
+
+    :param number: The issue number.
+    """
+    if not ACTOR:
+        print("no branch creator known; skipping assignee")
+        return
+    _, _, issue = api(f"/repos/{REPO}/issues/{number}")
+    assignees: List[str] = [user["login"] for user in (issue or {}).get("assignees") or []]
+    if ACTOR in assignees:
+        print(f"'{ACTOR}' already assigned to issue #{number}")
+        return
+    data: bytes = json.dumps({"assignees": assignees + [ACTOR]}).encode()
+    req: Request = Request(
+        f"{API}/repos/{REPO}/issues/{number}",
+        data=data, method="PATCH",
+        headers={**AUTH, "Content-Type": "application/json"},
+    )
+    with urlopen(req) as response:
+        print(f"assigned '{ACTOR}' to issue #{number} (HTTP {response.status})")
+
+
 def assign(number: Any) -> None:
     """
     Set the issue's branch reference and expose it as the "issue" output.
@@ -156,6 +183,7 @@ def assign(number: Any) -> None:
     )
     with urlopen(req) as response:
         print(f"assigned branch '{BRANCH}' to issue #{number} (HTTP {response.status})")
+    assign_actor(number)
     with open(os.environ["GITHUB_OUTPUT"], "a") as output:
         output.write(f"issue={number}\n")
 
