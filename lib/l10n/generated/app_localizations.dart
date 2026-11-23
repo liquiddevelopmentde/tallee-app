@@ -195,12 +195,6 @@ abstract class AppLocalizations {
   /// **'Best score'**
   String get best_score;
 
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
   /// No description provided for @camera_error.
   ///
   /// In en, this message translates to:
@@ -218,6 +212,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scanning QR codes is not supported on this device.'**
   String get camera_unsupported;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 
   /// No description provided for @choose_color_description.
   ///
@@ -458,12 +458,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Danger Zone'**
   String get danger_zone;
-
-  /// No description provided for @data.
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
 
   /// No description provided for @data_backup.
   ///
@@ -710,12 +704,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
-
-  /// No description provided for @error_loading_privacy_policy.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading privacy policy'**
-  String get error_loading_privacy_policy;
 
   /// No description provided for @error_reading_file.
   ///
@@ -1580,12 +1568,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Random color'**
   String get random_color;
-
-  /// No description provided for @remaining.
-  ///
-  /// In en, this message translates to:
-  /// **'remaining'**
-  String get remaining;
 
   /// No description provided for @remove_from_favourites.
   ///
