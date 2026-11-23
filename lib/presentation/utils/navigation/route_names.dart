@@ -50,7 +50,6 @@ abstract final class RouteNames {
   static const String feedbackFormView = '/home/settings/feedback';
   static const String licensesView = '/home/settings/licenses';
   static const String licenseDetailView = '/home/settings/licenses/{id}';
-  static const String feedbackFormView = '/home/settings/feedback';
 
   // Statistics
   static const String statisticView = '/home/statistics';
