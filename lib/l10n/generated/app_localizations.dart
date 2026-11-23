@@ -819,6 +819,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game deleted'**
+  String get game_deleted;
+
   /// No description provided for @game_filter_description.
   ///
   /// In en, this message translates to:
@@ -1022,6 +1028,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last 90 days'**
   String get last_90_days;
+
+  /// No description provided for @last_played.
+  ///
+  /// In en, this message translates to:
+  /// **'Last played'**
+  String get last_played;
 
   /// No description provided for @last_year.
   ///
