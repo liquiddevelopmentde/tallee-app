@@ -92,7 +92,7 @@
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
   "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
-  "delete_player_warning_groups_deleted": "{count, plural, =1{The following group will also be deleted because otherwise only one member would remain: {groups}} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}",
+  "delete_player_warning_groups_deleted": "{count, plural, =1{The group \"{groups}\" will also be deleted, because otherwise only one member would remain.} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}",
   "@delete_player_warning_groups_deleted": {
     "placeholders": {
       "count": {

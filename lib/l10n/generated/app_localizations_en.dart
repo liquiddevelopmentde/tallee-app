@@ -273,7 +273,7 @@ class AppLocalizationsEn extends AppLocalizations {
       other:
           'The following groups will also be deleted because otherwise only one member would remain in each: $groups',
       one:
-          'The following group will also be deleted because otherwise only one member would remain: $groups',
+          'The group \"$groups\" will also be deleted, because otherwise only one member would remain.',
     );
     return '$_temp0';
   }

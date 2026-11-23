@@ -570,7 +570,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_player_warning_groups_deleted.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{The following group will also be deleted because otherwise only one member would remain: {groups}} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}'**
+  /// **'{count, plural, =1{The group \"{groups}\" will also be deleted, because otherwise only one member would remain.} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}'**
   String delete_player_warning_groups_deleted(int count, String groups);
 
   /// No description provided for @delete_statistic.

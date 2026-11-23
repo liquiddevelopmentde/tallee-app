@@ -278,7 +278,7 @@ class AppLocalizationsDe extends AppLocalizations {
       other:
           'Folgende Gruppen werden ebenfalls gelöscht, weil sonst nur noch jeweils ein Mitglied übrig wäre: $groups',
       one:
-          'Folgende Gruppe wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre: $groups',
+          'Die Gruppe \"$groups\" wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre.',
     );
     return '$_temp0';
   }
