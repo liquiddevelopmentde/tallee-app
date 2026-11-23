@@ -22,14 +22,15 @@ from typing import Set
 from urllib.error import HTTPError
 
 from gitea_api import REPO
+from gitea_api import all_issues
 from gitea_api import api
 from gitea_api import get_all
 from gitea_api import is_issue
+from gitea_api import issue_numbers_for_pr
 
 import functools
 import json
 import os
-import re
 import sys
 
 ORG: str = os.environ["ORG"]
@@ -112,41 +113,6 @@ def move(issue: Dict[str, Any], column: str) -> None:
     """
     api("POST", f"/orgs/{ORG}/projects/{PROJECT_ID}/columns/{column_id(column)}/issues/{issue['id']}")
     print(f"issue #{issue['number']} '{issue['title']}' -> {column}")
-
-
-@functools.lru_cache(maxsize=None)
-def all_issues() -> List[Dict[str, Any]]:
-    """
-    Fetch every issue in the repository, caching the result.
-
-    :returns: All issues in the repository.
-    """
-    return get_all(f"/repos/{REPO}/issues?state=all&type=issues")
-
-
-def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
-    """
-    Find the issue numbers a pull request belongs to.
-
-    Matches the branch "<type>/<nr>-...", explicit issue refs equal to the
-    branch, and closing keywords in the body.
-
-    :param pr: The pull request object.
-    :returns: The set of referenced issue numbers.
-    """
-    branch: str = pr["head"]["ref"]
-    nums: Set[int] = set()
-    match: Optional[re.Match] = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", branch)
-    if match:
-        nums.add(int(match.group(1)))
-    for keyword in re.finditer(r"(?i)\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)", pr.get("body") or ""):
-        nums.add(int(keyword.group(1)))
-    # Branches linked by branch_issue_link.yaml without a number in their name.
-    if not nums:
-        for issue in all_issues():
-            if issue.get("ref") in (branch, f"refs/heads/{branch}"):
-                nums.add(issue["number"])
-    return nums
 
 
 def has_open_pr_for_issue(issue: Dict[str, Any]) -> bool:
