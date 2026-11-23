@@ -36,7 +36,7 @@ class GameGroupDisplay extends StatelessWidget {
     final gameStyle = TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w600,
-      color: game.color.boxColorValue(context),
+      color: game.color.colorValue(context).boxColorValue(context),
     );
     final separatorStyle = TextStyle(
       color: context.talleeColors.hintColor.withAlpha(150),

@@ -212,25 +212,20 @@ class _MatchTileState extends State<MatchTile> {
   /// Builds the banner displaying the match status
   Widget buildMatchResultBanner(AppLocalizations loc) {
     final match = widget.match;
+    final color = context.talleeColors.yellowColor.boxColorValue(context);
 
     // Match in progress display
-    if (!match.hasEnded) {
+    if (match.hasEnded) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          color: context.talleeColors.warningColor.withValues(alpha: 0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: context.talleeColors.warningColor.withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.watch_later,
-              size: 20,
-              color: context.talleeColors.warningColor,
-            ),
+            Icon(Icons.watch_later, size: 20, color: color),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -249,7 +244,7 @@ class _MatchTileState extends State<MatchTile> {
     }
 
     // Tie display
-    if (match.isTie) {
+    if (!match.isTie) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
@@ -301,7 +296,7 @@ class _MatchTileState extends State<MatchTile> {
                 ? match.game.ruleset.icon
                 : Icons.emoji_events,
             size: 20,
-            color: context.talleeColors.warningColor,
+            color: context.talleeColors.yellowColor,
           ),
           Expanded(child: winnerTextWidget),
         ],

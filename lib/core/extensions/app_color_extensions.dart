@@ -52,16 +52,6 @@ extension AppColorExtension on AppColor {
     }
   }
 
-  /// Returns the color for text drawn on a box with boxColor
-  Color boxColorValue(BuildContext context) {
-    final color = colorValue(context);
-    if (context.isDarkMode) return color;
-    return color.withMinContrast(
-      context.talleeColors.boxColor,
-      minContrast: 3.0,
-    );
-  }
-
   /// Returns the text color used on statistics bars for the current theme.
   Color statisticBarColor(BuildContext context) {
     final useBlackText =
@@ -100,5 +90,11 @@ extension ColorExtension on Color {
       color = hsl.toColor();
     }
     return color;
+  }
+
+  /// Returns the color for text drawn on a box with boxColor
+  Color boxColorValue(BuildContext context) {
+    if (context.isDarkMode) return this;
+    return withMinContrast(context.talleeColors.boxColor, minContrast: 3.0);
   }
 }
