@@ -81,18 +81,18 @@ def set_title(pr: int, title: str) -> None:
     api("PATCH", f"/repos/{REPO}/pulls/{pr}", {"title": title})
 
 
-def assign_author(pr: int, author: str) -> None:
+def assign_author(number: int, author: str) -> None:
     """
-    Add the author to the assignees of a pull request, keeping existing ones.
+    Add the author to the assignees of an issue or pull request, keeping existing ones.
 
-    :param pr: The pull request number.
+    :param number: The issue or pull request number.
     :param author: The login of the pull request author.
     """
-    issue: Dict[str, Any] = api("GET", f"/repos/{REPO}/issues/{pr}")
+    issue: Dict[str, Any] = api("GET", f"/repos/{REPO}/issues/{number}")
     assignees: List[str] = [user["login"] for user in issue.get("assignees") or []]
     if author in assignees:
         return
-    api("PATCH", f"/repos/{REPO}/issues/{pr}", {"assignees": assignees + [author]})
+    api("PATCH", f"/repos/{REPO}/issues/{number}", {"assignees": assignees + [author]})
 
 
 def sync_wip(pr: int, action: str, title: str) -> None:
@@ -112,6 +112,57 @@ def sync_wip(pr: int, action: str, title: str) -> None:
         # Title drives label: someone added "WIP:" -> ensure "In Progress" label.
         if is_wip and IN_PROGRESS not in pr_labels(pr):
             add_label(pr, IN_PROGRESS)
+
+
+def has_open_review_requests(pr: int) -> bool:
+    """
+    Check whether a pull request has review requests that are still waiting for a verdict.
+
+    :param pr: The pull request number.
+    :returns: True if at least one user or team is still requested to review.
+    """
+    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+    return bool(pull.get("requested_reviewers") or pull.get("requested_reviewers_teams"))
+
+
+def has_reviewers(pr: int, author: str) -> bool:
+    """
+    Check whether a pull request still has any reviewer: either an open review request
+    or a reviewer who already submitted a (non-dismissed) verdict.
+
+    :param pr: The pull request number.
+    :param author: The login of the pull request author, whose own reviews are ignored.
+    :returns: True if at least one reviewer remains.
+    """
+    if has_open_review_requests(pr):
+        return True
+    return any(
+        review.get("state") in ("APPROVED", "REQUEST_CHANGES", "REQUEST_REVIEW")
+        and not review.get("dismissed")
+        and (review.get("user") or {}).get("login") != author
+        for review in get_all(f"/repos/{REPO}/pulls/{pr}/reviews")
+    )
+
+
+def has_valid_approval(pr: int, head_sha: str) -> bool:
+    """
+    Check whether a pull request still has an approval for its current head commit.
+
+    An approval counts only if it is neither dismissed nor stale and was given on
+    the current head commit, so a push after the approval invalidates it even if
+    Gitea has not dismissed the review yet.
+
+    :param pr: The pull request number.
+    :param head_sha: The SHA of the current head commit.
+    :returns: True if at least one valid approval remains.
+    """
+    return any(
+        review.get("state") == "APPROVED"
+        and not review.get("dismissed")
+        and not review.get("stale")
+        and review.get("commit_id") == head_sha
+        for review in get_all(f"/repos/{REPO}/pulls/{pr}/reviews")
+    )
 
 
 def target_label(event: str, action: str, payload: Dict[str, Any]) -> Optional[str]:
@@ -142,6 +193,22 @@ def target_label(event: str, action: str, payload: Dict[str, Any]) -> Optional[s
     return None
 
 
+def final_label(pr: int) -> Optional[str]:
+    """
+    Determine the terminal workflow label from the live pull request state.
+
+    Event payloads can be stale: an approval run may still be in flight when the PR
+    gets merged, so the live state has to win over the event.
+
+    :param pr: The pull request number.
+    :returns: MERGED or ABANDONED if the pull request is closed, otherwise None.
+    """
+    pull: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+    if pull.get("state") != "closed":
+        return None
+    return MERGED if pull.get("merged") else ABANDONED
+
+
 def main() -> None:
     with open(os.environ["GITHUB_EVENT_PATH"]) as event_file:
         payload: Dict[str, Any] = json.load(event_file)
@@ -153,6 +220,13 @@ def main() -> None:
 
     if event == "pull_request" and action == "opened":
         assign_author(pr, pull["user"]["login"])
+        # Reviewers selected on creation fire a separate "review_requested" event that may
+        # be processed before this one. Use the live state so a stale "WIP:" title in the
+        # payload does not demote the PR back to "In Progress".
+        live: Dict[str, Any] = api("GET", f"/repos/{REPO}/pulls/{pr}")
+        if live.get("requested_reviewers"):
+            action = "review_requested"
+            title = live["title"]
 
     # Only react to manual actions: skip anything triggered by the bot itself,
     # which also prevents feedback loops between label and title.
@@ -161,6 +235,20 @@ def main() -> None:
         sync_wip(pr, action, title)
 
     target: Optional[str] = target_label(event, action, payload)
+
+    # New commits after an approval: the approval no longer covers the code and Gitea
+    # removes the approving reviewer. Unless a valid approval for the new head remains,
+    # the PR goes back to "Ready for Review" if other reviewers are still requested,
+    # otherwise to "In Progress".
+    if event == "pull_request" and action in ("synchronize", "synchronized"):
+        if READY_FOR_MERGE in pr_labels(pr) and not has_valid_approval(pr, pull["head"]["sha"]):
+            target = READY_FOR_REVIEW if has_open_review_requests(pr) else IN_PROGRESS
+
+    # A reviewer stepping out only sends the PR back to "In Progress" if nobody is left
+    # to review it; otherwise the current state (e.g. "Revision") stays as it is.
+    if target == IN_PROGRESS and action == "review_request_removed" and has_reviewers(pr, pull["user"]["login"]):
+        target = None
+
     if target is None:
         print(f"no state change for {event}/{action}")
         return
@@ -171,8 +259,21 @@ def main() -> None:
         if new_title != title:
             set_title(pr, new_title)
 
+    # A closed PR always keeps its terminal label, even if this run was triggered
+    # by an earlier event (e.g. an approval right before a fast merge).
+    if target not in (MERGED, ABANDONED):
+        target = final_label(pr) or target
+
     if target not in pr_labels(pr):
         add_label(pr, target)
+
+    # Runs may still overlap (or arrive out of order): the PR may have been closed and
+    # labelled between our state check and our label write. Re-check and restore the
+    # terminal label if we just overwrote it.
+    if target not in (MERGED, ABANDONED):
+        final: Optional[str] = final_label(pr)
+        if final is not None and final not in pr_labels(pr):
+            add_label(pr, final)
 
 
 if __name__ == "__main__":
