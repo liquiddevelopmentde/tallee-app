@@ -6,17 +6,21 @@ import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/utils/name_display.dart';
 
-/// A Tile for matching a [player] to an [associatedPlayer]. This is used during the association process in the remote match sharing feature.
+/// A Tile for matching an imported [player] to an [associatedPlayer]. This is
+/// used during the association process in the remote match sharing feature.
 ///
-/// [player] - The player being matched.
+/// [player] - The imported player being matched.
 /// [onTap] - Called when the associated-player area is tapped.
-/// [associatedPlayer] - The player currently associated with [player], if any.
+/// [associatedPlayer] - The player that will be stored locally: either an
+/// existing local player or a copy of [player] with a new ID that will be
+/// created as new.
+/// [isNew] - Whether [associatedPlayer] will be created as new.
 /// [borderColor] - Optional override for the tile border color.
 class AssociatePlayerTile extends StatefulWidget {
   const AssociatePlayerTile({
     required this.player,
+    required this.associatedPlayer,
     required this.onTap,
-    this.associatedPlayer,
     this.isNew = false,
     this.borderColor,
     super.key,
@@ -24,7 +28,7 @@ class AssociatePlayerTile extends StatefulWidget {
 
   final Player player;
 
-  final Player? associatedPlayer;
+  final Player associatedPlayer;
 
   final bool isNew;
 
@@ -90,33 +94,27 @@ class _AssociatePlayerTileState extends State<AssociatePlayerTile> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (widget.associatedPlayer != null)
-                          Flexible(
-                            child: widget.isNew
-                                ? Text(
-                                    AppLocalizations.of(context).create_as_new,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: context.talleeColors.warningColor,
-                                    ),
-                                  )
-                                : buildUnitNameWidget(
-                                    context,
-                                    widget.associatedPlayer,
-                                    mainStyle: const TextStyle(fontSize: 17),
-                                    countStyle: TextStyle(
-                                      fontSize: 15,
-                                      color: context.talleeColors.textColor
-                                          .withAlpha(100),
-                                    ),
+                        Flexible(
+                          child: widget.isNew
+                              ? Text(
+                                  AppLocalizations.of(context).create_as_new,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: context.talleeColors.warningColor,
                                   ),
-                          )
-                        else
-                          Icon(
-                            Icons.search,
-                            color: context.talleeColors.errorColor,
-                          ),
+                                )
+                              : buildUnitNameWidget(
+                                  context,
+                                  widget.associatedPlayer,
+                                  mainStyle: const TextStyle(fontSize: 17),
+                                  countStyle: TextStyle(
+                                    fontSize: 15,
+                                    color: context.talleeColors.textColor
+                                        .withAlpha(100),
+                                  ),
+                                ),
+                        ),
                       ],
                     ),
                   ),

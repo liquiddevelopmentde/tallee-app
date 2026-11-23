@@ -1557,12 +1557,6 @@ abstract class AppLocalizations {
   /// **'Random color'**
   String get random_color;
 
-  /// No description provided for @remaining.
-  ///
-  /// In en, this message translates to:
-  /// **'remaining'**
-  String get remaining;
-
   /// No description provided for @remove_from_favourites.
   ///
   /// In en, this message translates to:

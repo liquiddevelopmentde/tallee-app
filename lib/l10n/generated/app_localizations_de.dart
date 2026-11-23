@@ -847,9 +847,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get random_color => 'Zufällige Farbe';
 
   @override
-  String get remaining => 'verbleibend';
-
-  @override
   String get remove_from_favourites => 'Aus Favoriten entfernen';
 
   @override
