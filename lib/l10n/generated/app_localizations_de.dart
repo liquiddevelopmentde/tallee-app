@@ -462,6 +462,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get highest_score => 'Höchste Punkte';
 
   @override
+  String get highest_score_description => 'Die höchste Punktzahl gewinnt.';
+
+  @override
   String get import_canceled => 'Import abgebrochen';
 
   @override
@@ -550,6 +553,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get lives_description =>
+      'Wer am Ende noch mindestens ein Leben hat, gewinnt.';
+
+  @override
   String get loading => 'Lädt...';
 
   @override
@@ -559,7 +566,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loser => 'Verlierer:in';
 
   @override
+  String get loser_description => 'Wähle eine:n Verlierer:in aus.';
+
+  @override
   String get lowest_score => 'Niedrigste Punkte';
+
+  @override
+  String get lowest_score_description => 'Die niedrigste Punktzahl gewinnt.';
 
   @override
   String get manage_members => 'Mitglieder bearbeiten';
@@ -797,6 +810,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get placement => 'Platzierung';
+
+  @override
+  String get placement_description =>
+      'Ordne alle Spieler:innen vom ersten bis zum letzten Platz.';
 
   @override
   String get played_matches => 'Gespielte Spiele';
@@ -1222,6 +1239,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get winner => 'Gewinner:in';
+
+  @override
+  String get winner_description =>
+      'Wähle einen oder mehrere Gewinner:innen aus.';
 
   @override
   String get winrate => 'Siegquote';
