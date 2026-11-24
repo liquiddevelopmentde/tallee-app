@@ -8,7 +8,7 @@ class ChooseTile extends StatefulWidget {
   /// - [icon]: Optional icon next to the title text.
   /// - [trailing]: Optional trailing text displayed on the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
-  /// - [enabled]: TO enable/disable the tile and prohitib interaction
+  /// - [enabled]: To enable/disable the tile and prohitib interaction
   const ChooseTile({
     super.key,
     required this.title,
