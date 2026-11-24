@@ -30,9 +30,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all_players_associated => 'All players successfully associated';
 
   @override
-  String get all_players_selected => 'All players selected';
-
-  @override
   String get all_time => 'All time';
 
   @override
@@ -685,9 +682,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'No players found with that name';
 
   @override
-  String get no_players_selected => 'No players selected';
-
-  @override
   String get no_results => 'No Results';
 
   @override
@@ -943,9 +937,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selected_groups => 'Selected groups';
-
-  @override
-  String get selected_players => 'Selected players';
 
   @override
   String get send_code_instruction =>

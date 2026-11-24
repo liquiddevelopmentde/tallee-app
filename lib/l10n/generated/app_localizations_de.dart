@@ -31,9 +31,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Alle Spieler:innen erfolgreich verknüpft';
 
   @override
-  String get all_players_selected => 'Alle Spieler:innen ausgewählt';
-
-  @override
   String get all_time => 'Gesamter Zeitraum';
 
   @override
@@ -695,9 +692,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine:n Spieler:in mit diesem Namen gefunden';
 
   @override
-  String get no_players_selected => 'Keine Spieler:innen ausgewählt';
-
-  @override
   String get no_results => 'Keine Treffer';
 
   @override
@@ -955,9 +949,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selected_groups => 'Ausgewählte Gruppen';
-
-  @override
-  String get selected_players => 'Ausgewählte Spieler:innen';
 
   @override
   String get send_code_instruction =>

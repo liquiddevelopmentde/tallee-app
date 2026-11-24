@@ -135,12 +135,6 @@ abstract class AppLocalizations {
   /// **'All players successfully associated'**
   String get all_players_associated;
 
-  /// No description provided for @all_players_selected.
-  ///
-  /// In en, this message translates to:
-  /// **'All players selected'**
-  String get all_players_selected;
-
   /// No description provided for @all_time.
   ///
   /// In en, this message translates to:
@@ -1305,12 +1299,6 @@ abstract class AppLocalizations {
   /// **'No players found with that name'**
   String get no_players_found_with_that_name;
 
-  /// No description provided for @no_players_selected.
-  ///
-  /// In en, this message translates to:
-  /// **'No players selected'**
-  String get no_players_selected;
-
   /// No description provided for @no_results.
   ///
   /// In en, this message translates to:
@@ -1760,12 +1748,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Selected groups'**
   String get selected_groups;
-
-  /// No description provided for @selected_players.
-  ///
-  /// In en, this message translates to:
-  /// **'Selected players'**
-  String get selected_players;
 
   /// No description provided for @send_code_instruction.
   ///

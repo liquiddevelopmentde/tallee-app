@@ -12,9 +12,7 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/app_skeleton.dart';
 import 'package:tallee/presentation/widgets/text_input/custom_search_bar.dart';
 import 'package:tallee/presentation/widgets/tiles/match_result_view/custom_radio_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_list_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/pair_tile.dart';
-import 'package:tallee/presentation/widgets/tiles/text_icon_tile/player_tile.dart';
+import 'package:tallee/presentation/widgets/tiles/player_checkbox_tile.dart';
 import 'package:tallee/presentation/widgets/top_centered_message.dart';
 
 class PlayerSelectionWidget extends StatefulWidget {
@@ -97,43 +95,17 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
       selectedUnits.expand((u) => u.members).toList();
   bool isPairingMode = false;
   final Set<String> pairingSelection = {};
-  String? pressingId;
-  final Set<String> recentlyAddedPlayerIds = {};
 
   final TextEditingController searchBarController = TextEditingController();
-
-  final ScrollController selectedUnitsScrollController = ScrollController();
-
-  /// Ids of units the user added in this session. Only these play an
-  /// appear animation, preselected units are shown right away.
-  final Set<String> addedUnitIds = {};
-
-  /// Removed units that are still animating out, mapped to their old index
-  /// so they stay in place until the animation is done
-  final Map<Team, int> removingUnits = {};
-
-  /// The units shown in the bar: [selectedUnits] plus the [removingUnits]
-  List<Team> get displayedUnits {
-    final units = [...selectedUnits];
-    final sortedRemoving = removingUnits.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
-    for (final entry in sortedRemoving) {
-      units.insert(entry.value.clamp(0, units.length), entry.key);
-    }
-    return units;
-  }
 
   late final List<Player> skeletonData = List.filled(
     widget.mode == SelectionMode.single ? 5 : 7,
     Player(name: 'Player 0'),
   );
 
-  bool get showTileIcons => pairingSelection.isEmpty;
-
   @override
   void dispose() {
     searchBarController.dispose();
-    selectedUnitsScrollController.dispose();
     super.dispose();
   }
 
@@ -221,48 +193,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
               enabled: isLoading,
               child: Column(
                 crossAxisAlignment: crossAxisAlignment,
-                spacing: 10,
                 children: [
-                  if (widget.mode == SelectionMode.multiple &&
-                      (allPlayers.isNotEmpty || isLoading)) ...[
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeInOut,
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        children: [
-                          AnimatedCrossFade(
-                            duration: const Duration(milliseconds: 150),
-                            alignment: Alignment.topLeft,
-                            firstCurve: Curves.easeOut,
-                            secondCurve: Curves.easeIn,
-                            firstChild: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                buildSelectedPlayersHeader(loc),
-                                buildSelectedPlayersBar(),
-                                Text(
-                                  loc.all_players,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            secondChild: const SizedBox(
-                              width: double.infinity,
-                              height: 0,
-                            ),
-                            crossFadeState:
-                                searchBarController.text.trim().isNotEmpty
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  if (widget.mode == SelectionMode.multiple)
+                    buildPairingHint(loc),
+
                   Expanded(
                     child: Visibility(
                       visible: suggestedPlayers.isNotEmpty,
@@ -297,99 +231,62 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   void applySearchValue(String value) {
     if (value.isEmpty) {
       setState(updateSuggestedPlayers);
-    } else {
-      final List<({Player player, int score})> scoredPlayers = [];
-
-      for (final player in allPlayers) {
-        final bool isNotSelected =
-            widget.mode == SelectionMode.single ||
-            !selectedPlayers.any((p) => p.id == player.id);
-
-        if (isNotSelected) {
-          final score = weightedRatio(player.name, value);
-          if (score >= FUZZY_SEARCH_THRESHOLD) {
-            scoredPlayers.add((player: player, score: score));
-          }
-        }
-      }
-
-      scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
-      setState(
-        () => suggestedPlayers = scoredPlayers.map((e) => e.player).toList(),
-      );
+      return;
     }
-  }
 
-  Widget buildSelectedPlayersHeader(AppLocalizations loc) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Expanded(
-        child: Text(
-          loc.selected_players,
-          overflow: TextOverflow.visible,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ),
-    ],
-  );
+    final List<({Player player, int score})> scoredPlayers = [];
 
-  Widget buildSelectedPlayersBar() {
-    final loc = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 50,
-          child: displayedUnits.isEmpty
-              ? Center(child: Text(loc.no_players_selected))
-              : SingleChildScrollView(
-                  controller: selectedUnitsScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (final unit in displayedUnits)
-                        buildAnimatedUnitTile(unit),
-                    ],
-                  ),
-                ),
-        ),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOutCubicEmphasized,
-          alignment: Alignment.topLeft,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: isPairingMode
-                ? Text.rich(
-                    TextSpan(
-                      children: [
-                        const WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: Icon(
-                              Icons.link,
-                              size: 16,
-                              color: AppColors.primaryColor,
-                            ),
-                          ),
-                        ),
-                        TextSpan(text: loc.tap_another_player_to_create_a_pair),
-                      ],
-                    ),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryColor,
-                      overflow: TextOverflow.visible,
-                    ),
-                  )
-                : const SizedBox(width: double.infinity),
-          ),
-        ),
-      ],
+    for (final player in allPlayers) {
+      final score = weightedRatio(player.name, value);
+      if (score >= FUZZY_SEARCH_THRESHOLD) {
+        scoredPlayers.add((player: player, score: score));
+      }
+    }
+
+    scoredPlayers.sort((a, b) => b.score.compareTo(a.score));
+    setState(
+      () => suggestedPlayers = scoredPlayers.map((e) => e.player).toList(),
     );
   }
+
+  /// Builds the hint shown while players are being paired.
+  Widget buildPairingHint(AppLocalizations loc) => AnimatedSize(
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeInOutCubicEmphasized,
+    alignment: Alignment.topLeft,
+    child: AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: isPairingMode
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 5),
+                        child: Icon(
+                          Icons.link,
+                          size: 16,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                    ),
+                    TextSpan(text: loc.tap_another_player_to_create_a_pair),
+                  ],
+                ),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.primaryColor,
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            )
+          : const SizedBox(width: double.infinity),
+    ),
+  );
 
   Widget buildSingleSelectionList() => RadioGroup<Player?>(
     groupValue: selectedPlayer,
@@ -434,145 +331,168 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     ),
   );
 
-  Widget buildMultipleSelectionList() => ListView.separated(
-    itemCount: suggestedPlayers.length,
-    separatorBuilder: (BuildContext context, int index) =>
-        const SizedBox(height: 10),
-    itemBuilder: (BuildContext context, int index) {
-      final player = suggestedPlayers[index];
-      final isRecentlyAdded = recentlyAddedPlayerIds.contains(player.id);
-      return TextIconListTile(
-        player: player,
-        icon: isRecentlyAdded ? Icons.check : Icons.add,
-        iconColor: isRecentlyAdded ? context.talleeColors.successColor : null,
-        onTileTap: () => addPlayerToSelection(player),
-      );
-    },
-  );
+  Widget buildMultipleSelectionList() {
+    final rows = selectionRows;
+    return ListView.separated(
+      itemCount: rows.length,
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 10),
+      itemBuilder: (BuildContext context, int index) {
+        final row = rows[index];
+        final unit = row.unit;
+        final isPair = unit.members.length > 1;
+        final isPairingSelected = pairingSelection.contains(unit.id);
 
-  /// Adds a player to the selectedPlayers and handles the animation
-  Future<void> addPlayerToSelection(Player player) async {
-    if (selectedPlayers.any((p) => p.id == player.id)) return;
+        return PlayerCheckboxTile(
+          unit: unit,
+          checked: row.isSelected,
+          highlighted: isPairingSelected,
+          showLinkIcon: isPairingMode && !isPair && !isPairingSelected,
+          onTileTap: () => onUnitTap(unit),
+          onCheckboxChanged: (value) => onUnitCheckedChanged(unit, value),
+          onLongPress: widget.pairingEnabled
+              ? () => onUnitLongPressed(unit)
+              : null,
+        );
+      },
+    );
+  }
+
+  /// All units of the current list. Pairs replace their members and every
+  /// player that is not part of a pair is shown as a single unit.
+  List<({Team unit, bool isSelected})> get selectionRows {
+    final rows = <({Team unit, bool isSelected})>[];
+    final shownPairIds = <String>{};
+
+    final pairByMemberId = <String, Team>{};
+    for (final unit in selectedUnits) {
+      if (unit.members.length > 1) {
+        for (final member in unit.members) {
+          pairByMemberId[member.id] = unit;
+        }
+      }
+    }
+
+    for (final player in suggestedPlayers) {
+      final pair = pairByMemberId[player.id];
+      if (pair != null) {
+        if (shownPairIds.add(pair.id)) {
+          rows.add((unit: pair, isSelected: true));
+        }
+        continue;
+      }
+
+      final selectedUnit = selectedUnitFor(player);
+      rows.add((
+        unit: selectedUnit ?? Team(name: '', members: [player]),
+        isSelected: selectedUnit != null,
+      ));
+    }
+
+    // Show selected pairs whose members are not part of the loaded player list
+    // so they can still be deselected or unmerged.
+    for (final unit in selectedUnits) {
+      if (unit.members.length < 2 || shownPairIds.contains(unit.id)) continue;
+      final isPartOfPlayerList = unit.members.any(
+        (member) => allPlayers.any((player) => player.id == member.id),
+      );
+      if (!isPartOfPlayerList) rows.add((unit: unit, isSelected: true));
+    }
+
+    return rows;
+  }
+
+  /// Returns the selected unit of a single player, if the player is selected.
+  Team? selectedUnitFor(Player player) {
+    for (final unit in selectedUnits) {
+      if (unit.members.length == 1 && unit.members.first.id == player.id) {
+        return unit;
+      }
+    }
+    return null;
+  }
+
+  /// Handles a tap on a tile. Tapping a pair unmerges it, tapping a selected
+  /// player while pairing pairs it with the pairing selection and tapping any
+  /// other player toggles its selection.
+  void onUnitTap(Team unit) {
+    if (unit.members.length > 1) {
+      unmergeUnit(unit);
+      return;
+    }
+
+    final player = unit.members.first;
+    if (isPairingMode && selectedUnitFor(player) != null) {
+      if (pairingSelection.contains(unit.id)) {
+        resetPairing();
+      } else {
+        handleParingSelection(unit);
+      }
+      return;
+    }
+
+    togglePlayerSelection(player);
+  }
+
+  /// Handles a tap on the checkbox of a tile.
+  void onUnitCheckedChanged(Team unit, bool value) {
+    if (!value) {
+      deselectUnit(unit);
+      return;
+    }
+
+    if (unit.members.length > 1) return;
+    selectPlayer(unit.members.first);
+  }
+
+  /// Handles a long press on a tile. Long pressing a pair unmerges it, long
+  /// pressing a player starts or cancels pairing.
+  void onUnitLongPressed(Team unit) {
+    if (unit.members.length > 1) {
+      unmergeUnit(unit);
+    } else {
+      handleParingSelection(unit);
+    }
+  }
+
+  void togglePlayerSelection(Player player) {
+    final existingUnit = selectedUnitFor(player);
+    if (existingUnit != null) {
+      deselectUnit(existingUnit);
+    } else {
+      selectPlayer(player);
+    }
+  }
+
+  /// Selects [player] and merges it with the current pairing selection.
+  void selectPlayer(Player player) {
+    if (selectedUnitFor(player) != null) return;
 
     Haptics.selectionClick();
     setState(() {
       final unit = Team(name: '', members: [player]);
       selectedUnits.insert(0, unit);
-      addedUnitIds.add(unit.id);
-      recentlyAddedPlayerIds.add(player.id);
+
+      if (isPairingMode) {
+        pairingSelection.add(unit.id);
+        autoMergePairingSelection();
+        isPairingMode = pairingSelection.isNotEmpty;
+      }
     });
 
     widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-    scrollSelectedUnitsToStart();
+  }
 
-    await Future.delayed(const Duration(milliseconds: 400), () {});
-    if (!mounted) return;
-    if (!recentlyAddedPlayerIds.contains(player.id)) return;
-
+  /// Deselects [unit]. Deselecting a pair removes both of its members.
+  void deselectUnit(Team unit) {
+    Haptics.selectionClick();
     setState(() {
-      suggestedPlayers.removeWhere((p) => p.id == player.id);
-      recentlyAddedPlayerIds.remove(player.id);
+      selectedUnits.removeWhere((u) => u.id == unit.id);
+      pairingSelection.remove(unit.id);
+      isPairingMode = pairingSelection.isNotEmpty;
     });
 
-    searchBarController.clear();
-    updateSuggestedPlayers();
-  }
-
-  /// Scrolls the bar to the start so newly added units are visible
-  void scrollSelectedUnitsToStart() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!selectedUnitsScrollController.hasClients) return;
-      selectedUnitsScrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-      );
-    });
-  }
-
-  /// [buildUnitTile] with an animation: the tile grows and fades in when
-  /// added, and shrinks and fades out when removed
-  Widget buildAnimatedUnitTile(Team unit) {
-    final isRemoving = removingUnits.containsKey(unit);
-    return TweenAnimationBuilder<double>(
-      key: ValueKey(unit.id),
-      tween: Tween(
-        begin: addedUnitIds.contains(unit.id) ? 0 : 1,
-        end: isRemoving ? 0 : 1,
-      ),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOutCubic,
-      onEnd: () {
-        if (isRemoving) setState(() => removingUnits.remove(unit));
-      },
-      builder: (context, value, child) => ClipRect(
-        child: Align(
-          alignment: Alignment.centerLeft,
-          widthFactor: value,
-          child: Opacity(
-            opacity: value,
-            child: Transform.scale(scale: 0.8 + 0.2 * value, child: child),
-          ),
-        ),
-      ),
-      child: IgnorePointer(
-        ignoring: isRemoving,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: buildUnitTile(unit),
-        ),
-      ),
-    );
-  }
-
-  Widget buildUnitTile(Team unit) {
-    final isPaired = unit.isPair;
-    final isPlayerSelectedForPairing = pairingSelection.contains(unit.id);
-    final canPlayerBePaired =
-        widget.pairingEnabled &&
-        !isPaired &&
-        !isPlayerSelectedForPairing &&
-        pairingSelection.isNotEmpty;
-    final isNotPairable =
-        isPairingMode && !isPlayerSelectedForPairing && !canPlayerBePaired;
-
-    return GestureDetector(
-      onTap: () =>
-          isPlayerSelectedForPairing ? resetPairing() : removeUnit(unit),
-      onLongPressDown: !isPaired && widget.pairingEnabled
-          ? (_) => setState(() => pressingId = unit.id)
-          : null,
-      onLongPressCancel: () => setState(() => pressingId = null),
-      onLongPressEnd: (_) => setState(() => pressingId = null),
-      onLongPress: !isPaired && widget.pairingEnabled
-          ? () async => handleParingSelection(unit)
-          : null,
-      child: AnimatedScale(
-        scale: pressingId == unit.id ? 0.94 : 1.0,
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-        child: AnimatedOpacity(
-          opacity: isNotPairable ? 0.4 : 1.0,
-          duration: const Duration(milliseconds: 200),
-          child: isPaired
-              ? PairTile(
-                  pair: unit,
-                  pairIconLeft: true,
-                  showIcon: showTileIcons,
-                  onTileTap: () => unmergeUnit(unit),
-                )
-              : PlayerTile(
-                  player: unit.members.first,
-                  selected: isPlayerSelectedForPairing,
-                  showIcon: showTileIcons || canPlayerBePaired,
-                  icon: canPlayerBePaired ? Icons.add_link : Icons.close,
-                  onTileTap: canPlayerBePaired
-                      ? () async => handleParingSelection(unit)
-                      : null,
-                ),
-        ),
-      ),
-    );
+    widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
   }
 
   /// Resets the pairing mode
@@ -583,35 +503,22 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     });
   }
 
-  /// Removes the player from selection and adds them back to suggestedPlayers
-  void removeUnit(Team unit) {
-    setState(() {
-      removingUnits[unit] = selectedUnits.indexOf(unit);
-      selectedUnits.remove(unit);
-      addedUnitIds.remove(unit.id);
-      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-
-      final player = unit.members.first;
-      final currentSearch = searchBarController.text.toLowerCase();
-      if (currentSearch.isEmpty ||
-          player.name.toLowerCase().contains(currentSearch)) {
-        suggestedPlayers.add(player);
-        suggestedPlayers.sortByLowercaseName((p) => p.name);
-      }
-    });
-  }
-
   void handleParingSelection(Team unit) {
+    if (unit.members.length > 1) return;
+    if (selectedUnitFor(unit.members.first) == null) return;
+
     Haptics.selectionClick();
     setState(() {
-      pairingSelection.add(unit.id);
+      if (!pairingSelection.remove(unit.id)) {
+        pairingSelection.add(unit.id);
+      }
       isPairingMode = pairingSelection.isNotEmpty;
       if (pairingSelection.length == 2) {
         autoMergePairingSelection();
         isPairingMode = pairingSelection.isNotEmpty;
       }
-      widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
     });
+    widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
   }
 
   void autoMergePairingSelection() {
@@ -641,6 +548,8 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   void unmergeUnit(Team unit) {
+    if (unit.members.length < 2) return;
+
     setState(() {
       final index = selectedUnits.indexOf(unit);
       if (index == -1) return;
@@ -790,11 +699,10 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     } else {
       final unit = Team(name: '', members: [player]);
       selectedUnits.insert(0, unit);
-      addedUnitIds.add(unit.id);
       widget.onMultipleChanged?.call(selectedPlayers, selectedUnits);
-      scrollSelectedUnitsToStart();
     }
     allPlayers.add(player);
+    allPlayers.sortByLowercaseName((p) => p.name);
 
     setState(() {
       searchBarController.clear();
@@ -803,13 +711,7 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
   }
 
   void updateSuggestedPlayers() {
-    if (widget.mode == SelectionMode.single) {
-      suggestedPlayers = [...allPlayers];
-    } else {
-      suggestedPlayers = allPlayers
-          .where((player) => !selectedPlayers.any((p) => p.id == player.id))
-          .toList();
-    }
+    suggestedPlayers = [...allPlayers];
   }
 
   Widget getMessageWidget(AppLocalizations loc) {
@@ -823,15 +725,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
     );
   }
 
-  bool get allPlayerSelected =>
-      // Multi selection
-      (widget.mode == SelectionMode.multiple &&
-          (selectedPlayers.length == allPlayers.length ||
-              widget.availablePlayers?.isEmpty == true)) ||
-      // Single selection
-      (widget.mode == SelectionMode.single &&
-          widget.availablePlayers?.isEmpty == true);
-
   ({IconData icon, String title, String message}) getInfoContent(
     AppLocalizations loc,
   ) {
@@ -841,15 +734,6 @@ class _PlayerSelectionWidgetState extends State<PlayerSelectionWidget> {
         icon: Icons.person_outline,
         title: loc.no_players,
         message: loc.no_players_created_yet,
-      );
-    }
-
-    // All players selected
-    if (allPlayerSelected) {
-      return (
-        icon: Icons.person_outline,
-        title: loc.no_players,
-        message: loc.all_players_selected,
       );
     }
 
