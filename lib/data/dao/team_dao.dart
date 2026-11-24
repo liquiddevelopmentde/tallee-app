@@ -236,12 +236,6 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     );
   }
 
-  /// Returns the raw team row for [teamId], or null if it does not exist.
-  Future<TeamTableData?> getTeamDataById({required String teamId}) async {
-    final query = select(teamTable)..where((t) => t.id.equals(teamId));
-    return query.getSingleOrNull();
-  }
-
   /// Helper method to get team members from PlayerMatchTable.
   Future<List<Player>> _getTeamMembers({required String teamId}) async {
     // Get all player_match entries with this teamId
@@ -449,8 +443,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String teamId,
     required DateTime at,
   }) async {
-    final team = await getTeamDataById(teamId: teamId);
-    if (team == null || team.timerStartedAt != null) return;
+    final team = await getTeamById(teamId: teamId);
+    if (team.timerStartedAt != null) return;
 
     await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
       TeamTableCompanion(timerStartedAt: Value(at)),
@@ -462,8 +456,8 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     required String teamId,
     required DateTime at,
   }) async {
-    final team = await getTeamDataById(teamId: teamId);
-    if (team == null || team.timerStartedAt == null) return;
+    final team = await getTeamById(teamId: teamId);
+    if (team.timerStartedAt == null) return;
 
     final folded =
         (team.score ?? 0) + at.difference(team.timerStartedAt!).inMilliseconds;
@@ -518,11 +512,11 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
     final at = DateTime.now();
     await stopAllTeamTimers(teamIds: teamIds, at: at);
     for (final id in teamIds) {
-      final team = await getTeamDataById(teamId: id);
+      final team = await getTeamById(teamId: id);
       // Teams that never started must stay unscored; 0 ms would win
       // shortest-time matches.
-      if (team?.score == null) continue;
-      await updateTeamScore(teamId: id, matchId: matchId, score: team!.score!);
+      if (team.score == null) continue;
+      await updateTeamScore(teamId: id, matchId: matchId, score: team.score!);
     }
   }
 
