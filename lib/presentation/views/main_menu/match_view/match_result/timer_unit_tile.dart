@@ -28,6 +28,9 @@ class TimerUnitTile extends StatefulWidget {
 }
 
 class _TimerUnitTileState extends State<TimerUnitTile> {
+  ({String main, String fraction}) get _parts =>
+      splitTimerParts(widget.elapsedMs);
+
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
@@ -69,13 +72,28 @@ class _TimerUnitTileState extends State<TimerUnitTile> {
         Row(
           children: [
             Expanded(
-              child: Text(
-                formatTimerFull(widget.elapsedMs),
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                  color: context.talleeColors.textColor,
-                  fontFeatures: const [FontFeature.tabularFigures()],
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: _parts.main,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                        color: context.talleeColors.textColor,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                    TextSpan(
+                      text: _parts.fraction,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: context.talleeColors.textColor,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
