@@ -55,7 +55,7 @@ class MatchProfileBody extends StatelessWidget {
         const SizedBox(height: 15),
 
         // Group + Game
-        GameGroupDisplay(match: match, centered: true),
+        GameGroupDisplay(match: match, centered: true, showIcons: true),
 
         // Match Name
         Text(

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
+import 'package:tallee/core/constants/icon_constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/models/models.dart';
 
@@ -12,18 +13,27 @@ class GameGroupDisplay extends StatelessWidget {
   /// gets the rest; otherwise both get half and are cut off with an ellipsis.
   /// - [match]: The match whose game and group are displayed.
   /// - [centered]: Whether the line is centered instead of start-aligned.
+  /// - [showIcons]: Whether the game and group icons are shown in front of
+  ///   their texts.
   const GameGroupDisplay({
     super.key,
     required this.match,
     this.centered = false,
+    this.showIcons = false,
   });
 
   final Match match;
   final bool centered;
+  final bool showIcons;
 
   Group? get group => match.group;
 
   Game get game => match.game;
+
+  static const double iconSize = 15;
+  static const double iconSpacing = 3;
+
+  double get iconWidth => showIcons ? iconSize + iconSpacing : 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +69,8 @@ class GameGroupDisplay extends StatelessWidget {
           groupWidth = groupNatural;
           final available =
               constraints.maxWidth -
-              measureTextWidth(context, separator, separatorStyle);
+              measureTextWidth(context, separator, separatorStyle) -
+              2 * iconWidth;
 
           if (gameWidth + groupNatural > available) {
             final half = max(0.0, available / 2);
@@ -73,7 +84,7 @@ class GameGroupDisplay extends StatelessWidget {
             }
           }
         } else {
-          effectiveGameWidth = min(gameWidth, constraints.maxWidth);
+          effectiveGameWidth = min(gameWidth, constraints.maxWidth - iconWidth);
         }
 
         return Row(
@@ -81,9 +92,11 @@ class GameGroupDisplay extends StatelessWidget {
               ? MainAxisAlignment.center
               : MainAxisAlignment.start,
           children: [
+            if (showIcons) getIcon(GAME_ICON, gameStyle.color),
             getEllipsisText(gameText, gameStyle, effectiveGameWidth),
             if (groupText != null) ...[
               Text(separator, style: separatorStyle),
+              if (showIcons) getIcon(GROUP_ICON, groupStyle.color),
               getEllipsisText(groupText, groupStyle, groupWidth),
             ],
           ],
@@ -108,6 +121,11 @@ class GameGroupDisplay extends StatelessWidget {
     painter.dispose();
     return width;
   }
+
+  Widget getIcon(IconData icon, Color? color) => Padding(
+    padding: const EdgeInsets.only(right: iconSpacing),
+    child: Icon(icon, size: iconSize, color: color),
+  );
 
   Widget getEllipsisText(String text, TextStyle style, double width) =>
       SizedBox(
