@@ -201,12 +201,6 @@ abstract class AppLocalizations {
   /// **'Best score'**
   String get best_score;
 
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
   /// No description provided for @camera_error.
   ///
   /// In en, this message translates to:
@@ -224,6 +218,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scanning QR codes is not supported on this device.'**
   String get camera_unsupported;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 
   /// No description provided for @choose_color_description.
   ///
@@ -465,12 +465,6 @@ abstract class AppLocalizations {
   /// **'Danger Zone'**
   String get danger_zone;
 
-  /// No description provided for @data.
-  ///
-  /// In en, this message translates to:
-  /// **'Data'**
-  String get data;
-
   /// No description provided for @data_backup.
   ///
   /// In en, this message translates to:
@@ -572,6 +566,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.'**
   String get delete_player_warning_details;
+
+  /// No description provided for @delete_player_warning_groups_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{The group \"{groups}\" will also be deleted, because otherwise only one member would remain.} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}'**
+  String delete_player_warning_groups_deleted(int count, String groups);
 
   /// No description provided for @delete_statistic.
   ///
@@ -717,12 +717,6 @@ abstract class AppLocalizations {
   /// **'Error loading match: {error}'**
   String error_loading_match(String error);
 
-  /// No description provided for @error_loading_privacy_policy.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading privacy policy'**
-  String get error_loading_privacy_policy;
-
   /// No description provided for @error_reading_file.
   ///
   /// In en, this message translates to:
@@ -837,6 +831,12 @@ abstract class AppLocalizations {
   /// **'Game successfully associated'**
   String get game_associated;
 
+  /// No description provided for @game_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Game deleted'**
+  String get game_deleted;
+
   /// No description provided for @game_filter_description.
   ///
   /// In en, this message translates to:
@@ -920,6 +920,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highest Score'**
   String get highest_score;
+
+  /// No description provided for @highest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The highest score wins.'**
+  String get highest_score_description;
 
   /// No description provided for @import_canceled.
   ///
@@ -1035,6 +1041,12 @@ abstract class AppLocalizations {
   /// **'Last 90 days'**
   String get last_90_days;
 
+  /// No description provided for @last_played.
+  ///
+  /// In en, this message translates to:
+  /// **'Last played'**
+  String get last_played;
+
   /// No description provided for @last_year.
   ///
   /// In en, this message translates to:
@@ -1071,6 +1083,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{Life} other{Lives}}'**
   String lives(int count);
 
+  /// No description provided for @lives_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Whoever has at least one life left at the end wins.'**
+  String get lives_description;
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:
@@ -1101,11 +1119,23 @@ abstract class AppLocalizations {
   /// **'Loser'**
   String get loser;
 
+  /// No description provided for @loser_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a loser.'**
+  String get loser_description;
+
   /// No description provided for @lowest_score.
   ///
   /// In en, this message translates to:
   /// **'Lowest Score'**
   String get lowest_score;
+
+  /// No description provided for @lowest_score_description.
+  ///
+  /// In en, this message translates to:
+  /// **'The lowest score wins.'**
+  String get lowest_score_description;
 
   /// No description provided for @manage_members.
   ///
@@ -1509,6 +1539,12 @@ abstract class AppLocalizations {
   /// **'Placement'**
   String get placement;
 
+  /// No description provided for @placement_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank all players from first to last.'**
+  String get placement_description;
+
   /// No description provided for @played_matches.
   ///
   /// In en, this message translates to:
@@ -1586,12 +1622,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Random color'**
   String get random_color;
-
-  /// No description provided for @remaining.
-  ///
-  /// In en, this message translates to:
-  /// **'remaining'**
-  String get remaining;
 
   /// No description provided for @remove_from_favourites.
   ///
@@ -2300,6 +2330,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Winner'**
   String get winner;
+
+  /// No description provided for @winner_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more winners.'**
+  String get winner_description;
 
   /// No description provided for @winrate.
   ///

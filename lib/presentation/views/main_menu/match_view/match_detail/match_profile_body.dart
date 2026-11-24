@@ -45,10 +45,7 @@ class MatchProfileBody extends StatelessWidget {
     final loc = AppLocalizations.of(context);
 
     final content = ListView(
-      padding: EdgeInsets.only(
-        left: 12,
-        right: 12,
-        top: 20,
+      padding: AppSpacing.detailViewPadding.copyWith(
         bottom: isPreview ? 20 : 100,
       ),
       children: [

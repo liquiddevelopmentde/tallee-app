@@ -288,19 +288,5 @@ class _StatisticsTileState extends State<StatisticsTile> {
 
   bool get hasGame => selectedGames != null && selectedGames!.isNotEmpty;
 
-  String getSubtitleText(List<String> names) {
-    const maxChars = 40;
-    var result = '';
-    for (var i = 0; i < names.length; i++) {
-      final separator = i == 0 ? '' : ', ';
-      final candidate = '$result$separator${names[i]}';
-      final remaining = names.length - i - 1;
-      final suffix = remaining > 0 ? ' +$remaining' : '';
-      if (candidate.length + suffix.length > maxChars && i > 0) {
-        return '$result +${names.length - i}';
-      }
-      result = candidate;
-    }
-    return result;
-  }
+  String getSubtitleText(List<String> names) => formatNameList(names);
 }

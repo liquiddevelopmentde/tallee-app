@@ -27,6 +27,25 @@ extension RulesetExtension on Ruleset {
     }
   }
 
+  /// Translates a [Ruleset] enum value to a short localized explanation.
+  String toLocalizedDescription(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    switch (this) {
+      case Ruleset.highestScore:
+        return loc.highest_score_description;
+      case Ruleset.lowestScore:
+        return loc.lowest_score_description;
+      case Ruleset.loser:
+        return loc.loser_description;
+      case Ruleset.winner:
+        return loc.winner_description;
+      case Ruleset.placement:
+        return loc.placement_description;
+      case Ruleset.lives:
+        return loc.lives_description;
+    }
+  }
+
   /// Returns [IconData] corresponding to a [Ruleset] enum value.
   IconData get icon {
     switch (this) {

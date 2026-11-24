@@ -63,9 +63,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get best_score => 'Best score';
 
   @override
-  String get cancel => 'Cancel';
-
-  @override
   String get camera_error => 'An error occurred while accessing the camera.';
 
   @override
@@ -75,6 +72,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get camera_unsupported =>
       'Scanning QR codes is not supported on this device.';
+
+  @override
+  String get cancel => 'Cancel';
 
   @override
   String get choose_color_description => 'Choose the color for your game.';
@@ -201,9 +201,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get danger_zone => 'Danger Zone';
 
   @override
-  String get data => 'Data';
-
-  @override
   String get data_backup => 'Data & Backup';
 
   @override
@@ -267,6 +264,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get delete_player_warning_details =>
       'This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.';
+
+  @override
+  String delete_player_warning_groups_deleted(int count, String groups) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'The following groups will also be deleted because otherwise only one member would remain in each: $groups',
+      one:
+          'The group \"$groups\" will also be deleted, because otherwise only one member would remain.',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get delete_statistic => 'Delete statistic';
@@ -350,9 +360,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get error_loading_privacy_policy => 'Error loading privacy policy';
-
-  @override
   String get error_reading_file => 'Error reading file';
 
   @override
@@ -418,6 +425,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get game_associated => 'Game successfully associated';
 
   @override
+  String get game_deleted => 'Game deleted';
+
+  @override
   String get game_filter_description =>
       'All statistics will be displayed that relate to one of the selected game templates.';
 
@@ -462,6 +472,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get highest_score => 'Highest Score';
+
+  @override
+  String get highest_score_description => 'The highest score wins.';
 
   @override
   String get import_canceled => 'Import canceled';
@@ -526,6 +539,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get last_90_days => 'Last 90 days';
 
   @override
+  String get last_played => 'Last played';
+
+  @override
   String get last_year => 'Last year';
 
   @override
@@ -552,6 +568,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get lives_description =>
+      'Whoever has at least one life left at the end wins.';
+
+  @override
   String get loading => 'Loading...';
 
   @override
@@ -567,7 +587,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loser => 'Loser';
 
   @override
+  String get loser_description => 'Choose a loser.';
+
+  @override
   String get lowest_score => 'Lowest Score';
+
+  @override
+  String get lowest_score_description => 'The lowest score wins.';
 
   @override
   String get manage_members => 'Manage Members';
@@ -800,6 +826,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get placement => 'Placement';
 
   @override
+  String get placement_description => 'Rank all players from first to last.';
+
+  @override
   String get played_matches => 'Played Matches';
 
   @override
@@ -846,9 +875,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get random_color => 'Random color';
-
-  @override
-  String get remaining => 'remaining';
 
   @override
   String get remove_from_favourites => 'Remove from favourites';
@@ -1243,6 +1269,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get winner => 'Winner';
+
+  @override
+  String get winner_description => 'Choose one or more winners.';
 
   @override
   String get winrate => 'Winrate';
