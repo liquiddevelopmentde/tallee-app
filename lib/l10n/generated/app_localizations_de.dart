@@ -67,6 +67,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get camera_error =>
+      'Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.';
+
+  @override
+  String get camera_permission_denied =>
+      'Kamerazugriff wird zum Scannen von QR-Codes benötigt. Bitte erlaube den Kamerazugriff in den Einstellungen.';
+
+  @override
+  String get camera_unsupported =>
+      'Das Scannen von QR-Codes wird auf diesem Gerät nicht unterstützt.';
+
+  @override
   String get choose_color_description =>
       'Wähle eine Farbe für die Spielvorlage.';
 
@@ -449,9 +461,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group_name => 'Gruppenname';
 
   @override
-  String get group_profile => 'Gruppenprofil';
-
-  @override
   String get groups => 'Gruppen';
 
   @override
@@ -572,6 +581,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get manage_members => 'Mitglieder bearbeiten';
 
   @override
+  String get match => 'Spiel';
+
+  @override
   String get match_deleted => 'Spiel gelöscht';
 
   @override
@@ -583,9 +595,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get match_not_ended_share_warning =>
       'Spiele können erst geteilt werden, wenn sie beendet wurden.';
-
-  @override
-  String get match_profile => 'Spielprofil';
 
   @override
   String get match_receive => 'Spiel empfangen';
