@@ -1,11 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 
 class InfoTile extends StatefulWidget {
   /// A tile widget that displays a title with an icon and some content below it.
   /// - [title]: The title text displayed on the tile.
   /// - [content]: The content widget displayed below the title.
-  /// - [padding]: Optional padding for the tile content.
   /// - [height]: Optional height for the tile.
   /// - [width]: Optional width for the tile.
   const InfoTile({
@@ -14,8 +14,8 @@ class InfoTile extends StatefulWidget {
     required this.title,
     required this.content,
     this.trailingWidget,
-    this.padding,
     this.margin,
+    this.padding,
     this.height,
     this.width,
     this.horizontalAlignment = CrossAxisAlignment.center,
@@ -25,8 +25,8 @@ class InfoTile extends StatefulWidget {
   final String title;
   final Widget? trailingWidget;
   final Widget content;
-  final EdgeInsets? padding;
   final EdgeInsets? margin;
+  final EdgeInsets? padding;
   final double? height;
   final double? width;
   final CrossAxisAlignment horizontalAlignment;
@@ -38,7 +38,7 @@ class InfoTile extends StatefulWidget {
 class _InfoTileState extends State<InfoTile> {
   @override
   Widget build(BuildContext context) => Container(
-    padding: widget.padding ?? const EdgeInsets.all(12),
+    padding: widget.padding ?? AppSpacing.tilePadding,
     margin: widget.margin,
     height: widget.height,
     width: widget.width ?? 380,

@@ -98,9 +98,7 @@ class _QrScanComponentState extends State<QrScanComponent>
                 ),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  AppColors.standardBorderRadius - 3,
-                ),
+                borderRadius: AppColors.standardBorderRadiusAll,
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: LayoutBuilder(

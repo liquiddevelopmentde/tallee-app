@@ -58,7 +58,13 @@ class _MatchShareViewState extends State<MatchShareView>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 3, vsync: this);
+    final sharingConsent = SharedPreferencesService.sharingConsent;
+    serverSharingEnabled = sharingConsent ?? false;
+    tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: sharingConsent == false ? 2 : 0,
+    );
     lifecycleListener = AppLifecycleListener(onResume: onAppResumed);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharingView();
@@ -69,6 +75,7 @@ class _MatchShareViewState extends State<MatchShareView>
   void dispose() {
     lifecycleListener.dispose();
     timer?.cancel();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -154,39 +161,42 @@ class _MatchShareViewState extends State<MatchShareView>
   }
 
   Future<void> initSharingView([bool? initialSharingConsent]) async {
+    if (!mounted) return;
     isLoading = true;
-    late bool? hasStoredSharingConsent;
+    final bool sharingConsent;
+    bool shouldSelectTab = false;
 
-    if (initialSharingConsent == null) {
-      hasStoredSharingConsent = SharedPreferencesService.sharingConsent;
-      if (hasStoredSharingConsent == null) {
-        bool? userDecision = await showConsentDialog();
+    if (initialSharingConsent != null) {
+      sharingConsent = initialSharingConsent;
+    } else {
+      final storedSharingConsent = SharedPreferencesService.sharingConsent;
+      if (storedSharingConsent != null) {
+        sharingConsent = storedSharingConsent;
+      } else {
+        final userDecision = await showConsentDialog();
+        if (!mounted) return;
         if (userDecision != null) {
           SharedPreferencesService.sharingConsent = userDecision;
-          hasStoredSharingConsent = userDecision;
-        } else {
-          // if the user closed popup without selecting an option, set decision
-          // temporarily to false and ask again next time
-          hasStoredSharingConsent = false;
         }
+        // if the user closed popup without selecting an option, set decision
+        // temporarily to false and ask again next time
+        sharingConsent = userDecision ?? false;
+        shouldSelectTab = true;
       }
-    } else {
-      hasStoredSharingConsent = initialSharingConsent;
     }
 
     setState(() {
-      hasStoredSharingConsent!
-          ? serverSharingEnabled = true
-          : serverSharingEnabled = false;
+      serverSharingEnabled = sharingConsent;
     });
 
-    if (serverSharingEnabled) {
-      tabController.animateTo(0);
-    } else {
-      tabController.animateTo(2);
+    if (shouldSelectTab) {
+      final targetTabIndex = serverSharingEnabled ? 0 : 2;
+      if (tabController.index != targetTabIndex) {
+        tabController.animateTo(targetTabIndex);
+      }
     }
 
-    if (hasStoredSharingConsent) {
+    if (sharingConsent) {
       await Future.wait([
             RemoteShareService().getShareToken(widget.match),
             Future.delayed(MINIMUM_SKELETON_DURATION),
@@ -238,7 +248,7 @@ class _MatchShareViewState extends State<MatchShareView>
               actionIcon: Icons.refresh,
               onActionTap: () {
                 scaffoldMessengerKey.hideSnackBar();
-                initSharingView(hasStoredSharingConsent);
+                initSharingView(sharingConsent);
               },
             );
           });

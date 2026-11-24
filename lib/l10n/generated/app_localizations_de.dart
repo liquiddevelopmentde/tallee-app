@@ -203,9 +203,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get danger_zone => 'Gefahrenzone';
 
   @override
-  String get data => 'Daten';
-
-  @override
   String get data_backup => 'Daten & Backup';
 
   @override
@@ -269,6 +266,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get delete_player_warning_details =>
       'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
+
+  @override
+  String delete_player_warning_groups_deleted(int count, String groups) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Folgende Gruppen werden ebenfalls gelöscht, weil sonst nur noch jeweils ein Mitglied übrig wäre: $groups',
+      one:
+          'Die Gruppe \"$groups\" wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre.',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get delete_statistic => 'Statistik löschen';
@@ -352,10 +362,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get error_loading_privacy_policy =>
-      'Fehler beim Laden der Datenschutzerklärung';
-
-  @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
@@ -423,6 +429,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
+  String get game_deleted => 'Spielvorlage gelöscht';
+
+  @override
   String get game_filter_description =>
       'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
 
@@ -467,6 +476,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get highest_score => 'Höchste Punkte';
+
+  @override
+  String get highest_score_description => 'Die höchste Punktzahl gewinnt.';
 
   @override
   String get import_canceled => 'Import abgebrochen';
@@ -531,6 +543,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get last_90_days => 'Letzte 90 Tage';
 
   @override
+  String get last_played => 'Zuletzt gespielt';
+
+  @override
   String get last_year => 'Letztes Jahr';
 
   @override
@@ -557,6 +572,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get lives_description =>
+      'Wer am Ende noch mindestens ein Leben hat, gewinnt.';
+
+  @override
   String get loading => 'Lädt...';
 
   @override
@@ -566,7 +585,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loser => 'Verlierer:in';
 
   @override
+  String get loser_description => 'Wähle eine:n Verlierer:in aus.';
+
+  @override
   String get lowest_score => 'Niedrigste Punkte';
+
+  @override
+  String get lowest_score_description => 'Die niedrigste Punktzahl gewinnt.';
 
   @override
   String get manage_members => 'Mitglieder bearbeiten';
@@ -806,6 +831,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get placement => 'Platzierung';
 
   @override
+  String get placement_description =>
+      'Ordne alle Spieler:innen vom ersten bis zum letzten Platz.';
+
+  @override
   String get played_matches => 'Gespielte Spiele';
 
   @override
@@ -852,9 +881,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get random_color => 'Zufällige Farbe';
-
-  @override
-  String get remaining => 'verbleibend';
 
   @override
   String get remove_from_favourites => 'Aus Favoriten entfernen';
@@ -1232,6 +1258,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get winner => 'Gewinner:in';
+
+  @override
+  String get winner_description =>
+      'Wähle einen oder mehrere Gewinner:innen aus.';
 
   @override
   String get winrate => 'Siegquote';
