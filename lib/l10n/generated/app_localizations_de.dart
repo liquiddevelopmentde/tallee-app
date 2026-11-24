@@ -2,6 +2,7 @@
 
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -26,7 +27,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all_players => 'Alle Spieler:innen';
 
   @override
-  String get all_players_associated => 'Alle Spieler:innen erfolgreich verknüpft';
+  String get all_players_associated =>
+      'Alle Spieler:innen erfolgreich verknüpft';
 
   @override
   String get all_players_selected => 'Alle Spieler:innen ausgewählt';
@@ -65,7 +67,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
-  String get choose_color_description => 'Wähle eine Farbe für die Spielvorlage.';
+  String get choose_color_description =>
+      'Wähle eine Farbe für die Spielvorlage.';
 
   @override
   String get choose_date_range => 'Datumsbereich auswählen';
@@ -83,7 +86,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_other_file => 'Bitte wähle eine andere Datei aus.';
 
   @override
-  String get choose_ruleset_description => 'Wähle das Regelwerk mit dem du spielen möchtest.';
+  String get choose_ruleset_description =>
+      'Wähle das Regelwerk mit dem du spielen möchtest.';
 
   @override
   String get choose_scopes => 'Bereiche wählen';
@@ -95,7 +99,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get choose_types => 'Typen wählen';
 
   @override
-  String get choose_where_to_save => 'Wähle aus, wo du dein Match speichern möchtest:';
+  String get choose_where_to_save =>
+      'Wähle aus, wo du dein Match speichern möchtest:';
 
   @override
   String get close => 'Schließen';
@@ -104,7 +109,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get code_copied => 'Code in die Zwischenablage kopiert';
 
   @override
-  String get code_pasted_from_clipboard => 'Code aus der Zwischenablage eingefügt';
+  String get code_pasted_from_clipboard =>
+      'Code aus der Zwischenablage eingefügt';
 
   @override
   String get color => 'Farbe';
@@ -137,7 +143,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get confirm => 'Bestätigen';
 
   @override
-  String get contact_us_through_mail => 'Kontaktiere uns gerne direkt per E-Mail, damit wir dein Problem lösen können!';
+  String get contact_us_through_mail =>
+      'Kontaktiere uns gerne direkt per E-Mail, damit wir dein Problem lösen können!';
 
   @override
   String get continue_ => 'Weiter';
@@ -205,7 +212,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get data_transfer => 'Datentransfer';
 
   @override
-  String get data_transfer_description => 'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
+  String get data_transfer_description =>
+      'Exportiere und Importiere alle deine Spiele, Spieler:innen, Gruppen, Spielvorlagen, Statistiken in eine Datei. Dies dient als Backup oder zum Übertragen der Daten auf ein neues Gerät. Um deine Spiele mit Freunden zu Teilen, öffne ein Spiel und wähle \"Teilen\".';
 
   @override
   String days_ago(Object count) {
@@ -219,7 +227,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_all_data => 'Alle Daten löschen';
 
   @override
-  String get delete_app_data_description => 'Lösche all deine lokalen Daten unwiderruflich. Dieser Vorgang kann nicht rückgängig gemacht werden.';
+  String get delete_app_data_description =>
+      'Lösche all deine lokalen Daten unwiderruflich. Dieser Vorgang kann nicht rückgängig gemacht werden.';
 
   @override
   String get delete_game => 'Spielvorlage löschen';
@@ -239,7 +248,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_group => 'Gruppe löschen';
 
   @override
-  String get delete_group_warning_details => 'Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.';
+  String get delete_group_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Die Gruppe wird aus allen Spielen entfernt, die Mitglieder:innen bleiben jedoch weiterhin dem Spiel zugeordnet.';
 
   @override
   String get delete_match => 'Spiel löschen';
@@ -248,7 +258,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete_player => 'Spieler:in löschen';
 
   @override
-  String get delete_player_warning_details => 'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
+  String get delete_player_warning_details =>
+      'Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.';
 
   @override
   String get delete_statistic => 'Statistik löschen';
@@ -299,25 +310,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
-  String get error_creating_group => 'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
+  String get error_creating_group =>
+      'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
   @override
-  String get error_deleting_data => 'Fehler beim Löschen der Daten, bitte erneut versuchen';
+  String get error_deleting_data =>
+      'Fehler beim Löschen der Daten, bitte erneut versuchen';
 
   @override
-  String get error_deleting_game => 'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
+  String get error_deleting_game =>
+      'Fehler beim Löschen der Spielvorlage, bitte erneut versuchen';
 
   @override
-  String get error_deleting_group => 'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
+  String get error_deleting_group =>
+      'Fehler beim Löschen der Gruppe, bitte erneut versuchen';
 
   @override
-  String get error_deleting_match => 'Fehler beim Löschen des Spiels, bitte erneut versuchen';
+  String get error_deleting_match =>
+      'Fehler beim Löschen des Spiels, bitte erneut versuchen';
 
   @override
-  String get error_editing_group => 'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
+  String get error_editing_group =>
+      'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
-  String get error_editing_player => 'Fehler beim Bearbeiten des Spielers, bitte erneut versuchen';
+  String get error_editing_player =>
+      'Fehler beim Bearbeiten des Spielers, bitte erneut versuchen';
 
   @override
   String error_loading_match(String error) {
@@ -325,25 +343,31 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get error_loading_privacy_policy => 'Fehler beim Laden der Datenschutzerklärung';
+  String get error_loading_privacy_policy =>
+      'Fehler beim Laden der Datenschutzerklärung';
 
   @override
   String get error_reading_file => 'Fehler beim Lesen der Datei';
 
   @override
-  String get error_report_hint => 'Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist';
+  String get error_report_hint =>
+      'Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist';
 
   @override
-  String get error_report_info_text => 'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
+  String get error_report_info_text =>
+      'Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!';
 
   @override
-  String get error_saving_results => 'Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.';
+  String get error_saving_results =>
+      'Fehler beim Speichern der Ergebnisse. Bitte versuche es erneut.';
 
   @override
-  String get error_sending_feedback => 'Feedback konnte nicht gesendet werden. Bitte versuche es erneut.';
+  String get error_sending_feedback =>
+      'Feedback konnte nicht gesendet werden. Bitte versuche es erneut.';
 
   @override
-  String get error_while_processing_file_try_again => 'Fehler beim Verarbeiten der Datei. Bitte versuche es erneut';
+  String get error_while_processing_file_try_again =>
+      'Fehler beim Verarbeiten der Datei. Bitte versuche es erneut';
 
   @override
   String expires_in(String time) {
@@ -363,13 +387,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get feedback_hint => 'Deine Nachricht oder Kritik';
 
   @override
-  String get feedback_info_text => 'Dein Feedback hilft uns, Tallee stetig zu verbessern!';
+  String get feedback_info_text =>
+      'Dein Feedback hilft uns, Tallee stetig zu verbessern!';
 
   @override
-  String get file_couldnt_be_accessed => 'Die Datei konnte nicht geöffnet werden';
+  String get file_couldnt_be_accessed =>
+      'Die Datei konnte nicht geöffnet werden';
 
   @override
-  String get file_share_instruction => 'Teile Spiel-Daten manuell in einer Datei für eine vollständig lokale Übertragung.';
+  String get file_share_instruction =>
+      'Teile Spiel-Daten manuell in einer Datei für eine vollständig lokale Übertragung.';
 
   @override
   String get filter => 'Filter';
@@ -387,7 +414,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get game_associated => 'Spielvorlage erfolgreich verknüpft';
 
   @override
-  String get game_filter_description => 'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
+  String get game_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.';
 
   @override
   String get game_name => 'Spielvorlagenname';
@@ -411,7 +439,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get group_deleted => 'Gruppe gelöscht';
 
   @override
-  String get group_filter_description => 'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.';
+  String get group_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Gruppen beziehen.';
 
   @override
   String get group_members => 'Gruppenmitglieder';
@@ -440,25 +469,30 @@ class AppLocalizationsDe extends AppLocalizations {
   String get import_data => 'Daten importieren';
 
   @override
-  String get import_description => 'Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.';
+  String get import_description =>
+      'Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.';
 
   @override
-  String get import_file_instruction => 'Wähle eine Spiel-Datei (.tallee), die aus einer anderen Tallee-App exportiert wurde, um die Daten zu importieren.';
+  String get import_file_instruction =>
+      'Wähle eine Spiel-Datei (.tallee), die aus einer anderen Tallee-App exportiert wurde, um die Daten zu importieren.';
 
   @override
   String get import_match => 'Spiel importieren';
 
   @override
-  String get import_preview_description => 'Die folgenden Daten werden importiert';
+  String get import_preview_description =>
+      'Die folgenden Daten werden importiert';
 
   @override
-  String get incompatible_version => 'Diese Datei wurde mit einer anderen Version von Tallee erstellt und kann nicht importiert werden. Bitte aktualisiere deine App und versuche es erneut.';
+  String get incompatible_version =>
+      'Diese Datei wurde mit einer anderen Version von Tallee erstellt und kann nicht importiert werden. Bitte aktualisiere deine App und versuche es erneut.';
 
   @override
   String get info => 'Info';
 
   @override
-  String get input_token_instruction => 'Gib einen Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
+  String get input_token_instruction =>
+      'Gib einen Token ein, den eine andere Person mit Tallee erstellt hat, um das Match zu importieren.';
 
   @override
   String get invalid_email => 'Bitte gib eine gültige E-Mail-Adresse ein.';
@@ -547,7 +581,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get match_name => 'Spieltitel';
 
   @override
-  String get match_not_ended_share_warning => 'Spiele können erst geteilt werden, wenn sie beendet wurden.';
+  String get match_not_ended_share_warning =>
+      'Spiele können erst geteilt werden, wenn sie beendet wurden.';
 
   @override
   String get match_profile => 'Spielprofil';
@@ -577,10 +612,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get name => 'Name';
 
   @override
-  String get names_or_descriptions_too_long => 'Die Daten enthalten zu lange Namen oder Beschreibungen.';
+  String get names_or_descriptions_too_long =>
+      'Die Daten enthalten zu lange Namen oder Beschreibungen.';
 
   @override
-  String get network_error => 'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
+  String get network_error =>
+      'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
 
   @override
   String get new_game_will_be_created => 'Neue Spielvorlage wird erstellt';
@@ -633,10 +670,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_matches_played_yet => 'Noch kein Spiel gespielt';
 
   @override
-  String get no_matching_local_game_found => 'Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.';
+  String get no_matching_local_game_found =>
+      'Keine passende lokale Spielvorlage gefunden. Eine neue wird erstellt.';
 
   @override
-  String get no_matching_local_group_found => 'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
+  String get no_matching_local_group_found =>
+      'Keine passende lokale Gruppe gefunden. Eine neue Gruppe wird erstellt.';
 
   @override
   String get no_players => 'Keine Spieler:innen';
@@ -648,7 +687,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_players_created_yet => 'Noch keine Spieler:in erstellt';
 
   @override
-  String get no_players_found_with_that_name => 'Keine Spieler:in mit diesem Namen gefunden';
+  String get no_players_found_with_that_name =>
+      'Keine Spieler:in mit diesem Namen gefunden';
 
   @override
   String get no_players_selected => 'Keine Spieler:innen ausgewählt';
@@ -666,7 +706,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_statistics_created_yet => 'Noch keine Statistiken erstellt';
 
   @override
-  String get no_statistics_with_filter => 'Keine Statistiken mit den ausgewählten Filteroptionen';
+  String get no_statistics_with_filter =>
+      'Keine Statistiken mit den ausgewählten Filteroptionen';
 
   @override
   String get no_suitable_matches_yet => 'Noch keine passenden Spiele';
@@ -684,43 +725,50 @@ class AppLocalizationsDe extends AppLocalizations {
   String get not_part_of_any_group => 'Noch keiner Gruppe hinzugefügt';
 
   @override
-  String get onboarding_groups_teams_desc => 'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen in Teams ein.';
+  String get onboarding_groups_teams_desc =>
+      'Organisiere deine Spielrunde in Gruppen und teile Spieler:innen in Teams ein.';
 
   @override
   String get onboarding_groups_teams_title => 'Gruppen & Teams';
 
   @override
-  String get onboarding_privacy_desc => 'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien.';
+  String get onboarding_privacy_desc =>
+      'Teile Spiele ganz einfach per QR-Code oder exportiere bestimmte Spiele und vollständige Backups als lokale Dateien.';
 
   @override
   String get onboarding_privacy_title => 'Teilen & Backup';
 
   @override
-  String get onboarding_rulesets_desc => 'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
+  String get onboarding_rulesets_desc =>
+      'Erstelle eigene Spielvorlagen und wähle den passenden Regelsatz: Höchste Punktzahl, Leben, Platzierung und mehr.';
 
   @override
   String get onboarding_rulesets_title => 'Flexible Regelsätze';
 
   @override
-  String get onboarding_statistics_desc => 'Erhalte Einblicke in deine Spiele mit Statistiken, die individuell auf deine Bedürfnisse zugeschnitten sind.';
+  String get onboarding_statistics_desc =>
+      'Erhalte Einblicke in deine Spiele mit Statistiken, die individuell auf deine Bedürfnisse zugeschnitten sind.';
 
   @override
   String get onboarding_statistics_title => 'Spielstatistiken';
 
   @override
-  String get onboarding_welcome_desc => 'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Ergebnisse und verwalte deine Spielhistorie.';
+  String get onboarding_welcome_desc =>
+      'Dein Begleiter für Spieleabende. Erfasse Spiele, verfolge Ergebnisse und verwalte deine Spielhistorie.';
 
   @override
   String get onboarding_welcome_title => 'Willkommen bei Tallee';
 
   @override
-  String get online_sharing_consent_text => 'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Teilen über unsere Server aktivieren?';
+  String get online_sharing_consent_text =>
+      'Damit andere dein Spiel laden können, müssen die Spieldaten an unseren Server übertragen werden. Der Token ist nur vorübergehend gültig und die Daten werden nach 10 Minuten automatisch gelöscht. Möchtest du das Teilen über unsere Server aktivieren?';
 
   @override
   String get online_sharing_disabled => 'Online-Teilen ist deaktiviert';
 
   @override
-  String get online_sharing_info_text => 'Für das Teilen von Spielen per QR Code oder Token stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.';
+  String get online_sharing_info_text =>
+      'Für das Teilen von Spielen per QR Code oder Token stellt die App eine Verbindung zu externen Servern her. Zum Schutz deiner Daten ist diese Funktion standardmäßig deaktiviert. Alle übertragenen Daten werden nach 10 Minuten automatisch gelöscht. Du kannst Spiele auch lokal als Datei teilen.';
 
   @override
   String get online_sharing_title => 'Online-Teilen aktivieren';
@@ -743,7 +791,8 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get parsing_error => 'Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.';
+  String get parsing_error =>
+      'Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.';
 
   @override
   String get place => 'Platz';
@@ -793,7 +842,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get qr_code_expired => 'QR-Code abgelaufen';
 
   @override
-  String get qr_code_parsing_error => 'Der gescannte Code enthält keine gültigen Spiel-Daten.';
+  String get qr_code_parsing_error =>
+      'Der gescannte Code enthält keine gültigen Spiel-Daten.';
 
   @override
   String get random_color => 'Zufällige Farbe';
@@ -826,10 +876,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get save_match => 'Spiel speichern';
 
   @override
-  String get scan_qr_code_instruction => 'Scanne den QR-Code mit einer anderen Tallee-App, um das Spiel zu teilen.';
+  String get scan_qr_code_instruction =>
+      'Scanne den QR-Code mit einer anderen Tallee-App, um das Spiel zu teilen.';
 
   @override
-  String get scan_qr_receive_instruction => 'Scanne den QR-Code einer anderen Tallee-App, um das Spiel zu empfangen.';
+  String get scan_qr_receive_instruction =>
+      'Scanne den QR-Code einer anderen Tallee-App, um das Spiel zu empfangen.';
 
   @override
   String get scope => 'Bereich';
@@ -853,28 +905,33 @@ class AppLocalizationsDe extends AppLocalizations {
   String get search_for_types => 'Nach Typen suchen';
 
   @override
-  String get select_a_color_description => 'Wähle die Anzeigefarbe für deine Statistik aus.';
+  String get select_a_color_description =>
+      'Wähle die Anzeigefarbe für deine Statistik aus.';
 
   @override
-  String get select_a_group_color_description => 'Wähle die Anzeigefarbe für deine Gruppe aus.';
+  String get select_a_group_color_description =>
+      'Wähle die Anzeigefarbe für deine Gruppe aus.';
 
   @override
   String get select_a_scope => 'Bereich auswählen';
 
   @override
-  String get select_a_scope_description => 'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
+  String get select_a_scope_description =>
+      'Wähle die Gruppen oder Spielvorlagen aus, auf die deine Statistik eingegrenzt werden soll.';
 
   @override
   String get select_a_theme_description => 'Wähle die Darstellung der App.';
 
   @override
-  String get select_a_timeframe_description => 'Wähle den Zeitraum für deine Statistik aus.';
+  String get select_a_timeframe_description =>
+      'Wähle den Zeitraum für deine Statistik aus.';
 
   @override
   String get select_a_type => 'Typ wählen';
 
   @override
-  String get select_a_type_description => 'Wähle einen Typ für deine Statistik aus.';
+  String get select_a_type_description =>
+      'Wähle einen Typ für deine Statistik aus.';
 
   @override
   String get select_games => 'Spielvorlagen wählen';
@@ -898,7 +955,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selected_players => 'Ausgewählte Spieler:innen';
 
   @override
-  String get send_code_instruction => 'Sende diesen Token an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
+  String get send_code_instruction =>
+      'Sende diesen Token an eine Person, die ebenfalls Tallee hat, um das aktuelle Match zu teilen.';
 
   @override
   String get send_feedback => 'Feedback senden';
@@ -916,10 +974,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get share => 'Teilen';
 
   @override
-  String get share_as_qr_code_info => 'Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
+  String get share_as_qr_code_info =>
+      'Damit du ein Spiel als QR-Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
 
   @override
-  String get share_as_token_info => 'Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
+  String get share_as_token_info =>
+      'Damit du ein Spiel als Code mit anderen teilen kannst, muss Online-Teilen aktiviert sein';
 
   @override
   String share_match_text(String code) {
@@ -930,7 +990,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get share_match_title => 'Spiel teilen';
 
   @override
-  String get share_token_format_info => 'Token bestehen aus 6 alphanumerischen Zeichen.';
+  String get share_token_format_info =>
+      'Token bestehen aus 6 alphanumerischen Zeichen.';
 
   @override
   String get shortest_time => 'Kürzeste Zeit';
@@ -939,40 +1000,51 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shortest_time_statistic => 'Kürzeste Zeit';
 
   @override
-  String get showcase_create_game_button => 'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
+  String get showcase_create_game_button =>
+      'Tippe auf „Spielvorlage erstellen“, sobald du bereit bist.';
 
   @override
-  String get showcase_create_game_name => 'Gib der Spielvorlage hier einen Namen.';
+  String get showcase_create_game_name =>
+      'Gib der Spielvorlage hier einen Namen.';
 
   @override
-  String get showcase_create_game_ruleset => 'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir für dieses Beispiel verwenden. Für andere Regelsätze tippe auf die Kachel..';
+  String get showcase_create_game_ruleset =>
+      'Standardmäßig ist der Regelsatz „Gewinner“ ausgewählt, den wir für dieses Beispiel verwenden. Für andere Regelsätze tippe auf die Kachel..';
 
   @override
-  String get showcase_create_match_button => 'Sobald du alle Einstellungen vorgenommen hast, tippe hier, um das Spiel zu erstellen.';
+  String get showcase_create_match_button =>
+      'Sobald du alle Einstellungen vorgenommen hast, tippe hier, um das Spiel zu erstellen.';
 
   @override
-  String get showcase_create_match_game => 'Wähle die zuvor erstellte Spielvorlage aus, indem du hier tippst.';
+  String get showcase_create_match_game =>
+      'Wähle die zuvor erstellte Spielvorlage aus, indem du hier tippst.';
 
   @override
   String get showcase_create_match_name => 'Gib deinem Spiel einen Namen.';
 
   @override
-  String get showcase_create_match_players => 'Wähle hier die teilnehmenden Spieler:innen aus. Um neue zu erstellen, tippe nach der Namenseingabe auf das Plus-Symbol neben der Suchleiste.';
+  String get showcase_create_match_players =>
+      'Wähle hier die teilnehmenden Spieler:innen aus. Um neue zu erstellen, tippe nach der Namenseingabe auf das Plus-Symbol neben der Suchleiste.';
 
   @override
-  String get showcase_game_view_create => 'Tippe auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
+  String get showcase_game_view_create =>
+      'Tippe auf die Schaltfläche unten, um eine neue Spielvorlage zu erstellen.';
 
   @override
-  String get showcase_match_view_create => 'Lass uns dein erstes Spiel erfassen. Tippe dazu auf die Schaltfläche \"Spiel erstellen\".';
+  String get showcase_match_view_create =>
+      'Lass uns dein erstes Spiel erfassen. Tippe dazu auf die Schaltfläche \"Spiel erstellen\".';
 
   @override
-  String get showcase_nav_game => 'Um ein Spiel zu erstellen zu können, musst du zuerst eine Spielvorlage erstellen. Lass uns damit anfangen, zum Spielvorlagen-Reiter zu wechseln.';
+  String get showcase_nav_game =>
+      'Um ein Spiel zu erstellen zu können, musst du zuerst eine Spielvorlage erstellen. Lass uns damit anfangen, zum Spielvorlagen-Reiter zu wechseln.';
 
   @override
-  String get showcase_nav_match => 'Da wir nun eine Spielvorlage erstellt haben, können wir zum Spiele-Reiter wechseln.';
+  String get showcase_nav_match =>
+      'Da wir nun eine Spielvorlage erstellt haben, können wir zum Spiele-Reiter wechseln.';
 
   @override
-  String get showcase_select_winner => 'Um die Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
+  String get showcase_select_winner =>
+      'Um die Gewinner:innen festzulegen, wähle sie einfach hier aus und tippe unten auf die Speichern-Schaltfläche.';
 
   @override
   String get skip => 'Überspringen';
@@ -1010,19 +1082,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get successfully_processed_file => 'Datei erfolgreich verarbeitet';
 
   @override
-  String get tap_another_player_to_create_a_pair => 'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
+  String get tap_another_player_to_create_a_pair =>
+      'Tippe auf eine:n weitere:n Spieler:in, um ein Paar zu bilden';
 
   @override
-  String get tap_import_to_continue => 'Tippe auf Spiel importieren, um fortzufahren';
+  String get tap_import_to_continue =>
+      'Tippe auf Spiel importieren, um fortzufahren';
 
   @override
   String get tap_to_browse => 'Tippen zum Durchsuchen';
 
   @override
-  String get tap_to_choose_different_game => 'Tippe die Spielvorlage an, um eine andere auszuwählen';
+  String get tap_to_choose_different_game =>
+      'Tippe die Spielvorlage an, um eine andere auszuwählen';
 
   @override
-  String get tap_to_choose_different_group => 'Tippe die Gruppe an, um eine andere auszuwählen';
+  String get tap_to_choose_different_group =>
+      'Tippe die Gruppe an, um eine andere auszuwählen';
 
   @override
   String get tap_to_choose_existing => 'Tippen zum manuellen Auswählen';
@@ -1058,22 +1134,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String get theme_system => 'System';
 
   @override
-  String get there_are_no_games_matching_your_search => 'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
+  String get there_are_no_games_matching_your_search =>
+      'Es gibt keine Spielvorlagen, die deiner Suche entspricht';
 
   @override
-  String get there_is_no_game_matching_your_search => 'Es gibt keine Spielvorlage, die deiner Suche entspricht';
+  String get there_is_no_game_matching_your_search =>
+      'Es gibt keine Spielvorlage, die deiner Suche entspricht';
 
   @override
-  String get there_is_no_group_matching_your_search => 'Es gibt keine Gruppe, die deiner Suche entspricht';
+  String get there_is_no_group_matching_your_search =>
+      'Es gibt keine Gruppe, die deiner Suche entspricht';
 
   @override
-  String get there_is_no_match_matching_your_filter => 'Es gibt kein Spiel, das deinem Filter entspricht';
+  String get there_is_no_match_matching_your_filter =>
+      'Es gibt kein Spiel, das deinem Filter entspricht';
 
   @override
-  String get there_is_no_match_matching_your_search => 'Es gibt kein Spiel, das deiner Suche entspricht';
+  String get there_is_no_match_matching_your_search =>
+      'Es gibt kein Spiel, das deiner Suche entspricht';
 
   @override
-  String get this_cannot_be_undone => 'Dies kann nicht rückgängig gemacht werden.';
+  String get this_cannot_be_undone =>
+      'Dies kann nicht rückgängig gemacht werden.';
 
   @override
   String get tie => 'Unentschieden';
@@ -1082,7 +1164,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timeframe => 'Zeitraum';
 
   @override
-  String get timeframe_filter_description => 'Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.';
+  String get timeframe_filter_description =>
+      'Es werden alle Statistiken angezeigt, die sich auf einen der ausgewählten Zeiträume beziehen.';
 
   @override
   String get today => 'Heute';
@@ -1117,7 +1200,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get type => 'Typ';
 
   @override
-  String get type_filter_description => 'Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.';
+  String get type_filter_description =>
+      'Es werden alle Statistiken angezeigt, die einem der ausgewählten Typen entsprechen.';
 
   @override
   String get unexpected_error => 'Ein unerwarteter Fehler ist aufgetreten.';
@@ -1129,13 +1213,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get unsatisfied => 'Unzufrieden?';
 
   @override
-  String get update_app_export_desc => 'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
+  String get update_app_export_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Datenimport in eine andere Tallee-App führen kann.';
 
   @override
-  String get update_app_import_desc => 'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
+  String get update_app_import_desc =>
+      'Du hast nicht die neueste App-Version, was zu Problemen beim Importieren deiner Daten führen kann.';
 
   @override
-  String get update_app_version => 'Bitte aktualisiert eure Apps auf die neueste Version und versucht es erneut.';
+  String get update_app_version =>
+      'Bitte aktualisiert eure Apps auf die neueste Version und versucht es erneut.';
 
   @override
   String get update_available => 'Update verfügbar';
@@ -1144,7 +1231,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get update_available_content => 'Eine neue Version ist verfügbar.';
 
   @override
-  String get update_features_fixes_desc => 'Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.';
+  String get update_features_fixes_desc =>
+      'Bitte aktualisiere die App, um die neuesten Funktionen und Verbesserungen zu nutzen.';
 
   @override
   String get update_now => 'Jetzt aktualisieren';
@@ -1177,5 +1265,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yesterday_at => 'Gestern um';
 
   @override
-  String get your_statistic_will_be_shown_here => 'Hier wird deine Statistik angezeigt';
+  String get your_statistic_will_be_shown_here =>
+      'Hier wird deine Statistik angezeigt';
 }
