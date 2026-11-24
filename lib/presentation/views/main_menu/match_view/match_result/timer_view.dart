@@ -8,29 +8,19 @@ import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
-import 'package:tallee/presentation/utils/name_display.dart';
+import 'package:tallee/presentation/views/main_menu/match_view/match_result/timer_unit_tile.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
-/// Live timer dashboard for the time-based rulesets.
-///
-/// Shows one clock per player or team with per-unit start/stop toggles and
-/// Start all / Stop all controls. Values are derived from the database, so
-/// timers keep advancing while the app is closed.
 class TimerView extends StatefulWidget {
-  const TimerView({
-    super.key,
-    required this.match,
-    this.onTimersChanged,
-    this.onMatchReopened,
-  });
+  /// Live timer dashboard for the time-based rulesets.
+  ///
+  /// Shows one clock per player or team with per-unit start/stop toggles and
+  /// Start all / Stop all controls. Values are derived from the database, so
+  /// timers keep advancing while the app is closed.
+  const TimerView({super.key, required this.match, this.onTimersChanged});
 
   final Match match;
-
-  /// Called after any start/stop so the parent can refresh its own state.
   final VoidCallback? onTimersChanged;
-
-  /// Called when starting a timer reopens a previously finished match.
-  final VoidCallback? onMatchReopened;
 
   @override
   State<TimerView> createState() => _TimerViewState();
@@ -40,10 +30,6 @@ class _TimerViewState extends State<TimerView> {
   late final AppDatabase db;
   late final AppLifecycleListener lifecycleListener;
   Timer? ticker;
-
-  /// Whether the match was finished when this view opened. Cleared once a timer
-  /// start re-opens the match.
-  late bool _matchEnded;
 
   /// Accumulated ms per unit while stopped (the persisted [ScoreEntry.score] /
   /// [Team.score] value).
@@ -74,7 +60,6 @@ class _TimerViewState extends State<TimerView> {
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
-    _matchEnded = widget.match.endedAt != null;
     lifecycleListener = AppLifecycleListener(onResume: _reload);
     _reload();
     ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -89,96 +74,9 @@ class _TimerViewState extends State<TimerView> {
     super.dispose();
   }
 
-  Future<void> _reload() async {
-    final data = useTeams
-        ? await db.teamDao.getTeamTimers(teamIds: unitIds)
-        : await db.scoreEntryDao.getTimers(matchId: widget.match.id);
-    if (!mounted) return;
-    setState(() {
-      baseMs
-        ..clear()
-        ..addAll(data.map((id, value) => MapEntry(id, value.elapsedMs)));
-      timerStartedAt
-        ..clear()
-        ..addAll(data.map((id, value) => MapEntry(id, value.timerStartedAt)));
-    });
-  }
-
-  /// Returns the effective elapsed ms for [id] at the current instant.
-  int effectiveMs(String id) => effectiveTimerMs(
-    baseMs: baseMs[id] ?? 0,
-    timerStartedAt: timerStartedAt[id],
-    now: clock.now(),
-  );
-
-  /// Re-opens the match if it was already finished and a timer just started.
-  Future<void> _reopenIfNeeded() async {
-    if (!_matchEnded) return;
-    await db.matchDao.removeMatchEndedAt(matchId: widget.match.id);
-    _matchEnded = false;
-    widget.onMatchReopened?.call();
-  }
-
-  Future<void> _toggle(String id) async {
-    final at = clock.now();
-    final starting = timerStartedAt[id] == null;
-    if (useTeams) {
-      if (starting) {
-        await db.teamDao.startTeamTimer(teamId: id, at: at);
-      } else {
-        await db.teamDao.stopTeamTimer(teamId: id, at: at);
-      }
-    } else {
-      if (starting) {
-        await db.scoreEntryDao.startTimer(
-          playerId: id,
-          matchId: widget.match.id,
-          at: at,
-        );
-      } else {
-        await db.scoreEntryDao.stopTimer(
-          playerId: id,
-          matchId: widget.match.id,
-          at: at,
-        );
-      }
-    }
-    if (starting) await _reopenIfNeeded();
-    await _reload();
-    widget.onTimersChanged?.call();
-  }
-
-  Future<void> _startAll() async {
-    final at = clock.now();
-    if (useTeams) {
-      await db.teamDao.startAllTeamTimers(teamIds: unitIds, at: at);
-    } else {
-      await db.scoreEntryDao.startAllTimers(
-        matchId: widget.match.id,
-        playerIds: unitIds,
-        at: at,
-      );
-    }
-    await _reopenIfNeeded();
-    await _reload();
-    widget.onTimersChanged?.call();
-  }
-
-  Future<void> _stopAll() async {
-    final at = clock.now();
-    if (useTeams) {
-      await db.teamDao.stopAllTeamTimers(teamIds: unitIds, at: at);
-    } else {
-      await db.scoreEntryDao.stopAllTimers(matchId: widget.match.id, at: at);
-    }
-    await _reload();
-    widget.onTimersChanged?.call();
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final visibleUnits = units;
 
     return Column(
       children: [
@@ -211,87 +109,97 @@ class _TimerViewState extends State<TimerView> {
         // One row per unit
         Expanded(
           child: ListView.builder(
-            itemCount: visibleUnits.length,
-            itemBuilder: (context, index) =>
-                _buildUnitTile(context, loc, visibleUnits[index]),
+            itemCount: units.length,
+            itemBuilder: (context, index) {
+              final unit = units[index];
+              final String id = unit is Team ? unit.id : (unit as Player).id;
+              return TimerUnitTile(
+                unit: unit,
+                isTeamMatch: isTeamMatch,
+                running: timerStartedAt[id] != null,
+                elapsedMs: effectiveMs(id),
+                onToggle: () => _toggle(id),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildUnitTile(
-    BuildContext context,
-    AppLocalizations loc,
-    dynamic unit,
-  ) {
-    final String id = unit is Team ? unit.id : (unit as Player).id;
-    final bool running = timerStartedAt[id] != null;
+  Future<void> _reload() async {
+    final data = useTeams
+        ? await db.teamDao.getTeamTimers(teamIds: unitIds)
+        : await db.scoreEntryDao.getTimers(matchId: widget.match.id);
+    if (!mounted) return;
+    setState(() {
+      baseMs
+        ..clear()
+        ..addAll(data.map((id, value) => MapEntry(id, value.elapsedMs)));
+      timerStartedAt
+        ..clear()
+        ..addAll(data.map((id, value) => MapEntry(id, value.timerStartedAt)));
+    });
+  }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      decoration: context.standardBoxDecoration,
-      child: Column(
-        spacing: 4,
-        children: [
-          // Colored unit name
-          Row(
-            spacing: 5,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isTeamMatch && unit is Team) ...[
-                Container(
-                  width: 14,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: unit.color.colorValue(context),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
-              Flexible(
-                child: buildUnitNameWidget(
-                  context,
-                  unit,
-                  isTeamMatch: isTeamMatch,
-                  rowAlignment: MainAxisAlignment.center,
-                  mainStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
+  /// Returns the effective elapsed ms for [id] at the current instant.
+  int effectiveMs(String id) => effectiveTimerMs(
+    baseMs: baseMs[id] ?? 0,
+    timerStartedAt: timerStartedAt[id],
+    now: clock.now(),
+  );
 
-          // Time + toggle
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox(width: 52),
-              Expanded(
-                child: Text(
-                  formatTimer(effectiveMs(id)),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.w600,
-                    color: context.talleeColors.textColor,
-                  ),
-                ),
-              ),
-              Tooltip(
-                message: running ? loc.stop_timer : loc.start_timer,
-                child: FloatingAnimatedButton(
-                  icon: running ? Icons.stop_rounded : Icons.play_arrow_rounded,
-                  onPressed: () => _toggle(id),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  Future<void> _toggle(String id) async {
+    final at = clock.now();
+    final starting = timerStartedAt[id] == null;
+    if (useTeams) {
+      if (starting) {
+        await db.teamDao.startTeamTimer(teamId: id, at: at);
+      } else {
+        await db.teamDao.stopTeamTimer(teamId: id, at: at);
+      }
+    } else {
+      if (starting) {
+        await db.scoreEntryDao.startTimer(
+          playerId: id,
+          matchId: widget.match.id,
+          at: at,
+        );
+      } else {
+        await db.scoreEntryDao.stopTimer(
+          playerId: id,
+          matchId: widget.match.id,
+          at: at,
+        );
+      }
+    }
+    await _reload();
+    widget.onTimersChanged?.call();
+  }
+
+  Future<void> _startAll() async {
+    final at = clock.now();
+    if (useTeams) {
+      await db.teamDao.startAllTeamTimers(teamIds: unitIds, at: at);
+    } else {
+      await db.scoreEntryDao.startAllTimers(
+        matchId: widget.match.id,
+        playerIds: unitIds,
+        at: at,
+      );
+    }
+    await _reload();
+    widget.onTimersChanged?.call();
+  }
+
+  Future<void> _stopAll() async {
+    final at = clock.now();
+    if (useTeams) {
+      await db.teamDao.stopAllTeamTimers(teamIds: unitIds, at: at);
+    } else {
+      await db.scoreEntryDao.stopAllTimers(matchId: widget.match.id, at: at);
+    }
+    await _reload();
+    widget.onTimersChanged?.call();
   }
 }
