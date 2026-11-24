@@ -54,12 +54,10 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   bool get isTeamMatch => widget.match.isTeamMatch;
 
-  /// Whether the match uses a time-based ruleset.
-  bool get isTimer =>
-      ruleset == Ruleset.longestTime || ruleset == Ruleset.shortestTime;
-
   bool get canSave {
-    if (ruleset.isPlacement || ruleset.isLives || isTimer) return true;
+    if (ruleset.isPlacement || ruleset.isLives || ruleset.isTime) {
+      return true;
+    }
     if (selectedPlayers.isNotEmpty || selectedTeams.isNotEmpty) return true;
     return areScoresValid;
   }
@@ -75,7 +73,7 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Whether the current input differs from the scores stored in the [match].
   bool get hasChangedResult {
-    if (isTimer) return true;
+    if (ruleset.isTime) return true;
     switch (ruleset) {
       case Ruleset.winner:
       case Ruleset.loser:
@@ -113,7 +111,7 @@ class _MatchResultViewState extends State<MatchResultView> {
         body: Column(
           children: [
             Expanded(
-              child: isTimer
+              child: ruleset.isTime
                   ? TimerView(
                       match: widget.match,
                       onTimersChanged: () => setState(() {}),
@@ -401,7 +399,7 @@ class _MatchResultViewState extends State<MatchResultView> {
       success = await handlePlacement();
     } else if (ruleset.isLives) {
       success = await handleLives();
-    } else if (isTimer) {
+    } else if (ruleset.isTime) {
       success = await handleTimers();
     }
 
