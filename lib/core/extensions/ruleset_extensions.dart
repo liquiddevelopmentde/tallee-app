@@ -43,6 +43,10 @@ extension RulesetExtension on Ruleset {
         return loc.placement_description;
       case Ruleset.lives:
         return loc.lives_description;
+      case Ruleset.longestTime:
+        return loc.longest_time_description;
+      case Ruleset.shortestTime:
+        return loc.shortest_time_description;
     }
   }
 
