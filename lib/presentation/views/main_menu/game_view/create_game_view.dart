@@ -349,8 +349,8 @@ class _CreateGameViewState extends State<CreateGameView> {
         final loc = AppLocalizations.of(context);
         context.showSnackBar(
           message: isEditMode
-              ? loc.error_editing_group
-              : loc.error_creating_group,
+              ? loc.error_editing_game
+              : loc.error_creating_game,
         );
       }
     }

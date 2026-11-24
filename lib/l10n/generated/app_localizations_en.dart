@@ -60,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get best_score => 'Best score';
 
   @override
+  String get error_creating_game => 'Error creating game, please try again';
+
+  @override
   String get camera_error => 'An error occurred while accessing the camera.';
 
   @override
@@ -346,6 +349,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_editing_group =>
       'Error while editing group, please try again';
+
+  @override
+  String get error_editing_game => 'Error while editing game, please try again';
 
   @override
   String get error_editing_player =>
