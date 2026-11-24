@@ -235,17 +235,12 @@ class _CreateMatchViewState extends State<CreateMatchView> {
                 if (!widget.editMode)
                   ChooseTile(
                     title: loc.team_match,
+                    showChevron: false,
+                    onPressed: () => onTeamMatchChanged(!isTeamMatch),
                     trailing: CustomAdaptiveSwitch(
                       padding: const EdgeInsets.symmetric(vertical: -15),
                       value: isTeamMatch,
-                      onChanged: (value) => setState(() {
-                        isTeamMatch = value;
-                        // Always reset pairs to individual units when team match is active
-                        // or when explicitly disabled, to ensure a clean state.
-                        selectedUnits = selectedPlayers
-                            .map((p) => Team(name: '', members: [p]))
-                            .toList();
-                      }),
+                      onChanged: onTeamMatchChanged,
                     ),
                   ),
 
@@ -332,6 +327,16 @@ class _CreateMatchViewState extends State<CreateMatchView> {
       }
     });
   }
+
+  /// Toggles the team match mode and resets the selected units.
+  void onTeamMatchChanged(bool value) => setState(() {
+    isTeamMatch = value;
+    // Always reset pairs to individual units when team match is active
+    // or when explicitly disabled, to ensure a clean state.
+    selectedUnits = selectedPlayers
+        .map((p) => Team(name: '', members: [p]))
+        .toList();
+  });
 
   Future<void> onChoosingGame() async {
     selectedGame = await Navigator.of(context).push(
