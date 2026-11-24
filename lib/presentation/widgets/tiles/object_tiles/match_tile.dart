@@ -215,7 +215,7 @@ class _MatchTileState extends State<MatchTile> {
     final color = context.talleeColors.yellowColor.boxColorValue(context);
 
     // Match in progress display
-    if (match.hasEnded) {
+    if (!match.hasEnded) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
@@ -244,7 +244,7 @@ class _MatchTileState extends State<MatchTile> {
     }
 
     // Tie display
-    if (!match.isTie) {
+    if (match.isTie) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
