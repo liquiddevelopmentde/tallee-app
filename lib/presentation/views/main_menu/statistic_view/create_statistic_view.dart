@@ -79,7 +79,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
     return ScaffoldMessenger(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: Text(loc.create_statistic(1))),
+        appBar: AppBar(title: Text(loc.create_statistic)),
         body: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 12),
           child: LayoutBuilder(
@@ -233,7 +233,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
                       padding: const EdgeInsets.only(top: 20, bottom: 12),
                       child: Center(
                         child: BottomAnimatedButton(
-                          text: loc.create_statistic(1),
+                          text: loc.create_statistic,
                           onPressed: enableSubmitButton
                               ? submitStatistic
                               : null,

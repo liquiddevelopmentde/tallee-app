@@ -1,98 +1,5 @@
 {
   "@@locale": "en",
-  "@could_not_add_player": {
-    "placeholders": {
-      "playerName": {
-        "type": "String"
-      }
-    }
-  },
-  "@create_statistic": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@delete_game_with_matches_warning": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@error_loading_match": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "@expires_in": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "@here_is_shared_match": {
-    "placeholders": {
-      "matchName": {
-        "type": "String"
-      }
-    }
-  },
-  "@lives": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@new_players_will_be_created": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@pair": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@player_count": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@share_match_text": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "@successfully_added_player": {
-    "description": "Success message when adding a player",
-    "placeholders": {
-      "playerName": {
-        "type": "String",
-        "example": "John"
-      }
-    }
-  },
-  "@top_n": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "active_matches": "Active Matches",
   "add_team": "Add Team",
   "add_to_favourites": "Add to favourites",
@@ -139,13 +46,20 @@
   "continue_": "Continue",
   "copy_code": "Copy Code",
   "could_not_add_player": "Could not add player {playerName}",
+  "@could_not_add_player": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
   "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",
   "create_match": "Create Match",
   "create_new_group": "Create new group",
   "create_new_match": "Create new match",
-  "create_statistic": "Create {count, plural, =0{statistics} =1{statistic} other{statistics ({count})}}",
+  "create_statistic": "Create statistic",
   "create_teams": "Create teams",
   "created_on": "Created on",
   "creation_date": "Creation date",
@@ -164,6 +78,13 @@
   "delete_app_data_description": "Permanently delete all app data. This action is irreversible.",
   "delete_game": "Delete Game",
   "delete_game_with_matches_warning": "If you delete this game template, {count, plural, =1{1 match} other{{count} matches}} using this game template will also be deleted.",
+  "@delete_game_with_matches_warning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "delete_group": "Delete Group",
   "delete_group_warning_details": "This action cannot be undone. The group will be removed from all games, but members will remain assigned to the game.",
   "delete_match": "Delete Match",
@@ -193,6 +114,13 @@
   "error_editing_group": "Error while editing group, please try again",
   "error_editing_player": "Error while editing player, please try again",
   "error_loading_match": "Error loading match: {error}",
+  "@error_loading_match": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
   "error_report_hint": "Please describe the steps leading up to the error and how it appeared",
@@ -201,6 +129,13 @@
   "error_sending_feedback": "Feedback could not be sent. Please try again.",
   "error_while_processing_file_try_again": "Error while processing file. Please try again.",
   "expires_in": "Expires in {time}",
+  "@expires_in": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "export_canceled": "Export canceled",
   "export_data": "Export data",
   "favourites": "Favourites",
@@ -227,6 +162,13 @@
   "group_profile": "Group Profile",
   "groups": "Groups",
   "here_is_shared_match": "Here is the shared match \"{matchName}\"",
+  "@here_is_shared_match": {
+    "placeholders": {
+      "matchName": {
+        "type": "String"
+      }
+    }
+  },
   "highest_score": "Highest Score",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
@@ -253,6 +195,13 @@
   "legal_notice": "Legal Notice",
   "licenses": "Licenses",
   "lives": "{count, plural, =1{Life} other{Lives}}",
+  "@lives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "loading": "Loading...",
   "loading_match": "Loading match...",
   "longest_time": "Longest Time",
@@ -278,6 +227,13 @@
   "new_game_will_be_created": "New game will be created",
   "new_group_will_be_created": "New group will be created",
   "new_players_will_be_created": "{count, plural, =1{1 new player will be created} other{{count} new players will be created}}",
+  "@new_players_will_be_created": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "next": "Next",
   "no": "No",
   "no_data_to_export": "No data to export",
@@ -323,11 +279,25 @@
   "open_settings": "Open Settings",
   "optional": "optional",
   "pair": "{count, plural, =1{Pair} other{Pairs}}",
+  "@pair": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",
   "played_matches": "Played Matches",
   "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
+  "@player_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "player_name": "Player name",
   "player_profile": "Player Profile",
   "players": "Players",
@@ -381,6 +351,13 @@
   "share_as_qr_code_info": "To share a match as a QR code with others, online sharing must be enabled",
   "share_as_token_info": "To share a match as a token with others, online sharing must be enabled",
   "share_match_text": "Here is the match data for our game! Enter code {code} in Tallee.",
+  "@share_match_text": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
   "share_match_title": "Match Share",
   "share_token_format_info": "Share tokens consist of 6 alphanumeric characters.",
   "shortest_time": "Shortest Time",
@@ -407,6 +384,15 @@
   "stop_all": "Stop all",
   "stop_timer": "Stop timer",
   "successfully_added_player": "Successfully added player {playerName}",
+  "@successfully_added_player": {
+    "description": "Success message when adding a player",
+    "placeholders": {
+      "playerName": {
+        "type": "String",
+        "example": "John"
+      }
+    }
+  },
   "successfully_processed_file": "Successfully processed file",
   "tap_another_player_to_create_a_pair": "Tap another player to create a pair",
   "tap_import_to_continue": "Tap import match to continue",
@@ -437,6 +423,13 @@
   "today_at": "Today at",
   "token_expired": "Token expired",
   "top_n": "Top {count}",
+  "@top_n": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "total_losses": "Total losses",
   "total_matches": "Total matches",
   "total_score": "Total score",
