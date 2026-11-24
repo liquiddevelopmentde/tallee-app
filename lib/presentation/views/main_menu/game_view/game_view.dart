@@ -200,32 +200,29 @@ class _GameViewState extends State<GameView> with RouteAware {
                                         context,
                                       ),
                                       itemCount: displayedGames.length,
+                                      itemBuilder: (context, index) {
+                                        final game = displayedGames[index];
+                                        final gameCount = getGameCount(game);
 
-                                      itemBuilder:
-                                          (
-                                            BuildContext context,
-                                            int index,
-                                          ) => GameTile(
-                                            gameCount: getGameCount(
-                                              displayedGames[index],
-                                            ),
-                                            onTap: () => Navigator.push(
-                                              context,
-                                              adaptivePageRoute(
-                                                settings: const RouteSettings(
-                                                  name:
-                                                      RouteNames.gameDetailView,
-                                                ),
-                                                builder: (context) =>
-                                                    GameDetailView(
-                                                      game:
-                                                          displayedGames[index],
-                                                      onGameUpdated: loadGames,
-                                                    ),
+                                        return GameTile(
+                                          gameCount: gameCount,
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            adaptivePageRoute(
+                                              settings: const RouteSettings(
+                                                name: RouteNames.gameDetailView,
                                               ),
+                                              builder: (context) =>
+                                                  GameDetailView(
+                                                    game: game,
+                                                    onGameUpdated: loadGames,
+                                                    gameCount: gameCount,
+                                                  ),
                                             ),
-                                            game: displayedGames[index],
                                           ),
+                                          game: displayedGames[index],
+                                        );
+                                      },
                                     ),
                                   ),
                                 )

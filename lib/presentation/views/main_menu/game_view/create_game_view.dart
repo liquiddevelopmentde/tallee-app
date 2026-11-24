@@ -173,29 +173,29 @@ class _CreateGameViewState extends State<CreateGameView> {
                   ),
 
                   // Choose ruleset tile
-                  if (!isEditMode)
-                    CustomShowcaseWidget(
-                      showcaseKey: createGameViewGameRulesetKey,
-                      description: loc.showcase_create_game_ruleset,
-                      child: ChooseTile(
-                        title: loc.ruleset,
-                        trailing: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 8,
-                            children: [
-                              Icon(selectedRuleset!.icon, size: 16),
-                              Text(
-                                selectedRuleset!.toLocalizedString(context),
-                                textAlign: TextAlign.right,
-                              ),
-                            ],
-                          ),
+                  CustomShowcaseWidget(
+                    showcaseKey: createGameViewGameRulesetKey,
+                    description: loc.showcase_create_game_ruleset,
+                    child: ChooseTile(
+                      enabled: widget.gameCount == 0,
+                      title: loc.ruleset,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            Icon(selectedRuleset!.icon, size: 16),
+                            Text(
+                              selectedRuleset!.toLocalizedString(context),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
                         ),
-                        onPressed: () => showRulesetSheet(loc),
                       ),
+                      onPressed: () => showRulesetSheet(loc),
                     ),
+                  ),
 
                   // Choose color tile
                   ChooseTile(

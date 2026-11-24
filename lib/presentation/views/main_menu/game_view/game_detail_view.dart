@@ -25,9 +25,15 @@ class GameDetailView extends StatefulWidget {
   /// A view that displays the profile of a game
   /// - [game]: The game to display
   /// - [onGameUpdated]: Callback invoked when a game is updated
-  const GameDetailView({super.key, required this.game, this.onGameUpdated});
+  const GameDetailView({
+    super.key,
+    required this.game,
+    required this.gameCount,
+    this.onGameUpdated,
+  });
 
   final Game game;
+  final int gameCount;
   final VoidCallback? onGameUpdated;
 
   @override
@@ -165,6 +171,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                       builder: (context) => CreateGameView(
                         gameToEdit: game,
                         onGameChanged: loadStatistics,
+                        gameCount: widget.gameCount,
                       ),
                     ),
                   );
