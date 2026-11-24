@@ -746,56 +746,51 @@ void main() {
         expect(match.endedAt, isNull);
       });
 
-      test(
-        'finalizeTeamTimers folds totals and mirrors members without ending the match',
-        () async {
-          await database.matchDao.addMatch(match: testMatch1);
-          final at = DateTime(2026, 1, 1, 12);
+      test('finalizeTimers folds totals and mirrors members without ending the match', () async {
+        await database.matchDao.addMatch(match: testMatch1);
+        final at = DateTime(2026, 1, 1, 12);
 
-          await database.teamDao.startAllTeamTimers(
-            teamIds: [testTeam1.id, testTeam2.id],
-            at: at,
-          );
-          // finalizeTeamTimers uses DateTime.now(); simulate elapsed by first
-          // folding manually at a fixed time so the test is deterministic.
-          await database.teamDao.stopAllTeamTimers(
-            teamIds: [testTeam1.id, testTeam2.id],
-            at: at.add(const Duration(seconds: 60)),
-          );
-          await database.teamDao.finalizeTeamTimers(
-            matchId: testMatch1.id,
-            teamIds: [testTeam1.id, testTeam2.id],
-          );
+        await database.teamDao.startAllTeamTimers(
+          teamIds: [testTeam1.id, testTeam2.id],
+          at: at,
+        );
+        // finalizeTimers uses DateTime.now(); simulate elapsed by first
+        // folding manually at a fixed time so the test is deterministic.
+        await database.teamDao.stopAllTeamTimers(
+          teamIds: [testTeam1.id, testTeam2.id],
+          at: at.add(const Duration(seconds: 60)),
+        );
+        await database.teamDao.finalizeTimers(
+          matchId: testMatch1.id,
+          teamIds: [testTeam1.id, testTeam2.id],
+        );
 
-          final team1 = await database.teamDao.getTeamById(
-            teamId: testTeam1.id,
-          );
-          expect(team1.score, 60000);
+        final team1 = await database.teamDao.getTeamById(teamId: testTeam1.id);
+        expect(team1.score, 60000);
 
-          for (final member in testTeam1.members) {
-            final entry = await database.scoreEntryDao.getScore(
-              playerId: member.id,
-              matchId: testMatch1.id,
-            );
-            expect(entry, isNotNull);
-            expect(entry!.score, 60000);
-          }
-
-          final match = await database.matchDao.getMatchById(
+        for (final member in testTeam1.members) {
+          final entry = await database.scoreEntryDao.getScore(
+            playerId: member.id,
             matchId: testMatch1.id,
           );
-          expect(match.endedAt, isNull);
-        },
-      );
+          expect(entry, isNotNull);
+          expect(entry!.score, 60000);
+        }
 
-      test('finalizeTeamTimers leaves never-started teams unscored', () async {
+        final match = await database.matchDao.getMatchById(
+          matchId: testMatch1.id,
+        );
+        expect(match.endedAt, isNull);
+      });
+
+      test('finalizeTimers leaves never-started teams unscored', () async {
         await database.matchDao.addMatch(match: testMatch1);
 
         await database.teamDao.startAllTeamTimers(
           teamIds: [testTeam1.id],
           at: DateTime(2026, 1, 1, 12),
         );
-        await database.teamDao.finalizeTeamTimers(
+        await database.teamDao.finalizeTimers(
           matchId: testMatch1.id,
           teamIds: [testTeam1.id, testTeam2.id],
         );

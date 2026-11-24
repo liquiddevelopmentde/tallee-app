@@ -536,38 +536,52 @@ class ScoreEntryDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Stops every running timer in the match using one shared timestamp.
-  Future<void> stopAllTimers({
+  /// Returns `false` if persisting the folded times failed.
+  Future<bool> stopAllTimers({
     required String matchId,
     required DateTime at,
   }) async {
-    final rows =
-        await (select(scoreEntryTable)..where(
-              (tbl) =>
-                  tbl.matchId.equals(matchId) & tbl.timerStartedAt.isNotNull(),
-            ))
-            .get();
+    try {
+      final rows =
+          await (select(scoreEntryTable)..where(
+                (tbl) =>
+                    tbl.matchId.equals(matchId) &
+                    tbl.timerStartedAt.isNotNull(),
+              ))
+              .get();
 
-    await batch((b) {
-      for (final row in rows) {
-        final folded = foldElapsedMs(
-          baseMs: row.change,
-          timerStartedAt: row.timerStartedAt,
-          now: at,
-        );
-        b.update(
-          scoreEntryTable,
-          ScoreEntryTableCompanion(
-            change: Value(folded),
-            timerStartedAt: const Value(null),
-          ),
-          where: (tbl) =>
-              tbl.playerId.equals(row.playerId) &
-              tbl.matchId.equals(matchId) &
-              tbl.roundNumber.equals(row.roundNumber),
-        );
-      }
-    });
+      await batch((b) {
+        for (final row in rows) {
+          final folded = foldElapsedMs(
+            baseMs: row.change,
+            timerStartedAt: row.timerStartedAt,
+            now: at,
+          );
+          b.update(
+            scoreEntryTable,
+            ScoreEntryTableCompanion(
+              change: Value(folded),
+              timerStartedAt: const Value(null),
+            ),
+            where: (tbl) =>
+                tbl.playerId.equals(row.playerId) &
+                tbl.matchId.equals(matchId) &
+                tbl.roundNumber.equals(row.roundNumber),
+          );
+        }
+      });
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
+
+  /// Stops all running player timers and persists their final totals.
+  /// Call once on save.
+  Future<bool> finalizeTimers({
+    required String matchId,
+    required DateTime at,
+  }) => stopAllTimers(matchId: matchId, at: at);
 
   /// Returns the stored accumulated ms and running state per player.
   Future<Map<String, ({int elapsedMs, DateTime? timerStartedAt})>> getTimers({

@@ -452,22 +452,25 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }
 
   /// Stops one team timer, folding the elapsed time into its score.
-  Future<void> stopTeamTimer({
+  /// No-op (success) if not running. Returns `false` if persisting failed.
+  Future<bool> stopTeamTimer({
     required String teamId,
     required DateTime at,
   }) async {
     final team = await getTeamById(teamId: teamId);
-    if (team.timerStartedAt == null) return;
+    if (team.timerStartedAt == null) return true;
 
     final folded =
         (team.score ?? 0) + at.difference(team.timerStartedAt!).inMilliseconds;
 
-    await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
-      TeamTableCompanion(
-        score: Value(folded),
-        timerStartedAt: const Value(null),
-      ),
-    );
+    final rowsAffected =
+        await (update(teamTable)..where((t) => t.id.equals(teamId))).write(
+          TeamTableCompanion(
+            score: Value(folded),
+            timerStartedAt: const Value(null),
+          ),
+        );
+    return rowsAffected > 0;
   }
 
   /// Starts all given teams' timers using one shared timestamp.
@@ -481,13 +484,16 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
   }
 
   /// Stops every running team timer in [teamIds] using one shared timestamp.
-  Future<void> stopAllTeamTimers({
+  /// Returns `false` if persisting any folded time failed.
+  Future<bool> stopAllTeamTimers({
     required List<String> teamIds,
     required DateTime at,
   }) async {
+    var success = true;
     for (final id in teamIds) {
-      await stopTeamTimer(teamId: id, at: at);
+      success &= await stopTeamTimer(teamId: id, at: at);
     }
+    return success;
   }
 
   /// Returns the stored accumulated ms and running state per team.
@@ -505,19 +511,24 @@ class TeamDao extends DatabaseAccessor<AppDatabase> with _$TeamDaoMixin {
 
   /// Stops all running team timers, persists the final totals and mirrors each
   /// team total into its members' score entries. Call once on save.
-  Future<void> finalizeTeamTimers({
+  Future<bool> finalizeTimers({
     required String matchId,
     required List<String> teamIds,
   }) async {
     final at = DateTime.now();
-    await stopAllTeamTimers(teamIds: teamIds, at: at);
+    var success = await stopAllTeamTimers(teamIds: teamIds, at: at);
     for (final id in teamIds) {
       final team = await getTeamById(teamId: id);
       // Teams that never started must stay unscored; 0 ms would win
       // shortest-time matches.
       if (team.score == null) continue;
-      await updateTeamScore(teamId: id, matchId: matchId, score: team.score!);
+      success &= await updateTeamScore(
+        teamId: id,
+        matchId: matchId,
+        score: team.score!,
+      );
     }
+    return success;
   }
 
   /// Helper method to delete all scores for members of a team in a specific match.

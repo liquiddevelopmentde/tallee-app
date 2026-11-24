@@ -538,17 +538,16 @@ class _MatchResultViewState extends State<MatchResultView> {
   /// matches this also mirrors each team total into its members' score entries.
   Future<bool> handleTimers() async {
     if (useTeamLogic) {
-      await db.teamDao.finalizeTeamTimers(
+      return await db.teamDao.finalizeTimers(
         matchId: widget.match.id,
         teamIds: allTeams.map((team) => team.id).toList(),
       );
     } else {
-      await db.scoreEntryDao.stopAllTimers(
+      return await db.scoreEntryDao.finalizeTimers(
         matchId: widget.match.id,
         at: DateTime.now(),
       );
     }
-    return true;
   }
 
   String getTitleForRuleset(AppLocalizations loc) {
