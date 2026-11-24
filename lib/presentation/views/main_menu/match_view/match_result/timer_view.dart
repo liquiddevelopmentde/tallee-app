@@ -7,26 +7,32 @@ import 'package:tallee/core/duration_utils.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
-import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/views/main_menu/match_view/match_result/timer_unit_tile.dart';
-import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class TimerView extends StatefulWidget {
   /// Live timer dashboard for the time-based rulesets.
   ///
-  /// Shows one clock per player or team with per-unit start/stop toggles and
-  /// Start all / Stop all controls. Values are derived from the database, so
-  /// timers keep advancing while the app is closed.
-  const TimerView({super.key, required this.match, this.onTimersChanged});
+  /// Shows one clock per player or team with per-unit start/stop toggles.
+  /// Values are derived from the database, so timers keep advancing while
+  /// the app is closed.
+  const TimerView({
+    super.key,
+    required this.match,
+    this.onTimersChanged,
+    this.onAnyRunningChanged,
+  });
 
   final Match match;
   final VoidCallback? onTimersChanged;
 
+  /// Called with whether any timer is currently running, after every reload.
+  final ValueChanged<bool>? onAnyRunningChanged;
+
   @override
-  State<TimerView> createState() => _TimerViewState();
+  State<TimerView> createState() => TimerViewState();
 }
 
-class _TimerViewState extends State<TimerView> {
+class TimerViewState extends State<TimerView> {
   late final AppDatabase db;
   late final AppLifecycleListener lifecycleListener;
   Timer? ticker;
@@ -62,7 +68,7 @@ class _TimerViewState extends State<TimerView> {
     db = context.read<AppDatabase>();
     lifecycleListener = AppLifecycleListener(onResume: _reload);
     _reload();
-    ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+    ticker = Timer.periodic(const Duration(milliseconds: 100), (_) {
       if (mounted) setState(() {});
     });
   }
@@ -76,42 +82,15 @@ class _TimerViewState extends State<TimerView> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context);
+    final visibleUnits = units;
 
     return Column(
       children: [
-        // Global controls
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              FloatingAnimatedButton(
-                icon: Icons.play_arrow_rounded,
-                text: loc.start_all,
-                onPressed: _startAll,
-              ),
-              FloatingAnimatedButton(
-                icon: Icons.stop_rounded,
-                text: loc.stop_all,
-                onPressed: _stopAll,
-              ),
-            ],
-          ),
-        ),
-        Divider(
-          height: 1,
-          thickness: 1,
-          color: context.talleeColors.boxBorderColor,
-        ),
-        const SizedBox(height: 4),
-
-        // One row per unit
         Expanded(
           child: ListView.builder(
-            itemCount: units.length,
+            itemCount: visibleUnits.length,
             itemBuilder: (context, index) {
-              final unit = units[index];
+              final unit = visibleUnits[index];
               final String id = unit is Team ? unit.id : (unit as Player).id;
               return TimerUnitTile(
                 unit: unit,
@@ -127,6 +106,15 @@ class _TimerViewState extends State<TimerView> {
     );
   }
 
+  /// Starts all timers if none is running, otherwise stops all running timers.
+  Future<void> toggleAll() async {
+    if (timerStartedAt.values.any((start) => start != null)) {
+      await _stopAll();
+    } else {
+      await _startAll();
+    }
+  }
+
   Future<void> _reload() async {
     final data = useTeams
         ? await db.teamDao.getTeamTimers(teamIds: unitIds)
@@ -140,6 +128,9 @@ class _TimerViewState extends State<TimerView> {
         ..clear()
         ..addAll(data.map((id, value) => MapEntry(id, value.timerStartedAt)));
     });
+    widget.onAnyRunningChanged?.call(
+      timerStartedAt.values.any((start) => start != null),
+    );
   }
 
   /// Returns the effective elapsed ms for [id] at the current instant.

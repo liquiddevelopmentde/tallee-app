@@ -6,7 +6,8 @@ import 'package:tallee/presentation/utils/name_display.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 
 class TimerUnitTile extends StatefulWidget {
-  /// One timer row showing a unit's name, its elapsed time and a start/stop toggle.
+  /// One timer row with the unit name on top and its elapsed time plus a
+  /// start/stop toggle below.
   const TimerUnitTile({
     super.key,
     required this.unit,
@@ -33,12 +34,12 @@ class _TimerUnitTileState extends State<TimerUnitTile> {
     margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
     decoration: context.standardBoxDecoration,
     child: Column(
-      spacing: 4,
+      spacing: 8,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Colored unit name
+        // Unit name
         Row(
           spacing: 5,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (widget.isTeamMatch && widget.unit is Team) ...[
               Container(
@@ -55,7 +56,6 @@ class _TimerUnitTileState extends State<TimerUnitTile> {
                 context,
                 widget.unit,
                 isTeamMatch: widget.isTeamMatch,
-                rowAlignment: MainAxisAlignment.center,
                 mainStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -67,17 +67,15 @@ class _TimerUnitTileState extends State<TimerUnitTile> {
 
         // Time + toggle
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(width: 52),
             Expanded(
               child: Text(
-                formatTimer(widget.elapsedMs),
-                textAlign: TextAlign.center,
+                formatTimerFull(widget.elapsedMs),
                 style: TextStyle(
-                  fontSize: 38,
+                  fontSize: 32,
                   fontWeight: FontWeight.w600,
                   color: context.talleeColors.textColor,
+                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
             ),

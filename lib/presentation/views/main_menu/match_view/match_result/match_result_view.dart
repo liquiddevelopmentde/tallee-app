@@ -35,6 +35,7 @@ class MatchResultView extends StatefulWidget {
 
 class _MatchResultViewState extends State<MatchResultView> {
   late final AppDatabase db;
+  final GlobalKey<TimerViewState> _timerKey = GlobalKey<TimerViewState>();
 
   List<Player> allPlayers = [];
   List<Team> allTeams = [];
@@ -45,6 +46,9 @@ class _MatchResultViewState extends State<MatchResultView> {
 
   /// Scores entered for each player/team
   Map<dynamic, int?> scores = {};
+
+  /// Whether any timer is currently running (time rulesets only).
+  bool _anyTimerRunning = false;
 
   Match get match => widget.match;
 
@@ -113,8 +117,14 @@ class _MatchResultViewState extends State<MatchResultView> {
             Expanded(
               child: ruleset.isTime
                   ? TimerView(
+                      key: _timerKey,
                       match: widget.match,
                       onTimersChanged: () => setState(() {}),
+                      onAnyRunningChanged: (running) {
+                        if (_anyTimerRunning != running) {
+                          setState(() => _anyTimerRunning = running);
+                        }
+                      },
                     )
                   : ruleset.usesNumericScore
                   ? ruleset.isLives
@@ -201,56 +211,70 @@ class _MatchResultViewState extends State<MatchResultView> {
                     ),
             ),
 
-            // Saving button
+            // Saving button(s)
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.match.endedAt == null)
-                    BottomAnimatedButton(
-                      text: loc.end_match,
-                      onPressed: canSave
-                          ? () async {
-                              final success = await saveResults();
-
-                              if (success) {
-                                await endMatch();
-                                if (context.mounted) Navigator.pop(context);
-                              } else {
-                                if (!context.mounted) return;
-                                context.showSnackBar(
-                                  message: loc.error_saving_results,
-                                );
-                              }
-                            }
-                          : null,
+              child: ruleset.isTime
+                  ? Row(
+                      spacing: 8,
+                      children: [
+                        Expanded(
+                          child: BottomAnimatedButton(
+                            type: ButtonType.secondary,
+                            text: _anyTimerRunning
+                                ? loc.stop_all
+                                : loc.start_all,
+                            onPressed: () =>
+                                _timerKey.currentState?.toggleAll(),
+                          ),
+                        ),
+                        Expanded(child: _buildPrimaryButton(loc)),
+                      ],
                     )
-                  else
-                    // Save Changes Button
-                    BottomAnimatedButton(
-                      text: loc.save_changes,
-                      onPressed: canSave && hasChangedResult
-                          ? () async {
-                              final success = await saveResults();
-
-                              if (!context.mounted) return;
-                              if (success) {
-                                Navigator.pop(context);
-                              } else {
-                                context.showSnackBar(
-                                  message: loc.error_saving_results,
-                                );
-                              }
-                            }
-                          : null,
-                    ),
-                ],
-              ),
+                  : _buildPrimaryButton(loc),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  /// Builds the primary bottom button: end the match if it is ongoing,
+  /// otherwise save the changes.
+  Widget _buildPrimaryButton(AppLocalizations loc) {
+    if (widget.match.endedAt == null) {
+      return BottomAnimatedButton(
+        text: loc.end_match,
+        onPressed: canSave
+            ? () async {
+                final success = await saveResults();
+
+                if (success) {
+                  await endMatch();
+                  if (mounted) Navigator.pop(context);
+                } else {
+                  if (!mounted) return;
+                  context.showSnackBar(message: loc.error_saving_results);
+                }
+              }
+            : null,
+      );
+    }
+    // Save Changes Button
+    return BottomAnimatedButton(
+      text: loc.save_changes,
+      onPressed: canSave && hasChangedResult
+          ? () async {
+              final success = await saveResults();
+
+              if (!mounted) return;
+              if (success) {
+                Navigator.pop(context);
+              } else {
+                context.showSnackBar(message: loc.error_saving_results);
+              }
+            }
+          : null,
     );
   }
 

@@ -27,6 +27,19 @@ int foldElapsedMs({
   return baseMs + (elapsed < 0 ? 0 : elapsed);
 }
 
+/// Formats a duration in milliseconds always as "hh:mm:ss:ms",
+/// e.g. "01:02:03:456". Unlike [formatTimer] the shape never changes so the
+/// text keeps a stable width while the timer runs.
+String formatTimerFull(int milliseconds) {
+  final ms = milliseconds < 0 ? 0 : milliseconds;
+  final hours = ms ~/ 3600000;
+  final minutes = (ms % 3600000) ~/ 60000;
+  final seconds = (ms % 60000) ~/ 1000;
+  final millis = ms % 1000;
+  String two(int n) => n.toString().padLeft(2, '0');
+  return '${two(hours)}:${two(minutes)}:${two(seconds)}:${millis.toString().padLeft(3, '0')}';
+}
+
 /// Formats a duration in milliseconds the way the app timer shows it.
 /// - under one minute: "45s"
 /// - under one hour: "1:05"
