@@ -97,6 +97,20 @@ extension StatisticTypeExtension on StatisticType {
   SortDirection get defaultSortDirection => this == StatisticType.worstScore
       ? SortDirection.ascending
       : SortDirection.descending;
+
+  /// Values are numeric points and come from score-based rulesets.
+  bool get isScoreBased =>
+      this == StatisticType.totalScore ||
+      this == StatisticType.averageScore ||
+      this == StatisticType.bestScore ||
+      this == StatisticType.worstScore;
+
+  /// Values are durations in milliseconds and come from time-based rulesets.
+  bool get isTimeBased =>
+      this == StatisticType.totalTime ||
+      this == StatisticType.averageTime ||
+      this == StatisticType.longestTime ||
+      this == StatisticType.shortestTime;
 }
 
 extension StatisticScopeExtension on StatisticScope {

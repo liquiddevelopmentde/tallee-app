@@ -156,23 +156,6 @@ enum StatisticType {
   shortestTime,
 }
 
-/// Helpers to classify [StatisticType]s by the kind of value they measure.
-extension StatisticTypeClassification on StatisticType {
-  /// Values are numeric points and come from score-based rulesets.
-  bool get isScoreBased =>
-      this == StatisticType.totalScore ||
-      this == StatisticType.averageScore ||
-      this == StatisticType.bestScore ||
-      this == StatisticType.worstScore;
-
-  /// Values are durations in milliseconds and come from time-based rulesets.
-  bool get isTimeBased =>
-      this == StatisticType.totalTime ||
-      this == StatisticType.averageTime ||
-      this == StatisticType.longestTime ||
-      this == StatisticType.shortestTime;
-}
-
 enum StatisticScope { allPlayers, selectedGroups, selectedGames }
 
 enum SortDirection { descending, ascending }
