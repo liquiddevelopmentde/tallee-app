@@ -37,6 +37,10 @@ class AppScrollBehavior extends MaterialScrollBehavior {
     if (getPlatform(context) == TargetPlatform.iOS) {
       return CupertinoScrollbar(controller: details.controller, child: child);
     }
-    return Scrollbar(controller: details.controller, child: child);
+    return Scrollbar(
+      controller: details.controller,
+      radius: const Radius.circular(12),
+      child: child,
+    );
   }
 }

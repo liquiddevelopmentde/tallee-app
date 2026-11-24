@@ -167,6 +167,22 @@ ThemeData _buildThemeData({
   hoverColor: Colors.transparent,
   focusColor: Colors.transparent,
 
+  // Override for android scrollbar, defaults to ThemeData.highlightColor
+  // which is transparent
+  scrollbarTheme: ScrollbarThemeData(
+    thumbColor: WidgetStatePropertyAll(
+      palette.textColor.withValues(alpha: 0.4),
+    ),
+    thickness: WidgetStateProperty.resolveWith(
+      (states) =>
+          states.contains(WidgetState.hovered) ||
+              states.contains(WidgetState.dragged)
+          ? 8
+          : 4,
+    ),
+    interactive: true,
+  ),
+
   // Global tooltip override to prevent default long-tap popups
   tooltipTheme: const TooltipThemeData(triggerMode: TooltipTriggerMode.manual),
 
