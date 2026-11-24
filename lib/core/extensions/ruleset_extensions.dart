@@ -69,4 +69,7 @@ extension RulesetExtension on Ruleset {
   bool get isHighestScore => this == Ruleset.highestScore;
 
   bool get isLives => this == Ruleset.lives;
+
+  bool get isTime =>
+      this == Ruleset.longestTime || this == Ruleset.shortestTime;
 }

@@ -113,11 +113,11 @@ class StatisticCalculator {
     // time-based stats only for duration rulesets.
     if (statistic.type.isScoreBased) {
       filteredMatches = filteredMatches
-          .where((m) => _isScoreBasedRuleset(m.game.ruleset))
+          .where((m) => m.game.ruleset.usesPoints)
           .toList();
     } else if (statistic.type.isTimeBased) {
       filteredMatches = filteredMatches
-          .where((m) => _isTimeBasedRuleset(m.game.ruleset))
+          .where((m) => m.game.ruleset.isTime)
           .toList();
     }
 
@@ -184,38 +184,6 @@ class StatisticCalculator {
     }
   }
 
-  /// Determines if the ruleset is based on scores (numeric points).
-  static bool _isScoreBasedRuleset(Ruleset ruleset) {
-    switch (ruleset) {
-      case Ruleset.highestScore:
-      case Ruleset.lowestScore:
-        return true;
-      case Ruleset.winner:
-      case Ruleset.placement:
-      case Ruleset.loser:
-      case Ruleset.lives:
-      case Ruleset.longestTime:
-      case Ruleset.shortestTime:
-        return false;
-    }
-  }
-
-  /// Determines if the ruleset is based on time (durations in milliseconds).
-  static bool _isTimeBasedRuleset(Ruleset ruleset) {
-    switch (ruleset) {
-      case Ruleset.longestTime:
-      case Ruleset.shortestTime:
-        return true;
-      case Ruleset.winner:
-      case Ruleset.loser:
-      case Ruleset.highestScore:
-      case Ruleset.lowestScore:
-      case Ruleset.lives:
-      case Ruleset.placement:
-        return false;
-    }
-  }
-
   /// Computes the statistic values for each player based on the statistic type.
   /// The returned list is unsorted; [computeStatisticValues] applies the
   /// statistic's sort order afterwards.
@@ -226,18 +194,16 @@ class StatisticCalculator {
   }) {
     switch (type) {
       case StatisticType.totalMatches:
-        return players
-            .map((p) => (p, _matchesPlayed(p, matches) as num))
-            .toList();
+        return players.map((p) => (p, _matchesPlayed(p, matches))).toList();
 
       case StatisticType.totalWins:
-        return players.map((p) => (p, _wins(p, matches) as num)).toList();
+        return players.map((p) => (p, _wins(p, matches))).toList();
 
       case StatisticType.totalLosses:
-        return players.map((p) => (p, _losses(p, matches) as num)).toList();
+        return players.map((p) => (p, _losses(p, matches))).toList();
 
       case StatisticType.totalScore:
-        return players.map((p) => (p, _totalScore(p, matches) as num)).toList();
+        return players.map((p) => (p, _totalScore(p, matches))).toList();
 
       case StatisticType.averageScore:
         return players.map((p) {
@@ -255,14 +221,14 @@ class StatisticCalculator {
         return players.map((p) {
           final scores = _scoresOf(p, matches);
           final best = scores.isEmpty ? 0 : scores.reduce(max);
-          return (p, best as num);
+          return (p, best);
         }).toList();
 
       case StatisticType.worstScore:
         return players.map((p) {
           final scores = _scoresOf(p, matches);
           final worst = scores.isEmpty ? 0 : scores.reduce(min);
-          return (p, worst as num);
+          return (p, worst);
         }).toList();
 
       case StatisticType.winrate:
@@ -272,11 +238,11 @@ class StatisticCalculator {
           final rate = played == 0
               ? 0.0
               : double.parse((wins / played).toStringAsFixed(2));
-          return (p, rate as num);
+          return (p, rate);
         }).toList();
 
       case StatisticType.totalTime:
-        return players.map((p) => (p, _totalScore(p, matches) as num)).toList();
+        return players.map((p) => (p, _totalScore(p, matches))).toList();
 
       case StatisticType.averageTime:
         return players.map((p) {
@@ -294,14 +260,14 @@ class StatisticCalculator {
         return players.map((p) {
           final scores = _scoresOf(p, matches);
           final longest = scores.isEmpty ? 0 : scores.reduce(max);
-          return (p, longest as num);
+          return (p, longest);
         }).toList();
 
       case StatisticType.shortestTime:
         return players.map((p) {
           final scores = _scoresOf(p, matches);
           final shortest = scores.isEmpty ? 0 : scores.reduce(min);
-          return (p, shortest as num);
+          return (p, shortest);
         }).toList();
     }
   }
