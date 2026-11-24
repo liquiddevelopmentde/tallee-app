@@ -49,7 +49,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   AppColor? lastSelectedColor;
 
   bool get canCreateGroup =>
-      (groupNameController.text.trim().isNotEmpty ||
+      (groupNameController.text.trim().isNotEmpty &&
       (selectedPlayers.length >= 2));
 
   bool get isEditMode => widget.groupToEdit != null;
