@@ -330,7 +330,7 @@ class _GameDetailViewState extends State<GameDetailView> {
     if (!mounted) return;
 
     setState(() {
-      this.associatedMatches = matches;
+      associatedMatches = matches;
       isLoading = false;
     });
   }
