@@ -21,20 +21,20 @@ class CreateGameView extends StatefulWidget {
   /// A stateful widget for creating or editing a game.
   /// - [gameToEdit] An optional game to prefill the fields
   /// - [onGameChanged] Callback to invoke when the game is created or edited
-  /// - [gameCount]: The count of matches associated with this [gameToEdit]
+  /// - [canChangeRuleset]: Whether the user can change the ruleset of the game
   /// - [requiredRuleset]: An optional ruleset used to enforce a specific game
   /// type. This is used during match sharing to ensure the game is compatible with the shared data.
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
-    this.gameCount = 0,
+    this.canChangeRuleset = true,
     this.requiredRuleset,
   });
 
   final VoidCallback onGameChanged;
   final Game? gameToEdit;
-  final int gameCount;
+  final bool canChangeRuleset;
 
   final Ruleset? requiredRuleset;
 
@@ -200,7 +200,7 @@ class _CreateGameViewState extends State<CreateGameView> {
                     showcaseKey: createGameViewGameRulesetKey,
                     description: loc.showcase_create_game_ruleset,
                     child: ChooseTile(
-                      enabled: widget.gameCount == 0,
+                      enabled: widget.canChangeRuleset,
                       title: loc.ruleset,
                       trailing: Padding(
                         padding: const EdgeInsets.only(right: 5),

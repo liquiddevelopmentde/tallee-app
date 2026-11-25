@@ -216,7 +216,6 @@ class _GameViewState extends State<GameView> with RouteAware {
                                                   GameDetailView(
                                                     game: game,
                                                     onGameUpdated: loadGames,
-                                                    gameCount: gameCount,
                                                   ),
                                             ),
                                           ),
