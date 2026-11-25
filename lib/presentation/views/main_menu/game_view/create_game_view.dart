@@ -312,7 +312,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     final ruleset = selectedRuleset;
     final AppColor? color = selectedColor;
     final AppColor randomColor = AppColor.randomColor(
-      exclude: isEditMode ? [lastSelectedColor, widget.gameToEdit!.color] : [],
+      exclude: [lastSelectedColor, if (isEditMode) widget.gameToEdit!.color],
     );
 
     if (isEditMode) {

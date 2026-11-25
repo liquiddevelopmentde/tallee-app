@@ -207,7 +207,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final description = groupDescriptionController.text.trim();
     final AppColor? color = selectedColor;
     final AppColor randomColor = AppColor.randomColor(
-      exclude: isEditMode ? [lastSelectedColor, widget.groupToEdit!.color] : [],
+      exclude: [lastSelectedColor, if (isEditMode) widget.groupToEdit!.color],
     );
     final members = selectedPlayers;
 
