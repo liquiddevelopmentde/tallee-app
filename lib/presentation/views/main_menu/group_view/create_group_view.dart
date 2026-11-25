@@ -180,7 +180,9 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 // Update group button
                 BottomAnimatedButton(
                   text: loc.save_changes,
-                  onPressed: hasChangedGroup ? saveGroup : null,
+                  onPressed: hasChangedGroup && canCreateGroup
+                      ? saveGroup
+                      : null,
                 )
               else
                 // Create group button

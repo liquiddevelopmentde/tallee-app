@@ -261,7 +261,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                     // Edit game button
                     BottomAnimatedButton(
                       text: loc.save_changes,
-                      onPressed: hasChangedGame ? () async => saveGame() : null,
+                      onPressed: hasChangedGame && canCreateGame
+                          ? saveGame
+                          : null,
                     )
                   else
                     // Create game button
