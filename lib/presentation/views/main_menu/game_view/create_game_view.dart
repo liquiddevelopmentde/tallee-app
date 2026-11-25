@@ -273,9 +273,9 @@ class _CreateGameViewState extends State<CreateGameView> {
                       child: BottomAnimatedButton(
                         text: loc.create_game,
                         onPressed: canCreateGame
-                            ? () async {
+                            ? () {
                                 updateShowcase();
-                                await saveGame();
+                                saveGame();
                               }
                             : null,
                       ),
