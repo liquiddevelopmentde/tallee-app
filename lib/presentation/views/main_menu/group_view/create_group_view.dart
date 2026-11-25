@@ -257,7 +257,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
   }
 
   /// Handles updating an existing group in the database.
-  /// Returns the success of the database operations an the new group.
+  /// Returns the success of the database operations and the new group.
   Future<({bool success, Group newGroup})> handleGroupUpdate({
     required String newName,
     required String newDesc,

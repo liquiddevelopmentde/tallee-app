@@ -338,7 +338,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   /// Handles navigation after saving a game.
   ///
-  /// If the saving was successfull, it triggers onGameChanged an pops the game.
+  /// If the saving was successful, it triggers onGameChanged an pops the game.
   /// If not, it shows a snackbar
   void handleSaveNavigation(bool success, Game newGame) {
     if (success) {
