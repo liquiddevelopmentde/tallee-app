@@ -16,6 +16,7 @@ jobs:
       TOKEN: ${{ secrets.BOT_TOKEN }}
       REPO: ${{ github.repository }}
       BRANCH: ${{ github.event.ref }}
+      ACTOR: ${{ github.event.sender.login }}
       DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
       # Minimum similarity (0..1) required to assign a branch to an issue.
       MIN_SCORE: "0.3"

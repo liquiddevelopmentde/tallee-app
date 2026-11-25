@@ -67,7 +67,6 @@
   "creation_date": "Creation date",
   "custom": "Custom",
   "danger_zone": "Danger Zone",
-  "data": "Data",
   "data_backup": "Data & Backup",
   "data_successfully_deleted": "Data successfully deleted",
   "data_successfully_exported": "Data successfully exported",
@@ -92,6 +91,17 @@
   "delete_match": "Delete Match",
   "delete_player": "Delete player?",
   "delete_player_warning_details": "This action cannot be undone. Deleted players will still appear in past matches and be included in statistics.",
+  "delete_player_warning_groups_deleted": "{count, plural, =1{The group \"{groups}\" will also be deleted, because otherwise only one member would remain.} other{The following groups will also be deleted because otherwise only one member would remain in each: {groups}}}",
+  "@delete_player_warning_groups_deleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
   "delete_statistic": "Delete statistic",
   "deleted": "Deleted",
   "descending": "Descending",
@@ -123,7 +133,6 @@
       }
     }
   },
-  "error_loading_privacy_policy": "Error loading privacy policy",
   "error_reading_file": "Error reading file",
   "error_report_hint": "Please describe the steps leading up to the error and how it appeared",
   "error_report_info_text": "Reporting an error helps us identify and fix problems in Tallee!",
@@ -150,6 +159,7 @@
   "format_exception": "Format Exception",
   "game": "Game",
   "game_associated": "Game successfully associated",
+  "game_deleted": "Game deleted",
   "game_filter_description": "All statistics will be displayed that relate to one of the selected game templates.",
   "game_name": "Game Name",
   "games": "Games",
@@ -171,6 +181,7 @@
     }
   },
   "highest_score": "Highest Score",
+  "highest_score_description": "The highest score wins.",
   "import_canceled": "Import canceled",
   "import_data": "Import data",
   "import_description": "Import your Tallee data (.json) from a previously exported file. This is meant for restoring a backup or transferring data between devices. To import shared matches, tap the QR code icon in the match view.",
@@ -190,6 +201,7 @@
   "last_30_days": "Last 30 days",
   "last_7_days": "Last 7 days",
   "last_90_days": "Last 90 days",
+  "last_played": "Last played",
   "last_year": "Last year",
   "later": "Later",
   "legal": "Legal",
@@ -203,10 +215,13 @@
       }
     }
   },
+  "lives_description": "Whoever has at least one life left at the end wins.",
   "loading": "Loading...",
   "loading_match": "Loading match...",
   "loser": "Loser",
+  "loser_description": "Choose a loser.",
   "lowest_score": "Lowest Score",
+  "lowest_score_description": "The lowest score wins.",
   "manage_members": "Manage Members",
   "match": "Match",
   "match_deleted": "Match deleted",
@@ -258,6 +273,7 @@
   "no_statistics_with_filter": "No statistics with the selected filter",
   "no_suitable_matches_yet": "No suitable matches yet",
   "no_teams_available": "No teams available",
+  "no_type_selected_yet": "No type selected yet",
   "none": "None",
   "none_group": "None",
   "not_part_of_any_group": "Not part of any group yet",
@@ -288,6 +304,7 @@
   "parsing_error": "Data parsing error. Please try again later.",
   "place": "place",
   "placement": "Placement",
+  "placement_description": "Rank all players from first to last.",
   "played_matches": "Played Matches",
   "player_count": "{count, plural, =1{1 Player} other{{count} Players}}",
   "@player_count": {
@@ -308,7 +325,6 @@
   "qr_code_expired": "QR Code expired",
   "qr_code_parsing_error": "The scanned code does not contain valid match data.",
   "random_color": "Random color",
-  "remaining": "remaining",
   "remove_from_favourites": "Remove from favourites",
   "report_error": "Report Error",
   "required": "required",
@@ -443,10 +459,10 @@
   "version_copied_to_clipboard": "Version copied to clipboard",
   "whats_new": "What's new?",
   "winner": "Winner",
+  "winner_description": "Choose one or more winners.",
   "winrate": "Winrate",
   "worst_score": "Worst score",
   "write_email": "Write an email",
   "yes": "Yes",
-  "yesterday_at": "Yesterday at",
-  "your_statistic_will_be_shown_here": "Your statistic will be shown here"
+  "yesterday_at": "Yesterday at"
 }

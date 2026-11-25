@@ -82,6 +82,9 @@ void main() async {
                 final result = await Tallee.navigatorKey.currentState
                     ?.push<bool>(
                       MaterialPageRoute(
+                        settings: const RouteSettings(
+                          name: RouteNames.feedbackFormView,
+                        ),
                         builder: (context) =>
                             FeedbackFormView(associatedEventId: event.eventId),
                       ),
@@ -210,7 +213,7 @@ class _TalleeState extends State<Tallee> {
         settings: RouteSettings(
           name: !isOnboardingCompleted
               ? RouteNames.onboarding
-              : RouteNames.groupView,
+              : RouteNames.mainNavigation,
         ),
         pageBuilder: (context, animation, secondaryAnimation) => targetWidget,
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>

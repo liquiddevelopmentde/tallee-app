@@ -311,6 +311,7 @@ class _DataManagementViewState extends State<DataManagementView> {
           context.showSnackBar(message: loc.data_successfully_exported);
         }
       case ExportResult.canceled:
+        break;
       case ExportResult.unknownException:
       case ExportResult.noData:
         Haptics.errorNotification();

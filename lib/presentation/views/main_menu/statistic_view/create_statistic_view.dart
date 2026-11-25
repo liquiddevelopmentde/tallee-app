@@ -436,7 +436,7 @@ class _CreateStatisticViewState extends State<CreateStatisticView> {
               ? (
                   icon: Icons.bar_chart,
                   title: loc.statistic,
-                  description: loc.your_statistic_will_be_shown_here,
+                  description: loc.no_type_selected_yet,
                 )
               : null,
         ),

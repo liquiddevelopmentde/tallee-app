@@ -16,7 +16,6 @@ import 'package:tallee/presentation/utils/navigation/route_names.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/data_management_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/feedback_form_view.dart';
 import 'package:tallee/presentation/views/main_menu/settings_view/licenses/licenses_view.dart';
-import 'package:tallee/presentation/views/main_menu/settings_view/privacy_policy_view.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/custom_adaptive_switch.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
@@ -211,9 +210,8 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.legal_notice,
                     icon: Icons.account_balance_sharp,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () async {
-                      await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL));
-                    },
+                    onPressed: () async =>
+                        await launchUrl(Uri.parse(LIQUID_WEBSITE_LEGAL_URL)),
                   ),
 
                   // Privacy policy tile
@@ -221,16 +219,9 @@ class _SettingsViewState extends State<SettingsView> {
                     title: loc.privacy_policy,
                     icon: Icons.gpp_good_rounded,
                     suffixWidget: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          settings: const RouteSettings(
-                            name: RouteNames.privacyPolicyView,
-                          ),
-                          builder: (context) => const PrivacyPolicyView(),
-                        ),
-                      );
-                    },
+                    onPressed: () async => await launchUrl(
+                      Uri.parse(LIQUID_WEBSITE_TALLEE_PRIVACY_POLICY_URL),
+                    ),
                   ),
 
                   // Socials & copyright

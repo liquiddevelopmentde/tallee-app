@@ -9,6 +9,14 @@ abstract final class AppSpacing {
   /// Horizontal page padding for content that isn't inside a tile.
   static const EdgeInsets pagePadding = EdgeInsets.symmetric(horizontal: 12);
 
+  /// Padding for the scrollable content of detail views.
+  static const EdgeInsets detailViewPadding = EdgeInsets.only(
+    left: 12,
+    right: 12,
+    top: 20,
+    bottom: 100,
+  );
+
   static const EdgeInsets standardMargin = EdgeInsets.symmetric(
     horizontal: 12,
     vertical: 6,
@@ -20,6 +28,9 @@ abstract final class AppSpacing {
     right: 12,
     bottom: 10,
   );
+
+  /// Padding inside tiles from tile edge to content.
+  static const EdgeInsets tilePadding = EdgeInsets.all(12);
 
   /// Bottom padding for scrollable lists so the last item isn't covered by
   /// floating buttons or the navigation bar.
