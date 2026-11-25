@@ -746,6 +746,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get no_teams_available => 'Keine Teams verfügbar';
 
   @override
+  String get no_type_selected_yet => 'Noch keinen Typ ausgewählt';
+
+  @override
   String get none => 'Kein';
 
   @override
@@ -1277,8 +1280,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
-
-  @override
-  String get your_statistic_will_be_shown_here =>
-      'Hier wird deine Statistik angezeigt';
 }

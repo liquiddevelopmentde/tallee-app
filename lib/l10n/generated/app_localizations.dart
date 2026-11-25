@@ -1383,6 +1383,12 @@ abstract class AppLocalizations {
   /// **'No teams available'**
   String get no_teams_available;
 
+  /// No description provided for @no_type_selected_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No type selected yet'**
+  String get no_type_selected_yet;
+
   /// No description provided for @none.
   ///
   /// In en, this message translates to:
@@ -2306,12 +2312,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
-
-  /// No description provided for @your_statistic_will_be_shown_here.
-  ///
-  /// In en, this message translates to:
-  /// **'Your statistic will be shown here'**
-  String get your_statistic_will_be_shown_here;
 }
 
 class _AppLocalizationsDelegate

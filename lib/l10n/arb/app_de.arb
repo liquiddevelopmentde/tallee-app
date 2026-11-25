@@ -273,6 +273,7 @@
   "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "no_suitable_matches_yet": "Noch keine passenden Spiele",
   "no_teams_available": "Keine Teams verfügbar",
+  "no_type_selected_yet": "Noch keinen Typ ausgewählt",
   "none": "Kein",
   "none_group": "Keine",
   "not_part_of_any_group": "Noch keiner Gruppe hinzugefügt",
@@ -454,6 +455,5 @@
   "worst_score": "Schlechteste Punktzahl",
   "write_email": "Eine E-Mail schreiben",
   "yes": "Ja",
-  "yesterday_at": "Gestern um",
-  "your_statistic_will_be_shown_here": "Hier wird deine Statistik angezeigt"
+  "yesterday_at": "Gestern um"
 }
