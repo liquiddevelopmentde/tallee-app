@@ -8,8 +8,8 @@ import 'package:tallee/core/theme/app_spacing.dart';
 
 class ApiActionAnimatedButton extends StatefulWidget {
   /// A button specifically designed for asynchronous requests.
-  /// - [onPressed]: The async callback that triggers the API request. Pass `null` to disable the button.
-  ///   Has to return true or false for the buttons success/error state.
+  /// - [onPressed]: The callback that triggers the action. Pass `null` to disable the button.
+  /// - [status]: The current state of the button, controlled by the parent.
   /// - [text]: The text of the button.
   /// - [buttonConstraints]: Optional constraints to control the button's size. Mutually exclusive with [sizeRelativeToWidth].
   /// - [sizeRelativeToWidth]: Minimum width of the button relative to the screen width. Defaults to [AppSpacing.contentWidthFactor].
@@ -18,6 +18,7 @@ class ApiActionAnimatedButton extends StatefulWidget {
   const ApiActionAnimatedButton({
     super.key,
     required this.onPressed,
+    required this.status,
     this.text,
     this.buttonConstraints,
     this.sizeRelativeToWidth,
@@ -33,7 +34,8 @@ class ApiActionAnimatedButton extends StatefulWidget {
          'sizeRelativeToWidth must be 0 < size <= 1',
        );
 
-  final Future<bool> Function()? onPressed;
+  final VoidCallback? onPressed;
+  final ApiButtonState status;
   final String? text;
   final BoxConstraints? buttonConstraints;
   final double? sizeRelativeToWidth;
@@ -53,7 +55,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
   late Animation<double> scaleAnimation;
   late Animation<double> disabledScaleAnimation;
 
-  ApiButtonState buttonState = ApiButtonState.idle;
+  bool isPressing = false;
 
   @override
   void initState() {
@@ -82,6 +84,16 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
   }
 
   @override
+  void didUpdateWidget(covariant ApiActionAnimatedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.status != widget.status &&
+        (widget.status == ApiButtonState.success ||
+            widget.status == ApiButtonState.error)) {
+      Haptics.heavyImpact();
+    }
+  }
+
+  @override
   void dispose() {
     animationController.dispose();
     disabledAnimationController.dispose();
@@ -91,10 +103,11 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
   @override
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null;
+    final isBlocked = isDisabled || widget.status != ApiButtonState.idle;
 
     return Center(
       child: IgnorePointer(
-        ignoring: isDisabled,
+        ignoring: isBlocked,
         child: Opacity(
           opacity: 1.0,
           child: ScaleTransition(
@@ -103,7 +116,8 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
               onTapDown: (_) {
                 if (isDisabled) {
                   disabledAnimationController.forward();
-                } else if (buttonState == ApiButtonState.idle) {
+                } else if (widget.status == ApiButtonState.idle &&
+                    !isPressing) {
                   animationController.forward();
                 }
               },
@@ -117,7 +131,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
               onTapCancel: () {
                 if (isDisabled) {
                   disabledAnimationController.reverse();
-                } else if (buttonState == ApiButtonState.idle) {
+                } else if (widget.status == ApiButtonState.idle) {
                   animationController.reverse();
                 }
               },
@@ -156,7 +170,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
       children: [
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: buttonState == ApiButtonState.idle ? 1.0 : 0.0,
+          opacity: widget.status == ApiButtonState.idle ? 1.0 : 0.0,
           child: Text(
             widget.text ?? '',
             style: textStyle,
@@ -165,7 +179,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: buttonState == ApiButtonState.loading ? 1.0 : 0.0,
+          opacity: widget.status == ApiButtonState.loading ? 1.0 : 0.0,
           child: SizedBox(
             width: 26,
             height: 26,
@@ -177,7 +191,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: buttonState == ApiButtonState.success ? 1.0 : 0.0,
+          opacity: widget.status == ApiButtonState.success ? 1.0 : 0.0,
           child: Icon(
             Icons.check,
             size: 26,
@@ -186,7 +200,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
         ),
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: buttonState == ApiButtonState.error ? 1.0 : 0.0,
+          opacity: widget.status == ApiButtonState.error ? 1.0 : 0.0,
           child: Icon(
             Icons.close,
             size: 26,
@@ -198,39 +212,22 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
   }
 
   Future<void> handlePress() async {
-    if (widget.onPressed == null) return;
-    if (buttonState != ApiButtonState.idle) return;
+    if (widget.onPressed == null ||
+        widget.status != ApiButtonState.idle ||
+        isPressing) {
+      return;
+    }
 
+    isPressing = true;
     Haptics.selectionClick();
     animationController.forward();
     await Future.delayed(const Duration(milliseconds: 100));
-    animationController.reverse();
-
-    setState(() {
-      buttonState = ApiButtonState.loading;
-    });
-
-    bool isSuccess;
-    try {
-      isSuccess = await widget.onPressed!();
-    } catch (_) {
-      isSuccess = false;
-    }
 
     if (!mounted) return;
 
-    setState(() {
-      buttonState = isSuccess ? ApiButtonState.success : ApiButtonState.error;
-    });
-    Haptics.heavyImpact();
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        buttonState = ApiButtonState.idle;
-      });
-    }
+    animationController.reverse();
+    widget.onPressed!.call();
+    isPressing = false;
   }
 
   TextStyle _getTextStyling() {
@@ -268,7 +265,7 @@ class ApiActionAnimatedButtonState extends State<ApiActionAnimatedButton>
   BoxDecoration _getButtonDecoration() {
     if (widget.buttonType == ButtonType.primary) {
       return BoxDecoration(
-        color: buttonState == ApiButtonState.loading
+        color: widget.status == ApiButtonState.loading
             ? context.talleeColors.onBoxColor
             : widget.onPressed == null
             ? context.talleeColors.onBoxColor

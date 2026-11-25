@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:pinput/pinput.dart';
@@ -28,6 +30,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
 
   bool? isTokenValid;
   bool? isMatchValid;
+  ApiButtonState buttonStatus = ApiButtonState.idle;
+  Timer? buttonStatusResetTimer;
   String errorMessage = '';
 
   @override
@@ -47,6 +51,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
 
   @override
   void dispose() {
+    buttonStatusResetTimer?.cancel();
     tokenInputFieldController.dispose();
     super.dispose();
   }
@@ -186,8 +191,11 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         ApiActionAnimatedButton(
           text: loc.import_match,
           sizeRelativeToWidth: 0.9,
+          status: buttonStatus,
           onPressed: validateToken(tokenInputFieldController.text)
-              ? () => handleApiMatchRequest(tokenInputFieldController.text)
+              ? () {
+                  handleApiMatchRequest(tokenInputFieldController.text);
+                }
               : null,
         ),
       ],
@@ -203,24 +211,25 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
     return '';
   }
 
-  Future<bool> handleApiMatchRequest(String token) async {
+  Future<void> handleApiMatchRequest(String token) async {
+    buttonStatusResetTimer?.cancel();
+    setState(() => buttonStatus = ApiButtonState.loading);
     final loc = AppLocalizations.of(context);
 
     try {
-      final response = await RemoteShareService().getMatchByToken(
-        tokenInputFieldController.text,
-      );
+      final response = await RemoteShareService().getMatchByToken(token);
 
-      if (!mounted) return false;
+      if (!mounted) return;
 
-      // If an import error occured
+      // If an import error occurred
       if (!response.result.isSuccess) {
         setState(() {
           isTokenValid = true;
           isMatchValid = false;
           errorMessage = response.result.toLocalizedMatchImportString(context);
         });
-        return false;
+        resetButtonStatusAfterDelay(ApiButtonState.error);
+        return;
       }
 
       setState(() {
@@ -228,6 +237,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         isMatchValid = true;
         match = response.match!;
       });
+      resetButtonStatusAfterDelay(ApiButtonState.success);
 
       Navigator.of(context).push(
         adaptivePageRoute(
@@ -236,10 +246,8 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
           fullscreenDialog: true,
         ),
       );
-
-      return true;
     } catch (error) {
-      if (!mounted) return false;
+      if (!mounted) return;
 
       if (error is NetworkException) {
         errorMessage = loc.network_error;
@@ -262,8 +270,18 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         setState(() => isMatchValid = false);
       }
 
-      return false;
+      resetButtonStatusAfterDelay(ApiButtonState.error);
     }
+  }
+
+  void resetButtonStatusAfterDelay(ApiButtonState resultStatus) {
+    buttonStatusResetTimer?.cancel();
+    setState(() => buttonStatus = resultStatus);
+    buttonStatusResetTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted && buttonStatus == resultStatus) {
+        setState(() => buttonStatus = ApiButtonState.idle);
+      }
+    });
   }
 
   bool validateToken(String? token) =>
