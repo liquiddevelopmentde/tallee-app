@@ -55,6 +55,7 @@
       }
     }
   },
+  "no_type_selected_yet": "No type selected yet",
   "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",
@@ -463,6 +464,5 @@
   "worst_score": "Worst score",
   "write_email": "Write an email",
   "yes": "Yes",
-  "yesterday_at": "Yesterday at",
-  "your_statistic_will_be_shown_here": "Your statistic will be shown here"
+  "yesterday_at": "Yesterday at"
 }
