@@ -55,6 +55,7 @@
       }
     }
   },
+  "no_type_selected_yet": "No type selected yet",
   "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",

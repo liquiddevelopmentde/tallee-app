@@ -162,6 +162,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get no_type_selected_yet => 'No type selected yet';
+
+  @override
   String get create_as_new => 'Create as new';
 
   @override
