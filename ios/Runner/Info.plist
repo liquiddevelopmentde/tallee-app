@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Tallee</string>
+	<string>$(APP_DISPLAY_NAME)</string>
     <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
@@ -19,7 +19,7 @@
             <string>Owner</string>
             <key>LSItemContentTypes</key>
             <array>
-                <string>de.liquiddev.tallee</string>
+                <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             </array>
         </dict>
     </array>
@@ -93,7 +93,7 @@
             <key>UTTypeDescription</key>
             <string>Tallee File</string>
             <key>UTTypeIdentifier</key>
-            <string>de.liquiddev.tallee</string>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>UTTypeTagSpecification</key>
             <dict>
                 <key>public.filename-extension</key>
