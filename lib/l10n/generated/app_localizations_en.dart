@@ -1264,8 +1264,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Yesterday at';
-
-  @override
-  String get your_statistic_will_be_shown_here =>
-      'Your statistic will be shown here';
 }

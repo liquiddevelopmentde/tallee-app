@@ -1280,8 +1280,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
-
-  @override
-  String get your_statistic_will_be_shown_here =>
-      'Hier wird deine Statistik angezeigt';
 }
