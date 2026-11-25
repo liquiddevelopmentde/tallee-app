@@ -9,8 +9,6 @@ class ChooseTile extends StatefulWidget {
   /// - [trailing]: Optional trailing text displayed on the tile.
   /// - [onPressed]: The callback invoked when the tile is tapped.
   /// - [enabled]: To enable/disable the tile and prohitib interaction
-  /// - [showChevron]: Whether the forward arrow is shown when [onPressed] is
-  ///   set. Disable it for tiles with an inline control like a switch.
   const ChooseTile({
     super.key,
     required this.title,
@@ -18,7 +16,6 @@ class ChooseTile extends StatefulWidget {
     this.trailing,
     this.onPressed,
     this.enabled = true,
-    this.showChevron = true,
   });
 
   final String title;
@@ -26,7 +23,6 @@ class ChooseTile extends StatefulWidget {
   final VoidCallback? onPressed;
   final Widget? trailing;
   final bool enabled;
-  final bool showChevron;
 
   @override
   State<ChooseTile> createState() => _ChooseTileState();
@@ -74,8 +70,7 @@ class _ChooseTileState extends State<ChooseTile> {
                       ignoring: !widget.enabled,
                       child: widget.trailing,
                     ),
-                  if (widget.onPressed != null && widget.showChevron)
-                    const Icon(Icons.arrow_forward_ios, size: 16),
+                  if (tappable) const Icon(Icons.arrow_forward_ios, size: 16),
                 ],
               ),
             ),
