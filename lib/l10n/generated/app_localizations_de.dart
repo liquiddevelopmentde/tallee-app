@@ -167,9 +167,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get no_type_selected_yet => 'Noch keinen Typ ausgewählt';
-
-  @override
   String get create_as_new => 'Neu erstellen';
 
   @override
@@ -747,6 +744,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_teams_available => 'Keine Teams verfügbar';
+
+  @override
+  String get no_type_selected_yet => 'Noch keinen Typ ausgewählt';
 
   @override
   String get none => 'Kein';

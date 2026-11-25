@@ -55,7 +55,6 @@
       }
     }
   },
-  "no_type_selected_yet": "No type selected yet",
   "create_as_new": "Create as new",
   "create_game": "Create Game",
   "create_group": "Create Group",
@@ -274,6 +273,7 @@
   "no_statistics_with_filter": "No statistics with the selected filter",
   "no_suitable_matches_yet": "No suitable matches yet",
   "no_teams_available": "No teams available",
+  "no_type_selected_yet": "No type selected yet",
   "none": "None",
   "none_group": "None",
   "not_part_of_any_group": "Not part of any group yet",

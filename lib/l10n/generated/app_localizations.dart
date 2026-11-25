@@ -387,12 +387,6 @@ abstract class AppLocalizations {
   /// **'Could not add player {playerName}'**
   String could_not_add_player(String playerName);
 
-  /// No description provided for @no_type_selected_yet.
-  ///
-  /// In en, this message translates to:
-  /// **'No type selected yet'**
-  String get no_type_selected_yet;
-
   /// No description provided for @create_as_new.
   ///
   /// In en, this message translates to:
@@ -1388,6 +1382,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No teams available'**
   String get no_teams_available;
+
+  /// No description provided for @no_type_selected_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No type selected yet'**
+  String get no_type_selected_yet;
 
   /// No description provided for @none.
   ///
