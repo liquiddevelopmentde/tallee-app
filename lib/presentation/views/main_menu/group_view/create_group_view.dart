@@ -95,6 +95,7 @@ class _CreateGroupViewState extends State<CreateGroupView> {
       });
     }
     groupNameController.addListener(() => setState(() {}));
+    groupDescriptionController.addListener(() => setState(() {}));
   }
 
   @override
