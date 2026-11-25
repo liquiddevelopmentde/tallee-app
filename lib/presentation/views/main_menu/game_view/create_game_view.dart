@@ -22,7 +22,8 @@ class CreateGameView extends StatefulWidget {
   /// - [gameToEdit] An optional game to prefill the fields
   /// - [onGameChanged] Callback to invoke when the game is created or edited
   /// - [gameCount]: The count of matches associated with this [gameToEdit]
-  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game
+  /// type. This is used during match sharing to ensure the game is compatible with the shared data.
   const CreateGameView({
     super.key,
     required this.onGameChanged,
@@ -298,7 +299,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     }
   }
 
-  /// Handles saving a game or updating an existing game and shows a erorr
+  /// Handles saving a game or updating an existing game and shows a error
   /// message if not successfull.
   ///
   /// Returns true if all database operations are successful, false otherwise.
