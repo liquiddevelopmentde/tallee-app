@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
 import 'package:tallee/core/haptics.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -286,6 +287,14 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 icon: Icons.filter_alt,
                                 title: loc.info,
                                 message: loc.no_statistics_with_filter,
+                                action: FloatingAnimatedButton(
+                                  compact: true,
+                                  text: 'Reset filter',
+                                  type: ButtonType.tertiary,
+                                  textColor: AppColors.primaryColor,
+                                  onPressed: () =>
+                                      resetFilter(includeFavourites: true),
+                                ),
                               ),
                             )
                           : null,
