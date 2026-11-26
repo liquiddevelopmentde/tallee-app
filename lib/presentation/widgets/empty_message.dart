@@ -8,12 +8,14 @@ class EmptyViewMessage extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.message,
+    this.action,
     this.spacing = 0.0,
   });
 
   final IconData icon;
   final String title;
   final String message;
+  final Widget? action;
   final double spacing;
 
   @override
@@ -55,6 +57,7 @@ class EmptyViewMessage extends StatelessWidget {
             ],
           ),
         ),
+        ?action,
       ],
     ),
   );
