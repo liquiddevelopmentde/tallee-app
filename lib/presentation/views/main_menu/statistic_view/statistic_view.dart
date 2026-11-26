@@ -289,7 +289,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                                 message: loc.no_statistics_with_filter,
                                 action: FloatingAnimatedButton(
                                   compact: true,
-                                  text: 'Reset filter',
+                                  text: loc.reset_filter,
                                   type: ButtonType.tertiary,
                                   textColor: AppColors.primaryColor,
                                   onPressed: () =>

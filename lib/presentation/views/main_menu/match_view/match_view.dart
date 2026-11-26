@@ -264,7 +264,7 @@ class _MatchViewState extends State<MatchView> {
                                   loc.there_is_no_match_matching_your_filter,
                               action: FloatingAnimatedButton(
                                 compact: true,
-                                text: 'Reset filter',
+                                text: loc.reset_filter,
                                 type: ButtonType.tertiary,
                                 textColor: AppColors.primaryColor,
                                 onPressed: () => applyFilter(MatchFilter.all),
