@@ -390,8 +390,8 @@ jobs:
 
       - name: Build APK
         run: |
-          flutter build apk --release
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/tallee-v${{ steps.get_version.outputs.version }}.apk
+          flutter build apk --release --flavor dev
+          mv build/app/outputs/flutter-apk/app-dev-release.apk build/app/outputs/flutter-apk/tallee-v${{ steps.get_version.outputs.version }}.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v3
