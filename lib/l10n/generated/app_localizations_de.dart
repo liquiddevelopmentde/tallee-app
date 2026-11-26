@@ -323,6 +323,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enable => 'Aktivieren';
 
   @override
+  String get reset_filter => 'Filter zurücksetzen';
+
+  @override
   String get end_match => 'Spiel beenden';
 
   @override

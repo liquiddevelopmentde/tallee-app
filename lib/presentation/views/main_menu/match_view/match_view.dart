@@ -10,6 +10,7 @@ import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/configs.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_colors.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -261,6 +262,13 @@ class _MatchViewState extends State<MatchView> {
                               title: loc.no_results,
                               message:
                                   loc.there_is_no_match_matching_your_filter,
+                              action: FloatingAnimatedButton(
+                                compact: true,
+                                text: 'Reset filter',
+                                type: ButtonType.tertiary,
+                                textColor: AppColors.primaryColor,
+                                onPressed: () => applyFilter(MatchFilter.all),
+                              ),
                             ),
                           )
                         // No matches in search

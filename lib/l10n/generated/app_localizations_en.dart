@@ -318,6 +318,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enable => 'Enable';
 
   @override
+  String get reset_filter => 'Reset Filter';
+
+  @override
   String get end_match => 'End Match';
 
   @override

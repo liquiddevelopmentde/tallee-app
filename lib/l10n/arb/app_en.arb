@@ -116,6 +116,7 @@
   "edit_player": "Edit player",
   "email": "Email address",
   "enable": "Enable",
+  "reset_filter": "Reset Filter",
   "end_match": "End Match",
   "enter_results": "Enter Results",
   "error_creating_group": "Error while creating group, please try again",

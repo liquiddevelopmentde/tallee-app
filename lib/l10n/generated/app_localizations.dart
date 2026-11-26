@@ -651,6 +651,12 @@ abstract class AppLocalizations {
   /// **'Enable'**
   String get enable;
 
+  /// No description provided for @reset_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Filter'**
+  String get reset_filter;
+
   /// No description provided for @end_match.
   ///
   /// In en, this message translates to:
