@@ -61,10 +61,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get best_score => 'Beste Punktzahl';
 
   @override
-  String get error_creating_game =>
-      'Fehler beim Erstellen der Spielvorlage, bitte erneut versuchen';
-
-  @override
   String get camera_error =>
       'Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.';
 
@@ -333,6 +329,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
+  String get error_creating_game =>
+      'Fehler beim Erstellen der Spielvorlage, bitte erneut versuchen';
+
+  @override
   String get error_creating_group =>
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
@@ -353,12 +353,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Löschen des Spiels, bitte erneut versuchen';
 
   @override
-  String get error_editing_group =>
-      'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
-
-  @override
   String get error_editing_game =>
       'Fehler beim Bearbeiten der Spielvorlage, bitte erneut versuchen';
+
+  @override
+  String get error_editing_group =>
+      'Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen';
 
   @override
   String get error_editing_player =>
