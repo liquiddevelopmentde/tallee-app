@@ -669,6 +669,12 @@ abstract class AppLocalizations {
   /// **'Enter Results'**
   String get enter_results;
 
+  /// No description provided for @error_creating_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating game, please try again'**
+  String get error_creating_game;
+
   /// No description provided for @error_creating_group.
   ///
   /// In en, this message translates to:
@@ -698,6 +704,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error while deleting match, please try again'**
   String get error_deleting_match;
+
+  /// No description provided for @error_editing_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while editing game, please try again'**
+  String get error_editing_game;
 
   /// No description provided for @error_editing_group.
   ///
