@@ -157,6 +157,7 @@ class _FloatingAnimatedButtonState extends State<FloatingAnimatedButton>
             }
             isLongPressing = false;
             await Future.delayed(const Duration(milliseconds: 100));
+            if (!mounted) return;
             await animationController.reverse();
           }
         },
