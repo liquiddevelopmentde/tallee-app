@@ -172,7 +172,9 @@ class _ImportFileCardState extends State<ImportFileCard> {
         dottedBorderColor = Colors.green;
       });
     } else {
-      Haptics.errorNotification();
+      if (!data.result.isCanceled) {
+        Haptics.errorNotification();
+      }
       successfulImport = false;
 
       setState(() {

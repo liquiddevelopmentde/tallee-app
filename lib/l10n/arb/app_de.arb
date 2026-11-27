@@ -15,10 +15,10 @@
   "average_score": "Durchschnittliche Punktzahl",
   "best_player": "Beste:r Spieler:in",
   "best_score": "Beste Punktzahl",
-  "cancel": "Abbrechen",
   "camera_error": "Beim Zugriff auf die Kamera ist ein Fehler aufgetreten.",
   "camera_permission_denied": "Kamerazugriff wird zum Scannen von QR-Codes benötigt. Bitte erlaube den Kamerazugriff in den Einstellungen.",
   "camera_unsupported": "Das Scannen von QR-Codes wird auf diesem Gerät nicht unterstützt.",
+  "cancel": "Abbrechen",
   "choose_color_description": "Wähle eine Farbe für die Spielvorlage.",
   "choose_date_range": "Datumsbereich auswählen",
   "choose_game": "Spielvorlage wählen",
@@ -66,7 +66,6 @@
   "creation_date": "Erstellungsdatum",
   "custom": "Benutzerdefiniert",
   "danger_zone": "Gefahrenzone",
-  "data": "Daten",
   "data_backup": "Daten & Backup",
   "data_successfully_deleted": "Daten erfolgreich gelöscht",
   "data_successfully_exported": "Daten erfolgreich exportiert",
@@ -91,6 +90,17 @@
   "delete_match": "Spiel löschen",
   "delete_player": "Spieler:in löschen",
   "delete_player_warning_details": "Dies kann nicht rückgängig gemacht werden. Gelöschte Spieler:innen werden weiterhin in vergangenen Spielen angezeigt und in Statistiken berücksichtigt.",
+  "delete_player_warning_groups_deleted": "{count, plural, =1{Die Gruppe \"{groups}\" wird ebenfalls gelöscht, weil sonst nur noch ein Mitglied übrig wäre.} other{Folgende Gruppen werden ebenfalls gelöscht, weil sonst nur noch jeweils ein Mitglied übrig wäre: {groups}}}",
+  "@delete_player_warning_groups_deleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "groups": {
+        "type": "String"
+      }
+    }
+  },
   "delete_statistic": "Statistik löschen",
   "deleted": "Gelöscht",
   "descending": "Absteigend",
@@ -107,11 +117,13 @@
   "enable": "Aktivieren",
   "end_match": "Spiel beenden",
   "enter_results": "Ergebnisse eintragen",
+  "error_creating_game": "Fehler beim Erstellen der Spielvorlage, bitte erneut versuchen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_data": "Fehler beim Löschen der Daten, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
   "error_deleting_group": "Fehler beim Löschen der Gruppe, bitte erneut versuchen",
   "error_deleting_match": "Fehler beim Löschen des Spiels, bitte erneut versuchen",
+  "error_editing_game": "Fehler beim Bearbeiten der Spielvorlage, bitte erneut versuchen",
   "error_editing_group": "Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen",
   "error_editing_player": "Fehler beim Bearbeiten des Spielers, bitte erneut versuchen",
   "error_loading_match": "Fehler beim Laden: {error}",
@@ -122,7 +134,6 @@
       }
     }
   },
-  "error_loading_privacy_policy": "Fehler beim Laden der Datenschutzerklärung",
   "error_reading_file": "Fehler beim Lesen der Datei",
   "error_report_hint": "Bitte beschreibe die Schritte, die du vor dem Fehler durchgeführt hast, und in welcher Form dieser aufgetreten ist",
   "error_report_info_text": "Das Melden eines Fehlers hilft uns, Probleme in Tallee zu finden und zu beheben!",
@@ -149,6 +160,7 @@
   "format_exception": "Formatfehler (siehe Konsole)",
   "game": "Spielvorlage",
   "game_associated": "Spielvorlage erfolgreich verknüpft",
+  "game_deleted": "Spielvorlage gelöscht",
   "game_filter_description": "Es werden alle Statistiken angezeigt, die sich auf eine der ausgewählten Spielvorlagen beziehen.",
   "game_name": "Spielvorlagenname",
   "games": "Spielvorlagen",
@@ -170,6 +182,7 @@
     }
   },
   "highest_score": "Höchste Punkte",
+  "highest_score_description": "Die höchste Punktzahl gewinnt.",
   "import_canceled": "Import abgebrochen",
   "import_data": "Daten importieren",
   "import_description": "Importiere deine Tallee-Daten (.json) aus einer zuvor exportierten Datei. Dies dient zum Wiederherstellen eines Backups oder zum Übertragen von Daten auf ein neues Gerät. Um geteilte Spiele zu importieren, tippe auf das QR-Code-Symbol in der Spielansicht.",
@@ -189,6 +202,7 @@
   "last_30_days": "Letzte 30 Tage",
   "last_7_days": "Letzte 7 Tage",
   "last_90_days": "Letzte 90 Tage",
+  "last_played": "Zuletzt gespielt",
   "last_year": "Letztes Jahr",
   "later": "Später",
   "legal": "Rechtliches",
@@ -202,10 +216,13 @@
       }
     }
   },
+  "lives_description": "Wer am Ende noch mindestens ein Leben hat, gewinnt.",
   "loading": "Lädt...",
   "loading_match": "Lade Spiel...",
   "loser": "Verlierer:in",
+  "loser_description": "Wähle eine:n Verlierer:in aus.",
   "lowest_score": "Niedrigste Punkte",
+  "lowest_score_description": "Die niedrigste Punktzahl gewinnt.",
   "manage_members": "Mitglieder bearbeiten",
   "match": "Spiel",
   "match_deleted": "Spiel gelöscht",
@@ -256,6 +273,7 @@
   "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "no_suitable_matches_yet": "Noch keine passenden Spiele",
   "no_teams_available": "Keine Teams verfügbar",
+  "no_type_selected_yet": "Noch keinen Typ ausgewählt",
   "none": "Kein",
   "none_group": "Keine",
   "not_part_of_any_group": "Noch keiner Gruppe hinzugefügt",
@@ -286,6 +304,7 @@
   "parsing_error": "Fehler beim Verarbeiten der Daten. Bitte versuche es später erneut.",
   "place": "Platz",
   "placement": "Platzierung",
+  "placement_description": "Ordne alle Spieler:innen vom ersten bis zum letzten Platz.",
   "played_matches": "Gespielte Spiele",
   "player_count": "{count, plural, =1{1 Spieler:in} other{{count} Spieler:innen}}",
   "@player_count": {
@@ -306,7 +325,6 @@
   "qr_code_expired": "QR-Code abgelaufen",
   "qr_code_parsing_error": "Der gescannte Code enthält keine gültigen Spiel-Daten.",
   "random_color": "Zufällige Farbe",
-  "remaining": "verbleibend",
   "remove_from_favourites": "Aus Favoriten entfernen",
   "report_error": "Fehler melden",
   "required": "erforderlich",
@@ -431,10 +449,10 @@
   "version_copied_to_clipboard": "Version in Zwischenablage kopiert",
   "whats_new": "Neuigkeiten",
   "winner": "Gewinner:in",
+  "winner_description": "Wähle einen oder mehrere Gewinner:innen aus.",
   "winrate": "Siegquote",
   "worst_score": "Schlechteste Punktzahl",
   "write_email": "Eine E-Mail schreiben",
   "yes": "Ja",
-  "yesterday_at": "Gestern um",
-  "your_statistic_will_be_shown_here": "Hier wird deine Statistik angezeigt"
+  "yesterday_at": "Gestern um"
 }

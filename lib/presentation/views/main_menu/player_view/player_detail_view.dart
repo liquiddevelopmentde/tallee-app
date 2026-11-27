@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:tallee/core/constants/constants.dart';
 import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
 import 'package:tallee/l10n/generated/app_localizations.dart';
@@ -96,14 +97,27 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
             HapticIconButton(
               icon: const Icon(Icons.delete),
               onPressed: () async {
+                final groupsToDelete = await getGroupsDeletedWithPlayer();
+                if (!context.mounted) return;
+
                 final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) => CustomAlertDialog(
                     title: loc.delete_player,
-                    content: Text(
-                      loc.delete_player_warning_details,
-                      overflow: TextOverflow.visible,
-                    ),
+                    content: groupsToDelete.isNotEmpty
+                        ? Text(
+                            loc.delete_player_warning_groups_deleted(
+                              groupsToDelete.length,
+                              groupsToDelete
+                                  .map((group) => group.name)
+                                  .join(', '),
+                            ),
+                            overflow: TextOverflow.visible,
+                          )
+                        : Text(
+                            loc.delete_player_warning_details,
+                            overflow: TextOverflow.visible,
+                          ),
                     actions: [
                       CustomDialogAction(
                         onPressed: () => Navigator.of(context).pop(true),
@@ -134,12 +148,7 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
           alignment: Alignment.center,
           children: [
             ListView(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                top: 20,
-                bottom: 100,
-              ),
+              padding: AppSpacing.detailViewPadding,
               children: [
                 // Icon
                 Center(
@@ -233,12 +242,14 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
 
                 // Statistics
                 DetailTile(
+                  isLoading: isLoading,
                   rows: [
-                    (loc.matches_played, totalMatches.toString()),
-                    (loc.matches_won, matchesWon.toString()),
+                    (label: loc.matches_played, value: totalMatches.toString()),
+                    (label: loc.matches_won, value: matchesWon.toString()),
                     (
-                      loc.winrate,
-                      '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
+                      label: loc.winrate,
+                      value:
+                          '${totalMatches == 0 ? 0 : ((matchesWon / totalMatches) * 100).round()}%',
                     ),
                   ],
                 ),
@@ -375,6 +386,19 @@ class _PlayerDetailViewState extends State<PlayerDetailView> {
         ),
       ),
     );
+  }
+
+  /// Returns the groups that would be deleted along with this player, because
+  /// they would be left with fewer than two members.
+  Future<List<Group>> getGroupsDeletedWithPlayer() async {
+    final groups = await db.groupDao.getGroupsByPlayer(playerId: player.id);
+    return groups
+        .where(
+          (group) =>
+              group.members.where((member) => member.id != player.id).length <
+              2,
+        )
+        .toList();
   }
 
   /// Loads statistics for this player

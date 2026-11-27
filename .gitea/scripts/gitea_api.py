@@ -10,11 +10,14 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Set
 from urllib.request import Request
 from urllib.request import urlopen
 
+import functools
 import json
 import os
+import re
 
 API: str = os.environ["API"]
 REPO: str = os.environ["REPO"]
@@ -68,3 +71,38 @@ def is_issue(obj: Any) -> bool:
     :returns: True if the object is an issue.
     """
     return isinstance(obj, dict) and obj.get("pull_request") is None
+
+
+@functools.lru_cache(maxsize=None)
+def all_issues() -> List[Dict[str, Any]]:
+    """
+    Fetch every issue in the repository, caching the result.
+
+    :returns: All issues in the repository.
+    """
+    return get_all(f"/repos/{REPO}/issues?state=all&type=issues")
+
+
+def issue_numbers_for_pr(pr: Dict[str, Any]) -> Set[int]:
+    """
+    Find the issue numbers a pull request belongs to.
+
+    Matches the branch "<type>/<nr>-...", explicit issue refs equal to the
+    branch, and closing keywords in the body.
+
+    :param pr: The pull request object.
+    :returns: The set of referenced issue numbers.
+    """
+    branch: str = pr["head"]["ref"]
+    nums: Set[int] = set()
+    match: Optional[re.Match] = re.match(r"^[^/]+/0*(\d+)(?:[-_/]|$)", branch)
+    if match:
+        nums.add(int(match.group(1)))
+    for keyword in re.finditer(r"(?i)\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)", pr.get("body") or ""):
+        nums.add(int(keyword.group(1)))
+    # Branches linked by branch_issue_link.yaml without a number in their name.
+    if not nums:
+        for issue in all_issues():
+            if issue.get("ref") in (branch, f"refs/heads/{branch}"):
+                nums.add(issue["number"])
+    return nums

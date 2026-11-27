@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:tallee/core/common.dart';
 import 'package:tallee/core/constants/constants.dart';
-import 'package:tallee/core/extensions/extensions.dart';
+import 'package:tallee/core/extensions/snack_bar_extensions.dart';
+import 'package:tallee/core/haptics.dart';
 import 'package:tallee/core/theme/app_spacing.dart';
 import 'package:tallee/data/db/database.dart';
 import 'package:tallee/data/models/models.dart';
@@ -11,7 +12,6 @@ import 'package:tallee/l10n/generated/app_localizations.dart';
 import 'package:tallee/presentation/widgets/buttons/buttons.dart';
 import 'package:tallee/presentation/widgets/colored_circle.dart';
 import 'package:tallee/presentation/widgets/custom_showcase_widget.dart';
-import 'package:tallee/presentation/widgets/dialog/custom_alert_dialog.dart';
 import 'package:tallee/presentation/widgets/dialog/selection_sheet.dart';
 import 'package:tallee/presentation/widgets/text_input/text_input_field.dart';
 import 'package:tallee/presentation/widgets/tiles/choose_tile.dart';
@@ -21,19 +21,20 @@ class CreateGameView extends StatefulWidget {
   /// A stateful widget for creating or editing a game.
   /// - [gameToEdit] An optional game to prefill the fields
   /// - [onGameChanged] Callback to invoke when the game is created or edited
-  /// - [gameCount]: The count of matches associated with this [gameToEdit]
-  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game type. This is used during match sharing to ensure the game is compatible with the shared data.
+  /// - [canChangeRuleset]: Whether the user can change the ruleset of the game
+  /// - [requiredRuleset]: An optional ruleset used to enforce a specific game
+  /// type. This is used during match sharing to ensure the game is compatible with the shared data.
   const CreateGameView({
     super.key,
     required this.onGameChanged,
     this.gameToEdit,
-    this.gameCount = 0,
+    this.canChangeRuleset = true,
     this.requiredRuleset,
   });
 
   final VoidCallback onGameChanged;
   final Game? gameToEdit;
-  final int gameCount;
+  final bool canChangeRuleset;
 
   final Ruleset? requiredRuleset;
 
@@ -68,12 +69,32 @@ class _CreateGameViewState extends State<CreateGameView> {
       TextEditingController();
 
   int selectedLives = 3;
-  Ruleset? selectedRuleset = Ruleset.winner;
+  Ruleset selectedRuleset = Ruleset.winner;
 
   AppColor? selectedColor;
   AppColor? lastSelectedColor;
 
+  bool get canCreateGame => gameNameController.text.trim().isNotEmpty;
+
   bool get isEditMode => widget.gameToEdit != null;
+
+  bool get hasChangedName =>
+      widget.gameToEdit!.name != gameNameController.text.trim();
+
+  bool get hasChangedRuleset => widget.gameToEdit!.ruleset != selectedRuleset;
+
+  bool get hasChangedColor => widget.gameToEdit!.color != selectedColor;
+
+  bool get hasChangedDescription =>
+      widget.gameToEdit!.description != gameDescriptionController.text.trim();
+
+  bool get hasChangedGame {
+    if (hasChangedName) return true;
+    if (hasChangedRuleset) return true;
+    if (hasChangedColor) return true;
+    if (hasChangedDescription) return true;
+    return false;
+  }
 
   @override
   void initState() {
@@ -82,7 +103,7 @@ class _CreateGameViewState extends State<CreateGameView> {
     showcaseProvider = context.read<ShowcaseProvider>();
 
     if (widget.requiredRuleset != null) {
-      selectedRuleset = widget.requiredRuleset;
+      selectedRuleset = widget.requiredRuleset!;
     }
 
     gameNameController.addListener(() => setState(() {}));
@@ -139,7 +160,7 @@ class _CreateGameViewState extends State<CreateGameView> {
 
   @override
   Widget build(BuildContext context) {
-    var loc = AppLocalizations.of(context);
+    final loc = AppLocalizations.of(context);
 
     return PopScope(
       onPopInvokedWithResult: (bool didPop, dynamic result) {
@@ -155,14 +176,6 @@ class _CreateGameViewState extends State<CreateGameView> {
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: Text(isEditMode ? loc.edit_game : loc.create_game),
-              actions: [
-                if (isEditMode)
-                  HapticIconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () async =>
-                        await showDeletePopup(scaffoldContext),
-                  ),
-              ],
             ),
             // Game name input field
             body: SafeArea(
@@ -183,29 +196,29 @@ class _CreateGameViewState extends State<CreateGameView> {
                   ),
 
                   // Choose ruleset tile
-                  if (!isEditMode)
-                    CustomShowcaseWidget(
-                      showcaseKey: createGameViewGameRulesetKey,
-                      description: loc.showcase_create_game_ruleset,
-                      child: ChooseTile(
-                        title: loc.ruleset,
-                        trailing: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 8,
-                            children: [
-                              Icon(selectedRuleset!.icon, size: 16),
-                              Text(
-                                selectedRuleset!.toLocalizedString(context),
-                                textAlign: TextAlign.right,
-                              ),
-                            ],
-                          ),
+                  CustomShowcaseWidget(
+                    showcaseKey: createGameViewGameRulesetKey,
+                    description: loc.showcase_create_game_ruleset,
+                    child: ChooseTile(
+                      enabled: widget.canChangeRuleset,
+                      title: loc.ruleset,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            Icon(selectedRuleset.icon, size: 16),
+                            Text(
+                              selectedRuleset.toLocalizedString(context),
+                              textAlign: TextAlign.right,
+                            ),
+                          ],
                         ),
-                        onPressed: () => showRulesetSheet(loc),
                       ),
+                      onPressed: () => showRulesetSheet(loc),
                     ),
+                  ),
 
                   // Choose color tile
                   ChooseTile(
@@ -245,60 +258,29 @@ class _CreateGameViewState extends State<CreateGameView> {
 
                   const Spacer(),
 
-                  // Create / Edit game button
-                  CustomShowcaseWidget(
-                    showcaseKey: createGameViewCreateGameKey,
-                    description: loc.showcase_create_game_button,
-                    child: BottomAnimatedButton(
-                      text: isEditMode ? loc.edit_game : loc.create_game,
-                      onPressed:
-                          gameNameController.text.trim().isNotEmpty &&
-                              selectedRuleset != null
-                          ? () async {
-                              if (!isEditMode &&
-                                  showcaseProvider.shouldShowShowcase(
-                                    createGameViewGameNameIdentifier,
-                                  )) {
-                                showcaseProvider.markAsSeen(
-                                  createGameViewGameNameIdentifier,
-                                );
-                                showcaseProvider.markAsSeen(
-                                  createGameViewGameRulesetIdentifier,
-                                );
-                                showcaseProvider.markAsSeen(
-                                  createGameViewCreateGameIdentifier,
-                                );
-                              }
-
-                              Game newGame = Game(
-                                name: gameNameController.text.trim(),
-                                description: gameDescriptionController.text
-                                    .trim(),
-                                ruleset: selectedRuleset!,
-                                color:
-                                    selectedColor ??
-                                    AppColor.randomColor(
-                                      exclude: [
-                                        lastSelectedColor,
-                                        if (isEditMode)
-                                          widget.gameToEdit!.color,
-                                      ],
-                                    ),
-                              );
-                              if (isEditMode) {
-                                await handleGameUpdate(newGame);
-                              } else {
-                                await handleGameCreation(newGame);
-                              }
-                              widget.onGameChanged.call();
-                              if (context.mounted) {
-                                Navigator.of(context)
-                                    .pop((game: newGame, delete: false));
-                              }
-                            }
+                  if (isEditMode)
+                    // Edit game button
+                    BottomAnimatedButton(
+                      text: loc.save_changes,
+                      onPressed: hasChangedGame && canCreateGame
+                          ? saveGame
                           : null,
+                    )
+                  else
+                    // Create game button
+                    CustomShowcaseWidget(
+                      showcaseKey: createGameViewCreateGameKey,
+                      description: loc.showcase_create_game_button,
+                      child: BottomAnimatedButton(
+                        text: loc.create_game,
+                        onPressed: canCreateGame
+                            ? () {
+                                updateShowcase();
+                                saveGame();
+                              }
+                            : null,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -308,43 +290,116 @@ class _CreateGameViewState extends State<CreateGameView> {
     );
   }
 
-  /// Handles updating an existing game in the database.
-  ///
-  /// [newGame] The updated game object.
-  Future<void> handleGameUpdate(Game newGame) async {
-    final oldGame = widget.gameToEdit!;
-
-    if (oldGame.name != newGame.name) {
-      await db.gameDao.updateGameName(gameId: oldGame.id, name: newGame.name);
-    }
-
-    if (oldGame.description != newGame.description) {
-      await db.gameDao.updateGameDescription(
-        gameId: oldGame.id,
-        description: newGame.description,
-      );
-    }
-
-    if (oldGame.ruleset != newGame.ruleset) {
-      await db.gameDao.updateGameRuleset(
-        gameId: oldGame.id,
-        ruleset: newGame.ruleset,
-      );
-    }
-
-    if (oldGame.color != newGame.color) {
-      await db.gameDao.updateGameColor(
-        gameId: oldGame.id,
-        color: newGame.color,
-      );
+  /// Marks the identifier as seen after the showcase is shown.
+  void updateShowcase() {
+    if (showcaseProvider.shouldShowShowcase(createGameViewGameNameIdentifier)) {
+      showcaseProvider.markAsSeen(createGameViewGameNameIdentifier);
+      showcaseProvider.markAsSeen(createGameViewGameRulesetIdentifier);
+      showcaseProvider.markAsSeen(createGameViewCreateGameIdentifier);
     }
   }
 
-  /// Handles creating a new game in the database.
+  /// Handles saving a game or updating an existing game and shows a error
+  /// message if not successfull.
   ///
-  /// [newGame] The game object to be created.
-  Future<void> handleGameCreation(Game newGame) async {
-    await db.gameDao.addGame(game: newGame);
+  /// Returns true if all database operations are successful, false otherwise.
+  Future<bool> saveGame() async {
+    Game newGame;
+    bool success;
+
+    final name = gameNameController.text.trim();
+    final description = gameDescriptionController.text.trim();
+    final ruleset = selectedRuleset;
+    final AppColor? color = selectedColor;
+    final AppColor randomColor = AppColor.randomColor(
+      exclude: [lastSelectedColor, if (isEditMode) widget.gameToEdit!.color],
+    );
+
+    if (isEditMode) {
+      (newGame: newGame, success: success) = await handleGameUpdate(
+        newName: name,
+        newDesc: description,
+        newRuleset: ruleset,
+        newColor: color ?? randomColor,
+      );
+    } else {
+      newGame = Game(
+        name: name,
+        description: description,
+        ruleset: ruleset,
+        color: color ?? randomColor,
+      );
+      success = await db.gameDao.addGame(game: newGame);
+    }
+
+    handleSaveNavigation(success, newGame);
+    return success;
+  }
+
+  /// Handles navigation after saving a game.
+  ///
+  /// If the saving was successful, it triggers onGameChanged an pops the game.
+  /// If not, it shows a snackbar
+  void handleSaveNavigation(bool success, Game newGame) {
+    if (success) {
+      Haptics.successNotification();
+      widget.onGameChanged.call();
+      if (mounted) Navigator.of(context).pop((updatedGame: newGame));
+    } else {
+      // Error handling
+      Haptics.errorNotification();
+      if (mounted) {
+        final loc = AppLocalizations.of(context);
+        context.showSnackBar(
+          message: isEditMode
+              ? loc.error_editing_game
+              : loc.error_creating_game,
+        );
+      }
+    }
+  }
+
+  /// Handles updating an existing game in the database.
+  /// Returns the success of the database operations an the new game.
+  Future<({bool success, Game newGame})> handleGameUpdate({
+    required String newName,
+    required String newDesc,
+    required Ruleset newRuleset,
+    required AppColor newColor,
+  }) async {
+    final oldGame = widget.gameToEdit!;
+    var success = true;
+
+    if (hasChangedName) {
+      success &= await db.gameDao.updateGameName(
+        gameId: oldGame.id,
+        name: newName,
+      );
+    }
+
+    if (hasChangedRuleset) {
+      success &= await db.gameDao.updateGameRuleset(
+        gameId: oldGame.id,
+        ruleset: newRuleset,
+      );
+    }
+
+    if (hasChangedColor) {
+      success &= await db.gameDao.updateGameColor(
+        gameId: oldGame.id,
+        color: newColor,
+      );
+    }
+
+    if (hasChangedDescription) {
+      success &= await db.gameDao.updateGameDescription(
+        gameId: oldGame.id,
+        description: newDesc,
+      );
+    }
+
+    Game newGame = await db.gameDao.getGameById(gameId: oldGame.id);
+    return (success: success, newGame: newGame);
   }
 
   /// Shows a bottom sheet to choose a ruleset
@@ -359,7 +414,11 @@ class _CreateGameViewState extends State<CreateGameView> {
         leadingBuilder: (Ruleset rs) => Icon(rs.icon, size: 22),
         labelBuilder: (BuildContext ctx, Ruleset rs) =>
             rs.toLocalizedString(ctx),
-        onValueUpdated: (Ruleset? rs) => setState(() => selectedRuleset = rs),
+        subtitleBuilder: (BuildContext ctx, Ruleset rs) =>
+            rs.toLocalizedDescription(ctx),
+        onValueUpdated: (Ruleset? rs) => setState(() {
+          if (rs != null) selectedRuleset = rs;
+        }),
       ),
     );
   }
@@ -387,61 +446,5 @@ class _CreateGameViewState extends State<CreateGameView> {
         },
       ),
     );
-  }
-
-  /// Shows a delete popup with information about how many matches containing
-  /// this game will also be deleted.
-  Future<void> showDeletePopup(BuildContext context) async {
-    if (!context.mounted) return;
-    final loc = AppLocalizations.of(context);
-
-    // Build the dialog content based on match count
-    final String dialogContent = widget.gameCount > 0
-        ? loc.delete_game_with_matches_warning(widget.gameCount)
-        : loc.this_cannot_be_undone;
-
-    await showDialog<bool>(
-      context: context,
-      builder: (BuildContext ctx) => CustomAlertDialog(
-        title: loc.delete_game,
-        content: Text(
-          dialogContent,
-          overflow: TextOverflow.visible,
-          style: const TextStyle(fontSize: 15),
-        ),
-        actions: [
-          CustomDialogAction(
-            accent: ButtonAccent.destructive,
-            onPressed: () => Navigator.of(ctx).pop(true),
-            text: loc.delete,
-          ),
-          CustomDialogAction(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            buttonType: ButtonType.secondary,
-            text: loc.cancel,
-          ),
-        ],
-      ),
-    ).then((confirmed) async {
-      if (confirmed == true && context.mounted) {
-        // Delete associated matches
-        if (widget.gameCount > 0) {
-          await db.matchDao.deleteMatchesByGame(gameId: widget.gameToEdit!.id);
-        }
-
-        // Delete the targetted game
-        bool success = await db.gameDao.deleteGame(
-          gameId: widget.gameToEdit!.id,
-        );
-
-        if (!context.mounted) return;
-        if (success) {
-          widget.onGameChanged.call();
-          Navigator.of(context).pop((game: widget.gameToEdit, delete: true));
-        } else {
-          context.showSnackBar(message: loc.error_deleting_game);
-        }
-      }
-    });
   }
 }

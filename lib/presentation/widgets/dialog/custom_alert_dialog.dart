@@ -34,6 +34,8 @@ class CustomAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
+    titleTextStyle: Theme.of(context).textTheme.titleLarge
+        ?.copyWith(overflow: TextOverflow.visible),
     titlePadding: showCloseButton
         ? const EdgeInsets.only(left: 24.0, top: 12.0, right: 12.0)
         : null,

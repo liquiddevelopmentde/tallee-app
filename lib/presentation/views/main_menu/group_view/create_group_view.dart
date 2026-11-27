@@ -48,12 +48,44 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   AppColor? lastSelectedColor;
 
+  bool get canCreateGroup =>
+      (groupNameController.text.trim().isNotEmpty &&
+      (selectedPlayers.length >= 2));
+
+  bool get isEditMode => widget.groupToEdit != null;
+
+  bool get hasChangedName =>
+      widget.groupToEdit!.name != groupNameController.text.trim();
+
+  bool get hasChangedColor => widget.groupToEdit!.color != selectedColor;
+
+  bool get hasChangedDescription =>
+      widget.groupToEdit!.description != groupDescriptionController.text.trim();
+
+  bool get hasChangedMembers {
+    final group = widget.groupToEdit!;
+
+    final oldIds = group.members.map((m) => m.id).toSet();
+    final newIds = selectedPlayers.map((p) => p.id).toSet();
+
+    return oldIds.length != newIds.length || !oldIds.containsAll(newIds);
+  }
+
+  bool get hasChangedGroup {
+    if (hasChangedName) return true;
+    if (hasChangedColor) return true;
+    if (hasChangedDescription) return true;
+    if (hasChangedMembers) return true;
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
     db = context.read<AppDatabase>();
 
-    if (widget.groupToEdit != null) {
+    if (isEditMode) {
+      // Prefill values
       groupNameController.text = widget.groupToEdit!.name;
       groupDescriptionController.text = widget.groupToEdit!.description;
       selectedColor = widget.groupToEdit!.color;
@@ -62,9 +94,8 @@ class _CreateGroupViewState extends State<CreateGroupView> {
         selectedPlayers = widget.groupToEdit!.members;
       });
     }
-    groupNameController.addListener(() {
-      setState(() {});
-    });
+    groupNameController.addListener(() => setState(() {}));
+    groupDescriptionController.addListener(() => setState(() {}));
   }
 
   @override
@@ -80,9 +111,6 @@ class _CreateGroupViewState extends State<CreateGroupView> {
     final viewTitle = widget.groupToEdit == null
         ? loc.create_new_group
         : loc.edit_group;
-    final buttonText = widget.groupToEdit == null
-        ? loc.create_group
-        : loc.save_changes;
 
     return ScaffoldMessenger(
       key: scaffoldMessengerKey,
@@ -148,14 +176,20 @@ class _CreateGroupViewState extends State<CreateGroupView> {
                 ),
               ),
 
-              BottomAnimatedButton(
-                text: buttonText,
-                onPressed:
-                    (groupNameController.text.isEmpty ||
-                        (selectedPlayers.length < 2))
-                    ? null
-                    : saveGroup,
-              ),
+              if (isEditMode)
+                // Update group button
+                BottomAnimatedButton(
+                  text: loc.save_changes,
+                  onPressed: hasChangedGroup && canCreateGroup
+                      ? saveGroup
+                      : null,
+                )
+              else
+                // Create group button
+                BottomAnimatedButton(
+                  text: loc.create_group,
+                  onPressed: canCreateGroup ? saveGroup : null,
+                ),
             ],
           ),
         ),
@@ -165,108 +199,105 @@ class _CreateGroupViewState extends State<CreateGroupView> {
 
   /// Saves the group by creating a new one or updating the existing one,
   /// depending on whether the widget  is in edit mode.
-  Future<void> saveGroup() async {
-    final loc = AppLocalizations.of(context);
-    late bool success;
-    Group? updatedGroup;
+  Future<bool> saveGroup() async {
+    bool success;
+    Group newGroup;
 
-    if (widget.groupToEdit == null) {
-      success = await createGroup();
+    final name = groupNameController.text.trim();
+    final description = groupDescriptionController.text.trim();
+    final AppColor? color = selectedColor;
+    final AppColor randomColor = AppColor.randomColor(
+      exclude: [lastSelectedColor, if (isEditMode) widget.groupToEdit!.color],
+    );
+    final members = selectedPlayers;
+
+    if (isEditMode) {
+      (newGroup: newGroup, success: success) = await handleGroupUpdate(
+        newName: name,
+        newDesc: description,
+        newColor: color ?? randomColor,
+        newMembers: members,
+      );
     } else {
-      final result = await editGroup();
-      success = result.$1;
-      updatedGroup = result.$2;
+      newGroup = Group(
+        name: name,
+        members: members,
+        color: color ?? randomColor,
+        description: description,
+      );
+      success = await db.groupDao.addGroup(group: newGroup);
     }
 
-    if (!mounted) return;
+    handleSaveNavigation(success, newGroup);
+    return success;
+  }
 
+  /// Handles navigation after saving a group.
+  ///
+  /// If the saving was successfull, it triggers onGroupChanged an pops the game.
+  /// If not, it shows a snackbar
+  void handleSaveNavigation(bool success, Group newGroup) {
     if (success) {
       Haptics.successNotification();
       widget.onMembersChanged?.call();
       if (mounted) {
-        Navigator.of(context).pop((updatedGroup: updatedGroup));
+        Navigator.of(context).pop((updatedGroup: newGroup));
       }
     } else {
+      Haptics.errorNotification();
       if (mounted) {
-        Haptics.errorNotification();
+        final loc = AppLocalizations.of(context);
+        scaffoldMessengerKey.showSnackBar(
+          message: widget.groupToEdit == null
+              ? loc.error_creating_group
+              : loc.error_editing_group,
+        );
       }
-      scaffoldMessengerKey.showSnackBar(
-        message: widget.groupToEdit == null
-            ? loc.error_creating_group
-            : loc.error_editing_group,
-      );
     }
   }
 
-  /// Handles creating a new group and returns whether the operation was successful.
-  Future<bool> createGroup() async {
-    final String groupName = groupNameController.text.trim();
-    final String groupDescription = groupDescriptionController.text.trim();
-    final AppColor? groupColor = selectedColor;
+  /// Handles updating an existing group in the database.
+  /// Returns the success of the database operations and the new group.
+  Future<({bool success, Group newGroup})> handleGroupUpdate({
+    required String newName,
+    required String newDesc,
+    required AppColor newColor,
+    required List<Player> newMembers,
+  }) async {
+    final oldGroup = widget.groupToEdit!;
+    var success = true;
 
-    final success = await db.groupDao.addGroup(
-      group: Group(
-        name: groupName,
-        description: groupDescription,
-        members: selectedPlayers,
-        color: groupColor ?? AppColor.randomColor(exclude: [lastSelectedColor]),
-      ),
-    );
-    return success;
-  }
-
-  /// Handles editing an existing group and returns a tuple of
-  /// (success, updatedGroup).
-  Future<(bool, Group?)> editGroup() async {
-    final groupName = groupNameController.text.trim();
-    final groupDescription = groupDescriptionController.text.trim();
-    final AppColor? groupColor = selectedColor;
-    final AppColor randomColor = AppColor.randomColor(
-      exclude: [lastSelectedColor, widget.groupToEdit!.color],
-    );
-
-    Group? updatedGroup = Group(
-      id: widget.groupToEdit!.id,
-      name: groupName,
-      description: groupDescription,
-      members: selectedPlayers,
-      createdAt: widget.groupToEdit!.createdAt,
-      color: groupColor ?? randomColor,
-    );
-
-    bool success = true;
-
-    if (widget.groupToEdit!.name != groupName) {
+    if (hasChangedName) {
       success &= await db.groupDao.updateGroupName(
         groupId: widget.groupToEdit!.id,
-        name: groupName,
+        name: newName,
       );
     }
 
-    if (widget.groupToEdit!.description != groupDescription) {
+    if (hasChangedDescription) {
       success &= await db.groupDao.updateGroupDescription(
         groupId: widget.groupToEdit!.id,
-        description: groupDescription,
+        description: newDesc,
       );
     }
 
-    if (widget.groupToEdit!.color != groupColor) {
+    if (hasChangedColor) {
       success &= await db.groupDao.updateGroupColor(
         groupId: widget.groupToEdit!.id,
-        color: groupColor ?? randomColor,
+        color: newColor,
       );
     }
 
-    if (widget.groupToEdit!.members != selectedPlayers) {
+    if (hasChangedMembers) {
       success &= await db.playerGroupDao.replaceGroupPlayers(
         groupId: widget.groupToEdit!.id,
         newPlayers: selectedPlayers,
       );
       await deleteObsoleteMatchGroupRelations();
-      widget.onMembersChanged?.call();
     }
 
-    return (success, updatedGroup);
+    Group newGroup = await db.groupDao.getGroupById(groupId: oldGroup.id);
+    return (success: success, newGroup: newGroup);
   }
 
   /// Removes the group association from matches that no longer belong to the edited group.

@@ -345,7 +345,7 @@ class _PreviewImportDataViewState extends State<PreviewImportDataView> {
     if (messengerKey != null) {
       if (importResult.isSuccess) {
         HapticFeedback.successNotification();
-      } else {
+      } else if (!importResult.isCanceled) {
         HapticFeedback.errorNotification();
       }
 

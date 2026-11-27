@@ -24,7 +24,7 @@ class AssociateGroupView extends StatefulWidget {
 
   final Match match;
 
-  final Map<String, Player?> associations;
+  final Map<String, Player> associations;
 
   final Game? associatedGame;
 
@@ -169,19 +169,11 @@ class _AssociateGroupViewState extends State<AssociateGroupView> {
     final db = context.read<AppDatabase>();
     final loc = AppLocalizations.of(context);
 
-    // Filter null values and cast to Map<String, Player>
-    final playerAssociations = <String, Player>{};
-    for (final entry in widget.associations.entries) {
-      if (entry.value != null) {
-        playerAssociations[entry.key] = entry.value!;
-      }
-    }
-
     try {
       await RemoteShareService().saveImportedMatch(
         db: db,
         importedMatch: widget.match,
-        playerAssociations: playerAssociations,
+        playerAssociations: widget.associations,
         associatedGame: widget.associatedGame,
         associatedGroup: associatedGroup,
       );
