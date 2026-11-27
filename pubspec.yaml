@@ -1,7 +1,7 @@
 name: tallee
 description: "Tracking App for Card Games"
 publish_to: 'none'
-version: 0.2.0+766
+version: 0.3.0+766
 
 environment:
   sdk: ^3.13.5
