@@ -40,8 +40,8 @@ class _GameDetailViewState extends State<GameDetailView> {
 
   late Game game;
 
-  /// Matches of this game, initially filled with skeleton matches.
-  List<Match> matches = List.generate(
+  /// Matches who use this game, initially filled with skeleton matches.
+  List<Match> associatedMatches = List.generate(
     2,
     (index) => Match(
       name: 'Match $index',
@@ -143,7 +143,7 @@ class _GameDetailViewState extends State<GameDetailView> {
 
                 // Matches
                 GameMatchesTile(
-                  matches: matches,
+                  matches: associatedMatches,
                   isLoading: isLoading,
                   onMatchTap: openMatch,
                 ),
@@ -165,6 +165,7 @@ class _GameDetailViewState extends State<GameDetailView> {
                       builder: (context) => CreateGameView(
                         gameToEdit: game,
                         onGameChanged: loadStatistics,
+                        canChangeRuleset: associatedMatches.isEmpty,
                       ),
                     ),
                   );
@@ -182,28 +183,28 @@ class _GameDetailViewState extends State<GameDetailView> {
     );
   }
 
-  /// The rows shown in the statistics tile, derived from [matches].
+  /// The rows shown in the statistics tile, derived from [associatedMatches].
   List<({String label, InlineSpan value})> statisticRows(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
     return [
       (
         label: loc.played_matches,
-        value: TextSpan(text: matches.length.toString()),
+        value: TextSpan(text: associatedMatches.length.toString()),
       ),
       (label: loc.best_player, value: bestPlayerSpan(context)),
       (
         label: loc.last_played,
         value: TextSpan(
-          text: matches.isEmpty
+          text: associatedMatches.isEmpty
               ? '-'
-              : matches.first.createdAt.toMediumDate(context),
+              : associatedMatches.first.createdAt.toMediumDate(context),
         ),
       ),
     ];
   }
 
-  /// The players with the most MVP titles across [matches], or `-` if none.
+  /// The players with the most MVP titles across [associatedMatches], or `-` if none.
   InlineSpan bestPlayerSpan(BuildContext context) {
     final names = bestPlayerNames();
     if (names.isEmpty) return const TextSpan(text: '-');
@@ -277,12 +278,12 @@ class _GameDetailViewState extends State<GameDetailView> {
     );
   }
 
-  /// The players with the most MVP titles across [matches].
+  /// The players with the most MVP titles across [associatedMatches].
   List<String> bestPlayerNames() {
     final mvpCounts = <String, int>{};
     final playerNames = <String, String>{};
 
-    for (final match in matches) {
+    for (final match in associatedMatches) {
       for (final player in match.mvp) {
         mvpCounts.update(player.id, (count) => count + 1, ifAbsent: () => 1);
         playerNames[player.id] = player.name;
@@ -329,16 +330,16 @@ class _GameDetailViewState extends State<GameDetailView> {
     if (!mounted) return;
 
     setState(() {
-      this.matches = matches;
+      associatedMatches = matches;
       isLoading = false;
     });
   }
 
   Future<void> handleGameDeletion(BuildContext context) async {
     final loc = AppLocalizations.of(context);
-    final dialogContent = matches.isEmpty
+    final dialogContent = associatedMatches.isEmpty
         ? loc.this_cannot_be_undone
-        : loc.delete_game_with_matches_warning(matches.length);
+        : loc.delete_game_with_matches_warning(associatedMatches.length);
 
     final confirmed = await showDialog<bool?>(
       context: context,
