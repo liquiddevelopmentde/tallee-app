@@ -6,7 +6,7 @@ final news = {
   NewsItem(
     icon: Icons.insights_rounded,
     iconColor: AppColor.purple,
-    localizedHeading: {'de': 'Spielprofil', 'en': 'Gameprofile'},
+    localizedHeading: {'de': 'Spielprofil', 'en': 'Game Profile'},
     localizedText: {
       'de': 'Es gibt jetzt eine **neue Profil-Ansicht für Spiele**, um Statistiken und Verläufe übersichtlich einzusehen.',
       'en': 'Added a **new profile view for games** to easily browse statistics and history for your games.',
