@@ -5,7 +5,7 @@ import 'package:tallee/data/dto/news_item.dart';
 final news = {
   NewsItem(
     icon: Icons.insights_rounded,
-    iconColor: AppColor.purple,
+    iconColor: AppColor.red,
     localizedHeading: {'de': 'Spielprofil', 'en': 'Game Profile'},
     localizedText: {
       'de': 'Es gibt jetzt eine **neue Profil-Ansicht für Spiele**, um Statistiken und Verläufe übersichtlich einzusehen.',
@@ -26,7 +26,7 @@ final news = {
   ),
   NewsItem(
     icon: Icons.auto_awesome_rounded,
-    iconColor: AppColor.teal,
+    iconColor: AppColor.green,
     localizedHeading: {
       'de': 'Verbesserungen & Fixes',
       'en': 'Improvements & Fixes',
