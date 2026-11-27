@@ -324,6 +324,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enter_results => 'Enter Results';
 
   @override
+  String get error_creating_game => 'Error creating game, please try again';
+
+  @override
   String get error_creating_group =>
       'Error while creating group, please try again';
 
@@ -342,6 +345,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_deleting_match =>
       'Error while deleting match, please try again';
+
+  @override
+  String get error_editing_game => 'Error while editing game, please try again';
 
   @override
   String get error_editing_group =>
