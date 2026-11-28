@@ -228,7 +228,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
           isMatchValid = false;
           errorMessage = response.result.toLocalizedMatchImportString(context);
         });
-        resetButtonStatusAfterDelay(ApiButtonState.error);
+        setButtonStatus(ApiButtonState.error);
         return;
       }
 
@@ -237,7 +237,7 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         isMatchValid = true;
         match = response.match!;
       });
-      resetButtonStatusAfterDelay(ApiButtonState.success);
+      setButtonStatus(ApiButtonState.success);
 
       Navigator.of(context).push(
         adaptivePageRoute(
@@ -270,15 +270,15 @@ class _EnterTokenComponentState extends State<EnterTokenComponent>
         setState(() => isMatchValid = false);
       }
 
-      resetButtonStatusAfterDelay(ApiButtonState.error);
+      setButtonStatus(ApiButtonState.error);
     }
   }
 
-  void resetButtonStatusAfterDelay(ApiButtonState resultStatus) {
+  void setButtonStatus(ApiButtonState resultStatus) {
     buttonStatusResetTimer?.cancel();
     setState(() => buttonStatus = resultStatus);
     buttonStatusResetTimer = Timer(const Duration(seconds: 2), () {
-      if (mounted && buttonStatus == resultStatus) {
+      if (mounted) {
         setState(() => buttonStatus = ApiButtonState.idle);
       }
     });
