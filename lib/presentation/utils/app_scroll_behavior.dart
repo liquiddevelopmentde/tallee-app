@@ -22,5 +22,11 @@ class AppScrollBehavior extends MaterialScrollBehavior {
     BuildContext context,
     Widget child,
     ScrollableDetails details,
-  ) => child;
+  ) {
+    if (getPlatform(context) == TargetPlatform.android) {
+      return super.buildOverscrollIndicator(context, child, details);
+    }
+
+    return child;
+  }
 }
