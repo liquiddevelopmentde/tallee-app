@@ -118,11 +118,13 @@
   "enable": "Aktivieren",
   "end_match": "Spiel beenden",
   "enter_results": "Ergebnisse eintragen",
+  "error_creating_game": "Fehler beim Erstellen der Spielvorlage, bitte erneut versuchen",
   "error_creating_group": "Fehler beim Erstellen der Gruppe, bitte erneut versuchen",
   "error_deleting_data": "Fehler beim Löschen der Daten, bitte erneut versuchen",
   "error_deleting_game": "Fehler beim Löschen der Spielvorlage, bitte erneut versuchen",
   "error_deleting_group": "Fehler beim Löschen der Gruppe, bitte erneut versuchen",
   "error_deleting_match": "Fehler beim Löschen des Spiels, bitte erneut versuchen",
+  "error_editing_game": "Fehler beim Bearbeiten der Spielvorlage, bitte erneut versuchen",
   "error_editing_group": "Fehler beim Bearbeiten der Gruppe, bitte erneut versuchen",
   "error_editing_player": "Fehler beim Bearbeiten des Spielers, bitte erneut versuchen",
   "error_loading_match": "Fehler beim Laden: {error}",
@@ -273,6 +275,7 @@
   "no_statistics_with_filter": "Keine Statistiken mit den ausgewählten Filteroptionen",
   "no_suitable_matches_yet": "Noch keine passenden Spiele",
   "no_teams_available": "Keine Teams verfügbar",
+  "no_type_selected_yet": "Noch keinen Typ ausgewählt",
   "none": "Kein",
   "none_group": "Keine",
   "not_part_of_any_group": "Noch keiner Gruppe hinzugefügt",
@@ -454,6 +457,5 @@
   "worst_score": "Schlechteste Punktzahl",
   "write_email": "Eine E-Mail schreiben",
   "yes": "Ja",
-  "yesterday_at": "Gestern um",
-  "your_statistic_will_be_shown_here": "Hier wird deine Statistik angezeigt"
+  "yesterday_at": "Gestern um"
 }

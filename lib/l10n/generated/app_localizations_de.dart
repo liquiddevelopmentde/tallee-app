@@ -329,6 +329,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enter_results => 'Ergebnisse eintragen';
 
   @override
+  String get error_creating_game =>
+      'Fehler beim Erstellen der Spielvorlage, bitte erneut versuchen';
+
+  @override
   String get error_creating_group =>
       'Fehler beim Erstellen der Gruppe, bitte erneut versuchen';
 
@@ -347,6 +351,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get error_deleting_match =>
       'Fehler beim Löschen des Spiels, bitte erneut versuchen';
+
+  @override
+  String get error_editing_game =>
+      'Fehler beim Bearbeiten der Spielvorlage, bitte erneut versuchen';
 
   @override
   String get error_editing_group =>
@@ -744,6 +752,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get no_teams_available => 'Keine Teams verfügbar';
+
+  @override
+  String get no_type_selected_yet => 'Noch keinen Typ ausgewählt';
 
   @override
   String get none => 'Kein';
@@ -1277,8 +1288,4 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yesterday_at => 'Gestern um';
-
-  @override
-  String get your_statistic_will_be_shown_here =>
-      'Hier wird deine Statistik angezeigt';
 }

@@ -118,11 +118,13 @@
   "enable": "Enable",
   "end_match": "End Match",
   "enter_results": "Enter Results",
+  "error_creating_game": "Error creating game, please try again",
   "error_creating_group": "Error while creating group, please try again",
   "error_deleting_data": "Error while deleting data, please try again",
   "error_deleting_game": "Error while deleting game, please try again",
   "error_deleting_group": "Error while deleting group, please try again",
   "error_deleting_match": "Error while deleting match, please try again",
+  "error_editing_game": "Error while editing game, please try again",
   "error_editing_group": "Error while editing group, please try again",
   "error_editing_player": "Error while editing player, please try again",
   "error_loading_match": "Error loading match: {error}",
@@ -273,6 +275,7 @@
   "no_statistics_with_filter": "No statistics with the selected filter",
   "no_suitable_matches_yet": "No suitable matches yet",
   "no_teams_available": "No teams available",
+  "no_type_selected_yet": "No type selected yet",
   "none": "None",
   "none_group": "None",
   "not_part_of_any_group": "Not part of any group yet",
@@ -463,6 +466,5 @@
   "worst_score": "Worst score",
   "write_email": "Write an email",
   "yes": "Yes",
-  "yesterday_at": "Yesterday at",
-  "your_statistic_will_be_shown_here": "Your statistic will be shown here"
+  "yesterday_at": "Yesterday at"
 }

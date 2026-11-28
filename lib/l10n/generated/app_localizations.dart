@@ -663,6 +663,12 @@ abstract class AppLocalizations {
   /// **'Enter Results'**
   String get enter_results;
 
+  /// No description provided for @error_creating_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Error creating game, please try again'**
+  String get error_creating_game;
+
   /// No description provided for @error_creating_group.
   ///
   /// In en, this message translates to:
@@ -692,6 +698,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error while deleting match, please try again'**
   String get error_deleting_match;
+
+  /// No description provided for @error_editing_game.
+  ///
+  /// In en, this message translates to:
+  /// **'Error while editing game, please try again'**
+  String get error_editing_game;
 
   /// No description provided for @error_editing_group.
   ///
@@ -1382,6 +1394,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No teams available'**
   String get no_teams_available;
+
+  /// No description provided for @no_type_selected_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No type selected yet'**
+  String get no_type_selected_yet;
 
   /// No description provided for @none.
   ///
@@ -2306,12 +2324,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yesterday at'**
   String get yesterday_at;
-
-  /// No description provided for @your_statistic_will_be_shown_here.
-  ///
-  /// In en, this message translates to:
-  /// **'Your statistic will be shown here'**
-  String get your_statistic_will_be_shown_here;
 }
 
 class _AppLocalizationsDelegate
